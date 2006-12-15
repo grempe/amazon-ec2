@@ -1,11 +1,20 @@
-#  This software code is made available "AS IS" without warranties of any
-#  kind.  You may copy, display, modify and redistribute the software
-#  code either by itself or as incorporated into your code; provided that
-#  you do not remove any proprietary notices.  Your use of this software
-#  code is at your own risk and you waive any claim against Amazon Web
-#  Services LLC or its affiliates with respect to your use of this software
-#  code. (c) 2006 Amazon Web Services LLC or its affiliates.  All rights
-#  reserved.
+# Amazon Web Services EC2 Query API Ruby Library
+# This library has been packaged as a Ruby Gem 
+# by Glenn Rempe ( glenn @nospam@ elasticworkbench.com ).
+# 
+# Source code and gem are now hosted on RubyForge
+# under the Ruby License as of 12/14/2006:
+# http://amazon-ec2.rubyforge.org
+
+# Original Amazon Web Services License
+# This software code is made available "AS IS" without warranties of any
+# kind.  You may copy, display, modify and redistribute the software
+# code either by itself or as incorporated into your code; provided that
+# you do not remove any proprietary notices.  Your use of this software
+# code is at your own risk and you waive any claim against Amazon Web
+# Services LLC or its affiliates with respect to your use of this software
+# code. (c) 2006 Amazon Web Services LLC or its affiliates.  All rights
+# reserved.
 
 require 'base64'
 require 'cgi'
@@ -115,9 +124,9 @@ module EC2
         "MinCount" => in_params[:minCount].to_s,
         "MaxCount" => in_params[:maxCount].to_s,
       }.merge(pathlist("SecurityGroup", in_params[:groupIds])) 
-
+      
       params["KeyName"] = in_params[:keyname] unless in_params[:keyname].nil? 
-        
+      
       RunInstancesResponse.new(make_request("RunInstances", params))
     end
 

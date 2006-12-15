@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+    <meta name="Generator" content="iWeb 1.1.2" />
+    <title>Amazon EC2 Ruby Gem</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="Amazon%20EC2%20Ruby%20Gem_files/Amazon%20EC2%20Ruby%20Gem.css" /><script type="text/javascript" src="Amazon%20EC2%20Ruby%20Gem_files/Amazon%20EC2%20Ruby%20Gem.js"></script>
+  </head>
+  <body style="background: #ffffff; margin: 0pt; " onload="onPageLoad();">
+    <div style="text-align: center; ">
+      <div style="margin-left: auto; margin-right: auto; overflow: hidden; position: relative;  background: #ffffff; text-align: left; width: 700px; " id="body_content">
+        <div style="float: left; height: 0px; line-height: 0px; margin-left: 0px; position: relative; width: 700px; z-index: 10; " id="header_layer">
+          <div style="height: 0px; line-height: 0px; " class="tinyText"> </div>
+        </div>
+        <div style="float: left; margin-left: 0px; position: relative; width: 700px; z-index: 0; " id="nav_layer">
+          <div style="height: 0px; line-height: 0px; " class="tinyText"> </div>
+        </div>
+        <div style="margin-left: 0px; position: relative; width: 700px; z-index: 5; " id="body_layer">
+          <div style="height: 0px; line-height: 0px; " class="tinyText"> </div>
+          <div style="height: 1px; line-height: 1px; " class="tinyText"> </div>
+          <div class="graphic_generic_body_textbox_style_default" style="margin-left: 289px; margin-top: 183px; position: relative; width: 390px; z-index: 1; ">
+            <div>
+              <div style="padding: 4px; " class="Normal">
+                <div class="paragraph Heading_1" style="line-height: 25px; padding-top: 0pt; ">About</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; "><span>Amazon Web Services offers a compute power on demand capability known as the </span><a href="http://ec2.amazonaws.com/" title="http://ec2.amazonaws.com/">Elastic Compute Cloud (EC2)</a><span>.  Using the current API’s the compute resources in the cloud can be provisioned on demand by making SOAP or HTTP Query API calls to EC2.</span></div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">This ‘Amazon-EC2’ Ruby Gem is an interface library that can be used to interact with the Amazon EC2 system using the Query API.</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Heading_1" style="line-height: 25px; ">Important Note</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; "><span>In December of 2006 Amazon Web Services released a </span><a href="http://developer.amazonwebservices.com/connect/entry.jspa?externalID=553&amp;categoryID=85" title="http://developer.amazonwebservices.com/connect/entry.jspa?externalID=553&amp;categoryID=85">sample Ruby code library for interacting with EC2</a><span>.  I have packaged this sample code as this Ruby Gem as a service to the Ruby community and do not plan to be actively maintaining this code on a full-time basis.</span></div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">All I ask in return is if you have some Ruby skills and can contribute documentation, automated unit tests, bug fixes, or enhancements as Subversion patch files that you please do so.   I will be happy to incorporate those changes directly into the library as appropriate.</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">Alternatively, if you are interested in becoming a more seriously involved contributing developer with full check-in privileges on the source code please feel free to contact me and we can discuss the best way to do so.</div>
+                <div class="paragraph Heading_1" style="line-height: 25px; text-decoration: none;"> </div>
+                <div class="paragraph Heading_1" style="line-height: 25px; ">Project Info</div>
+                <div class="paragraph Heading_1" style="line-height: 25px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">This project is managed as a RubyForge project which you can find at:</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; "><span>  </span><a href="http://amazon-ec2.rubyforge.org" title="http://amazon-ec2.rubyforge.org" style="line-height: 20px; opacity: 1.00; ">http://amazon-ec2.rubyforge.org</a><span>/</span></div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">This is always the place to find the latest news, report any bugs, submit feature requests, or provide patches.  </div>
+                <div class="paragraph Heading_1" style="line-height: 25px; text-decoration: none;"> </div>
+                <div class="paragraph Heading_1" style="line-height: 25px; text-decoration: none;"> </div>
+                <div class="paragraph Heading_1" style="line-height: 25px; ">Installation</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">Prerequisites:</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; "><span>You will need an </span><a href="http://aws.amazon.com/" title="http://aws.amazon.com/">Amazon Web Services developer account</a><span>.  This account must also be enabled for Amazon EC2.  AWS will provide you with an ‘AWS Access Key ID’ and a ‘Secret Access Key’ which will allow you to authenticate any API calls you make and ensure correct billing to you for usage of the service.</span></div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">Installation:</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">The ‘amazon-ec2’ gem is installed in typical Ruby gem fashion.  I will make the presumption that you already have Ruby and RubyGems installed.  Assuming you have that foundation in place you only need to do:</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; margin-bottom: 0px; margin-top: 0px; font-style: italic; line-height: 20px;">Linux/Mac OS X:</div>
+                <div class="paragraph Body" style="line-height: 14px; margin-bottom: 0px; margin-top: 0px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">sudo gem install amazon-ec2</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; margin-bottom: 0px; margin-top: 0px; font-style: italic; line-height: 20px;">Windows:</div>
+                <div class="paragraph Body" style="line-height: 14px; margin-bottom: 0px; margin-top: 0px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">gem install amazon-ec2</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">This should pull the latest version of the gem from RubyForge and install the gem and its documentation.</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">Alternate Installation:</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">You can also directly download the latest version of the *.gem file from the RubyForge project site and run:</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 14px; margin-bottom: 0px; margin-top: 0px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">gem install amazon-ec2-*.gem</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">(substituting the * for the proper version number)</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">Updating:</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">You can always update the gem by doing:</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 14px; margin-bottom: 0px; margin-top: 0px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">gem update amazon-ec2</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Heading_1" style="line-height: 25px; ">Documentation</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; "><span>You can view the Ruby ‘rdoc’ documentation for the gem (and all others installed on your system) by running ‘</span><a href="http://rubygems.org/read/chapter/18" title="http://rubygems.org/read/chapter/18">gem_server</a><span>’ on your command line.  This will run a small web server on your localhost that will be visible on port 8808 using the following link:</span></div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; "><a href="http://localhost:8808" title="http://localhost:8808" style="line-height: 20px; opacity: 1.00; ">http://localhost:8808</a><span>/</span></div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Heading_1" style="line-height: 25px; ">Usage</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">The library exposes one main interface class, </div>
+                <div class="paragraph Body" style="line-height: 20px; ">'AWSAuthConnection'.  Through this class you can perform all the operations for using using the EC2 service including header signing.</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">The public methods on AWSAuthConnection closely mirror the EC2 Query API, and as such the Query API Reference in the EC2 Developer Guide should be consulted.</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">Example Code (Stand-alone Ruby Application):</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 10px; line-height: 13px;  text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">#!/usr/bin/env ruby</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">require 'rubygems'</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">require 'ec2'</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">AWS_ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">AWS_SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">  </div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">conn = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;  text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">puts "----- listing images -----"</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">puts conn.describe_images()</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 10px; line-height: 13px;  text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">An example client is provided as a starting point in this Gem installation which you may consult for a few slightly more detailed usage examples.</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 14px; margin-bottom: 0px; margin-top: 0px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">[your amazon-ec2 gem dir]/examples/ec2-example.rb</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">Example Code (Ruby on Rails Application):</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; margin-bottom: 0px; margin-top: 0px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; font-weight: bold; line-height: 14px;">in config/environment.rb:</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">...</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;"># Include Amazon Web Services EC2 library gem</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">require 'ec2'</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;  text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; margin-bottom: 0px; margin-top: 0px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; font-weight: bold; line-height: 14px;">in app/controllers/your_controller.rb:</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">...</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">conn = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">  </div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;"># The .parse method gives you back an array of </div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;"># values from the API response that you can </div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;"># use in your view</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">@ec2_images = conn.describe_images().parse</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">  </div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;"># Or with some parameters </div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;"># (in this case specific owner ID's)</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">@ec2_images_mine = ec2.describe_images([],["522821470517"],[]).parse</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">  </div>
+                <div class="paragraph Body" style="line-height: 20px; margin-bottom: 0px; margin-top: 0px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; font-weight: bold; line-height: 14px;">in app/views/your_view.rhtml:</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">...</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">&lt;%= debug(@ec2_images) %&gt;</div>
+                <div class="paragraph Body" style="line-height: 14px; margin-bottom: 0px; margin-top: 0px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">...</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;  text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; margin-bottom: 0px; margin-top: 0px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; font-weight: bold; line-height: 14px;">-- OR --</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">  </div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">&lt;% @ec2_images.each do |image| %&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">  &lt;% image.each_with_index do |value, index| %&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">    &lt;%= "#{index} =&gt; #{value}" %&gt;&lt;br /&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">  &lt;% end %&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">&lt;% end %&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;  text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; margin-bottom: 0px; margin-top: 0px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; font-weight: bold; line-height: 14px;">-- OR --</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;  text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">&lt;table&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">  &lt;tr&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">    &lt;th&gt;Id&lt;/th&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">    &lt;th&gt;Location&lt;/th&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">    &lt;th&gt;Owner&lt;/th&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">    &lt;th&gt;State&lt;/th&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">    &lt;th&gt;Public?&lt;/th&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">  &lt;/tr&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">  </div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">  &lt;% for ec2_image in @ec2_images %&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">    &lt;tr&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">      &lt;td&gt;&lt;%=h ec2_image[1] %&gt;&lt;/td&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">      &lt;td&gt;&lt;%=h ec2_image[2] %&gt;&lt;/td&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">      &lt;td&gt;&lt;%=h ec2_image[3] %&gt;&lt;/td&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">      &lt;td&gt;&lt;%=h ec2_image[4] %&gt;&lt;/td&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">      &lt;td&gt;&lt;%=h ec2_image[5] %&gt;&lt;/td&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">    &lt;/tr&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">  &lt;% end %&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;">&lt;/table&gt;</div>
+                <div class="paragraph Body" style="line-height: 20px; font-family: 'CourierNewPSMT', 'Courier New', 'monospace'; font-size: 11px; line-height: 14px;  text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Heading_1" style="line-height: 25px; ">Credits</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; ">The original sample code for this library was provided by Amazon Web Services, LLC.  Thanks to them for providing the samples that got this started.  They took the wind out of the sails of my own version of this library (which was maybe 75% complete), but they probably saved me some hair that otherwise would have suffered self-inflicted removal.</div>
+                <div class="paragraph Body" style="line-height: 20px; text-decoration: none;"> </div>
+                <div class="paragraph Body" style="line-height: 20px; padding-bottom: 0pt; "><span>Thanks to Dr. Nic Williams and his great </span><a href="http://drnicwilliams.com/2006/10/11/generating-new-gems" title="http://drnicwilliams.com/2006/10/11/generating-new-gems">'NewGem' Ruby Gem Generator</a><span>.  This gem of a Gem helped me package up this code for distribution as a gem in a flash (and this was my first time doing so!).</span></div>
+              </div>
+              <div style="height: 109px; line-height: 109px; " class="tinyText"> </div>
+            </div>
+          </div>
+          
+
+
+          <div class="graphic_generic_title_textbox_style_default" style="height: 49px; left: 35px; position: absolute; top: 22px; width: 630px; z-index: 1; " id="id1">
+            <div>
+              <div class="graphic_shape_layout_style_default">
+                <div class="paragraph Title" style="line-height: 42px; padding-bottom: 0pt; padding-top: 0pt; ">AMAZON-EC2 Ruby Gem</div>
+              </div>
+            </div>
+          </div>
+          
+
+<img src="Amazon%20EC2%20Ruby%20Gem_files/shapeimage_1.jpg" alt="" style="height: 1px; left: 35px; position: absolute; top: 1px; width: 630px; z-index: 1; " />
+
+
+          <div class="graphic_textbox_style_default" style="height: 352px; left: 25px; position: absolute; top: 366px; width: 234px; z-index: 1; " id="id2">
+            <div>
+              <div class="graphic_textbox_layout_style_default">
+                <div class="paragraph Body_Small" style="line-height: 18px; padding-top: 0pt; text-decoration: none;"> </div>
+                <div class="paragraph Heading_2" style="line-height: 16px; ">Project Related Links</div>
+                <div class="paragraph Heading_2" style="line-height: 16px; text-decoration: none;"> </div>
+                <ol>
+                  <li style="line-height: 18px; margin-left: 10px; padding-left: 0px; text-indent: -10px; ">
+                    <div class="paragraph Body_Bullet" style="line-height: 18px; text-indent: -10px; "><a style="color: #000000; font-family: 'ArialMT', 'Arial', 'sans-serif'; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: 0; line-height: 18px; opacity: 1.00; text-decoration: none; text-transform: none; " class="Bullet" href="http://aws.amazon.com" title="http://aws.amazon.com">•</a><span style="width: 5px; " class="InlineBlock"></span><a href="http://aws.amazon.com" title="http://aws.amazon.com" style="line-height: 18px; opacity: 1.00; ">http://aws.amazon.com</a><span style="color: #453c3c; line-height: 18px; opacity: 1.00; "></span></div>
+                  </li>
+                  <li style="line-height: 18px; margin-left: 10px; padding-left: 0px; text-indent: -10px; ">
+                    <div class="paragraph Body_Bullet" style="line-height: 18px; text-indent: -10px; "><a style="color: #000000; font-family: 'ArialMT', 'Arial', 'sans-serif'; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: 0; line-height: 18px; opacity: 1.00; text-decoration: none; text-transform: none; " class="Bullet" href="http://amazon-ec2.rubyforge.org" title="http://amazon-ec2.rubyforge.org">•</a><span style="width: 5px; " class="InlineBlock"></span><a href="http://amazon-ec2.rubyforge.org" title="http://amazon-ec2.rubyforge.org" style="line-height: 18px; opacity: 1.00; ">http://amazon-ec2.rubyforge.org</a><span style="color: #453c3c; line-height: 18px; opacity: 1.00; ">/</span></div>
+                  </li>
+                  <li style="line-height: 18px; margin-left: 10px; padding-left: 0px; text-indent: -10px; ">
+                    <div class="paragraph Body_Bullet" style="line-height: 18px; text-indent: -10px; "><a style="color: #000000; font-family: 'ArialMT', 'Arial', 'sans-serif'; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: 0; line-height: 18px; opacity: 1.00; text-decoration: none; text-transform: none; " class="Bullet" href="http://www.elasticworkbench.com" title="http://www.elasticworkbench.com">•</a><span style="width: 5px; " class="InlineBlock"></span><a href="http://www.elasticworkbench.com" title="http://www.elasticworkbench.com" style="line-height: 18px; opacity: 1.00; ">http://www.elasticworkbench.com</a></div>
+                  </li>
+                </ol>
+                <div class="paragraph Heading_2" style="line-height: 16px; text-decoration: none;"> </div>
+                <div class="paragraph Heading_2" style="line-height: 16px; text-decoration: none;"> </div>
+                <div class="paragraph Heading_2" style="line-height: 16px; ">Project Tools</div>
+                <div class="paragraph Heading_2" style="line-height: 16px; text-decoration: none;"> </div>
+                <ol>
+                  <li style="line-height: 18px; margin-left: 10px; padding-left: 0px; text-indent: -10px; ">
+                    <div class="paragraph Body_Bullet" style="line-height: 18px; text-indent: -10px; "><a style="color: #000000; font-family: 'ArialMT', 'Arial', 'sans-serif'; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: 0; line-height: 18px; opacity: 1.00; text-decoration: none; text-transform: none; " class="Bullet" href="http://rubyforge.org/projects/amazon-ec2/" title="http://rubyforge.org/projects/amazon-ec2/">•</a><span style="width: 5px; " class="InlineBlock"></span><a href="http://rubyforge.org/projects/amazon-ec2/" title="http://rubyforge.org/projects/amazon-ec2/">Project Home</a></div>
+                  </li>
+                  <li style="line-height: 18px; margin-left: 10px; padding-left: 0px; text-indent: -10px; ">
+                    <div class="paragraph Body_Bullet" style="line-height: 18px; text-indent: -10px; "><a style="color: #000000; font-family: 'ArialMT', 'Arial', 'sans-serif'; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: 0; line-height: 18px; opacity: 1.00; text-decoration: none; text-transform: none; " class="Bullet" href="http://rubyforge.org/frs/?group_id=2753" title="http://rubyforge.org/frs/?group_id=2753">•</a><span style="width: 5px; " class="InlineBlock"></span><a href="http://rubyforge.org/frs/?group_id=2753" title="http://rubyforge.org/frs/?group_id=2753">Downloads</a></div>
+                  </li>
+                  <li style="line-height: 18px; margin-left: 10px; padding-left: 0px; text-indent: -10px; ">
+                    <div class="paragraph Body_Bullet" style="line-height: 18px; text-indent: -10px; "><a style="color: #000000; font-family: 'ArialMT', 'Arial', 'sans-serif'; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: 0; line-height: 18px; opacity: 1.00; text-decoration: none; text-transform: none; " class="Bullet" href="http://rubyforge.org/scm/?group_id=2753" title="http://rubyforge.org/scm/?group_id=2753">•</a><span style="width: 5px; " class="InlineBlock"></span><a href="http://rubyforge.org/scm/?group_id=2753" title="http://rubyforge.org/scm/?group_id=2753">Browse Code</a></div>
+                  </li>
+                  <li style="line-height: 18px; margin-left: 10px; padding-left: 0px; text-indent: -10px; ">
+                    <div class="paragraph Body_Bullet" style="line-height: 18px; text-indent: -10px; "><a style="color: #000000; font-family: 'ArialMT', 'Arial', 'sans-serif'; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: 0; line-height: 18px; opacity: 1.00; text-decoration: none; text-transform: none; " class="Bullet" href="http://rubyforge.org/tracker/?group_id=2753" title="http://rubyforge.org/tracker/?group_id=2753">•</a><span style="width: 5px; " class="InlineBlock"></span><a href="http://rubyforge.org/tracker/?group_id=2753" title="http://rubyforge.org/tracker/?group_id=2753">Report Bugs</a></div>
+                  </li>
+                  <li style="line-height: 18px; margin-left: 10px; padding-left: 0px; text-indent: -10px; ">
+                    <div class="paragraph Body_Bullet" style="line-height: 18px; text-indent: -10px; "><a style="color: #000000; font-family: 'ArialMT', 'Arial', 'sans-serif'; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: 0; line-height: 18px; opacity: 1.00; text-decoration: none; text-transform: none; " class="Bullet" href="http://rubyforge.org/tracker/?group_id=2753" title="http://rubyforge.org/tracker/?group_id=2753">•</a><span style="width: 5px; " class="InlineBlock"></span><a href="http://rubyforge.org/tracker/?group_id=2753" title="http://rubyforge.org/tracker/?group_id=2753">Request Features</a></div>
+                  </li>
+                  <li style="line-height: 18px; margin-left: 10px; padding-left: 0px; text-indent: -10px; ">
+                    <div class="paragraph Body_Bullet" style="line-height: 18px; text-indent: -10px; "><a style="color: #000000; font-family: 'ArialMT', 'Arial', 'sans-serif'; font-size: 13px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: 0; line-height: 18px; opacity: 1.00; text-decoration: none; text-transform: none; " class="Bullet" href="http://rubyforge.org/tracker/?group_id=2753" title="http://rubyforge.org/tracker/?group_id=2753">•</a><span style="width: 5px; " class="InlineBlock"></span><a href="http://rubyforge.org/tracker/?group_id=2753" title="http://rubyforge.org/tracker/?group_id=2753">Submit Patches</a></div>
+                  </li>
+                </ol>
+                <div class="paragraph Heading_2" style="line-height: 16px; text-decoration: none;"> </div>
+                <div class="paragraph Heading_2" style="line-height: 16px; text-decoration: none;"> </div>
+                <div class="paragraph Body_Bullet" style="line-height: 18px; margin-bottom: 0px; margin-top: 0px; "><span style="font-family: 'Arial-BoldMT', 'Arial', 'sans-serif'; font-size: 14px; font-weight: bold; line-height: 19px; ">Contacts</span><span style="line-height: 18px; "></span></div>
+                <div class="paragraph Body_Bullet" style="line-height: 18px; margin-bottom: 0px; margin-top: 0px; padding-bottom: 0pt; "><a href="mailto:grempe%20@nospam@%20rubyforge.org?subject=amazon-ec2" title="mailto:grempe%20@nospam@%20rubyforge.org?subject=amazon-ec2" style="line-height: 18px; ">Glenn Rempe</a></div>
+              </div>
+            </div>
+          </div>
+          
+
+<img src="Amazon%20EC2%20Ruby%20Gem_files/ruby.png" alt="" id="id3" style="border: none; height: 220px; left: -16px; position: absolute; top: 93px; width: 292px; z-index: 1; " />
+        </div>
+        <div style="height: 150px; margin-left: 0px; position: relative; width: 700px; z-index: 15; " id="footer_layer">
+          <div style="height: 0px; line-height: 0px; " class="tinyText"> </div>
+          <a href="http://www.mac.com" title="http://www.mac.com">
+<img src="Amazon%20EC2%20Ruby%20Gem_files/image.png" alt="" id="id4" style="border: none; height: 50px; left: 280px; position: absolute; top: 80px; width: 139px; z-index: 1; " />
+</a>
+        </div>
+      </div>
+    </div>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-312156-11";
+urchinTracker();
+</script>
+
+  </body>
+</html>
+
+
