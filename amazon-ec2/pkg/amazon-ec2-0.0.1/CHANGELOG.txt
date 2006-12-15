@@ -1,5 +1,8 @@
 =CHANGELOG.txt : Amazon Elastic Compute Cloud (EC2) Ruby Gem
 
+==2006.12.14
+* Fixed bug in .run_instances method.  Patch submitted by Stephen Caudill on AWS forums.  Thanks!
+
 
 ==2006.12.13
 * Original sample library released by Amazon Web Services, LLC

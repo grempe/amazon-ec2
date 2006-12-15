@@ -2,7 +2,10 @@
 
 ==Version History
 
-===0.0.1 (12/23/2006)
+===0.0.2 (12/14/2006)
+* Bugfix in run_instances method.  Method works now.
+
+===0.0.1 (12/13/2006)
 * Initial release of the Ruby Gem.  This includes the version of the library exactly as provided by 
   Amazon Web Services as example code.  No changes or enhancements to that code were made other than 
   packaging it as a Ruby Gem.

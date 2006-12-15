@@ -114,9 +114,9 @@ module EC2
         "ImageId"  => imageId,
         "MinCount" => in_params[:minCount].to_s,
         "MaxCount" => in_params[:maxCount].to_s,
-      }.merge(pathlist("SecurityGroup", groupIds))
-      
-      params["KeyName"] = keyName unless keyName.nil? 
+      }.merge(pathlist("SecurityGroup", in_params[:groupIds])) 
+
+      params["KeyName"] = in_params[:keyname] unless in_params[:keyname].nil? 
         
       RunInstancesResponse.new(make_request("RunInstances", params))
     end
