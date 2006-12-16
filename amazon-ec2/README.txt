@@ -2,7 +2,7 @@
 
 AWS EC2 is an interface library that can be used to interact
 with the Amazon EC2 system.  The library exposes one main interface class, 
-'AWSAuthConnection'.  This class performs all the operations for using using 
+'AWSAuthConnection'.  This class performs all the operations for using 
 the EC2 service including header signing.
 
 ==Important note about this project:
