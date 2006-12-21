@@ -24,8 +24,6 @@ require 'net/https'
 require 'rexml/document'
 require 'time'
 
-include REXML
-
 # Require any lib files that we have bundled with this Ruby Gem in the lib/EC2 directory.
 # Parts of the EC2 module and AWSAuthConnection class are broken out into separate
 # files for maintainability and are organized by the functional groupings defined 
