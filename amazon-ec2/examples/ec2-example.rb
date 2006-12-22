@@ -10,7 +10,7 @@
 #  reserved.
 
 require 'rubygems'
-require 'ec2'
+require_gem 'amazon-ec2'
 
 AWS_ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
 AWS_SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'

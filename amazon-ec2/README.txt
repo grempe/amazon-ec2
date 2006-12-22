@@ -51,9 +51,9 @@ as such the Query API Reference in the EC2 Developer Guide should be consulted.
 ===Example Code Usage (Stand-alone Ruby Application):
 
   #!/usr/bin/env ruby
-	require 'rubygems'
-	require 'ec2'
-	AWS_ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
+  require 'rubygems'
+  require_gem 'amazon-ec2'
+  AWS_ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
   AWS_SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
   conn = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
   puts "----- listing images -----"
@@ -71,7 +71,7 @@ you may consult for a few more detailed usage examples.
   config/environment.rb:
   ...
   # Include Amazon Web Services EC2 library gem
-  require 'ec2'
+  require_gem 'amazon-ec2'
 
   app/controllers/your_controller.rb:
   conn = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)

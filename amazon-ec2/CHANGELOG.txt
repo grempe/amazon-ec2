@@ -1,7 +1,12 @@
 =CHANGELOG.txt : Amazon Elastic Compute Cloud (EC2) Ruby Gem
 
+===0.0.5 (12/21/2006)
+* Changes to home page documentation and example files to indicate that you 
+  should use 'require_gem' instead of a simple require.  Not sure if this 
+  is a result of something I am doing in the packaging of the gem that is 
+  incorrect or if this is right and proper.  I will investigate further.
 
-===0.0.4 (12/16/2006)
+===0.0.4 (12/21/2006)
 * Applied patch from Kevin Clark to svn version 7.  Thanks for the 
   patch and the description Kevin!  Please report if you 
   encounter any issues with this patched version.  Here is Kevin's 
