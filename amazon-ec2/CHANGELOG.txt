@@ -5,6 +5,12 @@
   should use 'require_gem' instead of a simple require.  Not sure if this 
   is a result of something I am doing in the packaging of the gem that is 
   incorrect or if this is right and proper.  I will investigate further.
+* Patched instances.rb run_instances method to allow for submission of 
+  user data with the command to start an instance.  Patch submitted 
+  anonymously on RubyForge.  This had not been functionally implemented
+  in the Amazon Web Services sample library prior to this patch.
+* Added simple framework for adding unit tests for the library under test dir.  
+  No functional unit tests exist yet.
 
 ===0.0.4 (12/21/2006)
 * Applied patch from Kevin Clark to svn version 7.  Thanks for the 
