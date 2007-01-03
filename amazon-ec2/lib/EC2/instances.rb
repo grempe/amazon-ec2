@@ -45,10 +45,26 @@ module EC2
     # password-less access. As the need arises, other formats will 
     # also be considered.
     def run_instances(imageId, kwargs={})
-      in_params = { :minCount=>1, :maxCount=>1, :keyname=>nil, :groupIds=>[], :userData=>nil, :base64Encoded=>false }
-      in_params.merge!(kwargs)
-      userData = Base64.encode64(userData) if userData and not base64Encoded
       
+      # setup the default input parameters hash
+      in_params = { :minCount=>1, :maxCount=>1, :keyname=>nil, :groupIds=>[], :userData=>nil, :base64Encoded=>false }
+      
+      # Override or extend the default input params with any passed in kwargs
+      in_params.merge!(kwargs)
+      
+      # If userData is passed in then URL escape and Base64 encode it
+      # as needed.  Need for URL Escape + Base64 encoding is determined 
+      # by base64Encoded param.
+      if in_params[:userData]
+        if in_params[:base64Encoded]
+          userData = in_params[:userData]
+        else
+          userData = CGI::escape(Base64.encode64(in_params[:userData]).strip())
+        end
+      else
+        userData = nil
+      end
+
       params = {
         "ImageId"  => imageId,
         "MinCount" => in_params[:minCount].to_s,
@@ -56,7 +72,8 @@ module EC2
       }.merge(pathlist("SecurityGroup", in_params[:groupIds])) 
       
       params["KeyName"] = in_params[:keyname] unless in_params[:keyname].nil? 
-      
+      params["UserData"] = userData unless userData.nil?
+
       RunInstancesResponse.new(make_request("RunInstances", params))
     end
     
