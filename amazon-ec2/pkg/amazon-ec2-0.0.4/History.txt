@@ -1,1 +1,0 @@
-=History.txt : Amazon Elastic Compute Cloud (EC2) Ruby Gem

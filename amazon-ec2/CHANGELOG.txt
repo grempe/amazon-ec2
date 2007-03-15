@@ -1,5 +1,13 @@
 =CHANGELOG.txt : Amazon Elastic Compute Cloud (EC2) Ruby Gem
 
+
+===0.0.7 (03/02/2007)
+* Applied patch from Kevin Clark which does the following:
+* New method to the instances.rb to allow for issuing a reboot command to an EC2 instance.
+* New Mocha based tests (Mocha test suite must be installed.  'sudo gem install mocha')
+* Cleanup of the test directory.
+
+
 ===0.0.6 (03/02/2007)
 * Patched instances.rb with a bugfix and patch provided by Randy Bias (Thanks Randy!).
 Only minimally tested so please let me know if this causes any problems for anyone.

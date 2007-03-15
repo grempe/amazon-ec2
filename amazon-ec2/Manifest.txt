@@ -13,8 +13,8 @@ lib/EC2/keypairs.rb
 lib/EC2/image_attributes.rb
 lib/EC2/security_groups.rb
 
+test/test_ec2.rb
 test/test_helper.rb
-test/EC2_test.rb
 test/test_responses.rb
 
 examples/ec2-example.rb
