@@ -223,6 +223,14 @@ module EC2
     end
   end
   
+  class ResetInstancesResponse < Response
+    def parse
+      doc = REXML::Document.new(@http_xml)
+      # Let's use the tag they're actually returning since it doesn't match the docs -- Kevin Clark 2/26/07
+      REXML::XPath.match( doc, "//return").first.text == "true" ? true : false 
+    end
+  end
+  
   
   class CreateSecurityGroupResponse < Response
     def parse

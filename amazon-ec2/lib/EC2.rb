@@ -39,7 +39,7 @@ module EC2
   PORTS_BY_SECURITY = { true => 443, false => 80 }
   
   # This is the version of the API as defined by Amazon Web Services
-  API_VERSION = '2006-10-01'
+  API_VERSION = '2007-01-03'
   
   # This release version is passed in with each request as part
   # of the HTTP 'User-Agent' header.  Set this be the same value 

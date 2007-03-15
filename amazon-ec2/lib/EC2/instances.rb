@@ -107,6 +107,15 @@ module EC2
       TerminateInstancesResponse.new(make_request("TerminateInstances", params))
     end
     
+    # The RebootInstances operation requests a reboot of one or more instances. 
+    # This operation is asynchronous; it only queues a request to reboot the specified 
+    # instance(s). The operation will succeed provided the instances are valid and 
+    # belong to the user. Terminated instances will be ignored.
+    def reboot_instances(*instance_ids)
+      raise "No instance ids given" if instance_ids.empty?
+      params = pathlist("InstanceId", instance_ids)
+      ResetInstancesResponse.new(make_request("RebootInstances", params))
+    end
   end
   
 end

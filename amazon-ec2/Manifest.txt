@@ -15,5 +15,6 @@ lib/EC2/security_groups.rb
 
 test/test_helper.rb
 test/EC2_test.rb
+test/test_responses.rb
 
 examples/ec2-example.rb
