@@ -59,7 +59,7 @@ module EC2
         if in_params[:base64Encoded]
           userData = in_params[:userData]
         else
-          userData = CGI::escape(Base64.encode64(in_params[:userData]).gsub(/\n/,"").strip())
+          userData = Base64.encode64(in_params[:userData]).gsub(/\n/,"").strip()
         end
       else
         userData = nil

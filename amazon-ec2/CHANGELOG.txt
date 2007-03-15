@@ -1,11 +1,16 @@
 =CHANGELOG.txt : Amazon Elastic Compute Cloud (EC2) Ruby Gem
 
 
-===0.0.7 (03/02/2007)
+===0.0.7 (03/15/2007)
 * Applied patch from Kevin Clark which does the following:
-* New method to the instances.rb to allow for issuing a reboot command to an EC2 instance.
-* New Mocha based tests (Mocha test suite must be installed.  'sudo gem install mocha')
-* Cleanup of the test directory.
+  * New method to the instances.rb to allow for issuing a reboot command to an EC2 instance.
+  * New Mocha based tests (Mocha test suite must be installed to run tests.  'sudo gem install mocha')
+  * Cleanup of the test directory.
+* Applied patch from Randy Bias related to CGI escaping error.  From his notes:
+
+I finally figured out what was going on.  It was a compound problem.  The first being that you can't CGI::encode the UserData early.  You have to just Base64 encode it.  Unfortunately, when you Base64 encode it, it means that some encodings will be padded with extra chars, specifically the '=', but &, ? and = get stripped by EC2.canonial_string.  So if a Base64 encoding has trailing ='s for padding, these get stripped and then you sign the UserData Base64 payload sans the padding.  But it looks like Amazon's side is doing the right thing and is signing the padding.  So, the signatures mis-match.
+
+I've got the complete patch here and it's about as elegant/clean as I could make it in a short period of time.  It's a little tough to strip those equal signs when there are so many in the URI.  I think this works pretty well, though.  I'm splitting the URI on '&', then for each field ripping out all '&' and '?' and only the first '='.  Then stitching it back together.
 
 
 ===0.0.6 (03/02/2007)

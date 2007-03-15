@@ -53,7 +53,11 @@ module EC2
   #   Note:  The parameters in the path passed in must already be sorted in
   #   case-insensitive alphabetical order and must not be url encoded.
   def EC2.canonical_string(path)
-    buf = path.gsub(/\&|\?|=/,"")
+    buf = ""
+    path.split('&').each { |field|
+      buf << field.gsub(/\&|\?/,"").sub(/=/,"")
+    }
+    return buf
   end
   
   # Encodes the given string with the aws_secret_access_key, by taking the
