@@ -23,6 +23,9 @@ SECURITY_GROUP_NAME = "ec2-example-rb-test-group"
 
 conn = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
 
+puts "----- GEM Version -----"
+puts EC2::VERSION::STRING
+
 puts "----- listing images -----"
 puts conn.describe_images()
 

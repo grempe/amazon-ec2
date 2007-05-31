@@ -1,10 +1,12 @@
-$:.unshift File.expand_path('../lib')
-require "test/unit"
+require 'test/unit'
+
 begin
   require 'rubygems'
   require 'mocha'
   require 'stubba'
 rescue LoadError
-  abort "You need mocha installed to run tests"
+  abort "You need rubygems and mocha gems installed to run tests"
 end
-require "EC2"
+
+require File.dirname(__FILE__) + '/../lib/EC2'
+

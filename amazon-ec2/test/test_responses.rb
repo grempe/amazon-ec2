@@ -1,6 +1,7 @@
 require "test_helper"
 
 class TestResetResponse < Test::Unit::TestCase
+  
   def setup
     body = <<-RESPONSE
     <RebootInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-03/">

@@ -1,0 +1,173 @@
+h1. Amazon Web Services EC2 Ruby Gem
+
+h1. &#x2192; 'amazon-ec2'
+
+h2. About
+
+Amazon Web Services offers a compute power on demand capability known as the Elastic Compute Cloud (EC2).  Using the current API’s the compute resources in the cloud can be provisioned on demand by making SOAP or HTTP Query API calls to EC2.
+ 
+This ‘Amazon-EC2’ Ruby Gem is an interface library that can be used to interact with the Amazon EC2 system using the Query API.
+
+h2. Important Note
+
+In December of 2006 Amazon Web Services released a sample Ruby code library for interacting with EC2.  I have packaged this sample code as this Ruby Gem as a service to the Ruby community and do not plan to be actively maintaining this code on a full-time basis.
+ 
+All I ask in return is if you have some Ruby skills and can contribute documentation, automated unit tests, bug fixes, or enhancements as Subversion patch files that you please do so.   I will be happy to incorporate those changes directly into the library as appropriate.
+ 
+Alternatively, if you are interested in becoming a more seriously involved contributing developer with full check-in privileges on the source code please feel free to contact me and we can discuss the best way to do so.
+
+h2. Project Info
+
+This project is managed as a RubyForge project which you can find at "http://amazon-ec2.rubyforge.org/":http://amazon-ec2.rubyforge.org/ and this is always the best place to find the latest news, report any bugs, submit feature requests, or provide patches.
+
+h2. Installing
+
+This gem follows the standard conventions for installation on any system with Ruby and RubyGems installed.  If you have worked with gems before this will look very familiar.
+
+h3. Installation pre-requisites
+
+Before you can make use of this gem you will need an "Amazon Web Services developer account":https://aws-portal.amazon.com/gp/aws/developer/registration/index.html.  This account must also be specifically enabled for Amazon EC2 usage.  AWS will provide you with an ‘AWS Access Key ID’ and a ‘Secret Access Key’ which will allow you to authenticate any API calls you make and ensure correct billing to you for usage of the service.  Take note of these (and keep them secret!).
+
+h3. Installing the gem
+
+Linux / OS X : <pre syntax="ruby">sudo gem install amazon-ec2</pre>
+
+Microsoft Windows : <pre syntax="ruby">gem install amazon-ec2</pre>
+
+
+h2. Sample Usage
+
+The library exposes one main interface class <pre syntax="ruby">AWSAuthConnection</pre>
+
+It is through an instance of this class that you will perform all the operations for using using the EC2 service including query string header signing.
+
+The public methods on 'AWSAuthConnection' closely mirror the EC2 Query API, and as such the Query API Reference in the "EC2 Developer Guide":http://developer.amazonwebservices.com/connect/kbcategory.jspa?categoryID=84 should be consulted.
+
+h3. Standalone Ruby Script Usage Sample
+
+<pre syntax="ruby">
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'ec2'
+
+AWS_ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
+AWS_SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
+  
+conn = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+ 
+puts "----- listing images -----"
+puts conn.describe_images()
+</pre>
+
+An example Ruby script which exercises the library is provided for use as a starting point in the gem installation.  Consult the file which is installed at :
+
+<pre syntax="ruby">[your amazon-ec2 gem dir]/examples/ec2-example.rb</pre>
+
+h3. Ruby on Rails Usage Sample
+
+in config/environment.rb:
+
+<pre syntax="ruby">
+# Include Amazon Web Services EC2 library gem
+require_gem 'amazon-ec2'
+</pre>
+ 
+in app/controllers/your_controller.rb:
+<pre syntax="ruby">
+...
+conn = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+
+# The .parse method gives you back an array of
+# values from the API response that you can
+# use in your view
+@ec2_images = conn.describe_images().parse
+  
+# Or with some parameters
+# (in this case specific owner ID's)
+@ec2_images_mine = ec2.describe_images([],["522821470517"],[]).parse
+...
+</pre>
+
+in app/views/your_view.rhtml:
+
+Test it out with something like this...
+
+<pre syntax="ruby">
+...
+<%= debug(@ec2_images) %>
+<%= debug(@ec2_images_mine) %>
+...
+</pre>
+
+Or this...
+
+<pre syntax="ruby">
+...
+<% @ec2_images.each do |image| %>
+  <% image.each_with_index do |value, index| %>
+    <%= "#{index} => #{value}" %><br />
+  <% end %>
+<% end %>
+...
+</pre>
+ 
+Or even this...
+ 
+<pre syntax="ruby">
+...
+<table>
+  <tr>
+    <th>Id</th>
+    <th>Location</th>
+    <th>Owner</th>
+    <th>State</th>
+    <th>Public?</th>
+  </tr>
+  
+  <% for ec2_image in @ec2_images %>
+    <tr>
+      <td><%=h ec2_image[1] %></td>
+      <td><%=h ec2_image[2] %></td>
+      <td><%=h ec2_image[3] %></td>
+      <td><%=h ec2_image[4] %></td>
+      <td><%=h ec2_image[5] %></td>
+    </tr>
+  <% end %>
+</table>
+...
+</pre>
+
+
+h2. Resources
+
+h3. Project Related
+
+"http://aws.amazon.com/":http://aws.amazon.com/
+"http://amazon-ec2.rubyforge.org/":http://amazon-ec2.rubyforge.org/
+
+h3. Project Tools
+
+"Project Home":http://rubyforge.org/projects/amazon-ec2/
+"Downloads":http://rubyforge.org/frs/?group_id=2753
+"Browse Code":http://rubyforge.org/scm/?group_id=2753
+"Report Bugs":http://rubyforge.org/tracker/?group_id=2753
+"Request Features":http://rubyforge.org/tracker/?group_id=2753
+"Submit Patches":http://rubyforge.org/tracker/?group_id=2753
+
+
+h3. Related Projects
+
+"Capazon":http://capazon.rubyforge.org/
+
+
+h2. Credits
+
+The original sample code for this library was provided by Amazon Web Services, LLC.  Thanks to them for providing all of us with samples that got this started.
+ 
+Thanks to Dr. Nic Williams and his great 'NewGem' Ruby Gem Generator.  This gem of a Gem helped me package up this code for distribution in a flash!  You can find Dr. Nic's NewGem generator at "http://newgem.rubyforge.org/":http://newgem.rubyforge.org/
+
+
+h2. Contact
+
+Comments, patches, and bug reports are welcome. Send an email to the address below or use the RubyForge forum for this project.

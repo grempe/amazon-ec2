@@ -1,6 +1,7 @@
-require "test_helper"
+require File.dirname(__FILE__) + '/test_helper.rb'
 
 class TestEC2 < Test::Unit::TestCase
+  
   def setup
     @conn = EC2::AWSAuthConnection.new('not a key', 'not a secret')
   end
@@ -16,4 +17,5 @@ class TestEC2 < Test::Unit::TestCase
           returns stub(:body => body, :is_a? => true)
     assert_equal true, @conn.reboot_instances('i-2ea64347', 'i-21a64348').parse
   end
+  
 end
