@@ -20,6 +20,13 @@ h2. Project Info
 
 This project is managed as a RubyForge project which you can find at "http://amazon-ec2.rubyforge.org/":http://amazon-ec2.rubyforge.org/ and this is always the best place to find the latest news, report any bugs, submit feature requests, or provide patches.
 
+h2. Documentation
+
+You can browse the complete RDoc generated documentation at:
+
+"http://amazon-ec2.rubyforge.org/rdoc/":http://amazon-ec2.rubyforge.org/rdoc/
+
+
 h2. Installing
 
 This gem follows the standard conventions for installation on any system with Ruby and RubyGems installed.  If you have worked with gems before this will look very familiar.
