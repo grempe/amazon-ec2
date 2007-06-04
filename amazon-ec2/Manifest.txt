@@ -1,10 +1,7 @@
 examples/ec2-example.rb
 History.txt
-License.txt
-Manifest.txt
-README.txt
-Rakefile
 lib/EC2.rb
+lib/EC2/exceptions.rb
 lib/EC2/version.rb
 lib/EC2/responses.rb
 lib/EC2/images.rb
@@ -12,6 +9,10 @@ lib/EC2/instances.rb
 lib/EC2/keypairs.rb
 lib/EC2/image_attributes.rb
 lib/EC2/security_groups.rb
+License.txt
+Manifest.txt
+Rakefile
+README.txt
 scripts/txt2html
 setup.rb
 test/test_EC2.rb

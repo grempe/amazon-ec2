@@ -23,9 +23,16 @@ module EC2
     # a new image deregister the previous image and register the new image.
     def register_image(imageLocation)
       params = { "ImageLocation" => imageLocation }
-      RegisterImageResponse.new(make_request("RegisterImage", params))
+      http_response = make_request("RegisterImage", params)
+      http_xml = http_response.body
+      doc = REXML::Document.new(http_xml)
+      response = Response.new
+      response.image_id = REXML::XPath.first(doc, "RegisterImageResponse/imageId").text
+      response
     end
     
+    # Amazon Docs:
+    #
     # The DescribeImages operation returns information about AMIs available 
     # for use by the user. This includes both public AMIs (those available 
     # for any user to launch) and private AMIs (those owned by the user 
@@ -68,11 +75,34 @@ module EC2
     #
     # Deregistered images will be included in the returned results for an 
     # unspecified interval subsequent to deregistration.
+    #
+    # amazon-ec2 docs:
+    #
+    # This method returns an ImageList object which is an Array of Image objects
+    #
     def describe_images(imageIds=[], owners=[], executableBy=[])
       params = pathlist("ImageId", imageIds)
       params.merge!(pathlist("Owner", owners))
       params.merge!(pathlist("ExecutableBy", executableBy))
-      DescribeImagesResponse.new(make_request("DescribeImages", params))
+      
+      image_list = ImageList.new
+      
+      http_response = make_request("DescribeImages", params)
+      http_xml = http_response.body
+      doc = REXML::Document.new(http_xml)
+      
+      doc.elements.each("DescribeImagesResponse/imagesSet/item") do |element|
+        
+        image = Image.new
+        image.image_id = REXML::XPath.first(element, "imageId").text
+        image.image_location = REXML::XPath.first(element, "imageLocation").text
+        image.image_owner_id = REXML::XPath.first(element, "imageOwnerId").text
+        image.image_state = REXML::XPath.first(element, "imageState").text
+        image.is_public = REXML::XPath.first(element, "isPublic").text
+        
+        image_list << image
+      end
+      image_list
     end
     
     # The DeregisterImage operation deregisters an AMI. Once deregistered, 

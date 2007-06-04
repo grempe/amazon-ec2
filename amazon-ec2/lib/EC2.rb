@@ -16,13 +16,7 @@
 # code. (c) 2006 Amazon Web Services LLC or its affiliates.  All rights
 # reserved.
 
-require 'base64'
-require 'cgi'
-require 'openssl'
-require 'digest/sha1'
-require 'net/https'
-require 'rexml/document'
-require 'time'
+%w[ base64 cgi openssl digest/sha1 net/https rexml/document time ostruct ].each { |f| require f }
 
 # Require any lib files that we have bundled with this Ruby Gem in the lib/EC2 directory.
 # Parts of the EC2 module and AWSAuthConnection class are broken out into separate
@@ -39,7 +33,7 @@ module EC2
   PORTS_BY_SECURITY = { true => 443, false => 80 }
   
   # This is the version of the API as defined by Amazon Web Services
-  API_VERSION = '2007-01-03'
+  API_VERSION = '2007-01-19'
   
   # This release version is passed in with each request as part
   # of the HTTP 'User-Agent' header.  Set this be the same value 
@@ -84,10 +78,6 @@ module EC2
   # with EC2 Query API interface.
   class AWSAuthConnection
     
-    # Allow viewing, or turning on and off, the verbose mode of the connection class.
-    # If 'true' some 'puts' are done to view variable contents.
-    attr_accessor :verbose
-    
     def initialize(aws_access_key_id, aws_secret_access_key, is_secure=true,
                    server=DEFAULT_HOST, port=PORTS_BY_SECURITY[is_secure])
       
@@ -97,8 +87,6 @@ module EC2
       @http.use_ssl = is_secure
       # Don't verify the SSL certificates.  Avoids SSL Cert warning on every GET.
       @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      
-      @verbose = false
       
     end
     
@@ -126,9 +114,11 @@ module EC2
         
         @http.start do
           
-          params.merge!( {"Action"=>action, "SignatureVersion"=>"1", "AWSAccessKeyId"=>@aws_access_key_id,
-                           "Version"=>API_VERSION, "Timestamp"=>Time.now.getutc.iso8601,} )
-          p params if @verbose
+          params.merge!( {"Action" => action,
+                          "SignatureVersion" => "1",
+                          "AWSAccessKeyId" => @aws_access_key_id,
+                          "Version" => API_VERSION,
+                          "Timestamp"=>Time.now.getutc.iso8601} )
           
           sigpath = "?" + params.sort_by { |param| param[0].downcase }.collect { |param| param.join("=") }.join("&")
           
@@ -137,8 +127,6 @@ module EC2
           path = "?" + params.sort.collect do |param|
             CGI::escape(param[0]) + "=" + CGI::escape(param[1])
           end.join("&") + "&Signature=" + sig
-          
-          puts path if @verbose
           
           req = Net::HTTP::Get.new("/#{path}")
           
@@ -149,20 +137,63 @@ module EC2
           req['Content-Type'] ||= ''
           req['User-Agent'] = "rubyforge-amazon-ec2-ruby-gem-query-api v-#{RELEASE_VERSION}"
           
-          data = nil unless req.request_body_permitted?
-          @http.request(req, data)
+          #data = nil unless req.request_body_permitted?
+          response = @http.request(req, nil)
+          
+          # Make a call to see if we need to throw an error based on the response given by EC2
+          # All error classes are defined in exceptions.rb
+          ec2_error?(response)
+          
+          return response
           
         end
         
       end
-      
       
       # Set the Authorization header using AWS signed header authentication
       def get_aws_auth_param(path, aws_secret_access_key)
         canonical_string =  EC2.canonical_string(path)
         encoded_canonical = EC2.encode(aws_secret_access_key, canonical_string)
       end
-    
+      
+      # Raises the appropriate error if the specified Net::HTTPResponse object
+      # contains an Amazon EC2 error; returns +false+ otherwise.
+      def ec2_error?(response)
+        
+        # return false if we got a HTTP 200 code,
+        # otherwise there is some type of error (40x,50x) and
+        # we should try to raise an appropriate exception
+        # from one of our exception classes defined in
+        # exceptions.rb
+        return false if response.is_a?(Net::HTTPSuccess)
+
+        # parse the XML document so we can walk through it
+        doc = REXML::Document.new(response.body)
+        
+        # Check that the Error element is in the place we would expect.
+        # and if not raise a generic error exception
+        unless doc.root.elements['Errors'].elements['Error'].name == 'Error'
+          raise Error, "Unexpected error format. response.body is: #{response.body}"
+        end
+        
+        # An valid error response looks like this:
+        # <?xml version="1.0"?><Response><Errors><Error><Code>InvalidParameterCombination</Code><Message>Unknown parameter: foo</Message></Error></Errors><RequestID>291cef62-3e86-414b-900e-17246eccfae8</RequestID></Response>
+        # AWS EC2 throws some exception codes that look like Error.SubError.  Since we can't name classes this way
+        # we need to strip out the '.' in the error 'Code' and we name the error exceptions with this
+        # non '.' name as well.
+        error_code    = doc.root.elements['Errors'].elements['Error'].elements['Code'].text.gsub('.', '')
+        error_message = doc.root.elements['Errors'].elements['Error'].elements['Message'].text
+        
+        # Raise one of our specific error classes if it exists.
+        # otherwise, throw a generic EC2 Error with a few details.
+        if EC2.const_defined?(error_code)
+          raise EC2.const_get(error_code), error_message
+        else
+          raise Error, "This is an undefined error code which needs to be added to exceptions.rb : error_code => #{error_code} : error_message => #{error_message}"
+        end
+        
+      end
+      
   end
   
 end

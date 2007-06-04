@@ -8,10 +8,12 @@ class TestResetResponse < Test::Unit::TestCase
         <return>true</return>
     </RebootInstancesResponse>
     RESPONSE
+    
     @response = EC2::ResetInstancesResponse.new(stub(:body => body, :is_a? => true))
   end
   
   def test_parse
     assert_equal true, @response.parse
   end
+  
 end

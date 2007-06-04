@@ -1,48 +1,46 @@
 #!/usr/bin/env ruby
 
-#  This software code is made available "AS IS" without warranties of any
-#  kind.  You may copy, display, modify and redistribute the software
-#  code either by itself or as incorporated into your code; provided that
-#  you do not remove any proprietary notices.  Your use of this software
-#  code is at your own risk and you waive any claim against Amazon Web
-#  Services LLC or its affiliates with respect to your use of this software
-#  code. (c) 2006 Amazon Web Services LLC or its affiliates.  All rights
-#  reserved.
-
 require 'rubygems'
 require_gem 'amazon-ec2'
 
-AWS_ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
-AWS_SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
+# EDIT ME : Fill with YOUR AWS Access Key ID & Secret Access Key
+AWS_ACCESS_KEY_ID = ""
+AWS_SECRET_ACCESS_KEY = ""
 
-# remove these next two lines as well, when you've updated your credentials.
-puts "update #{$0} with your AWS credentials"
-exit
+if AWS_ACCESS_KEY_ID.nil? || AWS_ACCESS_KEY_ID.empty?
+  puts "You must edit #{$0} and add your AWS credentials before use!"
+  exit
+end
 
 SECURITY_GROUP_NAME = "ec2-example-rb-test-group"
 
-conn = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+ec2 = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
 
 puts "----- GEM Version -----"
 puts EC2::VERSION::STRING
 
+puts "----- ec2.methods.sort -----"
+p ec2.methods.sort
+
 puts "----- listing images -----"
-puts conn.describe_images()
+ec2.describe_images.each do |image|
+  image.members.each do |member|
+    puts "#{member} => #{image[member]}" 
+  end
+end
 
 puts "----- listing instances -----"
-puts conn.describe_instances()
+puts ec2.describe_instances()
 
 puts "----- creating a security group -----"
-puts conn.create_securitygroup(SECURITY_GROUP_NAME, "ec-example.rb test group")
+puts ec2.create_securitygroup(SECURITY_GROUP_NAME, "ec-example.rb test group")
 
 puts "----- listing security groups -----"
-puts conn.describe_securitygroups()
+puts ec2.describe_securitygroups()
 
 puts "----- deleting a security group -----"
-puts conn.delete_securitygroup(SECURITY_GROUP_NAME)
+puts ec2.delete_securitygroup(SECURITY_GROUP_NAME)
 
 puts "----- listing keypairs (verbose mode) -----"
-conn.verbose = true
-puts conn.describe_keypairs()
-
+puts ec2.describe_keypairs()
 

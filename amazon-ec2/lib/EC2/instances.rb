@@ -107,6 +107,9 @@ module EC2
       TerminateInstancesResponse.new(make_request("TerminateInstances", params))
     end
     
+    # TODO : change instance_ids to instanceIds?
+    # TODO : Do we need the star?  See page 75 in the pickaxe
+    # TODO : Change the exception that is raised to one of our defined errors
     # The RebootInstances operation requests a reboot of one or more instances. 
     # This operation is asynchronous; it only queues a request to reboot the specified 
     # instance(s). The operation will succeed provided the instances are valid and 

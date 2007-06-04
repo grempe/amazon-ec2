@@ -33,7 +33,7 @@
     <h1>Amazon Web Services EC2 Ruby Gem</h1>
     <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/amazon-ec2"; return false'>
       Get Version
-      <a href="http://rubyforge.org/projects/amazon-ec2" class="numbers">0.1.0</a>
+      <a href="http://rubyforge.org/projects/amazon-ec2" class="numbers">0.2.0</a>
     </div>
     <h1>&#x2192; &#8216;amazon-ec2&#8217;</h1>
 
@@ -41,10 +41,10 @@
 	<h2>About</h2>
 
 
-	<p>Amazon Web Services offers a compute power on demand capability known as the Elastic Compute Cloud (EC2).  Using the current <span class="caps">API</span>’s the compute resources in the cloud can be provisioned on demand by making <span class="caps">SOAP</span> or <span class="caps">HTTP</span> Query <span class="caps">API</span> calls to <span class="caps">EC2</span>.</p>
+	<p>Amazon Web Services offers a compute power on demand capability known as the Elastic Compute Cloud (EC2).  Using the current <span class="caps">API</span>&#8217;s the compute resources in the cloud can be provisioned on demand by making <span class="caps">SOAP</span> or <span class="caps">HTTP</span> Query <span class="caps">API</span> calls to <span class="caps">EC2</span>.</p>
 
 
-	<p>This ‘Amazon-EC2’ Ruby Gem is an interface library that can be used to interact with the Amazon <span class="caps">EC2</span> system using the Query <span class="caps">API</span>.</p>
+	<p>This &#8216;Amazon-EC2&#8217; Ruby Gem is an interface library that can be used to interact with the Amazon <span class="caps">EC2</span> system using the Query <span class="caps">API</span>.</p>
 
 
 	<h2>Important Note</h2>
@@ -83,7 +83,7 @@
 	<h3>Installation pre-requisites</h3>
 
 
-	<p>Before you can make use of this gem you will need an <a href="https://aws-portal.amazon.com/gp/aws/developer/registration/index.html">Amazon Web Services developer account</a>.  This account must also be specifically enabled for Amazon <span class="caps">EC2</span> usage.  <span class="caps">AWS</span> will provide you with an ‘AWS Access Key ID’ and a ‘Secret Access Key’ which will allow you to authenticate any <span class="caps">API</span> calls you make and ensure correct billing to you for usage of the service.  Take note of these (and keep them secret!).</p>
+	<p>Before you can make use of this gem you will need an <a href="https://aws-portal.amazon.com/gp/aws/developer/registration/index.html">Amazon Web Services developer account</a>.  This account must also be specifically enabled for Amazon <span class="caps">EC2</span> usage.  <span class="caps">AWS</span> will provide you with an &#8216;AWS Access Key ID&#8217; and a &#8216;Secret Access Key&#8217; which will allow you to authenticate any <span class="caps">API</span> calls you make and ensure correct billing to you for usage of the service.  Take note of these (and keep them secret!).</p>
 
 
 	<h3>Installing the gem</h3>
@@ -101,7 +101,7 @@
 	<p>The library exposes one main interface class <pre syntax="ruby">AWSAuthConnection</pre></p>
 
 
-	<p>It is through an instance of this class that you will perform all the operations for using using the <span class="caps">EC2</span> service including query string header signing.</p>
+	<p>It is through an instance of this class that you will perform all the operations for using the <span class="caps">EC2</span> service including query string header signing.</p>
 
 
 	<p>The public methods on &#8216;AWSAuthConnection&#8217; closely mirror the <span class="caps">EC2</span> Query <span class="caps">API</span>, and as such the Query <span class="caps">API</span> Reference in the <a href="http://developer.amazonwebservices.com/connect/kbcategory.jspa?categoryID=84"><span class="caps">EC2</span> Developer Guide</a> should be consulted.</p>
@@ -119,10 +119,14 @@ require 'ec2'
 AWS_ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
 AWS_SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
 
-conn = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+ec2 = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
 
 puts "----- listing images -----" 
-puts conn.describe_images()
+ec2.describe_images.each do |image|
+  image.members.each do |member|
+    puts "#{member} =&gt; #{image[member]}" 
+  end
+end
 </pre>
 
 	<p>An example Ruby script which exercises the library is provided for use as a starting point in the gem installation.  Consult the file which is installed at :</p>
@@ -137,27 +141,30 @@ puts conn.describe_images()
 
 
 <pre syntax="ruby">
-# Include Amazon Web Services EC2 library gem
-require_gem 'amazon-ec2'
+# Include Amazon Web Services EC2 gem methods
+require 'EC2'
 </pre>
 
 in app/controllers/your_controller.rb:
 <pre syntax="ruby">
 ...
-conn = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
-
-# The .parse method gives you back an array of
-# values from the API response that you can
-# use in your view
-@ec2_images = conn.describe_images().parse
+ec2 = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+@ec2_images = ec2.describe_images()
 
 # Or with some parameters
 # (in this case specific owner ID's)
-@ec2_images_mine = ec2.describe_images([],["522821470517"],[]).parse
+@ec2_images_mine = ec2.describe_images([],["522821470517"],[])
 ...
 </pre>
 
 	<p>in app/views/your_view.rhtml:</p>
+
+
+<h6>#</h6>
+
+	<p><span class="caps">FIXME FIXME FIXME</span>
+###########################################################</p>
+
 
 
 	<p>Test it out with something like this&#8230;</p>
@@ -251,7 +258,7 @@ conn = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
 
 	<p>Comments, patches, and bug reports are welcome. Send an email to the address below or use the RubyForge forum for this project.</p>
     <p class="coda">
-      <a href="mailto:grempe-at-rubyforge-dot-org">Glenn Rempe</a>, 30th May 2007<br>
+      <a href="mailto:grempe-at-rubyforge-dot-org">Glenn Rempe</a>, 2nd June 2007<br>
     </p>
 </div>
 

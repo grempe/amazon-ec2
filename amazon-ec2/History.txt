@@ -1,3 +1,18 @@
+=== 0.2.0 2007-06-01
+* MAJOR refactoring of how responses are returned to users.  No longer do you have to call the 
+	.parse method, and no longer are you getting back simple arrays of information.  Responses 
+	now come in the form of strcutured objects that contain all of the data for an object in 
+	Enumerable form so you can use .each iterators.  Specific object types have been created where
+	appropriate (e.g. ImageList, Image, etc.).  THESE CHANGES ARE NOT BACKWARD COMPATIBLE!!  You
+	will need to update the way in which you handle responses from this library.  If you prefer not 
+	to make these changes you can feel free to continue to use the older version of the gem.  These
+	older versions, and their responses, will no longer be maintained though.
+* Added an exception framework for this library which will now throw appropriate Ruby exceptions
+	that match those handed to us by Amazon EC2.  You can rescue these exceptions.
+* Removed .parse method as it is no longer needed.
+* Updated API version in the query API request to 2007-01-19
+* Removed 'verbose' attribute writer and a couple of related debug 'puts' calls in EC2.rb.
+
 === 0.1.0 2007-05-30
 * Repackaged with updated newgem generator v. 0.10.3 from http://newgem.rubyforge.org/ to take advantage of new deployment goodness.
 

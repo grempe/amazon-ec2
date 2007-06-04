@@ -4,9 +4,9 @@ h1. &#x2192; 'amazon-ec2'
 
 h2. About
 
-Amazon Web Services offers a compute power on demand capability known as the Elastic Compute Cloud (EC2).  Using the current API’s the compute resources in the cloud can be provisioned on demand by making SOAP or HTTP Query API calls to EC2.
+Amazon Web Services offers a compute power on demand capability known as the Elastic Compute Cloud (EC2).  Using the current API's the compute resources in the cloud can be provisioned on demand by making SOAP or HTTP Query API calls to EC2.
  
-This ‘Amazon-EC2’ Ruby Gem is an interface library that can be used to interact with the Amazon EC2 system using the Query API.
+This 'Amazon-EC2' Ruby Gem is an interface library that can be used to interact with the Amazon EC2 system using the Query API.
 
 h2. Important Note
 
@@ -33,7 +33,7 @@ This gem follows the standard conventions for installation on any system with Ru
 
 h3. Installation pre-requisites
 
-Before you can make use of this gem you will need an "Amazon Web Services developer account":https://aws-portal.amazon.com/gp/aws/developer/registration/index.html.  This account must also be specifically enabled for Amazon EC2 usage.  AWS will provide you with an ‘AWS Access Key ID’ and a ‘Secret Access Key’ which will allow you to authenticate any API calls you make and ensure correct billing to you for usage of the service.  Take note of these (and keep them secret!).
+Before you can make use of this gem you will need an "Amazon Web Services developer account":https://aws-portal.amazon.com/gp/aws/developer/registration/index.html.  This account must also be specifically enabled for Amazon EC2 usage.  AWS will provide you with an 'AWS Access Key ID' and a 'Secret Access Key' which will allow you to authenticate any API calls you make and ensure correct billing to you for usage of the service.  Take note of these (and keep them secret!).
 
 h3. Installing the gem
 
@@ -46,7 +46,7 @@ h2. Sample Usage
 
 The library exposes one main interface class <pre syntax="ruby">AWSAuthConnection</pre>
 
-It is through an instance of this class that you will perform all the operations for using using the EC2 service including query string header signing.
+It is through an instance of this class that you will perform all the operations for using the EC2 service including query string header signing.
 
 The public methods on 'AWSAuthConnection' closely mirror the EC2 Query API, and as such the Query API Reference in the "EC2 Developer Guide":http://developer.amazonwebservices.com/connect/kbcategory.jspa?categoryID=84 should be consulted.
 
@@ -61,10 +61,14 @@ require 'ec2'
 AWS_ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
 AWS_SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
   
-conn = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+ec2 = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
  
 puts "----- listing images -----"
-puts conn.describe_images()
+ec2.describe_images.each do |image|
+  image.members.each do |member|
+    puts "#{member} => #{image[member]}" 
+  end
+end
 </pre>
 
 An example Ruby script which exercises the library is provided for use as a starting point in the gem installation.  Consult the file which is installed at :
@@ -76,27 +80,27 @@ h3. Ruby on Rails Usage Sample
 in config/environment.rb:
 
 <pre syntax="ruby">
-# Include Amazon Web Services EC2 library gem
-require_gem 'amazon-ec2'
+# Include Amazon Web Services EC2 gem methods
+require 'EC2'
 </pre>
- 
+
 in app/controllers/your_controller.rb:
 <pre syntax="ruby">
 ...
-conn = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
-
-# The .parse method gives you back an array of
-# values from the API response that you can
-# use in your view
-@ec2_images = conn.describe_images().parse
+ec2 = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+@ec2_images = ec2.describe_images()
   
 # Or with some parameters
 # (in this case specific owner ID's)
-@ec2_images_mine = ec2.describe_images([],["522821470517"],[]).parse
+@ec2_images_mine = ec2.describe_images([],["522821470517"],[])
 ...
 </pre>
 
 in app/views/your_view.rhtml:
+
+###########################################################
+FIXME FIXME FIXME
+###########################################################
 
 Test it out with something like this...
 
