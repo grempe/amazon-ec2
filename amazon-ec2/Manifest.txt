@@ -16,8 +16,13 @@ README.txt
 scripts/txt2html
 setup.rb
 test/test_EC2.rb
+test/test_EC2_image_attributes.rb
+test/test_EC2_images.rb
+test/test_EC2_instances.rb
+test/test_EC2_keypairs.rb
+test/test_EC2_security_groups.rb
+test/test_EC2_version.rb
 test/test_helper.rb
-test/test_responses.rb
 website/index.html
 website/index.txt
 website/javascripts/rounded_corners_lite.inc.js

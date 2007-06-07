@@ -91,8 +91,22 @@ module EC2
     # for a small interval subsequent to their termination. This interval 
     # is typically of the order of one hour.
     def describe_instances(instanceIds=[])
+      raise ArgumentError, "No instance IDs provided" if instanceIds.empty?
       params = pathlist("InstanceId", instanceIds)
       DescribeInstancesResponse.new(make_request("DescribeInstances", params))
+    end
+    
+    # TODO : Should we use the star (*instanceIds) for methods like this?  See page 75 in the pickaxe.
+    #
+    # The RebootInstances operation requests a reboot of one or more instances. 
+    # This operation is asynchronous; it only queues a request to reboot the specified 
+    # instance(s). The operation will succeed provided the instances are valid and 
+    # belong to the user. Terminated instances will be ignored.
+    def reboot_instances(instanceIds=[])
+      raise ArgumentError, "No instance IDs provided" if instanceIds.empty?
+      params = pathlist("InstanceId", instanceIds)
+      make_request("RebootInstances", params)
+      return response = RebootInstancesResponse.new
     end
     
     # The TerminateInstances operation shuts down one or more instances. 
@@ -102,23 +116,31 @@ module EC2
     # Terminated instances remain visible for a short period of time 
     # (approximately one hour) after termination, after which their 
     # instance ID is invalidated.
-    def terminate_instances(instanceIds)
+    def terminate_instances(instanceIds=[])
+      raise ArgumentError, "No instance IDs provided" if instanceIds.empty?
       params = pathlist("InstanceId", instanceIds)
-      TerminateInstancesResponse.new(make_request("TerminateInstances", params))
+      
+      terminate_instances_response = TerminateInstancesResponseSet.new
+      
+      http_response = make_request("TerminateInstances", params)
+      http_xml = http_response.body
+      doc = REXML::Document.new(http_xml)
+      
+      doc.elements.each("TerminateInstancesResponse/instancesSet/item") do |element|
+        
+        item = Item.new
+        item.instance_id = REXML::XPath.first(element, "instanceId").text
+        item.shutdown_state_code = REXML::XPath.first(element, "shutdownState/code").text
+        item.shutdown_state_name = REXML::XPath.first(element, "shutdownState/name").text
+        item.previous_state_code = REXML::XPath.first(element, "previousState/code").text
+        item.previous_state_name = REXML::XPath.first(element, "previousState/name").text
+        
+        terminate_instances_response << item
+      end
+      return terminate_instances_response
+      
     end
     
-    # TODO : change instance_ids to instanceIds?
-    # TODO : Do we need the star?  See page 75 in the pickaxe
-    # TODO : Change the exception that is raised to one of our defined errors
-    # The RebootInstances operation requests a reboot of one or more instances. 
-    # This operation is asynchronous; it only queues a request to reboot the specified 
-    # instance(s). The operation will succeed provided the instances are valid and 
-    # belong to the user. Terminated instances will be ignored.
-    def reboot_instances(*instance_ids)
-      raise "No instance ids given" if instance_ids.empty?
-      params = pathlist("InstanceId", instance_ids)
-      ResetInstancesResponse.new(make_request("RebootInstances", params))
-    end
   end
   
 end

@@ -16,6 +16,9 @@ module EC2
   # An error with the http request
   class HttpError < Error; end
   
+  # A client side only argument error
+  class ArgumentError < Error; end
+  
   # AWS EC2 CLIENT ERROR CODES
   
   # AWS EC2 can throw error exceptions that contain a '.' in them.

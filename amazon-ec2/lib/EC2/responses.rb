@@ -8,61 +8,106 @@
 
 module EC2
   
-  # The Response class is the superclass for all simple responses from method calls.
-  # This is an OpenStruct object that will be returned so we can flexibly define the
-  # members of this class when it is instantiated.
+  # There are two major types of responses that can come back from EC2#method calls:
+  #
+  # * A 'Set' Array which is a collection of objects
+  # * A 'Response' object (Response or Subclasses) which encapsulates data returned 
+  #   as a result of running the method.  In this case the object is an OpenStruct 
+  #   and is Enumerable so you can iterate over all of the data returned.
+  # * Note regarding Boolean responses.  Those EC2 methods that simply respond with a 
+  #   'true' when called will return an empty sub-class of the Response object that
+  #   matches the calling method.  The presence of this object (as opposed to an Exception)
+  #   means that that method call succeeded.
+  #
+ 
+  # The make_request() and ec2_error? methods, which are shared by all, will raise any 
+  # exceptions encountered along the way as it converses with EC2.
+  #
+  # Exception Handling:  A call to any of these methods will respond with one of the three
+  # types mentioned above.  If for some reason an error occurrs when executing a method
+  # (e.g. its arguments were incorrect, or it simply failed) then an exception will 
+  # be thrown.  The exceptions are defined in exceptions.rb as individual classes and should
+  # match the exceptions that Amazon has defined for EC2.  If the exception raised cannot be
+  # identified then a more generic exception class will be thrown.
+  #
+  # The implication of this is that you need to be prepared to handle any exceptions that
+  # may be raised by this library in YOUR code with 'rescue' clauses.  It is up to you
+  # how gracefully you want to handle these exceptions that are raised.
+  
+  
+  # The superclass for all general responses.  A Set (or one of its sub-classes)
+  # may return an Array of these objects.
+  #
+  # I learned the magic of making an OpenStruct object able to respond as a fully Enumerable 
+  # object (responds to .each, etc.) thanks to a great blog article on Struct and OpenStruct 
+  # at http://errtheblog.com/post/30
+  #
   class Response < OpenStruct
-  end
-  
-  # Contains an array of Image objects
-  class ImageList < Array
-  end
-  
-  # Image is a Struct object which holds data representing a single machine Image
-  # and provides all of the 'each' methods as it is Enumerable.
-  #
-  # An Image#to_hash utility method is also provided for convenience which can be used in
-  # addition to the standard Image#to_a and Image#to_s methods.
-  #
-  # Remember that since this is a Struct object it does not have keys or indexes, but instead 'members'
-  # and 'values'.  See the excellent tutorial on Struct and OpenStruct at http://errtheblog.com/post/30
-  #
-  class Image < Struct.new(:image_id, :image_location, :image_owner_id, :image_state, :is_public)
     
-    def to_hash
-      hash = Hash[*self.members.zip(self.values).flatten]
+    include Enumerable
+    
+    def members
+      methods(false).grep(/=/).map { |m| m[0...-1] }
+    end
+    
+    def each
+      members.each do |method|
+        yield send(method)
+      end
+      self
+    end
+    
+    def each_pair
+      members.each do |method|
+        yield method, send(method)
+      end
+      self
+    end
+     
+    def [](member)
+      send(member)
+    end
+    
+    def []=(member, value)
+      send("#{member}=", value)
     end
     
   end
   
-  # Contains an array of Instance objects
-  class InstanceList < Array
+  # The superclass for all List objects which inherits from Array since we are
+  # just using these objects to collect up other responses (e.g. a collection of Images)
+  class Set < Array
   end
   
-  # Instance is a Struct object which holds data representing a single running machine Instance
-  # and provides all of the 'each' methods as it is Enumerable.
-  #
-  # An Instance#to_hash utility method is also provided for convenience which can be used in
-  # addition to the standard Instance#to_a and Instance#to_s methods.
-  #
-  # Remember that since this is a Struct object it does not have keys or indexes, but instead 'members'
-  # and 'values'.  See the excellent tutorial on Struct and OpenStruct at http://errtheblog.com/post/30
-  #
-  class Instance < Struct.new(:image_id, :image_location, :image_owner_id, :image_state, :is_public)
-    
-    def to_hash
-      hash = Hash[*self.members.zip(self.values).flatten]
-    end
-    
+  # Sub-Classes Of 'Response'
+  # These are the responses that we need to define as they will be filled with data
+  # that needs to be encapsulated (rather than a simple boolean).
+  ################################################
+  
+  class Item < Response
   end
   
-#  class DeregisterImageResponse < Response
-#    def parse
-#      # If we don't get an error, the deregistration succeeded.
-#      [["Image deregistered."]]
-#    end
-#  end
-
+  class DeregisterImageResponse < Response
+  end
+  
+  class RegisterImageResponse < Response
+  end
+  
+  class RebootInstancesResponse < Response
+  end
+  
+  # Sub-Classes of 'Set'
+  ################################################
+  
+  # Contains an array of ImageItem objects
+  class DescribeImagesResponseSet < Set
+  end
+  
+  class TerminateInstancesResponseSet < Set
+  end
+  
+  
+# TODO : THESE METHODS NEED TO BE EXTRACTED FROM HERE AND BUILT INTO THEIR RESPECTIVE CALLING METHODS!
 
 #  class CreateKeyPairResponse < Response
 #    ELEMENT_XPATH = "CreateKeyPairResponse"
@@ -172,38 +217,6 @@ module EC2
 #        end
 #      end
 #      lines
-#    end
-#  end
-
-
-#  class TerminateInstancesResponse < Response
-#    ELEMENT_XPATH = "TerminateInstancesResponse/instancesSet/item"
-#    def parse
-#      doc = REXML::Document.new(@http_xml)
-#      lines = []
-#      
-#      doc.elements.each(ELEMENT_XPATH) do |element|
-#        instanceId = REXML::XPath.first(element, "instanceId").text
-#        shutdownState = REXML::XPath.first(element, "shutdownState/name").text
-#        # Only for debug mode, which we don't support yet:
-#        shutdownStateCode = REXML::XPath.first(element, "shutdownState/code").text
-#        previousState = REXML::XPath.first(element, "previousState/name").text
-#        # Only for debug mode, which we don't support yet:
-#        previousStateCode = REXML::XPath.first(element, "previousState/code").text
-#        lines << ["INSTANCE", instanceId, previousState, shutdownState]
-#      end
-#      lines
-#    end
-#  end
-
-
-#  class ResetInstancesResponse < Response
-#    def parse
-#      doc = REXML::Document.new(@http_xml)
-#      
-#        # TODO : CONFIRM THIS COMMENT AND WHATS IN THE DOCS
-#       # Let's use the tag they're actually returning since it doesn't match the docs -- Kevin Clark 2/26/07
-#      REXML::XPath.match( doc, "//return").first.text == "true" ? true : false 
 #    end
 #  end
 
