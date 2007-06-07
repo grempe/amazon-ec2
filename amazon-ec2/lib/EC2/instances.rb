@@ -91,10 +91,81 @@ module EC2
     # for a small interval subsequent to their termination. This interval 
     # is typically of the order of one hour.
     def describe_instances(instanceIds=[])
-      raise ArgumentError, "No instance IDs provided" if instanceIds.empty?
       params = pathlist("InstanceId", instanceIds)
-      DescribeInstancesResponse.new(make_request("DescribeInstances", params))
+      desc_instances_response = DescribeInstancesResponseSet.new
+      
+      http_response = make_request("DescribeInstances", params)
+      http_xml = http_response.body
+      doc = REXML::Document.new(http_xml)
+      
+      doc.elements.each("DescribeInstancesResponse/reservationSet/item") do |element|
+        item = Item.new
+        item.reservation_id = REXML::XPath.first(element, "reservationId").text
+        item.owner_id = REXML::XPath.first(element, "ownerId").text
+        
+        group_set = GroupResponseSet.new
+        doc.elements.each("DescribeInstancesResponse/reservationSet/item/groupSet/item") do |element|
+          group_set_item = Item.new
+          group_set_item.group_id = REXML::XPath.first(element, "groupId").text
+          group_set << group_set_item
+        end
+        item.group_set = group_set
+        
+        
+        instances_set = InstancesResponseSet.new
+        doc.elements.each("DescribeInstancesResponse/reservationSet/item/instancesSet/item") do |element|
+          instances_set_item = Item.new
+          instances_set_item.instance_id = REXML::XPath.first(element, "instanceId").text
+          instances_set_item.image_id = REXML::XPath.first(element, "imageId").text
+          instances_set_item.instance_state_code = REXML::XPath.first(element, "instanceState/code").text
+          instances_set_item.instance_state_name = REXML::XPath.first(element, "instanceState/name").text
+          instances_set_item.private_dns_name = REXML::XPath.first(element, "privateDnsName").text
+          instances_set_item.dns_name = REXML::XPath.first(element, "dnsName").text
+          instances_set_item.key_name = REXML::XPath.first(element, "keyName").text
+          instances_set << instances_set_item
+        end
+        item.instances_set = instances_set
+        
+        desc_instances_response << item
+      end
+      return desc_instances_response
     end
+    
+    #  class DescribeInstancesResponse < Response
+    #    ELEMENT_XPATH = "DescribeInstancesResponse/reservationSet/item"
+    #    def parse
+    #      doc = REXML::Document.new(@http_xml)
+    #      lines = []
+    #      
+    #      doc.elements.each(ELEMENT_XPATH) do |rootelement|
+    #        reservationId = REXML::XPath.first(rootelement, "reservationId").text
+    #        ownerId = REXML::XPath.first(rootelement, "ownerId").text
+    #        groups = nil
+    #        rootelement.elements.each("groupSet/item/groupId") do |element|
+    #          if not groups
+    #            groups = element.text
+    #          else
+    #            groups += "," + element.text
+    #          end
+    #        end
+    #        lines << ["RESERVATION", reservationId, ownerId, groups]
+    #        
+    #        rootelement.elements.each("instancesSet/item") do |element|
+    #          instanceId = REXML::XPath.first(element, "instanceId").text
+    #          imageId = REXML::XPath.first(element, "imageId").text
+    #          instanceState = REXML::XPath.first(element, "instanceState/name").text
+    #          # Only for debug mode, which we don't support yet:
+    #          instanceStateCode = REXML::XPath.first(element, "instanceState/code").text
+    #          dnsName = REXML::XPath.first(element, "dnsName").text
+    #          # We don't return this, but still:
+    #          reason = REXML::XPath.first(element, "reason").text
+    #          lines << ["INSTANCE", instanceId, imageId, dnsName, instanceState]
+    #        end
+    #      end
+    #      lines
+    #    end
+    #  end
+    
     
     # TODO : Should we use the star (*instanceIds) for methods like this?  See page 75 in the pickaxe.
     #

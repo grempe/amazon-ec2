@@ -99,13 +99,20 @@ module EC2
   # Sub-Classes of 'Set'
   ################################################
   
-  # Contains an array of ImageItem objects
   class DescribeImagesResponseSet < Set
+  end
+  
+  class DescribeInstancesResponseSet < Set
   end
   
   class TerminateInstancesResponseSet < Set
   end
   
+  class GroupResponseSet < Set
+  end
+  
+  class InstancesResponseSet < Set
+  end
   
 # TODO : THESE METHODS NEED TO BE EXTRACTED FROM HERE AND BUILT INTO THEIR RESPECTIVE CALLING METHODS!
 
@@ -179,42 +186,6 @@ module EC2
 #        # We don't return this, but still:
 #        reason = REXML::XPath.first(element, "reason").text
 #        lines << ["INSTANCE", instanceId, imageId, dnsName, instanceState]
-#      end
-#      lines
-#    end
-#  end
-
-
-#  class DescribeInstancesResponse < Response
-#    ELEMENT_XPATH = "DescribeInstancesResponse/reservationSet/item"
-#    def parse
-#      doc = REXML::Document.new(@http_xml)
-#      lines = []
-#      
-#      doc.elements.each(ELEMENT_XPATH) do |rootelement|
-#        reservationId = REXML::XPath.first(rootelement, "reservationId").text
-#        ownerId = REXML::XPath.first(rootelement, "ownerId").text
-#        groups = nil
-#        rootelement.elements.each("groupSet/item/groupId") do |element|
-#          if not groups
-#            groups = element.text
-#          else
-#            groups += "," + element.text
-#          end
-#        end
-#        lines << ["RESERVATION", reservationId, ownerId, groups]
-#        
-#        rootelement.elements.each("instancesSet/item") do |element|
-#          instanceId = REXML::XPath.first(element, "instanceId").text
-#          imageId = REXML::XPath.first(element, "imageId").text
-#          instanceState = REXML::XPath.first(element, "instanceState/name").text
-#          # Only for debug mode, which we don't support yet:
-#          instanceStateCode = REXML::XPath.first(element, "instanceState/code").text
-#          dnsName = REXML::XPath.first(element, "dnsName").text
-#          # We don't return this, but still:
-#          reason = REXML::XPath.first(element, "reason").text
-#          lines << ["INSTANCE", instanceId, imageId, dnsName, instanceState]
-#        end
 #      end
 #      lines
 #    end
