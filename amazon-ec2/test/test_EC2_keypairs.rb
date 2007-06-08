@@ -107,4 +107,32 @@ context "EC2 keypairs " do
     response[0].key_fingerprint.should.equal "1f:51:ae:28:bf:89:e9:d8:1f:25:5d:37:2d:7d:b8:ca:9f:f5:f1:6f"
   end
   
+  specify "should be able to be described with describe_keypairs" do
+    body = <<-RESPONSE
+    <DeleteKeyPair xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
+      <return>true</return>
+    </DeleteKeyPair>
+    RESPONSE
+    
+    @ec2.stubs(:make_request).with('DeleteKeyPair', {"KeyName"=>"example-key-name"}).
+      returns stub(:body => body, :is_a? => true)
+    @ec2.delete_keypair("example-key-name").should.be.an.instance_of EC2::DeleteKeyPairResponse
+    response = @ec2.delete_keypair("example-key-name")
+  end
+  
+  specify "method delete_keypair should reject bad argument" do
+    body = <<-RESPONSE
+    <DeleteKeyPair xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
+      <return>true</return>
+    </DeleteKeyPair>
+    RESPONSE
+    
+    @ec2.stubs(:make_request).with('DeleteKeyPair', {"KeyName"=>"example-key-name"}).
+      returns stub(:body => body, :is_a? => true)
+    
+    lambda { @ec2.delete_keypair("example-key-name") }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.delete_keypair() }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.delete_keypair("") }.should.raise(EC2::ArgumentError)
+  end
+  
 end

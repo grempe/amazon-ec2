@@ -49,9 +49,11 @@ module EC2
     
     
     # The DeleteKeyPair operation deletes a keypair.
-    def delete_keypair(keyName)
+    def delete_keypair(keyName="")
+      raise ArgumentError, "No keyName provided" if keyName.empty?
       params = { "KeyName" => keyName }
-      DeleteKeyPairResponse.new(make_request("DeleteKeyPair", params))
+      make_request("DeleteKeyPair", params)
+      return response = DeleteKeyPairResponse.new
     end
     
   end

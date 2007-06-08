@@ -102,6 +102,8 @@ module EC2
   class CreateKeyPairResponse < Response
   end
   
+  class DeleteKeyPairResponse < Response
+  end
   
   # Sub-Classes of 'Set'
   ################################################
@@ -125,14 +127,6 @@ module EC2
   end
   
 # TODO : THESE METHODS NEED TO BE EXTRACTED FROM HERE AND BUILT INTO THEIR RESPECTIVE CALLING METHODS!
-
-#  class DeleteKeyPairResponse < Response
-#    def parse
-#      # If we don't get an error, the deletion succeeded.
-#      [["Keypair deleted."]]
-#    end
-#  end
-
 
 #  class CreateSecurityGroupResponse < Response
 #    def parse
