@@ -23,7 +23,7 @@ module EC2
   # The make_request() and ec2_error? methods, which are shared by all, will raise any 
   # exceptions encountered along the way as it converses with EC2.
   #
-  # Exception Handling:  A call to any of these methods will respond with one of the three
+  # Exception Handling:  A call to any of these methods will respond with one of the
   # types mentioned above.  If for some reason an error occurrs when executing a method
   # (e.g. its arguments were incorrect, or it simply failed) then an exception will 
   # be thrown.  The exceptions are defined in exceptions.rb as individual classes and should
@@ -96,6 +96,10 @@ module EC2
   class RebootInstancesResponse < Response
   end
   
+  class RunInstancesResponse < Response
+  end
+  
+  
   # Sub-Classes of 'Set'
   ################################################
   
@@ -151,43 +155,6 @@ module EC2
 #    def parse
 #      # If we don't get an error, the deletion succeeded.
 #      [["Keypair deleted."]]
-#    end
-#  end
-
-
-#  class RunInstancesResponse < Response
-#    ELEMENT_XPATH = "RunInstancesResponse"
-#    def parse
-#      doc = REXML::Document.new(@http_xml)
-#      lines = []
-#      
-#      rootelement = REXML::XPath.first(doc, ELEMENT_XPATH)
-#      
-#      reservationId = REXML::XPath.first(rootelement, "reservationId").text
-#      ownerId = REXML::XPath.first(rootelement, "ownerId").text
-#      groups = nil
-#      rootelement.elements.each("groupSet/item/groupId") do |element|
-#        if not groups
-#          groups = element.text
-#        else
-#          groups += "," + element.text
-#        end
-#      end
-#      lines << ["RESERVATION", reservationId, ownerId, groups]
-#      
-#      #    rootelement = REXML::XPath.first(doc, ELEMENT_XPATH)
-#      rootelement.elements.each("instancesSet/item") do |element|
-#        instanceId = REXML::XPath.first(element, "instanceId").text
-#        imageId = REXML::XPath.first(element, "imageId").text
-#        instanceState = REXML::XPath.first(element, "instanceState/name").text
-#        # Only for debug mode, which we don't support yet:
-#        instanceStateCode = REXML::XPath.first(element, "instanceState/code").text
-#        dnsName = REXML::XPath.first(element, "dnsName").text
-#        # We don't return this, but still:
-#        reason = REXML::XPath.first(element, "reason").text
-#        lines << ["INSTANCE", instanceId, imageId, dnsName, instanceState]
-#      end
-#      lines
 #    end
 #  end
 

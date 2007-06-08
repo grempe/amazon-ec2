@@ -44,38 +44,85 @@ module EC2
     # time (as part of rclocal, for example) allowing for secure 
     # password-less access. As the need arises, other formats will 
     # also be considered.
-    def run_instances(imageId, kwargs={})
+    def run_instances(imageId="", kwargs={})
       
       # setup the default input parameters hash
-      in_params = { :minCount=>1, :maxCount=>1, :keyname=>nil, :groupIds=>[], :userData=>nil, :base64Encoded=>false }
+      in_params = { :minCount=>1, 
+                    :maxCount=>1,
+                    :keyName=>nil,
+                    :groupIds=>[],
+                    :userData=>nil,
+                    :addressingType=>"public",
+                    :base64Encoded=>false }
       
       # Override or extend the default input params with any passed in kwargs
       in_params.merge!(kwargs)
+      
+      # Do some validation on the arguments provided
+      raise ArgumentError, "No imageId provided" if imageId.empty?
+      raise ArgumentError, "minCount is not valid" unless in_params[:minCount].to_i > 0
+      raise ArgumentError, "maxCount is not valid" unless in_params[:maxCount].to_i > 0
+      raise ArgumentError, "addressingType must be 'direct' or 'public'" unless in_params[:addressingType] == "public" || in_params[:addressingType] == "direct"
+      raise ArgumentError, "base64Encoded must be 'true' or 'false'" unless in_params[:base64Encoded] == true || in_params[:base64Encoded] == false
       
       # If userData is passed in then URL escape and Base64 encode it
       # as needed.  Need for URL Escape + Base64 encoding is determined 
       # by base64Encoded param.
       if in_params[:userData]
         if in_params[:base64Encoded]
-          userData = in_params[:userData]
+          user_data = in_params[:userData]
         else
-          userData = Base64.encode64(in_params[:userData]).gsub(/\n/,"").strip()
+          user_data = Base64.encode64(in_params[:userData]).gsub(/\n/,"").strip()
         end
       else
-        userData = nil
+        user_data = nil
       end
-
+      
       params = {
         "ImageId"  => imageId,
         "MinCount" => in_params[:minCount].to_s,
         "MaxCount" => in_params[:maxCount].to_s,
       }.merge(pathlist("SecurityGroup", in_params[:groupIds])) 
       
-      params["KeyName"] = in_params[:keyname] unless in_params[:keyname].nil? 
-      params["UserData"] = userData unless userData.nil?
-
-      RunInstancesResponse.new(make_request("RunInstances", params))
+      params["KeyName"] = in_params[:keyName] unless in_params[:keyName].nil? 
+      params["UserData"] = user_data unless user_data.nil?
+      
+      run_instances_response = RunInstancesResponse.new
+      
+      http_response = make_request("RunInstances", params)
+      http_xml = http_response.body
+      doc = REXML::Document.new(http_xml)
+      
+      doc.elements.each("RunInstancesResponse") do |element|
+        run_instances_response.reservation_id = REXML::XPath.first(element, "reservationId").text
+        run_instances_response.owner_id = REXML::XPath.first(element, "ownerId").text
+        
+        group_set = GroupResponseSet.new
+        doc.elements.each("RunInstancesResponse/groupSet/item") do |element|
+          group_set_item = Item.new
+          group_set_item.group_id = REXML::XPath.first(element, "groupId").text
+          group_set << group_set_item
+        end
+        run_instances_response.group_set = group_set
+        
+        instances_set = InstancesResponseSet.new
+        doc.elements.each("RunInstancesResponse/instancesSet/item") do |element|
+          instances_set_item = Item.new
+          instances_set_item.instance_id = REXML::XPath.first(element, "instanceId").text
+          instances_set_item.image_id = REXML::XPath.first(element, "imageId").text
+          instances_set_item.instance_state_code = REXML::XPath.first(element, "instanceState/code").text
+          instances_set_item.instance_state_name = REXML::XPath.first(element, "instanceState/name").text
+          instances_set_item.private_dns_name = REXML::XPath.first(element, "privateDnsName").text
+          instances_set_item.dns_name = REXML::XPath.first(element, "dnsName").text
+          instances_set_item.key_name = REXML::XPath.first(element, "keyName").text
+          instances_set << instances_set_item
+        end
+        run_instances_response.instances_set = instances_set
+        
+      end
+      return run_instances_response
     end
+    
     
     # The DescribeInstances operation returns information about instances owned 
     # by the user making the request.
@@ -91,6 +138,7 @@ module EC2
     # for a small interval subsequent to their termination. This interval 
     # is typically of the order of one hour.
     def describe_instances(instanceIds=[])
+      
       params = pathlist("InstanceId", instanceIds)
       desc_instances_response = DescribeInstancesResponseSet.new
       
@@ -111,7 +159,6 @@ module EC2
         end
         item.group_set = group_set
         
-        
         instances_set = InstancesResponseSet.new
         doc.elements.each("DescribeInstancesResponse/reservationSet/item/instancesSet/item") do |element|
           instances_set_item = Item.new
@@ -131,43 +178,9 @@ module EC2
       return desc_instances_response
     end
     
-    #  class DescribeInstancesResponse < Response
-    #    ELEMENT_XPATH = "DescribeInstancesResponse/reservationSet/item"
-    #    def parse
-    #      doc = REXML::Document.new(@http_xml)
-    #      lines = []
-    #      
-    #      doc.elements.each(ELEMENT_XPATH) do |rootelement|
-    #        reservationId = REXML::XPath.first(rootelement, "reservationId").text
-    #        ownerId = REXML::XPath.first(rootelement, "ownerId").text
-    #        groups = nil
-    #        rootelement.elements.each("groupSet/item/groupId") do |element|
-    #          if not groups
-    #            groups = element.text
-    #          else
-    #            groups += "," + element.text
-    #          end
-    #        end
-    #        lines << ["RESERVATION", reservationId, ownerId, groups]
-    #        
-    #        rootelement.elements.each("instancesSet/item") do |element|
-    #          instanceId = REXML::XPath.first(element, "instanceId").text
-    #          imageId = REXML::XPath.first(element, "imageId").text
-    #          instanceState = REXML::XPath.first(element, "instanceState/name").text
-    #          # Only for debug mode, which we don't support yet:
-    #          instanceStateCode = REXML::XPath.first(element, "instanceState/code").text
-    #          dnsName = REXML::XPath.first(element, "dnsName").text
-    #          # We don't return this, but still:
-    #          reason = REXML::XPath.first(element, "reason").text
-    #          lines << ["INSTANCE", instanceId, imageId, dnsName, instanceState]
-    #        end
-    #      end
-    #      lines
-    #    end
-    #  end
     
-    
-    # TODO : Should we use the star (*instanceIds) for methods like this?  See page 75 in the pickaxe.
+    # TODO : Should we use the star (*instanceIds) instead of instanceIds=[] for methods 
+    # like this?  See page 75 in the pickaxe for more info on the *.
     #
     # The RebootInstances operation requests a reboot of one or more instances. 
     # This operation is asynchronous; it only queues a request to reboot the specified 

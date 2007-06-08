@@ -6,6 +6,165 @@ context "EC2 instances " do
     @ec2 = EC2::AWSAuthConnection.new('not a key', 'not a secret')
   end
   
+  specify "should be able to be run" do
+    
+    body = <<-RESPONSE
+    <RunInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
+      <reservationId>r-47a5402e</reservationId>
+      <ownerId>495219933132</ownerId>
+      <groupSet>
+        <item>
+          <groupId>default</groupId>
+        </item>
+      </groupSet>
+      <instancesSet>
+        <item>
+          <instanceId>i-2ba64342</instanceId>
+          <imageId>ami-60a54009</imageId>
+          <instanceState>
+            <code>0</code>
+            <name>pending</name>
+          </instanceState>
+          <privateDnsName/>
+          <dnsName/>
+          <keyName>example-key-name</keyName>
+        </item>
+        <item>
+          <instanceId>i-2bc64242</instanceId>
+          <imageId>ami-60a54009</imageId>
+          <instanceState>
+            <code>0</code>
+            <name>pending</name>
+          </instanceState>
+          <privateDnsName/>
+          <dnsName/>
+          <keyName>example-key-name</keyName>
+        </item>
+        <item>
+          <instanceId>i-2be64332</instanceId>
+          <imageId>ami-60a54009</imageId>
+          <instanceState>
+            <code>0</code>
+            <name>pending</name>
+          </instanceState>
+          <privateDnsName/>
+          <dnsName/>
+          <keyName>example-key-name</keyName>
+        </item>
+      </instancesSet>
+    </RunInstancesResponse>
+    RESPONSE
+    
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1').
+      returns stub(:body => body, :is_a? => true)
+    @ec2.run_instances("ami-60a54009").should.be.an.instance_of EC2::RunInstancesResponse
+    response = @ec2.run_instances("ami-60a54009")
+    response.reservation_id.should.equal "r-47a5402e"
+    response.owner_id.should.equal "495219933132"
+    response.group_set[0].group_id.should.equal "default"
+    
+    response.instances_set.length.should.equal 3
+    
+    response.instances_set[0].instance_id.should.equal "i-2ba64342"
+    response.instances_set[0].image_id.should.equal "ami-60a54009"
+    response.instances_set[0].instance_state_code.should.equal "0"
+    response.instances_set[0].instance_state_name.should.equal "pending"
+    response.instances_set[0].private_dns_name.should.be.nil
+    response.instances_set[0].dns_name.should.be.nil
+    response.instances_set[0].key_name.should.equal "example-key-name"
+    
+    response.instances_set[1].instance_id.should.equal "i-2bc64242"
+    response.instances_set[1].image_id.should.equal "ami-60a54009"
+    response.instances_set[1].instance_state_code.should.equal "0"
+    response.instances_set[1].instance_state_name.should.equal "pending"
+    response.instances_set[1].private_dns_name.should.be.nil
+    response.instances_set[1].dns_name.should.be.nil
+    response.instances_set[1].key_name.should.equal "example-key-name"
+    
+    response.instances_set[2].instance_id.should.equal "i-2be64332"
+    response.instances_set[2].image_id.should.equal "ami-60a54009"
+    response.instances_set[2].instance_state_code.should.equal "0"
+    response.instances_set[2].instance_state_name.should.equal "pending"
+    response.instances_set[2].private_dns_name.should.be.nil
+    response.instances_set[2].dns_name.should.be.nil
+    response.instances_set[2].key_name.should.equal "example-key-name"
+    
+  end
+  
+  specify "method 'run_instances' should reject invalid arguments" do
+
+    body = <<-RESPONSE
+    <RunInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
+      <reservationId>r-47a5402e</reservationId>
+      <ownerId>495219933132</ownerId>
+      <groupSet>
+        <item>
+          <groupId>default</groupId>
+        </item>
+      </groupSet>
+      <instancesSet>
+        <item>
+          <instanceId>i-2ba64342</instanceId>
+          <imageId>ami-60a54009</imageId>
+          <instanceState>
+            <code>0</code>
+            <name>pending</name>
+          </instanceState>
+          <privateDnsName/>
+          <dnsName/>
+          <keyName>example-key-name</keyName>
+        </item>
+        <item>
+          <instanceId>i-2bc64242</instanceId>
+          <imageId>ami-60a54009</imageId>
+          <instanceState>
+            <code>0</code>
+            <name>pending</name>
+          </instanceState>
+          <privateDnsName/>
+          <dnsName/>
+          <keyName>example-key-name</keyName>
+        </item>
+        <item>
+          <instanceId>i-2be64332</instanceId>
+          <imageId>ami-60a54009</imageId>
+          <instanceState>
+            <code>0</code>
+            <name>pending</name>
+          </instanceState>
+          <privateDnsName/>
+          <dnsName/>
+          <keyName>example-key-name</keyName>
+        </item>
+      </instancesSet>
+    </RunInstancesResponse>
+    RESPONSE
+    
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1').
+      returns stub(:body => body, :is_a? => true)
+    
+    lambda { @ec2.run_instances() }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances("") }.should.raise(EC2::ArgumentError)
+    
+    lambda { @ec2.run_instances("ami-60a54009", {:minCount => 1}) }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances("ami-60a54009", {:minCount => 0}) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances("ami-60a54009", {:minCount => ""}) }.should.raise(EC2::ArgumentError)
+    
+    lambda { @ec2.run_instances("ami-60a54009", {:maxCount => 1}) }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances("ami-60a54009", {:maxCount => 0}) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances("ami-60a54009", {:maxCount => ""}) }.should.raise(EC2::ArgumentError)
+    
+    lambda { @ec2.run_instances("ami-60a54009", {:addressingType => "public"}) }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances("ami-60a54009", {:addressingType => "direct"}) }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances("ami-60a54009", {:addressingType => ""}) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances("ami-60a54009", {:addressingType => "foo"}) }.should.raise(EC2::ArgumentError)
+    
+    lambda { @ec2.run_instances("ami-60a54009", {:base64Encoded => true}) }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances("ami-60a54009", {:base64Encoded => false}) }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances("ami-60a54009", {:base64Encoded => ""}) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances("ami-60a54009", {:base64Encoded => "foo"}) }.should.raise(EC2::ArgumentError)
+    
+  end
   
   specify "should be able to be described and return the correct Ruby response class for parent and members" do
     body = <<-RESPONSE
