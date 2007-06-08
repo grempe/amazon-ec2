@@ -86,4 +86,25 @@ context "EC2 keypairs " do
     lambda { @ec2.create_keypair("") }.should.raise(EC2::ArgumentError)
   end
   
+  specify "should be able to be described with describe_keypairs" do
+    
+    body = <<-RESPONSE
+    <DescribeKeyPairsResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
+      <keySet>
+        <item>
+          <keyName>example-key-name</keyName>
+          <keyFingerprint>1f:51:ae:28:bf:89:e9:d8:1f:25:5d:37:2d:7d:b8:ca:9f:f5:f1:6f</keyFingerprint>
+        </item>
+      </keySet>
+    </DescribeKeyPairsResponse>
+    RESPONSE
+    
+    @ec2.stubs(:make_request).with('DescribeKeyPairs', {"KeyName.1"=>"example-key-name"}).
+      returns stub(:body => body, :is_a? => true)
+    @ec2.describe_keypairs("example-key-name").should.be.an.instance_of EC2::DescribeKeyPairsResponseSet
+    response = @ec2.describe_keypairs("example-key-name")
+    response[0].key_name.should.equal "example-key-name"
+    response[0].key_fingerprint.should.equal "1f:51:ae:28:bf:89:e9:d8:1f:25:5d:37:2d:7d:b8:ca:9f:f5:f1:6f"
+  end
+  
 end

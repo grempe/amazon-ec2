@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Thu Jun 07 22:25:28 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Thu Jun 07 23:19:38 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -715,7 +715,7 @@ span.run100 {
 </span><span class="marked1"><a name="line94" /> 94       params.merge!(pathlist(&quot;Owner&quot;, ownerIds))
 </span><span class="marked0"><a name="line95" /> 95       params.merge!(pathlist(&quot;ExecutableBy&quot;, executableBy))
 </span><span class="inferred1"><a name="line96" /> 96       
-</span><span class="marked0"><a name="line97" /> 97       desc_images_response = DescribeImagesResponseSet.new
+</span><span class="marked0"><a name="line97" /> 97       describe_images_response = DescribeImagesResponseSet.new
 </span><span class="inferred1"><a name="line98" /> 98       
 </span><span class="marked0"><a name="line99" /> 99       http_response = make_request(&quot;DescribeImages&quot;, params)
 </span><span class="marked1"><a name="line100" />100       http_xml = http_response.body
@@ -730,9 +730,9 @@ span.run100 {
 </span><span class="marked0"><a name="line109" />109         item.image_state = REXML::XPath.first(element, &quot;imageState&quot;).text
 </span><span class="marked1"><a name="line110" />110         item.is_public = REXML::XPath.first(element, &quot;isPublic&quot;).text == &quot;true&quot; ? true : false
 </span><span class="inferred0"><a name="line111" />111         
-</span><span class="marked1"><a name="line112" />112         desc_images_response &lt;&lt; item
+</span><span class="marked1"><a name="line112" />112         describe_images_response &lt;&lt; item
 </span><span class="inferred0"><a name="line113" />113       end
-</span><span class="marked1"><a name="line114" />114       return desc_images_response
+</span><span class="marked1"><a name="line114" />114       return describe_images_response
 </span><span class="inferred0"><a name="line115" />115     end
 </span><span class="inferred1"><a name="line116" />116     
 </span><span class="inferred0"><a name="line117" />117     # The DeregisterImage operation deregisters an AMI. Once deregistered, 

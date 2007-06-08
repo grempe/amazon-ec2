@@ -121,23 +121,10 @@ module EC2
   class InstancesResponseSet < Set
   end
   
+  class DescribeKeyPairsResponseSet < Set
+  end
+  
 # TODO : THESE METHODS NEED TO BE EXTRACTED FROM HERE AND BUILT INTO THEIR RESPECTIVE CALLING METHODS!
-
-#  class DescribeKeyPairsResponse < Response
-#    ELEMENT_XPATH = "DescribeKeyPairsResponse/keySet/item"
-#    def parse
-#      doc = REXML::Document.new(@http_xml)
-#      lines = []
-#  
-#      doc.elements.each(ELEMENT_XPATH) do |element|
-#        keyName = REXML::XPath.first(element, "keyName").text
-#        keyFingerprint = REXML::XPath.first(element, "keyFingerprint").text
-#        lines << ["KEYPAIR", keyName, keyFingerprint]
-#      end
-#      lines
-#    end
-#  end
-
 
 #  class DeleteKeyPairResponse < Response
 #    def parse

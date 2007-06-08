@@ -94,7 +94,7 @@ module EC2
       params.merge!(pathlist("Owner", ownerIds))
       params.merge!(pathlist("ExecutableBy", executableBy))
       
-      desc_images_response = DescribeImagesResponseSet.new
+      describe_images_response = DescribeImagesResponseSet.new
       
       http_response = make_request("DescribeImages", params)
       http_xml = http_response.body
@@ -109,9 +109,9 @@ module EC2
         item.image_state = REXML::XPath.first(element, "imageState").text
         item.is_public = REXML::XPath.first(element, "isPublic").text == "true" ? true : false
         
-        desc_images_response << item
+        describe_images_response << item
       end
-      return desc_images_response
+      return describe_images_response
     end
     
     # The DeregisterImage operation deregisters an AMI. Once deregistered, 

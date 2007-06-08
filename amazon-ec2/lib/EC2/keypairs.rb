@@ -33,7 +33,18 @@ module EC2
     # all registered keypairs is required.
     def describe_keypairs(keyNames=[])
       params = pathlist("KeyName", keyNames)
-      DescribeKeyPairsResponse.new(make_request("DescribeKeyPairs", params))
+      describe_keypairs_response = DescribeKeyPairsResponseSet.new
+      http_response = make_request("DescribeKeyPairs", params)
+      http_xml = http_response.body
+      doc = REXML::Document.new(http_xml)
+      
+      doc.elements.each("DescribeKeyPairsResponse/keySet/item") do |element|
+        item = Item.new
+        item.key_name = REXML::XPath.first(element, "keyName").text
+        item.key_fingerprint = REXML::XPath.first(element, "keyFingerprint").text
+        describe_keypairs_response << item
+      end
+      return describe_keypairs_response
     end
     
     

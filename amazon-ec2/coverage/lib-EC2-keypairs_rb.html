@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Thu Jun 07 22:25:28 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Thu Jun 07 23:19:38 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,21 +580,21 @@ span.run100 {
             <a href='lib-EC2-keypairs_rb.html'>lib/EC2/keypairs.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>48</tt>
+            <tt>75</tt>
           </td>
           <td class='lines_code'>
-            <tt>24</tt>
+            <tt>34</tt>
           </td>
           <td>
             <table cellspacing='0' cellpadding='0' align='right'>
               <tr>
                 <td>
-                  <tt class='coverage_total'>79.2%</tt>&nbsp;</td>
+                  <tt class='coverage_total'>90.7%</tt>&nbsp;</td>
                 <td>
                   <table cellspacing='0' class='percent_graph' cellpadding='0' width='100'>
                     <tr>
-                      <td class='covered' width='79' />
-                      <td class='uncovered' width='21' />
+                      <td class='covered' width='91' />
+                      <td class='uncovered' width='9' />
                     </tr>
                   </table>
                 </td>
@@ -605,12 +605,12 @@ span.run100 {
             <table cellspacing='0' cellpadding='0' align='right'>
               <tr>
                 <td>
-                  <tt class='coverage_code'>66.7%</tt>&nbsp;</td>
+                  <tt class='coverage_code'>85.3%</tt>&nbsp;</td>
                 <td>
                   <table cellspacing='0' class='percent_graph' cellpadding='0' width='100'>
                     <tr>
-                      <td class='covered' width='67' />
-                      <td class='uncovered' width='33' />
+                      <td class='covered' width='85' />
+                      <td class='uncovered' width='15' />
                     </tr>
                   </table>
                 </td>
@@ -653,20 +653,47 @@ span.run100 {
 </span><span class="inferred0"><a name="line32" />32     # may be specified or the list may be left empty if information for 
 </span><span class="inferred1"><a name="line33" />33     # all registered keypairs is required.
 </span><span class="marked0"><a name="line34" />34     def describe_keypairs(keyNames=[])
-</span><span class="uncovered1"><a name="line35" />35       params = pathlist(&quot;KeyName&quot;, keyNames)
-</span><span class="uncovered0"><a name="line36" />36       DescribeKeyPairsResponse.new(make_request(&quot;DescribeKeyPairs&quot;, params))
-</span><span class="uncovered1"><a name="line37" />37     end
-</span><span class="inferred0"><a name="line38" />38     
-</span><span class="inferred1"><a name="line39" />39     
-</span><span class="inferred0"><a name="line40" />40     # The DeleteKeyPair operation deletes a keypair.
-</span><span class="marked1"><a name="line41" />41     def delete_keypair(keyName)
-</span><span class="uncovered0"><a name="line42" />42       params = { &quot;KeyName&quot; =&gt; keyName }
-</span><span class="uncovered1"><a name="line43" />43       DeleteKeyPairResponse.new(make_request(&quot;DeleteKeyPair&quot;, params))
-</span><span class="uncovered0"><a name="line44" />44     end
-</span><span class="uncovered1"><a name="line45" />45     
-</span><span class="uncovered0"><a name="line46" />46   end
-</span><span class="uncovered1"><a name="line47" />47   
-</span><span class="uncovered0"><a name="line48" />48 end
+</span><span class="marked1"><a name="line35" />35       params = pathlist(&quot;KeyName&quot;, keyNames)
+</span><span class="marked0"><a name="line36" />36       describe_keypairs_response = DescribeKeyPairsResponseSet.new
+</span><span class="marked1"><a name="line37" />37       http_response = make_request(&quot;DescribeKeyPairs&quot;, params)
+</span><span class="marked0"><a name="line38" />38       http_xml = http_response.body
+</span><span class="marked1"><a name="line39" />39       doc = REXML::Document.new(http_xml)
+</span><span class="inferred0"><a name="line40" />40       
+</span><span class="marked1"><a name="line41" />41       doc.elements.each(&quot;DescribeKeyPairsResponse/keySet/item&quot;) do |element|
+</span><span class="marked0"><a name="line42" />42         item = Item.new
+</span><span class="marked1"><a name="line43" />43         item.key_name = REXML::XPath.first(element, &quot;keyName&quot;).text
+</span><span class="marked0"><a name="line44" />44         item.key_fingerprint = REXML::XPath.first(element, &quot;keyFingerprint&quot;).text
+</span><span class="marked1"><a name="line45" />45         describe_keypairs_response &lt;&lt; item
+</span><span class="inferred0"><a name="line46" />46       end
+</span><span class="marked1"><a name="line47" />47       return describe_keypairs_response
+</span><span class="inferred0"><a name="line48" />48     end
+</span><span class="inferred1"><a name="line49" />49     
+</span><span class="inferred0"><a name="line50" />50     
+</span><span class="inferred1"><a name="line51" />51     #  class DescribeKeyPairsResponse &lt; Response
+</span><span class="inferred0"><a name="line52" />52     #    ELEMENT_XPATH = &quot;DescribeKeyPairsResponse/keySet/item&quot;
+</span><span class="inferred1"><a name="line53" />53     #    def parse
+</span><span class="inferred0"><a name="line54" />54     #      doc = REXML::Document.new(@http_xml)
+</span><span class="inferred1"><a name="line55" />55     #      lines = []
+</span><span class="inferred0"><a name="line56" />56     #  
+</span><span class="inferred1"><a name="line57" />57     #      doc.elements.each(ELEMENT_XPATH) do |element|
+</span><span class="inferred0"><a name="line58" />58     #        keyName = REXML::XPath.first(element, &quot;keyName&quot;).text
+</span><span class="inferred1"><a name="line59" />59     #        keyFingerprint = REXML::XPath.first(element, &quot;keyFingerprint&quot;).text
+</span><span class="inferred0"><a name="line60" />60     #        lines &lt;&lt; [&quot;KEYPAIR&quot;, keyName, keyFingerprint]
+</span><span class="inferred1"><a name="line61" />61     #      end
+</span><span class="inferred0"><a name="line62" />62     #      lines
+</span><span class="inferred1"><a name="line63" />63     #    end
+</span><span class="inferred0"><a name="line64" />64     #  end
+</span><span class="inferred1"><a name="line65" />65     
+</span><span class="inferred0"><a name="line66" />66     
+</span><span class="inferred1"><a name="line67" />67     # The DeleteKeyPair operation deletes a keypair.
+</span><span class="marked0"><a name="line68" />68     def delete_keypair(keyName)
+</span><span class="uncovered1"><a name="line69" />69       params = { &quot;KeyName&quot; =&gt; keyName }
+</span><span class="uncovered0"><a name="line70" />70       DeleteKeyPairResponse.new(make_request(&quot;DeleteKeyPair&quot;, params))
+</span><span class="uncovered1"><a name="line71" />71     end
+</span><span class="uncovered0"><a name="line72" />72     
+</span><span class="uncovered1"><a name="line73" />73   end
+</span><span class="uncovered0"><a name="line74" />74   
+</span><span class="uncovered1"><a name="line75" />75 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />
