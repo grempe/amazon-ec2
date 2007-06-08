@@ -105,6 +105,9 @@ module EC2
   class DeleteKeyPairResponse < Response
   end
   
+  class GetConsoleOutputResponse < Response
+  end
+  
   # Sub-Classes of 'Set'
   ################################################
   

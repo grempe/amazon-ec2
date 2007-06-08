@@ -1,7 +1,7 @@
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html lang='en' xml:lang='en' xmlns='http://www.w3.org/1999/xhtml'>
       <head>
-        <title>lib/EC2/keypairs.rb - C0 code coverage information</title>
+        <title>lib/EC2/console.rb - C0 code coverage information</title>
         <style type='text/css'>body { background-color: rgb(240, 240, 245); }</style>
         <style type='text/css'>span.cross-ref-title {
  font-size: 140%;
@@ -577,13 +577,13 @@ span.run100 {
       <tbody>
         <tr class='light'>
           <td>
-            <a href='lib-EC2-keypairs_rb.html'>lib/EC2/keypairs.rb</a>
+            <a href='lib-EC2-console_rb.html'>lib/EC2/console.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>61</tt>
+            <tt>27</tt>
           </td>
           <td class='lines_code'>
-            <tt>36</tt>
+            <tt>16</tt>
           </td>
           <td>
             <table cellspacing='0' cellpadding='0' align='right'>
@@ -630,56 +630,22 @@ span.run100 {
 </span><span class="marked0"><a name="line9" /> 9 module EC2
 </span><span class="inferred1"><a name="line10" />10   
 </span><span class="marked0"><a name="line11" />11   class AWSAuthConnection
-</span><span class="inferred1"><a name="line12" />12     
-</span><span class="inferred0"><a name="line13" />13     # The CreateKeyPair operation creates a new 2048 bit RSA keypair 
-</span><span class="inferred1"><a name="line14" />14     # and returns a unique ID that can be used to reference this 
-</span><span class="inferred0"><a name="line15" />15     # keypair when launching new instances.
-</span><span class="marked1"><a name="line16" />16     def create_keypair(keyName=&quot;&quot;)
-</span><span class="marked0"><a name="line17" />17       raise ArgumentError, &quot;No keyName provided&quot; if keyName.empty?
-</span><span class="marked1"><a name="line18" />18       params = { &quot;KeyName&quot; =&gt; keyName }
-</span><span class="marked0"><a name="line19" />19       http_response = make_request(&quot;CreateKeyPair&quot;, params)
-</span><span class="marked1"><a name="line20" />20       http_xml = http_response.body
-</span><span class="marked0"><a name="line21" />21       doc = REXML::Document.new(http_xml)
-</span><span class="marked1"><a name="line22" />22       response = CreateKeyPairResponse.new
-</span><span class="marked0"><a name="line23" />23       response.key_name = REXML::XPath.first(doc, &quot;CreateKeyPairResponse/keyName&quot;).text
-</span><span class="marked1"><a name="line24" />24       response.key_fingerprint = REXML::XPath.first(doc, &quot;CreateKeyPairResponse/keyFingerprint&quot;).text
-</span><span class="marked0"><a name="line25" />25       response.key_material = REXML::XPath.first(doc, &quot;CreateKeyPairResponse/keyMaterial&quot;).text
-</span><span class="marked1"><a name="line26" />26       return response
-</span><span class="inferred0"><a name="line27" />27     end
-</span><span class="inferred1"><a name="line28" />28     
-</span><span class="inferred0"><a name="line29" />29     
-</span><span class="inferred1"><a name="line30" />30     # The DescribeKeyPairs operation returns information about keypairs 
-</span><span class="inferred0"><a name="line31" />31     # available for use by the user making the request. Selected keypairs 
-</span><span class="inferred1"><a name="line32" />32     # may be specified or the list may be left empty if information for 
-</span><span class="inferred0"><a name="line33" />33     # all registered keypairs is required.
-</span><span class="marked1"><a name="line34" />34     def describe_keypairs(keyNames=[])
-</span><span class="marked0"><a name="line35" />35       params = pathlist(&quot;KeyName&quot;, keyNames)
-</span><span class="marked1"><a name="line36" />36       describe_keypairs_response = DescribeKeyPairsResponseSet.new
-</span><span class="marked0"><a name="line37" />37       http_response = make_request(&quot;DescribeKeyPairs&quot;, params)
-</span><span class="marked1"><a name="line38" />38       http_xml = http_response.body
-</span><span class="marked0"><a name="line39" />39       doc = REXML::Document.new(http_xml)
-</span><span class="inferred1"><a name="line40" />40       
-</span><span class="marked0"><a name="line41" />41       doc.elements.each(&quot;DescribeKeyPairsResponse/keySet/item&quot;) do |element|
-</span><span class="marked1"><a name="line42" />42         item = Item.new
-</span><span class="marked0"><a name="line43" />43         item.key_name = REXML::XPath.first(element, &quot;keyName&quot;).text
-</span><span class="marked1"><a name="line44" />44         item.key_fingerprint = REXML::XPath.first(element, &quot;keyFingerprint&quot;).text
-</span><span class="marked0"><a name="line45" />45         describe_keypairs_response &lt;&lt; item
-</span><span class="inferred1"><a name="line46" />46       end
-</span><span class="marked0"><a name="line47" />47       return describe_keypairs_response
-</span><span class="inferred1"><a name="line48" />48     end
-</span><span class="inferred0"><a name="line49" />49     
-</span><span class="inferred1"><a name="line50" />50     
-</span><span class="inferred0"><a name="line51" />51     # The DeleteKeyPair operation deletes a keypair.
-</span><span class="marked1"><a name="line52" />52     def delete_keypair(keyName=&quot;&quot;)
-</span><span class="marked0"><a name="line53" />53       raise ArgumentError, &quot;No keyName provided&quot; if keyName.empty?
-</span><span class="marked1"><a name="line54" />54       params = { &quot;KeyName&quot; =&gt; keyName }
-</span><span class="marked0"><a name="line55" />55       make_request(&quot;DeleteKeyPair&quot;, params)
-</span><span class="marked1"><a name="line56" />56       return response = DeleteKeyPairResponse.new
-</span><span class="inferred0"><a name="line57" />57     end
-</span><span class="inferred1"><a name="line58" />58     
-</span><span class="inferred0"><a name="line59" />59   end
-</span><span class="inferred1"><a name="line60" />60   
-</span><span class="inferred0"><a name="line61" />61 end
+</span><span class="inferred1"><a name="line12" />12   
+</span><span class="marked0"><a name="line13" />13     def get_console_output(instanceId=&quot;&quot;)
+</span><span class="marked1"><a name="line14" />14       raise ArgumentError, &quot;No instance ID provided&quot; if instanceId.empty?
+</span><span class="marked0"><a name="line15" />15       params = { &quot;instanceId&quot; =&gt; instanceId }
+</span><span class="marked1"><a name="line16" />16       http_response = make_request(&quot;GetConsoleOutput&quot;, params)
+</span><span class="marked0"><a name="line17" />17       http_xml = http_response.body
+</span><span class="marked1"><a name="line18" />18       doc = REXML::Document.new(http_xml)
+</span><span class="marked0"><a name="line19" />19       response = GetConsoleOutputResponse.new
+</span><span class="marked1"><a name="line20" />20       response.instance_id = REXML::XPath.first(doc, &quot;GetConsoleOutputResponse/instanceId&quot;).text
+</span><span class="marked0"><a name="line21" />21       response.timestamp = REXML::XPath.first(doc, &quot;GetConsoleOutputResponse/timestamp&quot;).text
+</span><span class="marked1"><a name="line22" />22       response.output = REXML::XPath.first(doc, &quot;GetConsoleOutputResponse/output&quot;).text
+</span><span class="marked0"><a name="line23" />23       return response
+</span><span class="inferred1"><a name="line24" />24     end
+</span><span class="inferred0"><a name="line25" />25   end
+</span><span class="inferred1"><a name="line26" />26   
+</span><span class="inferred0"><a name="line27" />27 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

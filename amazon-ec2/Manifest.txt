@@ -1,6 +1,7 @@
 examples/ec2-example.rb
 History.txt
 lib/EC2.rb
+lib/EC2/console.rb
 lib/EC2/exceptions.rb
 lib/EC2/version.rb
 lib/EC2/responses.rb
@@ -17,6 +18,7 @@ RUNNING_TESTS.txt
 scripts/txt2html
 setup.rb
 test/test_EC2.rb
+test/test_EC2_console.rb
 test/test_EC2_image_attributes.rb
 test/test_EC2_images.rb
 test/test_EC2_instances.rb
