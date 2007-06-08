@@ -13,6 +13,7 @@ License.txt
 Manifest.txt
 Rakefile
 README.txt
+RUNNING_TESTS.txt
 scripts/txt2html
 setup.rb
 test/test_EC2.rb

@@ -99,6 +99,9 @@ module EC2
   class RunInstancesResponse < Response
   end
   
+  class CreateKeyPairResponse < Response
+  end
+  
   
   # Sub-Classes of 'Set'
   ################################################
@@ -119,21 +122,6 @@ module EC2
   end
   
 # TODO : THESE METHODS NEED TO BE EXTRACTED FROM HERE AND BUILT INTO THEIR RESPECTIVE CALLING METHODS!
-
-#  class CreateKeyPairResponse < Response
-#    ELEMENT_XPATH = "CreateKeyPairResponse"
-#    def parse
-#      doc = REXML::Document.new(@http_xml)
-#      element = REXML::XPath.first(doc, ELEMENT_XPATH)
-#      
-#      keyName = REXML::XPath.first(element, "keyName").text
-#      keyFingerprint = REXML::XPath.first(element, "keyFingerprint").text
-#      keyMaterial = REXML::XPath.first(element, "keyMaterial").text
-#      
-#      line = [["KEYPAIR", keyName, keyFingerprint], [keyMaterial]]
-#    end
-#  end
-
 
 #  class DescribeKeyPairsResponse < Response
 #    ELEMENT_XPATH = "DescribeKeyPairsResponse/keySet/item"

@@ -106,6 +106,9 @@ end
 desc 'Generate and upload website files'
 task :website => [:website_generate, :website_upload]
 
+desc 'Run all types of tests that we have defined'
+task :test_all => [:test, :test_deps, :test_coverage]
+
 desc 'Release the website and new gem version'
 task :deploy => [:check_version, :website, :release] do
   puts "Remember to create SVN tag:"
@@ -116,7 +119,7 @@ task :deploy => [:check_version, :website, :release] do
 end
 
 desc 'Runs tasks website_generate and install_gem as a local deployment of the gem'
-task :local_deploy => [:website_generate, :install_gem]
+task :local_deploy => [:website_generate, :install_gem, :test_all]
 
 task :check_version do
   unless ENV['VERSION']
@@ -129,4 +132,8 @@ task :check_version do
   end
 end
 
+desc 'Runs RCOV and generates test coverage reports which are stored in coverage/ dir'
+task :test_coverage do
+  sh %{rcov -T test/*.rb}
+end
 

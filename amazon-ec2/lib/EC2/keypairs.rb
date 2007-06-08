@@ -13,10 +13,19 @@ module EC2
     # The CreateKeyPair operation creates a new 2048 bit RSA keypair 
     # and returns a unique ID that can be used to reference this 
     # keypair when launching new instances.
-    def create_keypair(keyName)
+    def create_keypair(keyName="")
+      raise ArgumentError, "No keyName provided" if keyName.empty?
       params = { "KeyName" => keyName }
-      CreateKeyPairResponse.new(make_request("CreateKeyPair", params))
+      http_response = make_request("CreateKeyPair", params)
+      http_xml = http_response.body
+      doc = REXML::Document.new(http_xml)
+      response = CreateKeyPairResponse.new
+      response.key_name = REXML::XPath.first(doc, "CreateKeyPairResponse/keyName").text
+      response.key_fingerprint = REXML::XPath.first(doc, "CreateKeyPairResponse/keyFingerprint").text
+      response.key_material = REXML::XPath.first(doc, "CreateKeyPairResponse/keyMaterial").text
+      return response
     end
+    
     
     # The DescribeKeyPairs operation returns information about keypairs 
     # available for use by the user making the request. Selected keypairs 
@@ -26,6 +35,7 @@ module EC2
       params = pathlist("KeyName", keyNames)
       DescribeKeyPairsResponse.new(make_request("DescribeKeyPairs", params))
     end
+    
     
     # The DeleteKeyPair operation deletes a keypair.
     def delete_keypair(keyName)
