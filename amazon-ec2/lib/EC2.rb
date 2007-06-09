@@ -1,6 +1,6 @@
-# Amazon Web Services EC2 Query API Ruby Library
-# This library has been packaged as a Ruby Gem 
-# by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
+# Amazon Web Services EC2 Query API Ruby library.  This library was 
+# heavily modified from original Amazon Web Services sample code 
+# and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
 # 
 # Source code and gem hosted on RubyForge
 # under the Ruby License as of 12/14/2006:
@@ -28,9 +28,6 @@ module EC2
   
   # Which host FQDN will we connect to for all API calls to AWS?
   DEFAULT_HOST = 'ec2.amazonaws.com'
-  
-  # Define the ports to use for SSL(true) or Non-SSL(false) connections.
-  PORTS_BY_SECURITY = { true => 443, false => 80 }
   
   # This is the version of the API as defined by Amazon Web Services
   API_VERSION = '2007-01-19'
@@ -78,14 +75,36 @@ module EC2
   # with EC2 Query API interface.
   class AWSAuthConnection
     
-    def initialize(aws_access_key_id, aws_secret_access_key, is_secure=true,
-                   server=DEFAULT_HOST, port=PORTS_BY_SECURITY[is_secure])
+    def initialize( options = {} )
       
-      @aws_access_key_id = aws_access_key_id
-      @aws_secret_access_key = aws_secret_access_key
-      @http = Net::HTTP.new(server, port)
-      @http.use_ssl = is_secure
-      # Don't verify the SSL certificates.  Avoids SSL Cert warning on every GET.
+      options = { :aws_access_key_id => "",
+                  :aws_secret_access_key => "",
+                  :is_secure => true,
+                  :server => DEFAULT_HOST
+                  }.merge(options)
+      
+      raise ArgumentError, "No :aws_access_key_id provided" if options[:aws_access_key_id].nil? || options[:aws_access_key_id].empty?
+      raise ArgumentError, "No :aws_secret_access_key provided" if options[:aws_secret_access_key].nil? || options[:aws_secret_access_key].empty?
+      raise ArgumentError, "No :is_secure value provided" if options[:is_secure].nil?
+      raise ArgumentError, "Invalid :is_secure value provided, only 'true' or 'false'" unless options[:is_secure] == true || options[:is_secure] == false
+      raise ArgumentError, "No :server provided" if options[:server].nil? || options[:server].empty?
+      
+      # based on the :is_secure boolean, determine which port we should connect to
+      case options[:is_secure]
+      when true
+        # https
+        @port = 443
+      when false
+        # http
+        @port = 80
+      end
+      
+      @aws_access_key_id = options[:aws_access_key_id]
+      @aws_secret_access_key = options[:aws_secret_access_key]
+      @http = Net::HTTP.new(options[:server], @port)
+      @http.use_ssl = options[:is_secure]
+      
+      # Don't verify the SSL certificates.  Avoids SSL Cert warning in log on every GET.
       @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       
     end

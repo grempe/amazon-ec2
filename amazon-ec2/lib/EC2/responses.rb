@@ -1,6 +1,6 @@
-# Amazon Web Services EC2 Query API Ruby Library
-# This library has been packaged as a Ruby Gem 
-# by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
+# Amazon Web Services EC2 Query API Ruby library.  This library was 
+# heavily modified from original Amazon Web Services sample code 
+# and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
 # 
 # Source code and gem hosted on RubyForge
 # under the Ruby License as of 12/14/2006:
@@ -141,81 +141,5 @@ module EC2
   class LaunchPermissionResponseSet < Set
   end
   
-# TODO : THESE METHODS NEED TO BE EXTRACTED FROM HERE AND BUILT INTO THEIR RESPECTIVE CALLING METHODS!
-
-#  class CreateSecurityGroupResponse < Response
-#    def parse
-#      # If we don't get an error, the creation succeeded.
-#      [["Security Group created."]]
-#    end
-#  end
-
-
-#  class DescribeSecurityGroupsResponse < Response
-#    ELEMENT_XPATH = "DescribeSecurityGroupsResponse/securityGroupInfo/item"
-#    def parse
-#      doc = REXML::Document.new(@http_xml)
-#      lines = []
-#      
-#      doc.elements.each(ELEMENT_XPATH) do |rootelement|
-#        groupName = REXML::XPath.first(rootelement, "groupName").text
-#        ownerId = REXML::XPath.first(rootelement, "ownerId").text
-#        groupDescription = REXML::XPath.first(rootelement, "groupDescription").text
-#        lines << ["GROUP", ownerId, groupName, groupDescription]
-#        rootelement.elements.each("ipPermissions/item") do |element|
-#          ipProtocol = REXML::XPath.first(element, "ipProtocol").text
-#          fromPort = REXML::XPath.first(element, "fromPort").text
-#          toPort = REXML::XPath.first(element, "toPort").text
-#          permArr = [
-#                     "PERMISSION",
-#                     ownerId,
-#                     groupName,
-#                     "ALLOWS",
-#                     ipProtocol,
-#                     fromPort,
-#                     toPort,
-#                     "FROM"
-#                    ]
-#          element.elements.each("groups/item") do |subelement|
-#            userId = REXML::XPath.first(subelement, "userId").text
-#            targetGroupName = REXML::XPath.first(subelement, "groupName").text
-#            lines << permArr + ["USER", userId, "GRPNAME", targetGroupName]
-#          end
-#          element.elements.each("ipRanges/item") do |subelement|
-#            cidrIp = REXML::XPath.first(subelement, "cidrIp").text
-#            lines << permArr + ["CIDR", cidrIp]
-#          end
-#        end
-#      end
-#      lines
-#    end
-#  end
-
-
-#  class DeleteSecurityGroupResponse < Response
-#    def parse
-#      # If we don't get an error, the deletion succeeded.
-#      [["Security Group deleted."]]
-#    end
-#  end
-
-
-#  class AuthorizeSecurityGroupIngressResponse < Response
-#    def parse
-#      # If we don't get an error, the authorization succeeded.
-#      [["Ingress authorized."]]
-#    end
-#  end
-
-
-#  class RevokeSecurityGroupIngressResponse < Response
-#    def parse
-#      # If we don't get an error, the revocation succeeded.
-#      [["Ingress revoked."]]
-#    end
-#  end
-
-
-# end EC2 Module
+  
 end
-

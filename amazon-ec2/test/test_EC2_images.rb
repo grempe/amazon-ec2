@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "An EC2 image " do
   
   setup do
-    @ec2 = EC2::AWSAuthConnection.new('not a key', 'not a secret')
+    @ec2 = EC2::AWSAuthConnection.new( :aws_access_key_id => "not a key", :aws_secret_access_key => "not a secret" )
     
     @register_image_response_body = <<-RESPONSE
     <RegisterImageResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19"> 
@@ -44,14 +44,14 @@ context "An EC2 image " do
   specify "should be able to be registered" do
     @ec2.stubs(:make_request).with('RegisterImage', {"ImageLocation"=>"mybucket-myimage.manifest.xml"}).
       returns stub(:body => @register_image_response_body, :is_a? => true)
-    @ec2.register_image('mybucket-myimage.manifest.xml').image_id.should.equal "ami-61a54008"
-    @ec2.register_image('mybucket-myimage.manifest.xml').should.be.an.instance_of EC2::RegisterImageResponse
+    @ec2.register_image(:image_location => "mybucket-myimage.manifest.xml").image_id.should.equal "ami-61a54008"
+    @ec2.register_image(:image_location => "mybucket-myimage.manifest.xml").should.be.an.instance_of EC2::RegisterImageResponse
   end
   
   
   specify "method register_image should raise an exception when called without nil/empty string arguments" do
     lambda { @ec2.register_image() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.register_image("") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.register_image(:image_location => "") }.should.raise(EC2::ArgumentError)
   end
   
   
@@ -76,9 +76,9 @@ context "An EC2 image " do
   specify "should be able to be described by an Array of ImageId.N ID's and return an array of Items" do
     @ec2.stubs(:make_request).with('DescribeImages', {"ImageId.1"=>"ami-61a54008", "ImageId.2"=>"ami-61a54009"}).
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images(["ami-61a54008", "ami-61a54009"]).length.should.equal 2
+    @ec2.describe_images( :image_id => ["ami-61a54008", "ami-61a54009"] ).length.should.equal 2
     
-    response = @ec2.describe_images(["ami-61a54008", "ami-61a54009"])
+    response = @ec2.describe_images( :image_id => ["ami-61a54008", "ami-61a54009"] )
     
     # test first 'Item' object returned
     response[0].image_id.should.equal "ami-61a54008"
@@ -99,10 +99,10 @@ context "An EC2 image " do
   specify "should be able to be described by an owners with Owner.N ID's and return an array of Items" do
     @ec2.stubs(:make_request).with('DescribeImages', "Owner.1" => "AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "Owner.2" => "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ").
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images([], ["AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"], []).length.should.equal 2
+    @ec2.describe_images( :owner_id => ["AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"] ).length.should.equal 2
     
     # owner ID's
-    response = @ec2.describe_images([],["AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"],[])
+    response = @ec2.describe_images( :owner_id => ["AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"] )
     response[0].image_id.should.equal "ami-61a54008"
     response[1].image_id.should.equal "ami-61a54009"
   end
@@ -111,10 +111,10 @@ context "An EC2 image " do
   specify "should be able to be described by an owner of 'self' and return an array of Items that I own" do
     @ec2.stubs(:make_request).with('DescribeImages', "Owner.1" => "self").
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images([], ["self"], []).length.should.equal 2
+    @ec2.describe_images( :owner_id => "self" ).length.should.equal 2
     
     # 'self' - Those that I own
-    response = @ec2.describe_images([],["self"],[])
+    response = @ec2.describe_images( :owner_id => "self" )
     response[0].image_id.should.equal "ami-61a54008"
   end
   
@@ -122,10 +122,10 @@ context "An EC2 image " do
   specify "should be able to be described by an owner of 'amazon' and return an array of Items that are Amazon Public AMI's" do
     @ec2.stubs(:make_request).with('DescribeImages', "Owner.1" => "amazon").
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images([], ["amazon"], []).length.should.equal 2
+    @ec2.describe_images( :owner_id => "amazon" ).length.should.equal 2
     
     # 'self' - Those that I own
-    response = @ec2.describe_images([],["amazon"],[])
+    response = @ec2.describe_images( :owner_id => "amazon" )
     response[0].image_id.should.equal "ami-61a54008"
   end
   
@@ -133,10 +133,10 @@ context "An EC2 image " do
   specify "should be able to be described by an owners with Owner.N ID's who can execute AMI's and return an array of Items" do
     @ec2.stubs(:make_request).with('DescribeImages', "ExecutableBy.1" => "AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ExecutableBy.2" => "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ").
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images([], [], ["AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"]).length.should.equal 2
+    @ec2.describe_images( :executable_by => ["AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"] ).length.should.equal 2
     
     # executable by owner ID's
-    response = @ec2.describe_images([], [], ["AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"])
+    response = @ec2.describe_images( :executable_by => ["AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"] )
     response[0].image_id.should.equal "ami-61a54008"
     response[1].image_id.should.equal "ami-61a54009"
   end
@@ -145,10 +145,10 @@ context "An EC2 image " do
   specify "should be able to be described by an owners with Owner.N of 'self' who can execute AMI's and return an array of Items" do
     @ec2.stubs(:make_request).with('DescribeImages', "ExecutableBy.1" => "self").
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images([], [], ["self"]).length.should.equal 2
+    @ec2.describe_images( :executable_by => "self" ).length.should.equal 2
     
     # executable by owner ID's
-    response = @ec2.describe_images([], [], ["self"])
+    response = @ec2.describe_images( :executable_by => "self" )
     response[0].image_id.should.equal "ami-61a54008"
     response[1].image_id.should.equal "ami-61a54009"
   end
@@ -157,10 +157,10 @@ context "An EC2 image " do
   specify "should be able to be described by an owners with Owner.N of 'all' who can execute AMI's and return an array of Items" do
     @ec2.stubs(:make_request).with('DescribeImages', "ExecutableBy.1" => "all").
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images([], [], ["all"]).length.should.equal 2
+    @ec2.describe_images( :executable_by => "all" ).length.should.equal 2
     
     # executable by owner ID's
-    response = @ec2.describe_images([], [], ["all"])
+    response = @ec2.describe_images( :executable_by => "all" )
     response[0].image_id.should.equal "ami-61a54008"
     response[1].image_id.should.equal "ami-61a54009"
   end
@@ -169,13 +169,14 @@ context "An EC2 image " do
   specify "should be able to be de-registered" do
     @ec2.expects(:make_request).with('DeregisterImage', {"ImageId"=>"ami-61a54008"}).
       returns stub(:body => @deregister_image_response_body, :is_a? => true)
-    @ec2.deregister_image('ami-61a54008').should.be.an.instance_of EC2::DeregisterImageResponse
+    @ec2.deregister_image(:image_id => "ami-61a54008" ).should.be.an.instance_of EC2::DeregisterImageResponse
   end
   
   
   specify "method deregister_image should raise an exception when called without nil/empty string arguments" do
     lambda { @ec2.deregister_image() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.deregister_image("") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.deregister_image( :image_id => nil ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.deregister_image( :image_id => "" ) }.should.raise(EC2::ArgumentError)
   end
   
   

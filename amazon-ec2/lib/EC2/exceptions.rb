@@ -1,6 +1,6 @@
-# Amazon Web Services EC2 Query API Ruby Library
-# This library has been packaged as a Ruby Gem 
-# by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
+# Amazon Web Services EC2 Query API Ruby library.  This library was 
+# heavily modified from original Amazon Web Services sample code 
+# and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
 # 
 # Source code and gem hosted on RubyForge
 # under the Ruby License as of 12/14/2006:
@@ -12,9 +12,6 @@ module EC2
   
   # All of our errors are superclassed by Error < RuntimeError
   class Error < RuntimeError; end
-  
-  # An error with the http request
-  class HttpError < Error; end
   
   # A client side only argument error
   class ArgumentError < Error; end

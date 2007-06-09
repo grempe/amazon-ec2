@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "The EC2 console " do
   
   setup do
-    @ec2 = EC2::AWSAuthConnection.new('not a key', 'not a secret')
+    @ec2 = EC2::AWSAuthConnection.new( :aws_access_key_id => "not a key", :aws_secret_access_key => "not a secret" )
     
     @get_console_output_response_body = <<-RESPONSE
     <GetConsoleOutputResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
@@ -27,14 +27,15 @@ context "The EC2 console " do
   specify "should return info written to a specific instances console" do
     @ec2.stubs(:make_request).with('GetConsoleOutput', {"instanceId"=>"i-2ea64347"}).
        returns stub(:body => @get_console_output_response_body, :is_a? => true)
-    @ec2.get_console_output("i-2ea64347").should.be.an.instance_of EC2::GetConsoleOutputResponse
-    response = @ec2.get_console_output("i-2ea64347")
+    @ec2.get_console_output( :instance_id => "i-2ea64347" ).should.be.an.instance_of EC2::GetConsoleOutputResponse
+    response = @ec2.get_console_output( :instance_id => "i-2ea64347" )
   end
   
   
   specify "method get_console_output should raise an exception when called without nil/empty string arguments" do
     lambda { @ec2.get_console_output() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.get_console_output("") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.get_console_output(:instance_id => nil) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.get_console_output(:instance_id => "") }.should.raise(EC2::ArgumentError)
   end
   
   

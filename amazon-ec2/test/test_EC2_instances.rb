@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "EC2 instances " do
   
   setup do
-    @ec2 = EC2::AWSAuthConnection.new('not a key', 'not a secret')
+    @ec2 = EC2::AWSAuthConnection.new( :aws_access_key_id => "not a key", :aws_secret_access_key => "not a secret" )
     
     @run_instances_response_body = <<-RESPONSE
     <RunInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
@@ -121,8 +121,10 @@ context "EC2 instances " do
   specify "should be able to be run" do
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    @ec2.run_instances("ami-60a54009").should.be.an.instance_of EC2::RunInstancesResponse
-    response = @ec2.run_instances("ami-60a54009")
+      
+    @ec2.run_instances( :image_id => "ami-60a54009" ).should.be.an.instance_of EC2::RunInstancesResponse
+    
+    response = @ec2.run_instances( :image_id => "ami-60a54009" )
     response.reservation_id.should.equal "r-47a5402e"
     response.owner_id.should.equal "495219933132"
     response.group_set[0].group_id.should.equal "default"
@@ -160,39 +162,43 @@ context "EC2 instances " do
       returns stub(:body => @run_instances_response_body, :is_a? => true)
     
     lambda { @ec2.run_instances() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances("") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "" ) }.should.raise(EC2::ArgumentError)
     
-    lambda { @ec2.run_instances("ami-60a54009", {:minCount => 1}) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances("ami-60a54009", {:minCount => 0}) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances("ami-60a54009", {:minCount => ""}) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1 ) }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 0 ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => nil ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => "" ) }.should.raise(EC2::ArgumentError)
     
-    lambda { @ec2.run_instances("ami-60a54009", {:maxCount => 1}) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances("ami-60a54009", {:maxCount => 0}) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances("ami-60a54009", {:maxCount => ""}) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => 1 ) }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => 0 ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => nil ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => "" ) }.should.raise(EC2::ArgumentError)
     
-    lambda { @ec2.run_instances("ami-60a54009", {:addressingType => "public"}) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances("ami-60a54009", {:addressingType => "direct"}) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances("ami-60a54009", {:addressingType => ""}) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances("ami-60a54009", {:addressingType => "foo"}) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "public" ) }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "direct" ) }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => nil ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "" ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "foo" ) }.should.raise(EC2::ArgumentError)
     
-    lambda { @ec2.run_instances("ami-60a54009", {:base64Encoded => true}) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances("ami-60a54009", {:base64Encoded => false}) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances("ami-60a54009", {:base64Encoded => ""}) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances("ami-60a54009", {:base64Encoded => "foo"}) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => true ) }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => false ) }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => nil ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => "" ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => "foo" ) }.should.raise(EC2::ArgumentError)
   end
   
   
-  specify "should be able to call run_instances with userData and base64Encoded = true (default is false)" do
+  specify "should be able to call run_instances with :user_data and :base64_encoded => true (default is false)" do
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "foo").
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    @ec2.run_instances("ami-60a54009", {:minCount => 1, :maxCount => 1, :groupIds => [], :userData => "foo", :base64Encoded => true}).should.be.an.instance_of EC2::RunInstancesResponse
+    @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :group_id => [], :user_data => "foo", :base64_encoded => true ).should.be.an.instance_of EC2::RunInstancesResponse
   end
   
   
-  specify "should be able to call run_instances with userData and base64Encoded = false" do
+  specify "should be able to call run_instances with :user_data and :base64_encoded => false" do
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "Zm9v").
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    @ec2.run_instances("ami-60a54009", {:minCount => 1, :maxCount => 1, :groupIds => [], :userData => "foo", :base64Encoded => false}).should.be.an.instance_of EC2::RunInstancesResponse
+    @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :group_id => [], :user_data => "foo", :base64_encoded => false ).should.be.an.instance_of EC2::RunInstancesResponse
   end
   
   
@@ -223,11 +229,11 @@ context "EC2 instances " do
   end
   
   
-  specify "should be able to be described with params of Array of instanceIds and return an array of Items" do
+  specify "should be able to be described with params of Array of :instance_id's and return an array of Items" do
     @ec2.stubs(:make_request).with('DescribeInstances', {"InstanceId.1" => "i-28a64341"}).
       returns stub(:body => @describe_instances_response_body, :is_a? => true)
-    @ec2.describe_instances(["i-28a64341"]).length.should.equal 1
-    response = @ec2.describe_instances(["i-28a64341"])
+    @ec2.describe_instances( :instance_id => "i-28a64341" ).length.should.equal 1
+    response = @ec2.describe_instances( :instance_id => "i-28a64341" )
     response[0].reservation_id.should.equal "r-44a5402d"
     response[0].owner_id.should.equal "UYY3TLBUXIEON5NQVUUX6OMPWBZIQNFM"
     response[0].group_set[0].group_id.should.equal "default"
@@ -243,29 +249,31 @@ context "EC2 instances " do
   
   specify "method reboot_instances should raise an exception when called without nil/empty string arguments" do
     lambda { @ec2.reboot_instances() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.reboot_instances("") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.reboot_instances( :instance_id => nil ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.reboot_instances( :instance_id => "" ) }.should.raise(EC2::ArgumentError)
   end
   
   
-  specify "should be able to be rebooted when provided with an instance ID" do
+  specify "should be able to be rebooted when provided with an :instance_id" do
     @ec2.expects(:make_request).with('RebootInstances', {"InstanceId.1"=>"i-2ea64347", "InstanceId.2"=>"i-21a64348"}).
       returns stub(:body => @reboot_instances_response_body, :is_a? => true)
-    @ec2.reboot_instances(["i-2ea64347", "i-21a64348"]).class.should.equal EC2::RebootInstancesResponse
+    @ec2.reboot_instances( :instance_id => ["i-2ea64347", "i-21a64348"] ).class.should.equal EC2::RebootInstancesResponse
   end
   
   
   specify "method terminate_instances should raise an exception when called without nil/empty string arguments" do
     lambda { @ec2.terminate_instances() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.terminate_instances("") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.terminate_instances( :instance_id => nil ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.terminate_instances( :instance_id => "" ) }.should.raise(EC2::ArgumentError)
   end
   
   
-  specify "should be able to be terminated when provided with an instance ID" do
+  specify "should be able to be terminated when provided with an :instance_id" do
     @ec2.stubs(:make_request).with('TerminateInstances', {"InstanceId.1"=>"i-28a64341", "InstanceId.2"=>"i-21a64348"}).
       returns stub(:body => @terminate_instances_response_body, :is_a? => true)
-    @ec2.terminate_instances(["i-28a64341", "i-21a64348"]).class.should.equal EC2::TerminateInstancesResponseSet
+    @ec2.terminate_instances( :instance_id => ["i-28a64341", "i-21a64348"] ).class.should.equal EC2::TerminateInstancesResponseSet
     
-    @response = @ec2.terminate_instances(["i-28a64341", "i-21a64348"])
+    @response = @ec2.terminate_instances( :instance_id => ["i-28a64341", "i-21a64348"] )
     
     @response[0].instance_id.should.equal "i-28a64341"
     @response[0].shutdown_state_code.should.equal "32"
@@ -279,6 +287,5 @@ context "EC2 instances " do
     @response[1].previous_state_code.should.equal "0"
     @response[1].previous_state_name.should.equal "pending"
   end
-  
   
 end

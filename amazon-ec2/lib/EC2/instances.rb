@@ -1,6 +1,6 @@
-# Amazon Web Services EC2 Query API Ruby Library
-# This library has been packaged as a Ruby Gem 
-# by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
+# Amazon Web Services EC2 Query API Ruby library.  This library was 
+# heavily modified from original Amazon Web Services sample code 
+# and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
 # 
 # Source code and gem hosted on RubyForge
 # under the Ruby License as of 12/14/2006:
@@ -44,47 +44,45 @@ module EC2
     # time (as part of rclocal, for example) allowing for secure 
     # password-less access. As the need arises, other formats will 
     # also be considered.
-    def run_instances(imageId="", kwargs={})
+    def run_instances( options = {} )
       
-      # setup the default input parameters hash
-      in_params = { :minCount=>1, 
-                    :maxCount=>1,
-                    :keyName=>nil,
-                    :groupIds=>[],
-                    :userData=>nil,
-                    :addressingType=>"public",
-                    :base64Encoded=>false }
-      
-      # Override or extend the default input params with any passed in kwargs
-      in_params.merge!(kwargs)
+      # defaults
+      options = { :image_id => "",
+                  :min_count => 1, 
+                  :max_count => 1,
+                  :key_name => nil,
+                  :group_id => [],
+                  :user_data => nil,
+                  :addressing_type => "public",
+                  :base64_encoded => false }.merge(options)
       
       # Do some validation on the arguments provided
-      raise ArgumentError, "No imageId provided" if imageId.empty?
-      raise ArgumentError, "minCount is not valid" unless in_params[:minCount].to_i > 0
-      raise ArgumentError, "maxCount is not valid" unless in_params[:maxCount].to_i > 0
-      raise ArgumentError, "addressingType must be 'direct' or 'public'" unless in_params[:addressingType] == "public" || in_params[:addressingType] == "direct"
-      raise ArgumentError, "base64Encoded must be 'true' or 'false'" unless in_params[:base64Encoded] == true || in_params[:base64Encoded] == false
+      raise ArgumentError, ":image_id must be provided" if options[:image_id].nil? || options[:image_id].empty?
+      raise ArgumentError, ":min_count is not valid" unless options[:min_count].to_i > 0
+      raise ArgumentError, ":max_count is not valid" unless options[:max_count].to_i > 0
+      raise ArgumentError, ":addressing_type must be 'direct' or 'public'" unless options[:addressing_type] == "public" || options[:addressing_type] == "direct"
+      raise ArgumentError, ":base64_encoded must be 'true' or 'false'" unless options[:base64_encoded] == true || options[:base64_encoded] == false
       
-      # If userData is passed in then URL escape and Base64 encode it
+      # If :user_data is passed in then URL escape and Base64 encode it
       # as needed.  Need for URL Escape + Base64 encoding is determined 
-      # by base64Encoded param.
-      if in_params[:userData]
-        if in_params[:base64Encoded]
-          user_data = in_params[:userData]
+      # by :base64_encoded param.
+      if options[:user_data]
+        if options[:base64_encoded]
+          user_data = options[:user_data]
         else
-          user_data = Base64.encode64(in_params[:userData]).gsub(/\n/,"").strip()
+          user_data = Base64.encode64(options[:user_data]).gsub(/\n/,"").strip()
         end
       else
         user_data = nil
       end
       
       params = {
-        "ImageId"  => imageId,
-        "MinCount" => in_params[:minCount].to_s,
-        "MaxCount" => in_params[:maxCount].to_s,
-      }.merge(pathlist("SecurityGroup", in_params[:groupIds])) 
+        "ImageId"  => options[:image_id],
+        "MinCount" => options[:min_count].to_s,
+        "MaxCount" => options[:max_count].to_s,
+      }.merge(pathlist("SecurityGroup", options[:group_id])) 
       
-      params["KeyName"] = in_params[:keyName] unless in_params[:keyName].nil? 
+      params["KeyName"] = options[:key_name] unless options[:key_name].nil? 
       params["UserData"] = user_data unless user_data.nil?
       
       run_instances_response = RunInstancesResponse.new
@@ -137,9 +135,12 @@ module EC2
     # Recently terminated instances will be included in the returned results 
     # for a small interval subsequent to their termination. This interval 
     # is typically of the order of one hour.
-    def describe_instances(instanceIds=[])
+    def describe_instances( options = {} )
       
-      params = pathlist("InstanceId", instanceIds)
+      # defaults
+      options = { :instance_id => "" }.merge(options)
+      
+      params = pathlist("InstanceId", options[:instance_id])
       desc_instances_response = DescribeInstancesResponseSet.new
       
       http_response = make_request("DescribeInstances", params)
@@ -179,16 +180,18 @@ module EC2
     end
     
     
-    # TODO : Should we use the star (*instanceIds) instead of instanceIds=[] for methods 
-    # like this?  See page 75 in the pickaxe for more info on the *.
-    #
     # The RebootInstances operation requests a reboot of one or more instances. 
     # This operation is asynchronous; it only queues a request to reboot the specified 
     # instance(s). The operation will succeed provided the instances are valid and 
     # belong to the user. Terminated instances will be ignored.
-    def reboot_instances(instanceIds=[])
-      raise ArgumentError, "No instance IDs provided" if instanceIds.empty?
-      params = pathlist("InstanceId", instanceIds)
+    def reboot_instances( options = {} )
+      
+      # defaults
+      options = { :instance_id => "" }.merge(options)
+      
+      raise ArgumentError, "No instance IDs provided" if options[:instance_id].nil? || options[:instance_id].empty?
+      
+      params = pathlist("InstanceId", options[:instance_id])
       make_request("RebootInstances", params)
       return response = RebootInstancesResponse.new
     end
@@ -200,9 +203,14 @@ module EC2
     # Terminated instances remain visible for a short period of time 
     # (approximately one hour) after termination, after which their 
     # instance ID is invalidated.
-    def terminate_instances(instanceIds=[])
-      raise ArgumentError, "No instance IDs provided" if instanceIds.empty?
-      params = pathlist("InstanceId", instanceIds)
+    def terminate_instances( options = {} )
+      
+      # defaults
+      options = { :instance_id => "" }.merge(options)
+      
+      raise ArgumentError, "No :instance_id provided" if options[:instance_id].nil? || options[:instance_id].empty?
+      
+      params = pathlist("InstanceId", options[:instance_id])
       
       terminate_instances_response = TerminateInstancesResponseSet.new
       

@@ -14,7 +14,7 @@ end
 
 SECURITY_GROUP_NAME = "ec2-example-rb-test-group"
 
-ec2 = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+ec2 = EC2::AWSAuthConnection.new( :aws_access_key_id => AWS_ACCESS_KEY_ID, :aws_secret_access_key => AWS_SECRET_ACCESS_KEY )
 
 puts "----- GEM Version -----"
 puts EC2::VERSION::STRING

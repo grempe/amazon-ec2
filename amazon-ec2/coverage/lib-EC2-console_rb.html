@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Sat Jun 09 12:32:19 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Sat Jun 09 16:16:26 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,10 +580,10 @@ span.run100 {
             <a href='lib-EC2-console_rb.html'>lib/EC2/console.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>27</tt>
+            <tt>32</tt>
           </td>
           <td class='lines_code'>
-            <tt>16</tt>
+            <tt>17</tt>
           </td>
           <td>
             <table cellspacing='0' cellpadding='0' align='right'>
@@ -619,33 +619,38 @@ span.run100 {
           </td>
         </tr>
       </tbody>
-    </table><pre><span class="inferred0"><a name="line1" /> 1 # Amazon Web Services EC2 Query API Ruby Library
-</span><span class="inferred1"><a name="line2" /> 2 # This library has been packaged as a Ruby Gem 
-</span><span class="inferred0"><a name="line3" /> 3 # by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
-</span><span class="inferred1"><a name="line4" /> 4 # 
-</span><span class="inferred0"><a name="line5" /> 5 # Source code and gem hosted on RubyForge
-</span><span class="inferred1"><a name="line6" /> 6 # under the Ruby License as of 12/14/2006:
-</span><span class="inferred0"><a name="line7" /> 7 # http://amazon-ec2.rubyforge.org
-</span><span class="inferred1"><a name="line8" /> 8 
-</span><span class="marked0"><a name="line9" /> 9 module EC2
-</span><span class="inferred1"><a name="line10" />10   
-</span><span class="marked0"><a name="line11" />11   class AWSAuthConnection
-</span><span class="inferred1"><a name="line12" />12   
-</span><span class="marked0"><a name="line13" />13     def get_console_output(instanceId=&quot;&quot;)
-</span><span class="marked1"><a name="line14" />14       raise ArgumentError, &quot;No instance ID provided&quot; if instanceId.empty?
-</span><span class="marked0"><a name="line15" />15       params = { &quot;instanceId&quot; =&gt; instanceId }
-</span><span class="marked1"><a name="line16" />16       http_response = make_request(&quot;GetConsoleOutput&quot;, params)
-</span><span class="marked0"><a name="line17" />17       http_xml = http_response.body
-</span><span class="marked1"><a name="line18" />18       doc = REXML::Document.new(http_xml)
-</span><span class="marked0"><a name="line19" />19       response = GetConsoleOutputResponse.new
-</span><span class="marked1"><a name="line20" />20       response.instance_id = REXML::XPath.first(doc, &quot;GetConsoleOutputResponse/instanceId&quot;).text
-</span><span class="marked0"><a name="line21" />21       response.timestamp = REXML::XPath.first(doc, &quot;GetConsoleOutputResponse/timestamp&quot;).text
-</span><span class="marked1"><a name="line22" />22       response.output = REXML::XPath.first(doc, &quot;GetConsoleOutputResponse/output&quot;).text
-</span><span class="marked0"><a name="line23" />23       return response
-</span><span class="inferred1"><a name="line24" />24     end
-</span><span class="inferred0"><a name="line25" />25   end
-</span><span class="inferred1"><a name="line26" />26   
-</span><span class="inferred0"><a name="line27" />27 end
+    </table><pre><span class="inferred1"><a name="line1" /> 1 # Amazon Web Services EC2 Query API Ruby library.  This library was 
+</span><span class="inferred0"><a name="line2" /> 2 # heavily modified from original Amazon Web Services sample code 
+</span><span class="inferred1"><a name="line3" /> 3 # and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
+</span><span class="inferred0"><a name="line4" /> 4 #
+</span><span class="inferred1"><a name="line5" /> 5 # Source code and gem hosted on RubyForge
+</span><span class="inferred0"><a name="line6" /> 6 # under the Ruby License as of 12/14/2006:
+</span><span class="inferred1"><a name="line7" /> 7 # http://amazon-ec2.rubyforge.org
+</span><span class="inferred0"><a name="line8" /> 8 
+</span><span class="marked1"><a name="line9" /> 9 module EC2
+</span><span class="inferred0"><a name="line10" />10   
+</span><span class="marked1"><a name="line11" />11   class AWSAuthConnection
+</span><span class="inferred0"><a name="line12" />12   
+</span><span class="marked1"><a name="line13" />13     def get_console_output(options ={})
+</span><span class="inferred0"><a name="line14" />14       
+</span><span class="inferred1"><a name="line15" />15       # defaults
+</span><span class="marked0"><a name="line16" />16       options = {:instance_id =&gt; &quot;&quot;}.merge(options)
+</span><span class="inferred1"><a name="line17" />17       
+</span><span class="marked0"><a name="line18" />18       raise ArgumentError, &quot;No instance ID provided&quot; if options[:instance_id].nil? || options[:instance_id].empty?
+</span><span class="inferred1"><a name="line19" />19       
+</span><span class="marked0"><a name="line20" />20       params = { &quot;instanceId&quot; =&gt; options[:instance_id] }
+</span><span class="marked1"><a name="line21" />21       http_response = make_request(&quot;GetConsoleOutput&quot;, params)
+</span><span class="marked0"><a name="line22" />22       http_xml = http_response.body
+</span><span class="marked1"><a name="line23" />23       doc = REXML::Document.new(http_xml)
+</span><span class="marked0"><a name="line24" />24       response = GetConsoleOutputResponse.new
+</span><span class="marked1"><a name="line25" />25       response.instance_id = REXML::XPath.first(doc, &quot;GetConsoleOutputResponse/instanceId&quot;).text
+</span><span class="marked0"><a name="line26" />26       response.timestamp = REXML::XPath.first(doc, &quot;GetConsoleOutputResponse/timestamp&quot;).text
+</span><span class="marked1"><a name="line27" />27       response.output = REXML::XPath.first(doc, &quot;GetConsoleOutputResponse/output&quot;).text
+</span><span class="marked0"><a name="line28" />28       return response
+</span><span class="inferred1"><a name="line29" />29     end
+</span><span class="inferred0"><a name="line30" />30   end
+</span><span class="inferred1"><a name="line31" />31   
+</span><span class="inferred0"><a name="line32" />32 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

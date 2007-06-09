@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "EC2 keypairs " do
   
   setup do
-    @ec2 = EC2::AWSAuthConnection.new('not a key', 'not a secret')
+    @ec2 = EC2::AWSAuthConnection.new( :aws_access_key_id => "not a key", :aws_secret_access_key => "not a secret" )
     
     @create_keypair_response_body = <<-RESPONSE
       <CreateKeyPairResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19"> 
@@ -58,8 +58,10 @@ context "EC2 keypairs " do
   specify "should be able to be created" do
     @ec2.stubs(:make_request).with('CreateKeyPair', {"KeyName"=>"example-key-name"}).
       returns stub(:body => @create_keypair_response_body, :is_a? => true)
-    @ec2.create_keypair("example-key-name").should.be.an.instance_of EC2::CreateKeyPairResponse
-    response = @ec2.create_keypair("example-key-name")
+    
+    @ec2.create_keypair( :key_name => "example-key-name" ).should.be.an.instance_of EC2::CreateKeyPairResponse
+    
+    response = @ec2.create_keypair( :key_name => "example-key-name" )
     response.key_name.should.equal "example-key-name"
     response.key_fingerprint.should.equal "1f:51:ae:28:bf:89:e9:d8:1f:25:5d:37:2d:7d:b8:ca:9f:f5:f1:6f"
     response.key_material.should.not.equal ""
@@ -71,27 +73,28 @@ context "EC2 keypairs " do
     @ec2.stubs(:make_request).with('CreateKeyPair', {"KeyName"=>"example-key-name"}).
       returns stub(:body => @create_keypair_response_body, :is_a? => true)
     
-    lambda { @ec2.create_keypair("example-key-name") }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.create_keypair( :key_name => "example-key-name" ) }.should.not.raise(EC2::ArgumentError)
     lambda { @ec2.create_keypair() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.create_keypair("") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.create_keypair( :key_name => nil ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.create_keypair( :key_name => "" ) }.should.raise(EC2::ArgumentError)
   end
   
   
   specify "should be able to be described with describe_keypairs" do
     @ec2.stubs(:make_request).with('DescribeKeyPairs', {"KeyName.1"=>"example-key-name"}).
       returns stub(:body => @describe_keypairs_response_body, :is_a? => true)
-    @ec2.describe_keypairs("example-key-name").should.be.an.instance_of EC2::DescribeKeyPairsResponseSet
-    response = @ec2.describe_keypairs("example-key-name")
+    @ec2.describe_keypairs( :key_name => "example-key-name" ).should.be.an.instance_of EC2::DescribeKeyPairsResponseSet
+    response = @ec2.describe_keypairs( :key_name => "example-key-name" )
     response[0].key_name.should.equal "example-key-name"
     response[0].key_fingerprint.should.equal "1f:51:ae:28:bf:89:e9:d8:1f:25:5d:37:2d:7d:b8:ca:9f:f5:f1:6f"
   end
   
   
-  specify "should be able to be described with describe_keypairs" do
+  specify "should be able to be deleted with delete_keypairs" do
     @ec2.stubs(:make_request).with('DeleteKeyPair', {"KeyName"=>"example-key-name"}).
       returns stub(:body => @delete_keypair_body, :is_a? => true)
-    @ec2.delete_keypair("example-key-name").should.be.an.instance_of EC2::DeleteKeyPairResponse
-    response = @ec2.delete_keypair("example-key-name")
+    @ec2.delete_keypair( :key_name => "example-key-name" ).should.be.an.instance_of EC2::DeleteKeyPairResponse
+    response = @ec2.delete_keypair( :key_name => "example-key-name" )
   end
   
   
@@ -99,9 +102,10 @@ context "EC2 keypairs " do
     @ec2.stubs(:make_request).with('DeleteKeyPair', {"KeyName"=>"example-key-name"}).
       returns stub(:body => @delete_keypair_body, :is_a? => true)
     
-    lambda { @ec2.delete_keypair("example-key-name") }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.delete_keypair( :key_name => "example-key-name" ) }.should.not.raise(EC2::ArgumentError)
     lambda { @ec2.delete_keypair() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.delete_keypair("") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.delete_keypair( :key_name => nil ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.delete_keypair( :key_name => "" ) }.should.raise(EC2::ArgumentError)
   end
   
   
