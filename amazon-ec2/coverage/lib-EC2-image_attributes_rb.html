@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Fri Jun 08 22:08:41 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Fri Jun 08 23:44:01 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,21 +580,21 @@ span.run100 {
             <a href='lib-EC2-image_attributes_rb.html'>lib/EC2/image_attributes.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>86</tt>
+            <tt>118</tt>
           </td>
           <td class='lines_code'>
-            <tt>48</tt>
+            <tt>70</tt>
           </td>
           <td>
             <table cellspacing='0' cellpadding='0' align='right'>
               <tr>
                 <td>
-                  <tt class='coverage_total'>96.5%</tt>&nbsp;</td>
+                  <tt class='coverage_total'>100.0%</tt>&nbsp;</td>
                 <td>
                   <table cellspacing='0' class='percent_graph' cellpadding='0' width='100'>
                     <tr>
-                      <td class='covered' width='97' />
-                      <td class='uncovered' width='3' />
+                      <td class='covered' width='100' />
+                      <td class='uncovered' width='0' />
                     </tr>
                   </table>
                 </td>
@@ -605,12 +605,12 @@ span.run100 {
             <table cellspacing='0' cellpadding='0' align='right'>
               <tr>
                 <td>
-                  <tt class='coverage_code'>93.8%</tt>&nbsp;</td>
+                  <tt class='coverage_code'>100.0%</tt>&nbsp;</td>
                 <td>
                   <table cellspacing='0' class='percent_graph' cellpadding='0' width='100'>
                     <tr>
-                      <td class='covered' width='94' />
-                      <td class='uncovered' width='6' />
+                      <td class='covered' width='100' />
+                      <td class='uncovered' width='0' />
                     </tr>
                   </table>
                 </td>
@@ -619,92 +619,124 @@ span.run100 {
           </td>
         </tr>
       </tbody>
-    </table><pre><span class="inferred0"><a name="line1" /> 1 # Amazon Web Services EC2 Query API Ruby Library
-</span><span class="inferred1"><a name="line2" /> 2 # This library has been packaged as a Ruby Gem 
-</span><span class="inferred0"><a name="line3" /> 3 # by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
-</span><span class="inferred1"><a name="line4" /> 4 # 
-</span><span class="inferred0"><a name="line5" /> 5 # Source code and gem hosted on RubyForge
-</span><span class="inferred1"><a name="line6" /> 6 # under the Ruby License as of 12/14/2006:
-</span><span class="inferred0"><a name="line7" /> 7 # http://amazon-ec2.rubyforge.org
-</span><span class="inferred1"><a name="line8" /> 8 
-</span><span class="marked0"><a name="line9" /> 9 module EC2
-</span><span class="inferred1"><a name="line10" />10   
-</span><span class="marked0"><a name="line11" />11   class AWSAuthConnection
-</span><span class="inferred1"><a name="line12" />12     
-</span><span class="inferred0"><a name="line13" />13     # The ModifyImageAttribute operation modifies an attribute of an AMI.
-</span><span class="inferred1"><a name="line14" />14     #
-</span><span class="inferred0"><a name="line15" />15     # Currently the only attribute supported is launchPermission. By 
-</span><span class="inferred1"><a name="line16" />16     # modifying this attribute it is possible to make an AMI public or 
-</span><span class="inferred0"><a name="line17" />17     # to grant specific users launch permissions for the AMI. To make the 
-</span><span class="inferred1"><a name="line18" />18     # AMI public add the group=all attribute item. To grant launch permissions 
-</span><span class="inferred0"><a name="line19" />19     # for a specific user add a userId=&lt;userid&gt; attribute item.
-</span><span class="marked1"><a name="line20" />20     def modify_image_attribute(options = {:image_id =&gt; &quot;&quot;, :attribute =&gt; &quot;launchPermission&quot;, :operation_type =&gt; &quot;add&quot;, :user_ids =&gt; [], :groups =&gt; []})
-</span><span class="inferred0"><a name="line21" />21       
-</span><span class="marked1"><a name="line22" />22       raise ArgumentError, &quot;No ':image_id' provided&quot; if options[:image_id].nil? || options[:image_id].empty?
-</span><span class="marked0"><a name="line23" />23       raise ArgumentError, &quot;No ':attribute' provided&quot; if options[:attribute].nil? || options[:attribute].empty?
-</span><span class="marked1"><a name="line24" />24       raise ArgumentError, &quot;No ':operation_type' provided&quot; if options[:operation_type].nil? || options[:operation_type].empty?
-</span><span class="inferred0"><a name="line25" />25       
-</span><span class="marked1"><a name="line26" />26       params = {
-</span><span class="inferred0"><a name="line27" />27         &quot;ImageId&quot; =&gt; options[:image_id],
-</span><span class="inferred1"><a name="line28" />28         &quot;Attribute&quot; =&gt; options[:attribute],
-</span><span class="inferred0"><a name="line29" />29         &quot;OperationType&quot; =&gt; options[:operation_type]
-</span><span class="inferred1"><a name="line30" />30       }
-</span><span class="inferred0"><a name="line31" />31       
-</span><span class="inferred1"><a name="line32" />32       # test options provided and make sure they are valid
-</span><span class="marked0"><a name="line33" />33       case options[:attribute]
-</span><span class="marked1"><a name="line34" />34       when &quot;launchPermission&quot;
-</span><span class="marked0"><a name="line35" />35         if options[:user_ids].nil? &amp;&amp; options[:groups].nil?
-</span><span class="marked1"><a name="line36" />36           raise ArgumentError, &quot;Option :attribute=&gt;'launchPermission' requires ':user_ids' or ':groups' options to also be specified&quot;
-</span><span class="inferred0"><a name="line37" />37         end
-</span><span class="inferred1"><a name="line38" />38         
-</span><span class="marked0"><a name="line39" />39         params.merge!(pathlist(&quot;UserId&quot;, options[:user_ids])) unless options[:user_ids].nil?
-</span><span class="marked1"><a name="line40" />40         params.merge!(pathlist(&quot;Group&quot;, options[:groups])) unless options[:groups].nil?
-</span><span class="inferred0"><a name="line41" />41       else
-</span><span class="marked1"><a name="line42" />42         raise ArgumentError, &quot;attribute : #{options[:attribute].to_s} is not an known option.&quot;
-</span><span class="inferred0"><a name="line43" />43       end
-</span><span class="inferred1"><a name="line44" />44       
-</span><span class="inferred0"><a name="line45" />45       # test options provided and make sure they are valid
-</span><span class="marked1"><a name="line46" />46       case options[:operation_type]
-</span><span class="marked0"><a name="line47" />47       when &quot;add&quot;, &quot;remove&quot;
-</span><span class="inferred1"><a name="line48" />48         # these args are ok
-</span><span class="inferred0"><a name="line49" />49       else
-</span><span class="marked1"><a name="line50" />50         raise ArgumentError, &quot;:operation_type was #{options[:operation_type].to_s} but must be 'add' or 'remove'&quot;
-</span><span class="inferred0"><a name="line51" />51       end
-</span><span class="inferred1"><a name="line52" />52       
-</span><span class="marked0"><a name="line53" />53       make_request(&quot;ModifyImageAttribute&quot;, params)
-</span><span class="marked1"><a name="line54" />54       return response = ModifyImageAttributeResponse.new
-</span><span class="inferred0"><a name="line55" />55     end
-</span><span class="inferred1"><a name="line56" />56     
-</span><span class="inferred0"><a name="line57" />57     # The DescribeImageAttribute operation returns information about an attribute of an AMI.
-</span><span class="marked1"><a name="line58" />58     def describe_image_attribute(imageId, attribute)
-</span><span class="uncovered0"><a name="line59" />59       params = { &quot;ImageId&quot; =&gt; imageId, &quot;Attribute&quot; =&gt; attribute }
-</span><span class="uncovered1"><a name="line60" />60       DescribeImageAttributeResponse.new(make_request(&quot;DescribeImageAttribute&quot;, params))
-</span><span class="uncovered0"><a name="line61" />61     end
-</span><span class="inferred1"><a name="line62" />62     
-</span><span class="inferred0"><a name="line63" />63     # The ResetImageAttribute operation resets an attribute of an AMI to its default value.
-</span><span class="marked1"><a name="line64" />64     def reset_image_attribute(options = {:image_id =&gt; &quot;&quot;, :attribute =&gt; &quot;launchPermission&quot;})
-</span><span class="inferred0"><a name="line65" />65       
-</span><span class="marked1"><a name="line66" />66       raise ArgumentError, &quot;No ':image_id' provided&quot; if options[:image_id].nil? || options[:image_id].empty?
-</span><span class="marked0"><a name="line67" />67       raise ArgumentError, &quot;No ':attribute' provided&quot; if options[:attribute].nil? || options[:attribute].empty?
-</span><span class="inferred1"><a name="line68" />68       
-</span><span class="marked0"><a name="line69" />69       params = {&quot;ImageId&quot; =&gt; options[:image_id], 
-</span><span class="inferred1"><a name="line70" />70                 &quot;Attribute&quot; =&gt; options[:attribute] }
-</span><span class="inferred0"><a name="line71" />71       
-</span><span class="inferred1"><a name="line72" />72       # test options provided and make sure they are valid
-</span><span class="marked0"><a name="line73" />73       case options[:attribute]
-</span><span class="marked1"><a name="line74" />74       when &quot;launchPermission&quot;
-</span><span class="inferred0"><a name="line75" />75         # these args are ok
-</span><span class="inferred1"><a name="line76" />76       else
-</span><span class="marked0"><a name="line77" />77         raise ArgumentError, &quot;attribute : #{options[:attribute].to_s} is not an known option.&quot;
-</span><span class="inferred1"><a name="line78" />78       end
-</span><span class="inferred0"><a name="line79" />79       
-</span><span class="marked1"><a name="line80" />80       make_request(&quot;ResetImageAttribute&quot;, params)
-</span><span class="marked0"><a name="line81" />81       return response = ResetImageAttributeResponse.new
-</span><span class="inferred1"><a name="line82" />82     end
-</span><span class="inferred0"><a name="line83" />83     
-</span><span class="inferred1"><a name="line84" />84   end
-</span><span class="inferred0"><a name="line85" />85   
-</span><span class="inferred1"><a name="line86" />86 end
+    </table><pre><span class="inferred0"><a name="line1" />  1 # Amazon Web Services EC2 Query API Ruby Library
+</span><span class="inferred1"><a name="line2" />  2 # This library has been packaged as a Ruby Gem 
+</span><span class="inferred0"><a name="line3" />  3 # by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
+</span><span class="inferred1"><a name="line4" />  4 # 
+</span><span class="inferred0"><a name="line5" />  5 # Source code and gem hosted on RubyForge
+</span><span class="inferred1"><a name="line6" />  6 # under the Ruby License as of 12/14/2006:
+</span><span class="inferred0"><a name="line7" />  7 # http://amazon-ec2.rubyforge.org
+</span><span class="inferred1"><a name="line8" />  8 
+</span><span class="marked0"><a name="line9" />  9 module EC2
+</span><span class="inferred1"><a name="line10" /> 10   
+</span><span class="marked0"><a name="line11" /> 11   class AWSAuthConnection
+</span><span class="inferred1"><a name="line12" /> 12     
+</span><span class="inferred0"><a name="line13" /> 13     # The ModifyImageAttribute operation modifies an attribute of an AMI.
+</span><span class="inferred1"><a name="line14" /> 14     #
+</span><span class="inferred0"><a name="line15" /> 15     # Currently the only attribute supported is launchPermission. By 
+</span><span class="inferred1"><a name="line16" /> 16     # modifying this attribute it is possible to make an AMI public or 
+</span><span class="inferred0"><a name="line17" /> 17     # to grant specific users launch permissions for the AMI. To make the 
+</span><span class="inferred1"><a name="line18" /> 18     # AMI public add the group=all attribute item. To grant launch permissions 
+</span><span class="inferred0"><a name="line19" /> 19     # for a specific user add a userId=&lt;userid&gt; attribute item.
+</span><span class="marked1"><a name="line20" /> 20     def modify_image_attribute(options = {:image_id =&gt; &quot;&quot;, :attribute =&gt; &quot;launchPermission&quot;, :operation_type =&gt; &quot;add&quot;, :user_ids =&gt; [], :groups =&gt; []})
+</span><span class="inferred0"><a name="line21" /> 21       
+</span><span class="marked1"><a name="line22" /> 22       raise ArgumentError, &quot;No ':image_id' provided&quot; if options[:image_id].nil? || options[:image_id].empty?
+</span><span class="marked0"><a name="line23" /> 23       raise ArgumentError, &quot;No ':attribute' provided&quot; if options[:attribute].nil? || options[:attribute].empty?
+</span><span class="marked1"><a name="line24" /> 24       raise ArgumentError, &quot;No ':operation_type' provided&quot; if options[:operation_type].nil? || options[:operation_type].empty?
+</span><span class="inferred0"><a name="line25" /> 25       
+</span><span class="marked1"><a name="line26" /> 26       params = {
+</span><span class="inferred0"><a name="line27" /> 27         &quot;ImageId&quot; =&gt; options[:image_id],
+</span><span class="inferred1"><a name="line28" /> 28         &quot;Attribute&quot; =&gt; options[:attribute],
+</span><span class="inferred0"><a name="line29" /> 29         &quot;OperationType&quot; =&gt; options[:operation_type]
+</span><span class="inferred1"><a name="line30" /> 30       }
+</span><span class="inferred0"><a name="line31" /> 31       
+</span><span class="inferred1"><a name="line32" /> 32       # test options provided and make sure they are valid
+</span><span class="marked0"><a name="line33" /> 33       case options[:attribute]
+</span><span class="marked1"><a name="line34" /> 34       when &quot;launchPermission&quot;
+</span><span class="marked0"><a name="line35" /> 35         if options[:user_ids].nil? &amp;&amp; options[:groups].nil?
+</span><span class="marked1"><a name="line36" /> 36           raise ArgumentError, &quot;Option :attribute=&gt;'launchPermission' requires ':user_ids' or ':groups' options to also be specified&quot;
+</span><span class="inferred0"><a name="line37" /> 37         end
+</span><span class="inferred1"><a name="line38" /> 38         
+</span><span class="marked0"><a name="line39" /> 39         params.merge!(pathlist(&quot;UserId&quot;, options[:user_ids])) unless options[:user_ids].nil?
+</span><span class="marked1"><a name="line40" /> 40         params.merge!(pathlist(&quot;Group&quot;, options[:groups])) unless options[:groups].nil?
+</span><span class="inferred0"><a name="line41" /> 41       else
+</span><span class="marked1"><a name="line42" /> 42         raise ArgumentError, &quot;attribute : #{options[:attribute].to_s} is not an known option.&quot;
+</span><span class="inferred0"><a name="line43" /> 43       end
+</span><span class="inferred1"><a name="line44" /> 44       
+</span><span class="inferred0"><a name="line45" /> 45       # test options provided and make sure they are valid
+</span><span class="marked1"><a name="line46" /> 46       case options[:operation_type]
+</span><span class="marked0"><a name="line47" /> 47       when &quot;add&quot;, &quot;remove&quot;
+</span><span class="inferred1"><a name="line48" /> 48         # these args are ok
+</span><span class="inferred0"><a name="line49" /> 49       else
+</span><span class="marked1"><a name="line50" /> 50         raise ArgumentError, &quot;:operation_type was #{options[:operation_type].to_s} but must be 'add' or 'remove'&quot;
+</span><span class="inferred0"><a name="line51" /> 51       end
+</span><span class="inferred1"><a name="line52" /> 52       
+</span><span class="marked0"><a name="line53" /> 53       make_request(&quot;ModifyImageAttribute&quot;, params)
+</span><span class="marked1"><a name="line54" /> 54       return response = ModifyImageAttributeResponse.new
+</span><span class="inferred0"><a name="line55" /> 55     end
+</span><span class="inferred1"><a name="line56" /> 56     
+</span><span class="inferred0"><a name="line57" /> 57     # The DescribeImageAttribute operation returns information about an attribute of an AMI.
+</span><span class="marked1"><a name="line58" /> 58     def describe_image_attribute(options = {:image_id =&gt; &quot;&quot;, :attribute =&gt; &quot;launchPermission&quot;})
+</span><span class="inferred0"><a name="line59" /> 59       
+</span><span class="marked1"><a name="line60" /> 60       raise ArgumentError, &quot;No ':image_id' provided&quot; if options[:image_id].nil? || options[:image_id].empty?
+</span><span class="marked0"><a name="line61" /> 61       raise ArgumentError, &quot;No ':attribute' provided&quot; if options[:attribute].nil? || options[:attribute].empty?
+</span><span class="inferred1"><a name="line62" /> 62       
+</span><span class="marked0"><a name="line63" /> 63       params = { &quot;ImageId&quot; =&gt; options[:image_id], &quot;Attribute&quot; =&gt; options[:attribute] }
+</span><span class="inferred1"><a name="line64" /> 64       
+</span><span class="inferred0"><a name="line65" /> 65       # test options provided and make sure they are valid
+</span><span class="marked1"><a name="line66" /> 66       case options[:attribute]
+</span><span class="marked0"><a name="line67" /> 67       when &quot;launchPermission&quot;
+</span><span class="inferred1"><a name="line68" /> 68         # these args are ok
+</span><span class="inferred0"><a name="line69" /> 69       else
+</span><span class="marked1"><a name="line70" /> 70         raise ArgumentError, &quot;attribute : #{options[:attribute].to_s} is not an known option.&quot;
+</span><span class="inferred0"><a name="line71" /> 71       end
+</span><span class="inferred1"><a name="line72" /> 72       
+</span><span class="marked0"><a name="line73" /> 73       describe_image_attribute_response = DescribeImageAttributeResponse.new
+</span><span class="inferred1"><a name="line74" /> 74       
+</span><span class="marked0"><a name="line75" /> 75       http_response = make_request(&quot;DescribeImageAttribute&quot;, params)
+</span><span class="marked1"><a name="line76" /> 76       http_xml = http_response.body
+</span><span class="marked0"><a name="line77" /> 77       doc = REXML::Document.new(http_xml)
+</span><span class="inferred1"><a name="line78" /> 78       
+</span><span class="marked0"><a name="line79" /> 79       doc.elements.each(&quot;DescribeImageAttributeResponse&quot;) do |element|
+</span><span class="marked1"><a name="line80" /> 80         describe_image_attribute_response.image_id = REXML::XPath.first(element, &quot;imageId&quot;).text
+</span><span class="inferred0"><a name="line81" /> 81         
+</span><span class="marked1"><a name="line82" /> 82         launch_permission_set = LaunchPermissionResponseSet.new
+</span><span class="marked0"><a name="line83" /> 83         doc.elements.each(&quot;DescribeImageAttributeResponse/launchPermission/item&quot;) do |element|
+</span><span class="marked1"><a name="line84" /> 84           item = Item.new
+</span><span class="marked0"><a name="line85" /> 85           item.group = REXML::XPath.first(element, &quot;group&quot;).text unless REXML::XPath.first(element, &quot;group&quot;).nil?
+</span><span class="marked1"><a name="line86" /> 86           item.user_id = REXML::XPath.first(element, &quot;userId&quot;).text unless REXML::XPath.first(element, &quot;userId&quot;).nil?
+</span><span class="marked0"><a name="line87" /> 87           launch_permission_set &lt;&lt; item
+</span><span class="inferred1"><a name="line88" /> 88         end
+</span><span class="marked0"><a name="line89" /> 89         describe_image_attribute_response.launch_permission_set = launch_permission_set
+</span><span class="inferred1"><a name="line90" /> 90       end
+</span><span class="marked0"><a name="line91" /> 91       return describe_image_attribute_response
+</span><span class="inferred1"><a name="line92" /> 92     end
+</span><span class="inferred0"><a name="line93" /> 93     
+</span><span class="inferred1"><a name="line94" /> 94     
+</span><span class="inferred0"><a name="line95" /> 95     # The ResetImageAttribute operation resets an attribute of an AMI to its default value.
+</span><span class="marked1"><a name="line96" /> 96     def reset_image_attribute(options = {:image_id =&gt; &quot;&quot;, :attribute =&gt; &quot;launchPermission&quot;})
+</span><span class="inferred0"><a name="line97" /> 97       
+</span><span class="marked1"><a name="line98" /> 98       raise ArgumentError, &quot;No ':image_id' provided&quot; if options[:image_id].nil? || options[:image_id].empty?
+</span><span class="marked0"><a name="line99" /> 99       raise ArgumentError, &quot;No ':attribute' provided&quot; if options[:attribute].nil? || options[:attribute].empty?
+</span><span class="inferred1"><a name="line100" />100       
+</span><span class="marked0"><a name="line101" />101       params = {&quot;ImageId&quot; =&gt; options[:image_id], 
+</span><span class="inferred1"><a name="line102" />102                 &quot;Attribute&quot; =&gt; options[:attribute] }
+</span><span class="inferred0"><a name="line103" />103       
+</span><span class="inferred1"><a name="line104" />104       # test options provided and make sure they are valid
+</span><span class="marked0"><a name="line105" />105       case options[:attribute]
+</span><span class="marked1"><a name="line106" />106       when &quot;launchPermission&quot;
+</span><span class="inferred0"><a name="line107" />107         # these args are ok
+</span><span class="inferred1"><a name="line108" />108       else
+</span><span class="marked0"><a name="line109" />109         raise ArgumentError, &quot;attribute : #{options[:attribute].to_s} is not an known option.&quot;
+</span><span class="inferred1"><a name="line110" />110       end
+</span><span class="inferred0"><a name="line111" />111       
+</span><span class="marked1"><a name="line112" />112       make_request(&quot;ResetImageAttribute&quot;, params)
+</span><span class="marked0"><a name="line113" />113       return response = ResetImageAttributeResponse.new
+</span><span class="inferred1"><a name="line114" />114     end
+</span><span class="inferred0"><a name="line115" />115     
+</span><span class="inferred1"><a name="line116" />116   end
+</span><span class="inferred0"><a name="line117" />117   
+</span><span class="inferred1"><a name="line118" />118 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

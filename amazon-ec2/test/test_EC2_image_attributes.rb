@@ -148,4 +148,53 @@ context "EC2 image_attributes " do
   end
   
   
+  specify "method describe_image_attribute should return the proper attributes" do
+    
+    body = <<-RESPONSE
+    <DescribeImageAttributeResponse xm-lns="http://ec2.amazonaws.com/doc/2007-01-19">
+      <imageId>ami-61a54008</imageId>
+      <launchPermission>
+        <item>
+          <group>all</group>
+        </item>
+        <item>
+          <userId>495219933132</userId>
+        </item>
+      </launchPermission>
+    </DescribeImageAttributeResponse>
+    RESPONSE
+    
+    @ec2.stubs(:make_request).with('DescribeImageAttribute', {"ImageId"=>"ami-61a54008", 
+                                                              "Attribute"=>"launchPermission" }).
+      returns stub(:body => body, :is_a? => true)
+    
+    @ec2.describe_image_attribute(:image_id => "ami-61a54008", :attribute => "launchPermission")
+    
+    @ec2.describe_image_attribute(:image_id => "ami-61a54008", :attribute => "launchPermission").
+      should.be.an.instance_of EC2::DescribeImageAttributeResponse
+    
+    response = @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission")
+    response.image_id.should.equal "ami-61a54008"
+    
+  end
+  
+  specify "should raise an exception when describe_image_attribute is called with incorrect arguments" do
+    
+    # method args can't be nil or empty
+    lambda { @ec2.describe_image_attribute() }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.describe_image_attribute(:image_id=>"") }.should.raise(EC2::ArgumentError)
+    
+    # :image_id option must be not be empty or nil
+    lambda { @ec2.describe_image_attribute(:image_id=>nil, :attribute=>"launchPermission") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.describe_image_attribute(:image_id=>"", :attribute=>"launchPermission") }.should.raise(EC2::ArgumentError)
+    
+    # :attribute currently has one option which is 'launchPermission', it should fail with any other value, nil, or empty
+    lambda { @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>nil) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>"") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>"foo") }.should.raise(EC2::ArgumentError)
+    
+  end
+  
+  
+  
 end

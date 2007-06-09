@@ -114,6 +114,9 @@ module EC2
   class ResetImageAttributeResponse < Response
   end
   
+  class DescribeImageAttributeResponse < Response
+  end
+  
   # Sub-Classes of 'Set'
   ################################################
   
@@ -133,6 +136,9 @@ module EC2
   end
   
   class DescribeKeyPairsResponseSet < Set
+  end
+  
+  class LaunchPermissionResponseSet < Set
   end
   
 # TODO : THESE METHODS NEED TO BE EXTRACTED FROM HERE AND BUILT INTO THEIR RESPECTIVE CALLING METHODS!
@@ -206,29 +212,6 @@ module EC2
 #    def parse
 #      # If we don't get an error, the revocation succeeded.
 #      [["Ingress revoked."]]
-#    end
-#  end
-
-
-#  class DescribeImageAttributeResponse < Response
-#    ELEMENT_XPATH = "DescribeImageAttributeResponse"
-#    def parse
-#      doc = REXML::Document.new(@http_xml)
-#      lines = []
-#      
-#      rootelement = REXML::XPath.first(doc, ELEMENT_XPATH)
-#      imageId = REXML::XPath.first(rootelement, "imageId").text
-#      
-#      # Handle launchPermission attributes:
-#      rootelement.elements.each("launchPermission/item/*") do |element|
-#        lines << [
-#                  "launchPermission",
-#                  imageId,
-#                  element.name,
-#                  element.text
-#                 ]
-#      end
-#      lines
 #    end
 #  end
 

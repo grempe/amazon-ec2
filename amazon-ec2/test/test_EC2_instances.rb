@@ -166,6 +166,117 @@ context "EC2 instances " do
     
   end
   
+  
+  specify "should be able to call run_instances with userData and base64Encoded = true (default is false)" do
+    
+    body = <<-RESPONSE
+    <RunInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
+      <reservationId>r-47a5402e</reservationId>
+      <ownerId>495219933132</ownerId>
+      <groupSet>
+        <item>
+          <groupId>default</groupId>
+        </item>
+      </groupSet>
+      <instancesSet>
+        <item>
+          <instanceId>i-2ba64342</instanceId>
+          <imageId>ami-60a54009</imageId>
+          <instanceState>
+            <code>0</code>
+            <name>pending</name>
+          </instanceState>
+          <privateDnsName/>
+          <dnsName/>
+          <keyName>example-key-name</keyName>
+        </item>
+        <item>
+          <instanceId>i-2bc64242</instanceId>
+          <imageId>ami-60a54009</imageId>
+          <instanceState>
+            <code>0</code>
+            <name>pending</name>
+          </instanceState>
+          <privateDnsName/>
+          <dnsName/>
+          <keyName>example-key-name</keyName>
+        </item>
+        <item>
+          <instanceId>i-2be64332</instanceId>
+          <imageId>ami-60a54009</imageId>
+          <instanceState>
+            <code>0</code>
+            <name>pending</name>
+          </instanceState>
+          <privateDnsName/>
+          <dnsName/>
+          <keyName>example-key-name</keyName>
+        </item>
+      </instancesSet>
+    </RunInstancesResponse>
+    RESPONSE
+    
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "foo").
+      returns stub(:body => body, :is_a? => true)
+    @ec2.run_instances("ami-60a54009", {:minCount => 1, :maxCount => 1, :groupIds => [], :userData => "foo", :base64Encoded => true}).should.be.an.instance_of EC2::RunInstancesResponse
+  end
+  
+  
+  specify "should be able to call run_instances with userData and base64Encoded = false" do
+    
+    body = <<-RESPONSE
+    <RunInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
+      <reservationId>r-47a5402e</reservationId>
+      <ownerId>495219933132</ownerId>
+      <groupSet>
+        <item>
+          <groupId>default</groupId>
+        </item>
+      </groupSet>
+      <instancesSet>
+        <item>
+          <instanceId>i-2ba64342</instanceId>
+          <imageId>ami-60a54009</imageId>
+          <instanceState>
+            <code>0</code>
+            <name>pending</name>
+          </instanceState>
+          <privateDnsName/>
+          <dnsName/>
+          <keyName>example-key-name</keyName>
+        </item>
+        <item>
+          <instanceId>i-2bc64242</instanceId>
+          <imageId>ami-60a54009</imageId>
+          <instanceState>
+            <code>0</code>
+            <name>pending</name>
+          </instanceState>
+          <privateDnsName/>
+          <dnsName/>
+          <keyName>example-key-name</keyName>
+        </item>
+        <item>
+          <instanceId>i-2be64332</instanceId>
+          <imageId>ami-60a54009</imageId>
+          <instanceState>
+            <code>0</code>
+            <name>pending</name>
+          </instanceState>
+          <privateDnsName/>
+          <dnsName/>
+          <keyName>example-key-name</keyName>
+        </item>
+      </instancesSet>
+    </RunInstancesResponse>
+    RESPONSE
+    
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "Zm9v").
+      returns stub(:body => body, :is_a? => true)
+    @ec2.run_instances("ami-60a54009", {:minCount => 1, :maxCount => 1, :groupIds => [], :userData => "foo", :base64Encoded => false}).should.be.an.instance_of EC2::RunInstancesResponse
+  end
+  
+  
   specify "should be able to be described and return the correct Ruby response class for parent and members" do
     body = <<-RESPONSE
     <DescribeInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">

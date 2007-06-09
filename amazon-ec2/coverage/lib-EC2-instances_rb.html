@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Fri Jun 08 22:08:41 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Fri Jun 08 23:44:01 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -589,12 +589,12 @@ span.run100 {
             <table cellspacing='0' cellpadding='0' align='right'>
               <tr>
                 <td>
-                  <tt class='coverage_total'>97.8%</tt>&nbsp;</td>
+                  <tt class='coverage_total'>100.0%</tt>&nbsp;</td>
                 <td>
                   <table cellspacing='0' class='percent_graph' cellpadding='0' width='100'>
                     <tr>
-                      <td class='covered' width='98' />
-                      <td class='uncovered' width='2' />
+                      <td class='covered' width='100' />
+                      <td class='uncovered' width='0' />
                     </tr>
                   </table>
                 </td>
@@ -605,12 +605,12 @@ span.run100 {
             <table cellspacing='0' cellpadding='0' align='right'>
               <tr>
                 <td>
-                  <tt class='coverage_code'>95.9%</tt>&nbsp;</td>
+                  <tt class='coverage_code'>100.0%</tt>&nbsp;</td>
                 <td>
                   <table cellspacing='0' class='percent_graph' cellpadding='0' width='100'>
                     <tr>
-                      <td class='covered' width='96' />
-                      <td class='uncovered' width='4' />
+                      <td class='covered' width='100' />
+                      <td class='uncovered' width='0' />
                     </tr>
                   </table>
                 </td>
@@ -690,11 +690,11 @@ span.run100 {
 </span><span class="inferred1"><a name="line69" /> 69       # as needed.  Need for URL Escape + Base64 encoding is determined 
 </span><span class="inferred0"><a name="line70" /> 70       # by base64Encoded param.
 </span><span class="marked1"><a name="line71" /> 71       if in_params[:userData]
-</span><span class="uncovered0"><a name="line72" /> 72         if in_params[:base64Encoded]
-</span><span class="uncovered1"><a name="line73" /> 73           user_data = in_params[:userData]
-</span><span class="uncovered0"><a name="line74" /> 74         else
-</span><span class="uncovered1"><a name="line75" /> 75           user_data = Base64.encode64(in_params[:userData]).gsub(/\n/,&quot;&quot;).strip()
-</span><span class="uncovered0"><a name="line76" /> 76         end
+</span><span class="marked0"><a name="line72" /> 72         if in_params[:base64Encoded]
+</span><span class="marked1"><a name="line73" /> 73           user_data = in_params[:userData]
+</span><span class="inferred0"><a name="line74" /> 74         else
+</span><span class="marked1"><a name="line75" /> 75           user_data = Base64.encode64(in_params[:userData]).gsub(/\n/,&quot;&quot;).strip()
+</span><span class="inferred0"><a name="line76" /> 76         end
 </span><span class="inferred1"><a name="line77" /> 77       else
 </span><span class="marked0"><a name="line78" /> 78         user_data = nil
 </span><span class="inferred1"><a name="line79" /> 79       end

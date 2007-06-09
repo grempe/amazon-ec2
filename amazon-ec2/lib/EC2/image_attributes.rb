@@ -55,10 +55,42 @@ module EC2
     end
     
     # The DescribeImageAttribute operation returns information about an attribute of an AMI.
-    def describe_image_attribute(imageId, attribute)
-      params = { "ImageId" => imageId, "Attribute" => attribute }
-      DescribeImageAttributeResponse.new(make_request("DescribeImageAttribute", params))
+    def describe_image_attribute(options = {:image_id => "", :attribute => "launchPermission"})
+      
+      raise ArgumentError, "No ':image_id' provided" if options[:image_id].nil? || options[:image_id].empty?
+      raise ArgumentError, "No ':attribute' provided" if options[:attribute].nil? || options[:attribute].empty?
+      
+      params = { "ImageId" => options[:image_id], "Attribute" => options[:attribute] }
+      
+      # test options provided and make sure they are valid
+      case options[:attribute]
+      when "launchPermission"
+        # these args are ok
+      else
+        raise ArgumentError, "attribute : #{options[:attribute].to_s} is not an known option."
+      end
+      
+      describe_image_attribute_response = DescribeImageAttributeResponse.new
+      
+      http_response = make_request("DescribeImageAttribute", params)
+      http_xml = http_response.body
+      doc = REXML::Document.new(http_xml)
+      
+      doc.elements.each("DescribeImageAttributeResponse") do |element|
+        describe_image_attribute_response.image_id = REXML::XPath.first(element, "imageId").text
+        
+        launch_permission_set = LaunchPermissionResponseSet.new
+        doc.elements.each("DescribeImageAttributeResponse/launchPermission/item") do |element|
+          item = Item.new
+          item.group = REXML::XPath.first(element, "group").text unless REXML::XPath.first(element, "group").nil?
+          item.user_id = REXML::XPath.first(element, "userId").text unless REXML::XPath.first(element, "userId").nil?
+          launch_permission_set << item
+        end
+        describe_image_attribute_response.launch_permission_set = launch_permission_set
+      end
+      return describe_image_attribute_response
     end
+    
     
     # The ResetImageAttribute operation resets an attribute of an AMI to its default value.
     def reset_image_attribute(options = {:image_id => "", :attribute => "launchPermission"})
