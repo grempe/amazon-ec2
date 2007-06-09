@@ -17,7 +17,7 @@ module EC2
     # to grant specific users launch permissions for the AMI. To make the 
     # AMI public add the group=all attribute item. To grant launch permissions 
     # for a specific user add a userId=<userid> attribute item.
-    def modify_image_attribute(options = {:image_id => "", :attribute => "", :operation_type => "", :user_ids => nil, :groups => nil})
+    def modify_image_attribute(options = {:image_id => "", :attribute => "launchPermission", :operation_type => "add", :user_ids => [], :groups => []})
       
       raise ArgumentError, "No ':image_id' provided" if options[:image_id].nil? || options[:image_id].empty?
       raise ArgumentError, "No ':attribute' provided" if options[:attribute].nil? || options[:attribute].empty?
@@ -47,7 +47,7 @@ module EC2
       when "add", "remove"
         # these args are ok
       else
-        raise ArgumentError, "operationType was #{options[:operation_type].to_s} but must be 'add' or 'remove'"
+        raise ArgumentError, ":operation_type was #{options[:operation_type].to_s} but must be 'add' or 'remove'"
       end
       
       make_request("ModifyImageAttribute", params)
@@ -61,9 +61,24 @@ module EC2
     end
     
     # The ResetImageAttribute operation resets an attribute of an AMI to its default value.
-    def reset_image_attribute(imageId, attribute)
-      params = { "ImageId" => imageId, "Attribute" => attribute }
-      ResetImageAttributeResponse.new(make_request("ResetImageAttribute", params))
+    def reset_image_attribute(options = {:image_id => "", :attribute => "launchPermission"})
+      
+      raise ArgumentError, "No ':image_id' provided" if options[:image_id].nil? || options[:image_id].empty?
+      raise ArgumentError, "No ':attribute' provided" if options[:attribute].nil? || options[:attribute].empty?
+      
+      params = {"ImageId" => options[:image_id], 
+                "Attribute" => options[:attribute] }
+      
+      # test options provided and make sure they are valid
+      case options[:attribute]
+      when "launchPermission"
+        # these args are ok
+      else
+        raise ArgumentError, "attribute : #{options[:attribute].to_s} is not an known option."
+      end
+      
+      make_request("ResetImageAttribute", params)
+      return response = ResetImageAttributeResponse.new
     end
     
   end

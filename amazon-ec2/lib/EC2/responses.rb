@@ -111,6 +111,9 @@ module EC2
   class ModifyImageAttributeResponse < Response
   end
   
+  class ResetImageAttributeResponse < Response
+  end
+  
   # Sub-Classes of 'Set'
   ################################################
   
@@ -203,14 +206,6 @@ module EC2
 #    def parse
 #      # If we don't get an error, the revocation succeeded.
 #      [["Ingress revoked."]]
-#    end
-#  end
-
-
-#  class ResetImageAttributeResponse < Response
-#    def parse
-#      # If we don't get an error, reset succeeded.
-#      [["Image attribute reset."]]
 #    end
 #  end
 
