@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Fri Jun 08 23:44:01 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Sat Jun 09 00:40:41 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -589,12 +589,12 @@ span.run100 {
             <table cellspacing='0' cellpadding='0' align='right'>
               <tr>
                 <td>
-                  <tt class='coverage_total'>91.9%</tt>&nbsp;</td>
+                  <tt class='coverage_total'>100.0%</tt>&nbsp;</td>
                 <td>
                   <table cellspacing='0' class='percent_graph' cellpadding='0' width='100'>
                     <tr>
-                      <td class='covered' width='92' />
-                      <td class='uncovered' width='8' />
+                      <td class='covered' width='100' />
+                      <td class='uncovered' width='0' />
                     </tr>
                   </table>
                 </td>
@@ -605,12 +605,12 @@ span.run100 {
             <table cellspacing='0' cellpadding='0' align='right'>
               <tr>
                 <td>
-                  <tt class='coverage_code'>73.4%</tt>&nbsp;</td>
+                  <tt class='coverage_code'>100.0%</tt>&nbsp;</td>
                 <td>
                   <table cellspacing='0' class='percent_graph' cellpadding='0' width='100'>
                     <tr>
-                      <td class='covered' width='73' />
-                      <td class='uncovered' width='27' />
+                      <td class='covered' width='100' />
+                      <td class='uncovered' width='0' />
                     </tr>
                   </table>
                 </td>
@@ -668,32 +668,32 @@ span.run100 {
 </span><span class="marked0"><a name="line47" /> 47     include Enumerable
 </span><span class="inferred1"><a name="line48" /> 48     
 </span><span class="marked0"><a name="line49" /> 49     def members
-</span><span class="uncovered1"><a name="line50" /> 50       methods(false).grep(/=/).map { |m| m[0...-1] }
-</span><span class="uncovered0"><a name="line51" /> 51     end
+</span><span class="marked1"><a name="line50" /> 50       methods(false).grep(/=/).map { |m| m[0...-1] }
+</span><span class="marked0"><a name="line51" /> 51     end
 </span><span class="inferred1"><a name="line52" /> 52     
 </span><span class="marked0"><a name="line53" /> 53     def each
-</span><span class="uncovered1"><a name="line54" /> 54       members.each do |method|
-</span><span class="uncovered0"><a name="line55" /> 55         yield send(method)
-</span><span class="uncovered1"><a name="line56" /> 56       end
-</span><span class="uncovered0"><a name="line57" /> 57       self
-</span><span class="uncovered1"><a name="line58" /> 58     end
+</span><span class="marked1"><a name="line54" /> 54       members.each do |method|
+</span><span class="marked0"><a name="line55" /> 55         yield send(method)
+</span><span class="inferred1"><a name="line56" /> 56       end
+</span><span class="marked0"><a name="line57" /> 57       self
+</span><span class="inferred1"><a name="line58" /> 58     end
 </span><span class="inferred0"><a name="line59" /> 59     
 </span><span class="marked1"><a name="line60" /> 60     def each_pair
-</span><span class="uncovered0"><a name="line61" /> 61       members.each do |method|
-</span><span class="uncovered1"><a name="line62" /> 62         yield method, send(method)
-</span><span class="uncovered0"><a name="line63" /> 63       end
-</span><span class="uncovered1"><a name="line64" /> 64       self
-</span><span class="uncovered0"><a name="line65" /> 65     end
+</span><span class="marked0"><a name="line61" /> 61       members.each do |method|
+</span><span class="marked1"><a name="line62" /> 62         yield method, send(method)
+</span><span class="inferred0"><a name="line63" /> 63       end
+</span><span class="marked1"><a name="line64" /> 64       self
+</span><span class="inferred0"><a name="line65" /> 65     end
 </span><span class="inferred1"><a name="line66" /> 66      
 </span><span class="marked0"><a name="line67" /> 67     def [](member)
-</span><span class="uncovered1"><a name="line68" /> 68       send(member)
-</span><span class="uncovered0"><a name="line69" /> 69     end
+</span><span class="marked1"><a name="line68" /> 68       send(member)
+</span><span class="marked0"><a name="line69" /> 69     end
 </span><span class="inferred1"><a name="line70" /> 70     
 </span><span class="marked0"><a name="line71" /> 71     def []=(member, value)
-</span><span class="uncovered1"><a name="line72" /> 72       send(&quot;#{member}=&quot;, value)
-</span><span class="uncovered0"><a name="line73" /> 73     end
-</span><span class="uncovered1"><a name="line74" /> 74     
-</span><span class="uncovered0"><a name="line75" /> 75   end
+</span><span class="marked1"><a name="line72" /> 72       send(&quot;#{member}=&quot;, value)
+</span><span class="marked0"><a name="line73" /> 73     end
+</span><span class="inferred1"><a name="line74" /> 74     
+</span><span class="inferred0"><a name="line75" /> 75   end
 </span><span class="inferred1"><a name="line76" /> 76   
 </span><span class="inferred0"><a name="line77" /> 77   # The superclass for all List objects which inherits from Array since we are
 </span><span class="inferred1"><a name="line78" /> 78   # just using these objects to collect up other responses (e.g. a collection of Images)
