@@ -108,6 +108,9 @@ module EC2
   class GetConsoleOutputResponse < Response
   end
   
+  class ModifyImageAttributeResponse < Response
+  end
+  
   # Sub-Classes of 'Set'
   ################################################
   
@@ -200,14 +203,6 @@ module EC2
 #    def parse
 #      # If we don't get an error, the revocation succeeded.
 #      [["Ingress revoked."]]
-#    end
-#  end
-
-
-#  class ModifyImageAttributeResponse < Response
-#    def parse
-#      # If we don't get an error, modification succeeded.
-#      [["Image attribute modified."]]
 #    end
 #  end
 

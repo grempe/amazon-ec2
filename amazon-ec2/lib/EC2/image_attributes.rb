@@ -17,17 +17,41 @@ module EC2
     # to grant specific users launch permissions for the AMI. To make the 
     # AMI public add the group=all attribute item. To grant launch permissions 
     # for a specific user add a userId=<userid> attribute item.
-    def modify_image_attribute(imageId, attribute, operationType, attributeValueHash)
+    def modify_image_attribute(options = {:image_id => "", :attribute => "", :operation_type => "", :user_ids => nil, :groups => nil})
+      
+      raise ArgumentError, "No ':image_id' provided" if options[:image_id].nil? || options[:image_id].empty?
+      raise ArgumentError, "No ':attribute' provided" if options[:attribute].nil? || options[:attribute].empty?
+      raise ArgumentError, "No ':operation_type' provided" if options[:operation_type].nil? || options[:operation_type].empty?
+      
       params = {
-        "ImageId" => imageId,
-        "Attribute" => attribute,
-        "OperationType" => operationType
+        "ImageId" => options[:image_id],
+        "Attribute" => options[:attribute],
+        "OperationType" => options[:operation_type]
       }
-      if attribute == "launchPermission"
-        params.merge!(pathlist("UserGroup", attributeValueHash[:userGroups])) if attributeValueHash.has_key? :userGroups
-        params.merge!(pathlist("UserId", attributeValueHash[:userIds])) if attributeValueHash.has_key? :userIds
+      
+      # test options provided and make sure they are valid
+      case options[:attribute]
+      when "launchPermission"
+        if options[:user_ids].nil? && options[:groups].nil?
+          raise ArgumentError, "Option :attribute=>'launchPermission' requires ':user_ids' or ':groups' options to also be specified"
+        end
+        
+        params.merge!(pathlist("UserId", options[:user_ids])) unless options[:user_ids].nil?
+        params.merge!(pathlist("Group", options[:groups])) unless options[:groups].nil?
+      else
+        raise ArgumentError, "attribute : #{options[:attribute].to_s} is not an known option."
       end
-      ModifyImageAttributeResponse.new(make_request("ModifyImageAttribute", params))
+      
+      # test options provided and make sure they are valid
+      case options[:operation_type]
+      when "add", "remove"
+        # these args are ok
+      else
+        raise ArgumentError, "operationType was #{options[:operation_type].to_s} but must be 'add' or 'remove'"
+      end
+      
+      make_request("ModifyImageAttribute", params)
+      return response = ModifyImageAttributeResponse.new
     end
     
     # The DescribeImageAttribute operation returns information about an attribute of an AMI.
