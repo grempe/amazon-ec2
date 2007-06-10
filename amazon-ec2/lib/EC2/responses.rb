@@ -120,6 +120,9 @@ module EC2
   class CreateSecurityGroupResponse < Response
   end
   
+  class DeleteSecurityGroupResponse < Response
+  end
+  
   # Sub-Classes of 'Set'
   ################################################
   

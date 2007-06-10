@@ -11,6 +11,12 @@ context "EC2 security groups " do
     </CreateSecurityGroupResponse>
     RESPONSE
     
+    @delete_security_group_response_body = <<-RESPONSE
+    <DeleteSecurityGroupResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19"> 
+      <return>true</return> 
+    </DeleteSecurityGroupResponse>
+    RESPONSE
+    
   end
   
   
@@ -37,5 +43,25 @@ context "EC2 security groups " do
     lambda { @ec2.create_security_group( :group_name => "WebServers", :group_description => nil ) }.should.raise(EC2::ArgumentError)
   end
   
+  
+  specify "should be able to be deleted" do
+    @ec2.stubs(:make_request).with('DeleteSecurityGroup', {"GroupName"=>"WebServers"}).
+      returns stub(:body => @delete_security_group_response_body, :is_a? => true)
+    @ec2.delete_security_group( :group_name => "WebServers" ).should.be.an.instance_of EC2::DeleteSecurityGroupResponse
+  end
+  
+  
+  specify "method delete_security_group should reject bad arguments" do
+    @ec2.stubs(:make_request).with('DeleteSecurityGroup', {"GroupName"=>"WebServers"}).
+      returns stub(:body => @delete_security_group_response_body, :is_a? => true)
+    
+    lambda { @ec2.delete_security_group( :group_name => "WebServers" ) }.should.not.raise(EC2::ArgumentError)
+    lambda { @ec2.delete_security_group() }.should.raise(EC2::ArgumentError)
+    
+    # :group_name can't be nil or empty
+    lambda { @ec2.delete_security_group( :group_name => "" ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.delete_security_group( :group_name => nil ) }.should.raise(EC2::ArgumentError)
+    
+  end
   
 end

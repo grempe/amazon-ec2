@@ -36,7 +36,7 @@ module EC2
       }
       
       make_request("CreateSecurityGroup", params)
-      response = CreateSecurityGroupResponse.new
+      return response = CreateSecurityGroupResponse.new
       
     end
     
@@ -110,7 +110,7 @@ module EC2
     # instances exist that are members of that group a fault is 
     # returned.
     def delete_security_group( options = {} )
-
+      
       # defaults
       options = { :group_name => "" }.merge(options)
       
@@ -118,19 +118,11 @@ module EC2
       
       params = { "GroupName" => options[:group_name] }
       
-      DeleteSecurityGroupResponse.new(make_request("DeleteSecurityGroup", params))
+      make_request("DeleteSecurityGroup", params)
+      return response = DeleteSecurityGroupResponse.new
+      
     end
     
-# REMOVE
-
-    #  class DeleteSecurityGroupResponse < Response
-    #    def parse
-    #      # If we don't get an error, the deletion succeeded.
-    #      [["Security Group deleted."]]
-    #    end
-    #  end
-
-
     
     # The AuthorizeSecurityGroupIngress operation adds permissions to a security 
     # group.
