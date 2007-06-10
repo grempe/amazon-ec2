@@ -20,24 +20,26 @@ module EC2
     # group. As the owner of instances you may grant or revoke specific 
     # permissions using the AuthorizeSecurityGroupIngress and 
     # RevokeSecurityGroupIngress operations.
-    def create_security_group(groupName, groupDescription)
+    def create_security_group( options = {} )
+      
+      # defaults
+      options = {:group_name => "",
+                 :group_description => ""
+                 }.merge(options)
+      
+      raise ArgumentError, "No :group_name provided" if options[:group_name].nil? || options[:group_name].empty?
+      raise ArgumentError, "No :group_description provided" if options[:group_description].nil? || options[:group_description].empty?
+      
       params = {
-        "GroupName" => groupName,
-        "GroupDescription" => groupDescription
+        "GroupName" => options[:group_name],
+        "GroupDescription" => options[:group_description]
       }
-      CreateSecurityGroupResponse.new(make_request("CreateSecurityGroup", params))
+      
+      make_request("CreateSecurityGroup", params)
+      response = CreateSecurityGroupResponse.new
+      
     end
     
-# REMOVE
-    
-    #  class CreateSecurityGroupResponse < Response
-    #    def parse
-    #      # If we don't get an error, the creation succeeded.
-    #      [["Security Group created."]]
-    #    end
-    #  end
-
-
     
     # The DescribeSecurityGroups operation returns information about security 
     # groups owned by the user making the request.
@@ -46,8 +48,15 @@ module EC2
     # information for those security groups only. If no security group 
     # names are provided, information of all security groups will be returned. 
     # If a group is specified that does not exist a fault is returned.
-    def describe_security_groups(groupNames=[])
-      params = pathlist("GroupName", groupNames)
+    def describe_security_groups( options = {} )
+      
+      # defaults
+      options = { :group_name => [] }.merge(options)
+      
+      raise ArgumentError, "No :group_name provided" if options[:group_name].nil?
+      
+      params = pathlist("GroupName", options[:group_name])
+      
       DescribeSecurityGroupsResponse.new(make_request("DescribeSecurityGroups", params))
     end
     
@@ -100,8 +109,15 @@ module EC2
     # If an attempt is made to delete a security group and any 
     # instances exist that are members of that group a fault is 
     # returned.
-    def delete_security_group(groupName)
-      params = { "GroupName" => groupName }
+    def delete_security_group( options = {} )
+
+      # defaults
+      options = { :group_name => "" }.merge(options)
+      
+      raise ArgumentError, "No :group_name provided" if options[:group_name].nil? || options[:group_name].empty?
+      
+      params = { "GroupName" => options[:group_name] }
+      
       DeleteSecurityGroupResponse.new(make_request("DeleteSecurityGroup", params))
     end
     

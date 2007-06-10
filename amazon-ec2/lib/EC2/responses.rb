@@ -117,6 +117,9 @@ module EC2
   class DescribeImageAttributeResponse < Response
   end
   
+  class CreateSecurityGroupResponse < Response
+  end
+  
   # Sub-Classes of 'Set'
   ################################################
   
