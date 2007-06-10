@@ -116,10 +116,10 @@
 require 'rubygems'
 require 'ec2'
 
-AWS_ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
-AWS_SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
+ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
+SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
 
-ec2 = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+ec2 = EC2::AWSAuthConnection.new(ACCESS_KEY_ID, SECRET_ACCESS_KEY)
 
 puts "----- listing images -----" 
 ec2.describe_images.each do |image|
@@ -148,7 +148,7 @@ require 'EC2'
 in app/controllers/your_controller.rb:
 <pre syntax="ruby">
 ...
-ec2 = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+ec2 = EC2::AWSAuthConnection.new(ACCESS_KEY_ID, SECRET_ACCESS_KEY)
 @ec2_images = ec2.describe_images()
 
 # Or with some parameters
@@ -258,7 +258,7 @@ ec2 = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
 
 	<p>Comments, patches, and bug reports are welcome. Send an email to the address below or use the RubyForge forum for this project.</p>
     <p class="coda">
-      <a href="mailto:grempe-at-rubyforge-dot-org">Glenn Rempe</a>, 3rd June 2007<br>
+      <a href="mailto:grempe-at-rubyforge-dot-org">Glenn Rempe</a>, 10th June 2007<br>
     </p>
 </div>
 

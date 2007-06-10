@@ -53,56 +53,46 @@ module EC2
       # defaults
       options = { :group_name => [] }.merge(options)
       
+      raise ArgumentError, "No :group_name provided" if options[:group_name] == ""
       raise ArgumentError, "No :group_name provided" if options[:group_name].nil?
       
-      params = pathlist("GroupName", options[:group_name])
+      params = pathlist("GroupName", options[:group_name] )
+      describe_security_groups_response = DescribeSecurityGroupsResponseSet.new
+      http_response = make_request("DescribeSecurityGroups", params)
+      http_xml = http_response.body
+      doc = REXML::Document.new(http_xml)
       
-      DescribeSecurityGroupsResponse.new(make_request("DescribeSecurityGroups", params))
+      doc.elements.each("DescribeSecurityGroupsResponse/securityGroupInfo/item") do |element|
+        item = Item.new
+        item.owner_id = REXML::XPath.first(element, "ownerId").text
+        item.group_name = REXML::XPath.first(element, "groupName").text
+        item.group_description = REXML::XPath.first(element, "groupDescription").text
+        
+          ip_permissions_set = IpPermissionsResponseSet.new
+          element.elements.each("ipPermissions/item") do |element|
+            ip_permissions_set_item = Item.new
+            ip_permissions_set_item.ip_protocol = REXML::XPath.first(element, "ipProtocol").text
+            ip_permissions_set_item.from_port = REXML::XPath.first(element, "fromPort").text
+            ip_permissions_set_item.to_port = REXML::XPath.first(element, "toPort").text
+            ip_permissions_set_item.groups = REXML::XPath.first(element, "groups").text
+            
+              ip_ranges_set = IpRangesResponseSet.new
+              element.elements.each("ipRanges/item") do |element|
+                ip_ranges_set_item = Item.new
+                ip_ranges_set_item.cidr_ip = REXML::XPath.first(element, "cidrIp").text
+                ip_ranges_set << ip_ranges_set_item
+              end
+              ip_permissions_set_item.ip_ranges = ip_ranges_set
+            
+            ip_permissions_set << ip_permissions_set_item
+          end
+          item.ip_permissions = ip_permissions_set
+        
+        describe_security_groups_response << item
+      end
+      return describe_security_groups_response
     end
     
-# REMOVE
-
-    #  class DescribeSecurityGroupsResponse < Response
-    #    ELEMENT_XPATH = "DescribeSecurityGroupsResponse/securityGroupInfo/item"
-    #    def parse
-    #      doc = REXML::Document.new(@http_xml)
-    #      lines = []
-    #      
-    #      doc.elements.each(ELEMENT_XPATH) do |rootelement|
-    #        groupName = REXML::XPath.first(rootelement, "groupName").text
-    #        ownerId = REXML::XPath.first(rootelement, "ownerId").text
-    #        groupDescription = REXML::XPath.first(rootelement, "groupDescription").text
-    #        lines << ["GROUP", ownerId, groupName, groupDescription]
-    #        rootelement.elements.each("ipPermissions/item") do |element|
-    #          ipProtocol = REXML::XPath.first(element, "ipProtocol").text
-    #          fromPort = REXML::XPath.first(element, "fromPort").text
-    #          toPort = REXML::XPath.first(element, "toPort").text
-    #          permArr = [
-    #                     "PERMISSION",
-    #                     ownerId,
-    #                     groupName,
-    #                     "ALLOWS",
-    #                     ipProtocol,
-    #                     fromPort,
-    #                     toPort,
-    #                     "FROM"
-    #                    ]
-    #          element.elements.each("groups/item") do |subelement|
-    #            userId = REXML::XPath.first(subelement, "userId").text
-    #            targetGroupName = REXML::XPath.first(subelement, "groupName").text
-    #            lines << permArr + ["USER", userId, "GRPNAME", targetGroupName]
-    #          end
-    #          element.elements.each("ipRanges/item") do |subelement|
-    #            cidrIp = REXML::XPath.first(subelement, "cidrIp").text
-    #            lines << permArr + ["CIDR", cidrIp]
-    #          end
-    #        end
-    #      end
-    #      lines
-    #    end
-    #  end
-
-
     
     # The DeleteSecurityGroup operation deletes a security group.
     # 

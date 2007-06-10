@@ -51,15 +51,15 @@ module EC2
     return buf
   end
   
-  # Encodes the given string with the aws_secret_access_key, by taking the
+  # Encodes the given string with the secret_access_key, by taking the
   # hmac-sha1 sum, and then base64 encoding it.  Optionally, it will also
   # url encode the result of that to protect the string if it's going to
   # be used as a query string parameter.
-  def EC2.encode(aws_secret_access_key, str, urlencode=true)
+  def EC2.encode(secret_access_key, str, urlencode=true)
     digest = OpenSSL::Digest::Digest.new('sha1')
     b64_hmac =
       Base64.encode64(
-        OpenSSL::HMAC.digest(digest, aws_secret_access_key, str)).strip
+        OpenSSL::HMAC.digest(digest, secret_access_key, str)).strip
         
     if urlencode
       return CGI::escape(b64_hmac)
@@ -77,20 +77,20 @@ module EC2
     
     def initialize( options = {} )
       
-      options = { :aws_access_key_id => "",
-                  :aws_secret_access_key => "",
-                  :is_secure => true,
+      options = { :access_key_id => "",
+                  :secret_access_key => "",
+                  :use_ssl => true,
                   :server => DEFAULT_HOST
                   }.merge(options)
       
-      raise ArgumentError, "No :aws_access_key_id provided" if options[:aws_access_key_id].nil? || options[:aws_access_key_id].empty?
-      raise ArgumentError, "No :aws_secret_access_key provided" if options[:aws_secret_access_key].nil? || options[:aws_secret_access_key].empty?
-      raise ArgumentError, "No :is_secure value provided" if options[:is_secure].nil?
-      raise ArgumentError, "Invalid :is_secure value provided, only 'true' or 'false'" unless options[:is_secure] == true || options[:is_secure] == false
+      raise ArgumentError, "No :access_key_id provided" if options[:access_key_id].nil? || options[:access_key_id].empty?
+      raise ArgumentError, "No :secret_access_key provided" if options[:secret_access_key].nil? || options[:secret_access_key].empty?
+      raise ArgumentError, "No :use_ssl value provided" if options[:use_ssl].nil?
+      raise ArgumentError, "Invalid :use_ssl value provided, only 'true' or 'false'" unless options[:use_ssl] == true || options[:use_ssl] == false
       raise ArgumentError, "No :server provided" if options[:server].nil? || options[:server].empty?
       
       # based on the :is_secure boolean, determine which port we should connect to
-      case options[:is_secure]
+      case options[:use_ssl]
       when true
         # https
         @port = 443
@@ -99,10 +99,10 @@ module EC2
         @port = 80
       end
       
-      @aws_access_key_id = options[:aws_access_key_id]
-      @aws_secret_access_key = options[:aws_secret_access_key]
+      @access_key_id = options[:access_key_id]
+      @secret_access_key = options[:secret_access_key]
       @http = Net::HTTP.new(options[:server], @port)
-      @http.use_ssl = options[:is_secure]
+      @http.use_ssl = options[:use_ssl]
       
       # Don't verify the SSL certificates.  Avoids SSL Cert warning in log on every GET.
       @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -135,13 +135,13 @@ module EC2
           
           params.merge!( {"Action" => action,
                           "SignatureVersion" => "1",
-                          "AWSAccessKeyId" => @aws_access_key_id,
+                          "AWSAccessKeyId" => @access_key_id,
                           "Version" => API_VERSION,
                           "Timestamp"=>Time.now.getutc.iso8601} )
           
           sigpath = "?" + params.sort_by { |param| param[0].downcase }.collect { |param| param.join("=") }.join("&")
           
-          sig = get_aws_auth_param(sigpath, @aws_secret_access_key)
+          sig = get_aws_auth_param(sigpath, @secret_access_key)
           
           path = "?" + params.sort.collect do |param|
             CGI::escape(param[0]) + "=" + CGI::escape(param[1])
@@ -170,9 +170,9 @@ module EC2
       end
       
       # Set the Authorization header using AWS signed header authentication
-      def get_aws_auth_param(path, aws_secret_access_key)
+      def get_aws_auth_param(path, secret_access_key)
         canonical_string =  EC2.canonical_string(path)
-        encoded_canonical = EC2.encode(aws_secret_access_key, canonical_string)
+        encoded_canonical = EC2.encode(secret_access_key, canonical_string)
       end
       
       # Raises the appropriate error if the specified Net::HTTPResponse object

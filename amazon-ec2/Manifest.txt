@@ -1,5 +1,7 @@
-examples/ec2-example.rb
 History.txt
+bin/ec2sh
+bin/ec2-gem-example.rb
+bin/setup.rb
 lib/EC2.rb
 lib/EC2/console.rb
 lib/EC2/exceptions.rb

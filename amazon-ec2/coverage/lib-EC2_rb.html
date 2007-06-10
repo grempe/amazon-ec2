@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Sat Jun 09 18:02:45 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Sun Jun 10 16:41:15 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -672,15 +672,15 @@ span.run100 {
 </span><span class="uncovered1"><a name="line51" /> 51     return buf
 </span><span class="uncovered0"><a name="line52" /> 52   end
 </span><span class="inferred1"><a name="line53" /> 53   
-</span><span class="inferred0"><a name="line54" /> 54   # Encodes the given string with the aws_secret_access_key, by taking the
+</span><span class="inferred0"><a name="line54" /> 54   # Encodes the given string with the secret_access_key, by taking the
 </span><span class="inferred1"><a name="line55" /> 55   # hmac-sha1 sum, and then base64 encoding it.  Optionally, it will also
 </span><span class="inferred0"><a name="line56" /> 56   # url encode the result of that to protect the string if it's going to
 </span><span class="inferred1"><a name="line57" /> 57   # be used as a query string parameter.
-</span><span class="marked0"><a name="line58" /> 58   def EC2.encode(aws_secret_access_key, str, urlencode=true)
+</span><span class="marked0"><a name="line58" /> 58   def EC2.encode(secret_access_key, str, urlencode=true)
 </span><span class="uncovered1"><a name="line59" /> 59     digest = OpenSSL::Digest::Digest.new('sha1')
 </span><span class="uncovered0"><a name="line60" /> 60     b64_hmac =
 </span><span class="uncovered1"><a name="line61" /> 61       Base64.encode64(
-</span><span class="uncovered0"><a name="line62" /> 62         OpenSSL::HMAC.digest(digest, aws_secret_access_key, str)).strip
+</span><span class="uncovered0"><a name="line62" /> 62         OpenSSL::HMAC.digest(digest, secret_access_key, str)).strip
 </span><span class="uncovered1"><a name="line63" /> 63         
 </span><span class="uncovered0"><a name="line64" /> 64     if urlencode
 </span><span class="uncovered1"><a name="line65" /> 65       return CGI::escape(b64_hmac)
@@ -698,20 +698,20 @@ span.run100 {
 </span><span class="inferred1"><a name="line77" /> 77     
 </span><span class="marked0"><a name="line78" /> 78     def initialize( options = {} )
 </span><span class="inferred1"><a name="line79" /> 79       
-</span><span class="marked0"><a name="line80" /> 80       options = { :aws_access_key_id =&gt; &quot;&quot;,
-</span><span class="inferred1"><a name="line81" /> 81                   :aws_secret_access_key =&gt; &quot;&quot;,
-</span><span class="inferred0"><a name="line82" /> 82                   :is_secure =&gt; true,
+</span><span class="marked0"><a name="line80" /> 80       options = { :access_key_id =&gt; &quot;&quot;,
+</span><span class="inferred1"><a name="line81" /> 81                   :secret_access_key =&gt; &quot;&quot;,
+</span><span class="inferred0"><a name="line82" /> 82                   :use_ssl =&gt; true,
 </span><span class="inferred1"><a name="line83" /> 83                   :server =&gt; DEFAULT_HOST
 </span><span class="inferred0"><a name="line84" /> 84                   }.merge(options)
 </span><span class="inferred1"><a name="line85" /> 85       
-</span><span class="marked0"><a name="line86" /> 86       raise ArgumentError, &quot;No :aws_access_key_id provided&quot; if options[:aws_access_key_id].nil? || options[:aws_access_key_id].empty?
-</span><span class="marked1"><a name="line87" /> 87       raise ArgumentError, &quot;No :aws_secret_access_key provided&quot; if options[:aws_secret_access_key].nil? || options[:aws_secret_access_key].empty?
-</span><span class="marked0"><a name="line88" /> 88       raise ArgumentError, &quot;No :is_secure value provided&quot; if options[:is_secure].nil?
-</span><span class="marked1"><a name="line89" /> 89       raise ArgumentError, &quot;Invalid :is_secure value provided, only 'true' or 'false'&quot; unless options[:is_secure] == true || options[:is_secure] == false
+</span><span class="marked0"><a name="line86" /> 86       raise ArgumentError, &quot;No :access_key_id provided&quot; if options[:access_key_id].nil? || options[:access_key_id].empty?
+</span><span class="marked1"><a name="line87" /> 87       raise ArgumentError, &quot;No :secret_access_key provided&quot; if options[:secret_access_key].nil? || options[:secret_access_key].empty?
+</span><span class="marked0"><a name="line88" /> 88       raise ArgumentError, &quot;No :use_ssl value provided&quot; if options[:use_ssl].nil?
+</span><span class="marked1"><a name="line89" /> 89       raise ArgumentError, &quot;Invalid :use_ssl value provided, only 'true' or 'false'&quot; unless options[:use_ssl] == true || options[:use_ssl] == false
 </span><span class="marked0"><a name="line90" /> 90       raise ArgumentError, &quot;No :server provided&quot; if options[:server].nil? || options[:server].empty?
 </span><span class="inferred1"><a name="line91" /> 91       
 </span><span class="inferred0"><a name="line92" /> 92       # based on the :is_secure boolean, determine which port we should connect to
-</span><span class="marked1"><a name="line93" /> 93       case options[:is_secure]
+</span><span class="marked1"><a name="line93" /> 93       case options[:use_ssl]
 </span><span class="marked0"><a name="line94" /> 94       when true
 </span><span class="inferred1"><a name="line95" /> 95         # https
 </span><span class="marked0"><a name="line96" /> 96         @port = 443
@@ -720,10 +720,10 @@ span.run100 {
 </span><span class="uncovered1"><a name="line99" /> 99         @port = 80
 </span><span class="uncovered0"><a name="line100" />100       end
 </span><span class="inferred1"><a name="line101" />101       
-</span><span class="marked0"><a name="line102" />102       @aws_access_key_id = options[:aws_access_key_id]
-</span><span class="marked1"><a name="line103" />103       @aws_secret_access_key = options[:aws_secret_access_key]
+</span><span class="marked0"><a name="line102" />102       @access_key_id = options[:access_key_id]
+</span><span class="marked1"><a name="line103" />103       @secret_access_key = options[:secret_access_key]
 </span><span class="marked0"><a name="line104" />104       @http = Net::HTTP.new(options[:server], @port)
-</span><span class="marked1"><a name="line105" />105       @http.use_ssl = options[:is_secure]
+</span><span class="marked1"><a name="line105" />105       @http.use_ssl = options[:use_ssl]
 </span><span class="inferred0"><a name="line106" />106       
 </span><span class="inferred1"><a name="line107" />107       # Don't verify the SSL certificates.  Avoids SSL Cert warning in log on every GET.
 </span><span class="marked0"><a name="line108" />108       @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -756,13 +756,13 @@ span.run100 {
 </span><span class="uncovered1"><a name="line135" />135           
 </span><span class="uncovered0"><a name="line136" />136           params.merge!( {&quot;Action&quot; =&gt; action,
 </span><span class="uncovered1"><a name="line137" />137                           &quot;SignatureVersion&quot; =&gt; &quot;1&quot;,
-</span><span class="uncovered0"><a name="line138" />138                           &quot;AWSAccessKeyId&quot; =&gt; @aws_access_key_id,
+</span><span class="uncovered0"><a name="line138" />138                           &quot;AWSAccessKeyId&quot; =&gt; @access_key_id,
 </span><span class="uncovered1"><a name="line139" />139                           &quot;Version&quot; =&gt; API_VERSION,
 </span><span class="uncovered0"><a name="line140" />140                           &quot;Timestamp&quot;=&gt;Time.now.getutc.iso8601} )
 </span><span class="uncovered1"><a name="line141" />141           
 </span><span class="uncovered0"><a name="line142" />142           sigpath = &quot;?&quot; + params.sort_by { |param| param[0].downcase }.collect { |param| param.join(&quot;=&quot;) }.join(&quot;&amp;&quot;)
 </span><span class="uncovered1"><a name="line143" />143           
-</span><span class="uncovered0"><a name="line144" />144           sig = get_aws_auth_param(sigpath, @aws_secret_access_key)
+</span><span class="uncovered0"><a name="line144" />144           sig = get_aws_auth_param(sigpath, @secret_access_key)
 </span><span class="uncovered1"><a name="line145" />145           
 </span><span class="uncovered0"><a name="line146" />146           path = &quot;?&quot; + params.sort.collect do |param|
 </span><span class="uncovered1"><a name="line147" />147             CGI::escape(param[0]) + &quot;=&quot; + CGI::escape(param[1])
@@ -791,9 +791,9 @@ span.run100 {
 </span><span class="uncovered0"><a name="line170" />170       end
 </span><span class="inferred1"><a name="line171" />171       
 </span><span class="inferred0"><a name="line172" />172       # Set the Authorization header using AWS signed header authentication
-</span><span class="marked1"><a name="line173" />173       def get_aws_auth_param(path, aws_secret_access_key)
+</span><span class="marked1"><a name="line173" />173       def get_aws_auth_param(path, secret_access_key)
 </span><span class="uncovered0"><a name="line174" />174         canonical_string =  EC2.canonical_string(path)
-</span><span class="uncovered1"><a name="line175" />175         encoded_canonical = EC2.encode(aws_secret_access_key, canonical_string)
+</span><span class="uncovered1"><a name="line175" />175         encoded_canonical = EC2.encode(secret_access_key, canonical_string)
 </span><span class="uncovered0"><a name="line176" />176       end
 </span><span class="inferred1"><a name="line177" />177       
 </span><span class="inferred0"><a name="line178" />178       # Raises the appropriate error if the specified Net::HTTPResponse object

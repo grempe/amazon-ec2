@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Sat Jun 09 18:02:46 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Sun Jun 10 16:41:15 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,10 +580,10 @@ span.run100 {
             <a href='lib-EC2-responses_rb.html'>lib/EC2/responses.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>151</tt>
+            <tt>160</tt>
           </td>
           <td class='lines_code'>
-            <tt>68</tt>
+            <tt>74</tt>
           </td>
           <td>
             <table cellspacing='0' cellpadding='0' align='right'>
@@ -744,32 +744,41 @@ span.run100 {
 </span><span class="marked1"><a name="line123" />123   class DeleteSecurityGroupResponse &lt; Response
 </span><span class="inferred0"><a name="line124" />124   end
 </span><span class="inferred1"><a name="line125" />125   
-</span><span class="inferred0"><a name="line126" />126   # Sub-Classes of 'Set'
-</span><span class="inferred1"><a name="line127" />127   ################################################
-</span><span class="inferred0"><a name="line128" />128   
-</span><span class="marked1"><a name="line129" />129   class DescribeImagesResponseSet &lt; Set
-</span><span class="inferred0"><a name="line130" />130   end
-</span><span class="inferred1"><a name="line131" />131   
-</span><span class="marked0"><a name="line132" />132   class DescribeInstancesResponseSet &lt; Set
-</span><span class="inferred1"><a name="line133" />133   end
-</span><span class="inferred0"><a name="line134" />134   
-</span><span class="marked1"><a name="line135" />135   class TerminateInstancesResponseSet &lt; Set
-</span><span class="inferred0"><a name="line136" />136   end
-</span><span class="inferred1"><a name="line137" />137   
-</span><span class="marked0"><a name="line138" />138   class GroupResponseSet &lt; Set
-</span><span class="inferred1"><a name="line139" />139   end
-</span><span class="inferred0"><a name="line140" />140   
-</span><span class="marked1"><a name="line141" />141   class InstancesResponseSet &lt; Set
-</span><span class="inferred0"><a name="line142" />142   end
-</span><span class="inferred1"><a name="line143" />143   
-</span><span class="marked0"><a name="line144" />144   class DescribeKeyPairsResponseSet &lt; Set
-</span><span class="inferred1"><a name="line145" />145   end
-</span><span class="inferred0"><a name="line146" />146   
-</span><span class="marked1"><a name="line147" />147   class LaunchPermissionResponseSet &lt; Set
-</span><span class="inferred0"><a name="line148" />148   end
-</span><span class="inferred1"><a name="line149" />149   
+</span><span class="inferred0"><a name="line126" />126   
+</span><span class="inferred1"><a name="line127" />127   # Sub-Classes of 'Set'
+</span><span class="inferred0"><a name="line128" />128   ################################################
+</span><span class="inferred1"><a name="line129" />129   
+</span><span class="marked0"><a name="line130" />130   class DescribeImagesResponseSet &lt; Set
+</span><span class="inferred1"><a name="line131" />131   end
+</span><span class="inferred0"><a name="line132" />132   
+</span><span class="marked1"><a name="line133" />133   class DescribeInstancesResponseSet &lt; Set
+</span><span class="inferred0"><a name="line134" />134   end
+</span><span class="inferred1"><a name="line135" />135   
+</span><span class="marked0"><a name="line136" />136   class TerminateInstancesResponseSet &lt; Set
+</span><span class="inferred1"><a name="line137" />137   end
+</span><span class="inferred0"><a name="line138" />138   
+</span><span class="marked1"><a name="line139" />139   class GroupResponseSet &lt; Set
+</span><span class="inferred0"><a name="line140" />140   end
+</span><span class="inferred1"><a name="line141" />141   
+</span><span class="marked0"><a name="line142" />142   class InstancesResponseSet &lt; Set
+</span><span class="inferred1"><a name="line143" />143   end
+</span><span class="inferred0"><a name="line144" />144   
+</span><span class="marked1"><a name="line145" />145   class DescribeKeyPairsResponseSet &lt; Set
+</span><span class="inferred0"><a name="line146" />146   end
+</span><span class="inferred1"><a name="line147" />147   
+</span><span class="marked0"><a name="line148" />148   class LaunchPermissionResponseSet &lt; Set
+</span><span class="inferred1"><a name="line149" />149   end
 </span><span class="inferred0"><a name="line150" />150   
-</span><span class="inferred1"><a name="line151" />151 end
+</span><span class="marked1"><a name="line151" />151   class DescribeSecurityGroupsResponseSet &lt; Set
+</span><span class="inferred0"><a name="line152" />152   end
+</span><span class="inferred1"><a name="line153" />153   
+</span><span class="marked0"><a name="line154" />154   class IpPermissionsResponseSet &lt; Set
+</span><span class="inferred1"><a name="line155" />155   end
+</span><span class="inferred0"><a name="line156" />156   
+</span><span class="marked1"><a name="line157" />157   class IpRangesResponseSet &lt; Set
+</span><span class="inferred0"><a name="line158" />158   end
+</span><span class="inferred1"><a name="line159" />159   
+</span><span class="inferred0"><a name="line160" />160 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

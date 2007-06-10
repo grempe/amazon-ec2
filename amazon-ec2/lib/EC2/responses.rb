@@ -123,6 +123,7 @@ module EC2
   class DeleteSecurityGroupResponse < Response
   end
   
+  
   # Sub-Classes of 'Set'
   ################################################
   
@@ -147,5 +148,13 @@ module EC2
   class LaunchPermissionResponseSet < Set
   end
   
+  class DescribeSecurityGroupsResponseSet < Set
+  end
+  
+  class IpPermissionsResponseSet < Set
+  end
+  
+  class IpRangesResponseSet < Set
+  end
   
 end

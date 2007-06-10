@@ -1,16 +1,27 @@
 === 0.2.0 2007-06-01
+* MAJOR library changes : THESE CHANGES ARE NOT BACKWARD COMPATIBLE!!  You
+	will need to update the way in which you make calls, handle responses, and rescue exceptions
+	from this library.  If you prefer not to make these changes you can feel free to continue to 
+	use the older version of the gem.  These older versions however will no longer be maintained.
+* MAJOR refactoring of how methods calls are made.  Now all methods are called with a simple hash
+	of arguments.  This feels more 'Ruby.ish'.
 * MAJOR refactoring of how responses are returned to users.  No longer do you have to call the 
 	.parse method, and no longer are you getting back simple arrays of information.  Responses 
-	now come in the form of strcutured objects that contain all of the data for an object in 
-	Enumerable form so you can use .each iterators.  Specific object types have been created where
-	appropriate (e.g. ImageList, Image, etc.).  THESE CHANGES ARE NOT BACKWARD COMPATIBLE!!  You
-	will need to update the way in which you handle responses from this library.  If you prefer not 
-	to make these changes you can feel free to continue to use the older version of the gem.  These
-	older versions, and their responses, will no longer be maintained though.
-* Added an exception framework for this library which will now throw appropriate Ruby exceptions
-	that match those handed to us by Amazon EC2.  You can rescue these exceptions.
-* Removed .parse method as it is no longer needed.
+	now come in the form of structured objects that contain all of the data for an object in 
+	Enumerable form so you can use .each iterators.
+* Added an exception framework which will now throw appropriate Ruby exceptions
+	that match those handed to us by Amazon EC2.  ArgumentError exceptions will also
+	be thrown if you are making calls we know to be illegal.  You can rescue these exceptions and
+	they all descend from EC2::Error.
+* Added an EC2 command shell : 'ec2sh' which can be called from anywhere and gives you
+	and interactive irb session with an EC2 connection pre-made for you as @ec2.  You can use this 
+	to interactively execute any command on EC2 that this library supports.  Try @ec2.methods.sort 
+	or @ec2.describe_images to test it out.  You must first setup two shell environment variables
+	which contain your ACCESS_KEY_ID and SECRET_ACCESS_KEY for this to work.  Otherwise and error
+	will be thrown when you try to start it.  This is way cool and shamelessly borrowed from 
+	Marcel Molina's fine AWS::S3 library.
 * Updated API version in the query API request to 2007-01-19
+* Removed .parse method as it is no longer needed or wanted.
 * Removed 'verbose' attribute writer and a couple of related debug 'puts' calls in EC2.rb.
 
 === 0.1.0 2007-05-30

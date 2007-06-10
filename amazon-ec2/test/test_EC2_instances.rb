@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "EC2 instances " do
   
   setup do
-    @ec2 = EC2::AWSAuthConnection.new( :aws_access_key_id => "not a key", :aws_secret_access_key => "not a secret" )
+    @ec2 = EC2::AWSAuthConnection.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
     
     @run_instances_response_body = <<-RESPONSE
     <RunInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">

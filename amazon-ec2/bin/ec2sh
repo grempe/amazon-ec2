@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+# CREDITS : Credit for this bit of shameful ripoff coolness 
+# goes to Marcel Molina and his AWS::S3 gem.  Thanks!
+
+# Usage : running this starts up an irb session and 
+# sets up the connection to EC2 as a class variable called
+# '@ec2'.  So just do something like the following on the 
+# shell command line:
+
+#   macbook-pro:~ glenn$ ec2sh 
+#   >> @ec2.describe_images
+#   => [#<EC2::Item image_location...
+
+ec2_lib   = File.dirname(__FILE__) + '/../lib/EC2'
+setup = File.dirname(__FILE__) + '/setup'
+irb_name = RUBY_PLATFORM =~ /mswin32/ ? 'irb.bat' : 'irb'
+
+if ( ENV['AMAZON_ACCESS_KEY_ID'] && ENV['AMAZON_SECRET_ACCESS_KEY'] )
+  puts "Usage : This is an interactive 'irb' command shell that allows you to use all commands available to the amazon-ec2 gem.  The EC2 connection is wired to the class instance '@ec2'.  Make method calls on this class instance to execute commands on EC2.  e.g. >> @ec2.methods.sort or >> @ec2.describe_images"
+  exec "#{irb_name} -r #{ec2_lib} -r #{setup} --simple-prompt"
+else
+  puts "You must define AMAZON_ACCESS_KEY_ID and AMAZON_SECRET_ACCESS_KEY as shell environment variables before running #{$0}!"
+end

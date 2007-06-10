@@ -39,10 +39,10 @@ The public methods on EC2::AWSAuthConnection closely mirror the EC2 Query API, a
   require 'rubygems'
   require 'ec2'
   
-  AWS_ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
-  AWS_SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
+  ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
+  SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
     
-  ec2 = EC2::AWSAuthConnection.new(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+  ec2 = EC2::AWSAuthConnection.new(ACCESS_KEY_ID, SECRET_ACCESS_KEY)
    
   puts "----- listing images -----"
   ec2.describe_images.each do |image|
