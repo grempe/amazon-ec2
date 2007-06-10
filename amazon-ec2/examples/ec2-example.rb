@@ -1,20 +1,26 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
-require_gem 'amazon-ec2'
+require File.dirname(__FILE__) + '/../lib/EC2'
 
-# EDIT ME : Fill with YOUR AWS Access Key ID & Secret Access Key
-AWS_ACCESS_KEY_ID = ""
-AWS_SECRET_ACCESS_KEY = ""
+# pull these from the local shell environment variables set in ~/.bash_login
+# or using appropriate methods specific to your login shell.
+# 
+# e.g. in ~/.bash_login
+# 
+#  # For amazon-ec2 and amazon s3 ruby gems
+#  export AMAZON_ACCESS_KEY_ID="FOO"
+#  export AMAZON_SECRET_ACCESS_KEY="BAR"
 
-if AWS_ACCESS_KEY_ID.nil? || AWS_ACCESS_KEY_ID.empty?
-  puts "You must edit #{$0} and add your AWS credentials before use!"
+ACCESS_KEY_ID = ENV['AMAZON_ACCESS_KEY_ID']
+SECRET_ACCESS_KEY = ENV['AMAZON_SECRET_ACCESS_KEY']
+
+if ACCESS_KEY_ID.nil? || ACCESS_KEY_ID.empty?
+  puts "Error : You must add the shell environment variables AMAZON_ACCESS_KEY_ID and AMAZON_SECRET_ACCESS_KEY before calling #{$0}!"
   exit
 end
 
-SECURITY_GROUP_NAME = "ec2-example-rb-test-group"
-
-ec2 = EC2::AWSAuthConnection.new( :aws_access_key_id => AWS_ACCESS_KEY_ID, :aws_secret_access_key => AWS_SECRET_ACCESS_KEY )
+ec2 = EC2::AWSAuthConnection.new( :access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY )
 
 puts "----- GEM Version -----"
 puts EC2::VERSION::STRING
@@ -22,25 +28,25 @@ puts EC2::VERSION::STRING
 puts "----- ec2.methods.sort -----"
 p ec2.methods.sort
 
-puts "----- listing images -----"
-ec2.describe_images.each do |image|
+puts "----- listing images owned by 'amazon' -----"
+ec2.describe_images(:owner_id => "amazon").each do |image|
   image.members.each do |member|
     puts "#{member} => #{image[member]}" 
   end
 end
 
-puts "----- listing instances -----"
+puts "----- listing all running instances -----"
 puts ec2.describe_instances()
 
 puts "----- creating a security group -----"
-puts ec2.create_securitygroup(SECURITY_GROUP_NAME, "ec-example.rb test group")
+puts ec2.create_security_group(:group_name => "ec2-example-rb-test-group", :group_description => "ec-example.rb test group description.")
 
 puts "----- listing security groups -----"
-puts ec2.describe_securitygroups()
+puts ec2.describe_security_groups()
 
 puts "----- deleting a security group -----"
-puts ec2.delete_securitygroup(SECURITY_GROUP_NAME)
+puts ec2.delete_security_group(:group_name => "ec2-example-rb-test-group")
 
-puts "----- listing keypairs (verbose mode) -----"
+puts "----- listing my keypairs (verbose mode) -----"
 puts ec2.describe_keypairs()
 
