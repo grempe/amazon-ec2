@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Sun Jun 10 17:37:57 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Sun Jun 10 18:51:50 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -619,108 +619,108 @@ span.run100 {
           </td>
         </tr>
       </tbody>
-    </table><pre><span class="inferred1"><a name="line1" />  1 # Amazon Web Services EC2 Query API Ruby library.  This library was 
-</span><span class="inferred0"><a name="line2" />  2 # heavily modified from original Amazon Web Services sample code 
-</span><span class="inferred1"><a name="line3" />  3 # and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
-</span><span class="inferred0"><a name="line4" />  4 # 
-</span><span class="inferred1"><a name="line5" />  5 # Source code and gem hosted on RubyForge
-</span><span class="inferred0"><a name="line6" />  6 # under the Ruby License as of 12/14/2006:
-</span><span class="inferred1"><a name="line7" />  7 # http://amazon-ec2.rubyforge.org
-</span><span class="inferred0"><a name="line8" />  8 
-</span><span class="marked1"><a name="line9" />  9 module EC2
-</span><span class="inferred0"><a name="line10" /> 10   
-</span><span class="inferred1"><a name="line11" /> 11   # OUR CUSTOM ERROR CODES
-</span><span class="inferred0"><a name="line12" /> 12   
-</span><span class="inferred1"><a name="line13" /> 13   # All of our errors are superclassed by Error &lt; RuntimeError
-</span><span class="marked0"><a name="line14" /> 14   class Error &lt; RuntimeError; end
-</span><span class="inferred1"><a name="line15" /> 15   
-</span><span class="inferred0"><a name="line16" /> 16   # A client side only argument error
-</span><span class="marked1"><a name="line17" /> 17   class ArgumentError &lt; Error; end
-</span><span class="inferred0"><a name="line18" /> 18   
-</span><span class="inferred1"><a name="line19" /> 19   # AWS EC2 CLIENT ERROR CODES
-</span><span class="inferred0"><a name="line20" /> 20   
-</span><span class="inferred1"><a name="line21" /> 21   # AWS EC2 can throw error exceptions that contain a '.' in them.
-</span><span class="inferred0"><a name="line22" /> 22   # since we can't name an exception class with that '.' I compressed
-</span><span class="inferred1"><a name="line23" /> 23   # each class name into the non-dot version.  This allows us to retain
-</span><span class="inferred0"><a name="line24" /> 24   # the granularity of the exception.
-</span><span class="inferred1"><a name="line25" /> 25   
-</span><span class="inferred0"><a name="line26" /> 26   # User not authorized
-</span><span class="marked1"><a name="line27" /> 27   class AuthFailure &lt; Error; end
-</span><span class="inferred0"><a name="line28" /> 28   
-</span><span class="inferred1"><a name="line29" /> 29   # Specified AMI has an unparsable Manifest.
-</span><span class="marked0"><a name="line30" /> 30   class InvalidManifest &lt; Error; end
-</span><span class="inferred1"><a name="line31" /> 31   
-</span><span class="inferred0"><a name="line32" /> 32   # Specified AMI ID is not valid.
-</span><span class="marked1"><a name="line33" /> 33   class InvalidAMIIDMalformed &lt; Error; end
-</span><span class="inferred0"><a name="line34" /> 34   
-</span><span class="inferred1"><a name="line35" /> 35   # Specified AMI ID does not exist.
-</span><span class="marked0"><a name="line36" /> 36   class InvalidAMIIDNotFound &lt; Error; end
-</span><span class="inferred1"><a name="line37" /> 37   
-</span><span class="inferred0"><a name="line38" /> 38   # Specified AMI ID has been deregistered and is no longer available.
-</span><span class="marked1"><a name="line39" /> 39   class InvalidAMIIDUnavailable &lt; Error; end
-</span><span class="inferred0"><a name="line40" /> 40   
-</span><span class="inferred1"><a name="line41" /> 41   # Specified instance ID is not valid.
-</span><span class="marked0"><a name="line42" /> 42   class InvalidInstanceIDMalformed &lt; Error; end
-</span><span class="inferred1"><a name="line43" /> 43   
-</span><span class="inferred0"><a name="line44" /> 44   # Specified instance ID does not exist.
-</span><span class="marked1"><a name="line45" /> 45   class InvalidInstanceIDNotFound &lt; Error; end
-</span><span class="inferred0"><a name="line46" /> 46   
-</span><span class="inferred1"><a name="line47" /> 47   # Specified keypair name does not exist.
-</span><span class="marked0"><a name="line48" /> 48   class InvalidKeyPairNotFound &lt; Error; end
-</span><span class="inferred1"><a name="line49" /> 49   
-</span><span class="inferred0"><a name="line50" /> 50   # Attempt to create a duplicate keypair.
-</span><span class="marked1"><a name="line51" /> 51   class InvalidKeyPairDuplicate &lt; Error; end
-</span><span class="inferred0"><a name="line52" /> 52   
-</span><span class="inferred1"><a name="line53" /> 53   # Specified group name does not exist.
-</span><span class="marked0"><a name="line54" /> 54   class InvalidGroupNotFound &lt; Error; end
-</span><span class="inferred1"><a name="line55" /> 55   
-</span><span class="inferred0"><a name="line56" /> 56   # Attempt to create a duplicate group.
-</span><span class="marked1"><a name="line57" /> 57   class InvalidGroupDuplicate &lt; Error; end
-</span><span class="inferred0"><a name="line58" /> 58   
-</span><span class="inferred1"><a name="line59" /> 59   # Specified group can not be deleted because it is in use.
-</span><span class="marked0"><a name="line60" /> 60   class InvalidGroupInUse &lt; Error; end
-</span><span class="inferred1"><a name="line61" /> 61   
-</span><span class="inferred0"><a name="line62" /> 62   # Specified group name is a reserved name.
-</span><span class="marked1"><a name="line63" /> 63   class InvalidGroupReserved &lt; Error; end
-</span><span class="inferred0"><a name="line64" /> 64   
-</span><span class="inferred1"><a name="line65" /> 65   # Attempt to authorize a permission that has already been authorized.
-</span><span class="marked0"><a name="line66" /> 66   class InvalidPermissionDuplicate &lt; Error; end
-</span><span class="inferred1"><a name="line67" /> 67   
-</span><span class="inferred0"><a name="line68" /> 68   # Specified permission is invalid.
-</span><span class="marked1"><a name="line69" /> 69   class InvalidPermissionMalformed &lt; Error; end
-</span><span class="inferred0"><a name="line70" /> 70   
-</span><span class="inferred1"><a name="line71" /> 71   # Specified reservation ID is invalid.
-</span><span class="marked0"><a name="line72" /> 72   class InvalidReservationIDMalformed &lt; Error; end
-</span><span class="inferred1"><a name="line73" /> 73   
-</span><span class="inferred0"><a name="line74" /> 74   # Specified reservation ID does not exist.
-</span><span class="marked1"><a name="line75" /> 75   class InvalidReservationIDNotFound &lt; Error; end
-</span><span class="inferred0"><a name="line76" /> 76   
-</span><span class="inferred1"><a name="line77" /> 77   # User has max allowed concurrent running instances.
-</span><span class="marked0"><a name="line78" /> 78   class InstanceLimitExceeded &lt; Error; end
-</span><span class="inferred1"><a name="line79" /> 79   
-</span><span class="inferred0"><a name="line80" /> 80   # e.g. RunInstances was called with minCount and maxCount set to 0 or minCount &gt; maxCount.
-</span><span class="marked1"><a name="line81" /> 81   class InvalidParameterCombination &lt; Error; end
-</span><span class="inferred0"><a name="line82" /> 82   
-</span><span class="inferred1"><a name="line83" /> 83   # The user ID is niether in the form of an AWS account ID or one 
-</span><span class="inferred0"><a name="line84" /> 84   # of the special values accepted by the owner or executableBy flags 
-</span><span class="inferred1"><a name="line85" /> 85   # in the DescribeImages call.
-</span><span class="marked0"><a name="line86" /> 86   class InvalidUserIDMalformed &lt; Error; end
-</span><span class="inferred1"><a name="line87" /> 87   
-</span><span class="inferred0"><a name="line88" /> 88   # The value of an item added to, or removed from, an image attribute is invalid.
-</span><span class="marked1"><a name="line89" /> 89   class InvalidAMIAttributeItemValue &lt; Error; end
-</span><span class="inferred0"><a name="line90" /> 90   
-</span><span class="inferred1"><a name="line91" /> 91   # AWS EC2 SERVER ERROR CODES
-</span><span class="inferred0"><a name="line92" /> 92   
-</span><span class="inferred1"><a name="line93" /> 93   # Internal Error.
-</span><span class="marked0"><a name="line94" /> 94   class InternalError &lt; Error; end
-</span><span class="inferred1"><a name="line95" /> 95   
-</span><span class="inferred0"><a name="line96" /> 96   # Not enough available instances to satify your minimum request.
-</span><span class="marked1"><a name="line97" /> 97   class InsufficientInstanceCapacity &lt; Error; end
-</span><span class="inferred0"><a name="line98" /> 98   
-</span><span class="inferred1"><a name="line99" /> 99   # Indicates the server is overloaded and cannot handle request.
-</span><span class="marked0"><a name="line100" />100   class Unavailable &lt; Error; end
-</span><span class="inferred1"><a name="line101" />101   
-</span><span class="inferred0"><a name="line102" />102 end
+    </table><pre><span class="inferred0"><a name="line1" />  1 # Amazon Web Services EC2 Query API Ruby library.  This library was 
+</span><span class="inferred1"><a name="line2" />  2 # heavily modified from original Amazon Web Services sample code 
+</span><span class="inferred0"><a name="line3" />  3 # and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
+</span><span class="inferred1"><a name="line4" />  4 # 
+</span><span class="inferred0"><a name="line5" />  5 # Source code and gem hosted on RubyForge
+</span><span class="inferred1"><a name="line6" />  6 # under the Ruby License as of 12/14/2006:
+</span><span class="inferred0"><a name="line7" />  7 # http://amazon-ec2.rubyforge.org
+</span><span class="inferred1"><a name="line8" />  8 
+</span><span class="marked0"><a name="line9" />  9 module EC2
+</span><span class="inferred1"><a name="line10" /> 10   
+</span><span class="inferred0"><a name="line11" /> 11   # OUR CUSTOM ERROR CODES
+</span><span class="inferred1"><a name="line12" /> 12   
+</span><span class="inferred0"><a name="line13" /> 13   # All of our errors are superclassed by Error &lt; RuntimeError
+</span><span class="marked1"><a name="line14" /> 14   class Error &lt; RuntimeError; end
+</span><span class="inferred0"><a name="line15" /> 15   
+</span><span class="inferred1"><a name="line16" /> 16   # A client side only argument error
+</span><span class="marked0"><a name="line17" /> 17   class ArgumentError &lt; Error; end
+</span><span class="inferred1"><a name="line18" /> 18   
+</span><span class="inferred0"><a name="line19" /> 19   # AWS EC2 CLIENT ERROR CODES
+</span><span class="inferred1"><a name="line20" /> 20   
+</span><span class="inferred0"><a name="line21" /> 21   # AWS EC2 can throw error exceptions that contain a '.' in them.
+</span><span class="inferred1"><a name="line22" /> 22   # since we can't name an exception class with that '.' I compressed
+</span><span class="inferred0"><a name="line23" /> 23   # each class name into the non-dot version.  This allows us to retain
+</span><span class="inferred1"><a name="line24" /> 24   # the granularity of the exception.
+</span><span class="inferred0"><a name="line25" /> 25   
+</span><span class="inferred1"><a name="line26" /> 26   # User not authorized
+</span><span class="marked0"><a name="line27" /> 27   class AuthFailure &lt; Error; end
+</span><span class="inferred1"><a name="line28" /> 28   
+</span><span class="inferred0"><a name="line29" /> 29   # Specified AMI has an unparsable Manifest.
+</span><span class="marked1"><a name="line30" /> 30   class InvalidManifest &lt; Error; end
+</span><span class="inferred0"><a name="line31" /> 31   
+</span><span class="inferred1"><a name="line32" /> 32   # Specified AMI ID is not valid.
+</span><span class="marked0"><a name="line33" /> 33   class InvalidAMIIDMalformed &lt; Error; end
+</span><span class="inferred1"><a name="line34" /> 34   
+</span><span class="inferred0"><a name="line35" /> 35   # Specified AMI ID does not exist.
+</span><span class="marked1"><a name="line36" /> 36   class InvalidAMIIDNotFound &lt; Error; end
+</span><span class="inferred0"><a name="line37" /> 37   
+</span><span class="inferred1"><a name="line38" /> 38   # Specified AMI ID has been deregistered and is no longer available.
+</span><span class="marked0"><a name="line39" /> 39   class InvalidAMIIDUnavailable &lt; Error; end
+</span><span class="inferred1"><a name="line40" /> 40   
+</span><span class="inferred0"><a name="line41" /> 41   # Specified instance ID is not valid.
+</span><span class="marked1"><a name="line42" /> 42   class InvalidInstanceIDMalformed &lt; Error; end
+</span><span class="inferred0"><a name="line43" /> 43   
+</span><span class="inferred1"><a name="line44" /> 44   # Specified instance ID does not exist.
+</span><span class="marked0"><a name="line45" /> 45   class InvalidInstanceIDNotFound &lt; Error; end
+</span><span class="inferred1"><a name="line46" /> 46   
+</span><span class="inferred0"><a name="line47" /> 47   # Specified keypair name does not exist.
+</span><span class="marked1"><a name="line48" /> 48   class InvalidKeyPairNotFound &lt; Error; end
+</span><span class="inferred0"><a name="line49" /> 49   
+</span><span class="inferred1"><a name="line50" /> 50   # Attempt to create a duplicate keypair.
+</span><span class="marked0"><a name="line51" /> 51   class InvalidKeyPairDuplicate &lt; Error; end
+</span><span class="inferred1"><a name="line52" /> 52   
+</span><span class="inferred0"><a name="line53" /> 53   # Specified group name does not exist.
+</span><span class="marked1"><a name="line54" /> 54   class InvalidGroupNotFound &lt; Error; end
+</span><span class="inferred0"><a name="line55" /> 55   
+</span><span class="inferred1"><a name="line56" /> 56   # Attempt to create a duplicate group.
+</span><span class="marked0"><a name="line57" /> 57   class InvalidGroupDuplicate &lt; Error; end
+</span><span class="inferred1"><a name="line58" /> 58   
+</span><span class="inferred0"><a name="line59" /> 59   # Specified group can not be deleted because it is in use.
+</span><span class="marked1"><a name="line60" /> 60   class InvalidGroupInUse &lt; Error; end
+</span><span class="inferred0"><a name="line61" /> 61   
+</span><span class="inferred1"><a name="line62" /> 62   # Specified group name is a reserved name.
+</span><span class="marked0"><a name="line63" /> 63   class InvalidGroupReserved &lt; Error; end
+</span><span class="inferred1"><a name="line64" /> 64   
+</span><span class="inferred0"><a name="line65" /> 65   # Attempt to authorize a permission that has already been authorized.
+</span><span class="marked1"><a name="line66" /> 66   class InvalidPermissionDuplicate &lt; Error; end
+</span><span class="inferred0"><a name="line67" /> 67   
+</span><span class="inferred1"><a name="line68" /> 68   # Specified permission is invalid.
+</span><span class="marked0"><a name="line69" /> 69   class InvalidPermissionMalformed &lt; Error; end
+</span><span class="inferred1"><a name="line70" /> 70   
+</span><span class="inferred0"><a name="line71" /> 71   # Specified reservation ID is invalid.
+</span><span class="marked1"><a name="line72" /> 72   class InvalidReservationIDMalformed &lt; Error; end
+</span><span class="inferred0"><a name="line73" /> 73   
+</span><span class="inferred1"><a name="line74" /> 74   # Specified reservation ID does not exist.
+</span><span class="marked0"><a name="line75" /> 75   class InvalidReservationIDNotFound &lt; Error; end
+</span><span class="inferred1"><a name="line76" /> 76   
+</span><span class="inferred0"><a name="line77" /> 77   # User has max allowed concurrent running instances.
+</span><span class="marked1"><a name="line78" /> 78   class InstanceLimitExceeded &lt; Error; end
+</span><span class="inferred0"><a name="line79" /> 79   
+</span><span class="inferred1"><a name="line80" /> 80   # e.g. RunInstances was called with minCount and maxCount set to 0 or minCount &gt; maxCount.
+</span><span class="marked0"><a name="line81" /> 81   class InvalidParameterCombination &lt; Error; end
+</span><span class="inferred1"><a name="line82" /> 82   
+</span><span class="inferred0"><a name="line83" /> 83   # The user ID is niether in the form of an AWS account ID or one 
+</span><span class="inferred1"><a name="line84" /> 84   # of the special values accepted by the owner or executableBy flags 
+</span><span class="inferred0"><a name="line85" /> 85   # in the DescribeImages call.
+</span><span class="marked1"><a name="line86" /> 86   class InvalidUserIDMalformed &lt; Error; end
+</span><span class="inferred0"><a name="line87" /> 87   
+</span><span class="inferred1"><a name="line88" /> 88   # The value of an item added to, or removed from, an image attribute is invalid.
+</span><span class="marked0"><a name="line89" /> 89   class InvalidAMIAttributeItemValue &lt; Error; end
+</span><span class="inferred1"><a name="line90" /> 90   
+</span><span class="inferred0"><a name="line91" /> 91   # AWS EC2 SERVER ERROR CODES
+</span><span class="inferred1"><a name="line92" /> 92   
+</span><span class="inferred0"><a name="line93" /> 93   # Internal Error.
+</span><span class="marked1"><a name="line94" /> 94   class InternalError &lt; Error; end
+</span><span class="inferred0"><a name="line95" /> 95   
+</span><span class="inferred1"><a name="line96" /> 96   # Not enough available instances to satify your minimum request.
+</span><span class="marked0"><a name="line97" /> 97   class InsufficientInstanceCapacity &lt; Error; end
+</span><span class="inferred1"><a name="line98" /> 98   
+</span><span class="inferred0"><a name="line99" /> 99   # Indicates the server is overloaded and cannot handle request.
+</span><span class="marked1"><a name="line100" />100   class Unavailable &lt; Error; end
+</span><span class="inferred0"><a name="line101" />101   
+</span><span class="inferred1"><a name="line102" />102 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

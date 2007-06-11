@@ -21,6 +21,7 @@ module EC2
       raise ArgumentError, "No :key_name provided" if options[:key_name].nil? || options[:key_name].empty?
       
       params = { "KeyName" => options[:key_name] }
+      
       http_response = make_request("CreateKeyPair", params)
       http_xml = http_response.body
       doc = REXML::Document.new(http_xml)
@@ -66,6 +67,7 @@ module EC2
       raise ArgumentError, "No :key_name provided" if options[:key_name].nil? || options[:key_name].empty?
       
       params = { "KeyName" => options[:key_name] }
+      
       make_request("DeleteKeyPair", params)
       return response = DeleteKeyPairResponse.new
     end

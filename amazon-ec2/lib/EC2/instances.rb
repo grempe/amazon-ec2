@@ -141,6 +141,7 @@ module EC2
       options = { :instance_id => "" }.merge(options)
       
       params = pathlist("InstanceId", options[:instance_id])
+      
       desc_instances_response = DescribeInstancesResponseSet.new
       
       http_response = make_request("DescribeInstances", params)
@@ -192,6 +193,7 @@ module EC2
       raise ArgumentError, "No instance IDs provided" if options[:instance_id].nil? || options[:instance_id].empty?
       
       params = pathlist("InstanceId", options[:instance_id])
+      
       make_request("RebootInstances", params)
       return response = RebootInstancesResponse.new
     end

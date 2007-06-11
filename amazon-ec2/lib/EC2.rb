@@ -75,6 +75,8 @@ module EC2
   # with EC2 Query API interface.
   class AWSAuthConnection
     
+    attr_reader :port, :use_ssl, :server
+    
     def initialize( options = {} )
       
       options = { :access_key_id => "",
@@ -82,6 +84,9 @@ module EC2
                   :use_ssl => true,
                   :server => DEFAULT_HOST
                   }.merge(options)
+                  
+      @server = options[:server]
+      @use_ssl = options[:use_ssl]
       
       raise ArgumentError, "No :access_key_id provided" if options[:access_key_id].nil? || options[:access_key_id].empty?
       raise ArgumentError, "No :secret_access_key provided" if options[:secret_access_key].nil? || options[:secret_access_key].empty?
@@ -89,8 +94,9 @@ module EC2
       raise ArgumentError, "Invalid :use_ssl value provided, only 'true' or 'false'" unless options[:use_ssl] == true || options[:use_ssl] == false
       raise ArgumentError, "No :server provided" if options[:server].nil? || options[:server].empty?
       
-      # based on the :is_secure boolean, determine which port we should connect to
-      case options[:use_ssl]
+      
+      # based on the :use_ssl boolean, determine which port we should connect to
+      case @use_ssl
       when true
         # https
         @port = 443
@@ -102,7 +108,7 @@ module EC2
       @access_key_id = options[:access_key_id]
       @secret_access_key = options[:secret_access_key]
       @http = Net::HTTP.new(options[:server], @port)
-      @http.use_ssl = options[:use_ssl]
+      @http.use_ssl = @use_ssl
       
       # Don't verify the SSL certificates.  Avoids SSL Cert warning in log on every GET.
       @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -132,6 +138,9 @@ module EC2
       def make_request(action, params, data='')
         
         @http.start do
+          
+          # remove any keys that have nil or empty values
+          params.reject { |key, value| value.nil? or value.empty?}
           
           params.merge!( {"Action" => action,
                           "SignatureVersion" => "1",

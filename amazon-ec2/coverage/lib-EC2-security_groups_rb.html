@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Sun Jun 10 17:37:57 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Sun Jun 10 18:51:50 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,7 +580,7 @@ span.run100 {
             <a href='lib-EC2-security_groups_rb.html'>lib/EC2/security_groups.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>213</tt>
+            <tt>215</tt>
           </td>
           <td class='lines_code'>
             <tt>99</tt>
@@ -619,219 +619,221 @@ span.run100 {
           </td>
         </tr>
       </tbody>
-    </table><pre><span class="inferred0"><a name="line1" />  1 # Amazon Web Services EC2 Query API Ruby library.  This library was 
-</span><span class="inferred1"><a name="line2" />  2 # heavily modified from original Amazon Web Services sample code 
-</span><span class="inferred0"><a name="line3" />  3 # and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
-</span><span class="inferred1"><a name="line4" />  4 # 
-</span><span class="inferred0"><a name="line5" />  5 # Source code and gem hosted on RubyForge
-</span><span class="inferred1"><a name="line6" />  6 # under the Ruby License as of 12/14/2006:
-</span><span class="inferred0"><a name="line7" />  7 # http://amazon-ec2.rubyforge.org
-</span><span class="inferred1"><a name="line8" />  8 
-</span><span class="marked0"><a name="line9" />  9 module EC2
-</span><span class="inferred1"><a name="line10" /> 10   
-</span><span class="marked0"><a name="line11" /> 11   class AWSAuthConnection
-</span><span class="inferred1"><a name="line12" /> 12     
-</span><span class="inferred0"><a name="line13" /> 13     # The CreateSecurityGroup operation creates a new security group.
-</span><span class="inferred1"><a name="line14" /> 14     #
-</span><span class="inferred0"><a name="line15" /> 15     # Every instance is launched in a security group. If none is specified 
-</span><span class="inferred1"><a name="line16" /> 16     # as part of the launch request then instances are launched in the 
-</span><span class="inferred0"><a name="line17" /> 17     # default security group. Instances within the same security group 
-</span><span class="inferred1"><a name="line18" /> 18     # have unrestricted network access to one another. Instances will reject 
-</span><span class="inferred0"><a name="line19" /> 19     # network access attempts from other instances in a different security 
-</span><span class="inferred1"><a name="line20" /> 20     # group. As the owner of instances you may grant or revoke specific 
-</span><span class="inferred0"><a name="line21" /> 21     # permissions using the AuthorizeSecurityGroupIngress and 
-</span><span class="inferred1"><a name="line22" /> 22     # RevokeSecurityGroupIngress operations.
-</span><span class="marked0"><a name="line23" /> 23     def create_security_group( options = {} )
-</span><span class="inferred1"><a name="line24" /> 24       
-</span><span class="inferred0"><a name="line25" /> 25       # defaults
-</span><span class="marked1"><a name="line26" /> 26       options = {:group_name =&gt; &quot;&quot;,
-</span><span class="inferred0"><a name="line27" /> 27                  :group_description =&gt; &quot;&quot;
-</span><span class="inferred1"><a name="line28" /> 28                  }.merge(options)
-</span><span class="inferred0"><a name="line29" /> 29       
-</span><span class="marked1"><a name="line30" /> 30       raise ArgumentError, &quot;No :group_name provided&quot; if options[:group_name].nil? || options[:group_name].empty?
-</span><span class="marked0"><a name="line31" /> 31       raise ArgumentError, &quot;No :group_description provided&quot; if options[:group_description].nil? || options[:group_description].empty?
-</span><span class="inferred1"><a name="line32" /> 32       
-</span><span class="marked0"><a name="line33" /> 33       params = {
-</span><span class="inferred1"><a name="line34" /> 34         &quot;GroupName&quot; =&gt; options[:group_name],
-</span><span class="inferred0"><a name="line35" /> 35         &quot;GroupDescription&quot; =&gt; options[:group_description]
-</span><span class="inferred1"><a name="line36" /> 36       }
-</span><span class="inferred0"><a name="line37" /> 37       
-</span><span class="marked1"><a name="line38" /> 38       make_request(&quot;CreateSecurityGroup&quot;, params)
-</span><span class="marked0"><a name="line39" /> 39       return response = CreateSecurityGroupResponse.new
-</span><span class="inferred1"><a name="line40" /> 40       
-</span><span class="inferred0"><a name="line41" /> 41     end
-</span><span class="inferred1"><a name="line42" /> 42     
-</span><span class="inferred0"><a name="line43" /> 43     
-</span><span class="inferred1"><a name="line44" /> 44     # The DescribeSecurityGroups operation returns information about security 
-</span><span class="inferred0"><a name="line45" /> 45     # groups owned by the user making the request.
-</span><span class="inferred1"><a name="line46" /> 46     # 
-</span><span class="inferred0"><a name="line47" /> 47     # An optional list of security group names may be provided to request 
-</span><span class="inferred1"><a name="line48" /> 48     # information for those security groups only. If no security group 
-</span><span class="inferred0"><a name="line49" /> 49     # names are provided, information of all security groups will be returned. 
-</span><span class="inferred1"><a name="line50" /> 50     # If a group is specified that does not exist a fault is returned.
-</span><span class="marked0"><a name="line51" /> 51     def describe_security_groups( options = {} )
-</span><span class="inferred1"><a name="line52" /> 52       
-</span><span class="inferred0"><a name="line53" /> 53       # defaults
-</span><span class="marked1"><a name="line54" /> 54       options = { :group_name =&gt; [] }.merge(options)
-</span><span class="inferred0"><a name="line55" /> 55       
-</span><span class="marked1"><a name="line56" /> 56       raise ArgumentError, &quot;No :group_name provided&quot; if options[:group_name] == &quot;&quot;
-</span><span class="marked0"><a name="line57" /> 57       raise ArgumentError, &quot;No :group_name provided&quot; if options[:group_name].nil?
-</span><span class="inferred1"><a name="line58" /> 58       
-</span><span class="marked0"><a name="line59" /> 59       params = pathlist(&quot;GroupName&quot;, options[:group_name] )
-</span><span class="marked1"><a name="line60" /> 60       describe_security_groups_response = DescribeSecurityGroupsResponseSet.new
-</span><span class="marked0"><a name="line61" /> 61       http_response = make_request(&quot;DescribeSecurityGroups&quot;, params)
-</span><span class="marked1"><a name="line62" /> 62       http_xml = http_response.body
-</span><span class="marked0"><a name="line63" /> 63       doc = REXML::Document.new(http_xml)
-</span><span class="inferred1"><a name="line64" /> 64       
-</span><span class="marked0"><a name="line65" /> 65       doc.elements.each(&quot;DescribeSecurityGroupsResponse/securityGroupInfo/item&quot;) do |element|
-</span><span class="marked1"><a name="line66" /> 66         item = Item.new
-</span><span class="marked0"><a name="line67" /> 67         item.owner_id = REXML::XPath.first(element, &quot;ownerId&quot;).text
-</span><span class="marked1"><a name="line68" /> 68         item.group_name = REXML::XPath.first(element, &quot;groupName&quot;).text
-</span><span class="marked0"><a name="line69" /> 69         item.group_description = REXML::XPath.first(element, &quot;groupDescription&quot;).text
-</span><span class="inferred1"><a name="line70" /> 70         
-</span><span class="marked0"><a name="line71" /> 71           ip_permissions_set = IpPermissionsResponseSet.new
-</span><span class="marked1"><a name="line72" /> 72           element.elements.each(&quot;ipPermissions/item&quot;) do |element|
-</span><span class="marked0"><a name="line73" /> 73             ip_permissions_set_item = Item.new
-</span><span class="marked1"><a name="line74" /> 74             ip_permissions_set_item.ip_protocol = REXML::XPath.first(element, &quot;ipProtocol&quot;).text
-</span><span class="marked0"><a name="line75" /> 75             ip_permissions_set_item.from_port = REXML::XPath.first(element, &quot;fromPort&quot;).text
-</span><span class="marked1"><a name="line76" /> 76             ip_permissions_set_item.to_port = REXML::XPath.first(element, &quot;toPort&quot;).text
-</span><span class="marked0"><a name="line77" /> 77             ip_permissions_set_item.groups = REXML::XPath.first(element, &quot;groups&quot;).text
-</span><span class="inferred1"><a name="line78" /> 78             
-</span><span class="marked0"><a name="line79" /> 79               ip_ranges_set = IpRangesResponseSet.new
-</span><span class="marked1"><a name="line80" /> 80               element.elements.each(&quot;ipRanges/item&quot;) do |element|
-</span><span class="marked0"><a name="line81" /> 81                 ip_ranges_set_item = Item.new
-</span><span class="marked1"><a name="line82" /> 82                 ip_ranges_set_item.cidr_ip = REXML::XPath.first(element, &quot;cidrIp&quot;).text
-</span><span class="marked0"><a name="line83" /> 83                 ip_ranges_set &lt;&lt; ip_ranges_set_item
-</span><span class="inferred1"><a name="line84" /> 84               end
-</span><span class="marked0"><a name="line85" /> 85               ip_permissions_set_item.ip_ranges = ip_ranges_set
-</span><span class="inferred1"><a name="line86" /> 86             
-</span><span class="marked0"><a name="line87" /> 87             ip_permissions_set &lt;&lt; ip_permissions_set_item
-</span><span class="inferred1"><a name="line88" /> 88           end
-</span><span class="marked0"><a name="line89" /> 89           item.ip_permissions = ip_permissions_set
-</span><span class="inferred1"><a name="line90" /> 90         
-</span><span class="marked0"><a name="line91" /> 91         describe_security_groups_response &lt;&lt; item
-</span><span class="inferred1"><a name="line92" /> 92       end
-</span><span class="marked0"><a name="line93" /> 93       return describe_security_groups_response
-</span><span class="inferred1"><a name="line94" /> 94     end
-</span><span class="inferred0"><a name="line95" /> 95     
-</span><span class="inferred1"><a name="line96" /> 96     
-</span><span class="inferred0"><a name="line97" /> 97     # The DeleteSecurityGroup operation deletes a security group.
-</span><span class="inferred1"><a name="line98" /> 98     # 
-</span><span class="inferred0"><a name="line99" /> 99     # If an attempt is made to delete a security group and any 
-</span><span class="inferred1"><a name="line100" />100     # instances exist that are members of that group a fault is 
-</span><span class="inferred0"><a name="line101" />101     # returned.
-</span><span class="marked1"><a name="line102" />102     def delete_security_group( options = {} )
-</span><span class="inferred0"><a name="line103" />103       
-</span><span class="inferred1"><a name="line104" />104       # defaults
-</span><span class="marked0"><a name="line105" />105       options = { :group_name =&gt; &quot;&quot; }.merge(options)
-</span><span class="inferred1"><a name="line106" />106       
-</span><span class="marked0"><a name="line107" />107       raise ArgumentError, &quot;No :group_name provided&quot; if options[:group_name].nil? || options[:group_name].empty?
-</span><span class="inferred1"><a name="line108" />108       
-</span><span class="marked0"><a name="line109" />109       params = { &quot;GroupName&quot; =&gt; options[:group_name] }
-</span><span class="inferred1"><a name="line110" />110       
-</span><span class="marked0"><a name="line111" />111       make_request(&quot;DeleteSecurityGroup&quot;, params)
-</span><span class="marked1"><a name="line112" />112       return response = DeleteSecurityGroupResponse.new
-</span><span class="inferred0"><a name="line113" />113       
-</span><span class="inferred1"><a name="line114" />114     end
-</span><span class="inferred0"><a name="line115" />115     
-</span><span class="inferred1"><a name="line116" />116     
-</span><span class="inferred0"><a name="line117" />117     # The AuthorizeSecurityGroupIngress operation adds permissions to a security 
-</span><span class="inferred1"><a name="line118" />118     # group.
-</span><span class="inferred0"><a name="line119" />119     #
-</span><span class="inferred1"><a name="line120" />120     # Permissions are specified in terms of the IP protocol (TCP, UDP or ICMP), 
-</span><span class="inferred0"><a name="line121" />121     # the source of the request (by IP range or an Amazon EC2 user-group pair), 
-</span><span class="inferred1"><a name="line122" />122     # source and destination port ranges (for TCP and UDP), and ICMP codes and 
-</span><span class="inferred0"><a name="line123" />123     # types (for ICMP). When authorizing ICMP, -1 may be used as a wildcard in 
-</span><span class="inferred1"><a name="line124" />124     # the type and code fields.
-</span><span class="inferred0"><a name="line125" />125     #
-</span><span class="inferred1"><a name="line126" />126     # Permission changes are propagated to instances within the security group 
-</span><span class="inferred0"><a name="line127" />127     # being modified as quickly as possible. However, a small delay is likely, 
-</span><span class="inferred1"><a name="line128" />128     # depending on the number of instances that are members of the indicated group.
-</span><span class="inferred0"><a name="line129" />129     #
-</span><span class="inferred1"><a name="line130" />130     # When authorizing a user/group pair permission, GroupName, 
-</span><span class="inferred0"><a name="line131" />131     # SourceSecurityGroupName and SourceSecurityGroupOwnerId must be specified. 
-</span><span class="inferred1"><a name="line132" />132     # When authorizing a CIDR IP permission, GroupName, IpProtocol, FromPort, 
-</span><span class="inferred0"><a name="line133" />133     # ToPort and CidrIp must be specified. Mixing these two types of parameters 
-</span><span class="inferred1"><a name="line134" />134     # is not allowed.
-</span><span class="marked0"><a name="line135" />135     def authorize_security_group_ingress( options = {} )
-</span><span class="inferred1"><a name="line136" />136       
-</span><span class="marked0"><a name="line137" />137       options = { :group_name =&gt; nil,
-</span><span class="inferred1"><a name="line138" />138                   :ip_protocol =&gt; nil,
-</span><span class="inferred0"><a name="line139" />139                   :from_port =&gt; nil, 
-</span><span class="inferred1"><a name="line140" />140                   :to_port =&gt; nil, 
-</span><span class="inferred0"><a name="line141" />141                   :cidr_ip =&gt; nil, 
-</span><span class="inferred1"><a name="line142" />142                   :source_security_group_name =&gt; nil,
-</span><span class="inferred0"><a name="line143" />143                   :source_security_group_owner_id =&gt; nil }.merge(options)
-</span><span class="inferred1"><a name="line144" />144       
-</span><span class="inferred0"><a name="line145" />145       # lets not validate the rest of the possible permutations of required params and instead let
-</span><span class="inferred1"><a name="line146" />146       # EC2 sort it out on the server side.  We'll only require :group_name as that is always needed.
-</span><span class="marked0"><a name="line147" />147       raise ArgumentError, &quot;No :group_name provided&quot; if options[:group_name].nil? || options[:group_name].empty?
-</span><span class="inferred1"><a name="line148" />148       
-</span><span class="marked0"><a name="line149" />149       params = { &quot;GroupName&quot; =&gt; options[:group_name],
-</span><span class="inferred1"><a name="line150" />150                  &quot;IpProtocol&quot; =&gt; options[:ip_protocol],
-</span><span class="inferred0"><a name="line151" />151                  &quot;FromPort&quot; =&gt; options[:from_port].to_s,
-</span><span class="inferred1"><a name="line152" />152                  &quot;ToPort&quot; =&gt; options[:to_port].to_s, 
-</span><span class="inferred0"><a name="line153" />153                  &quot;CidrIp&quot; =&gt; options[:cidr_ip], 
-</span><span class="inferred1"><a name="line154" />154                  &quot;SourceSecurityGroupName&quot; =&gt; options[:source_security_group_name],
-</span><span class="inferred0"><a name="line155" />155                  &quot;SourceSecurityGroupOwnerId&quot; =&gt; options[:source_security_group_owner_id]
-</span><span class="marked1"><a name="line156" />156                  }.reject { |key, value| value.nil? or value.empty?}
-</span><span class="inferred0"><a name="line157" />157       
-</span><span class="marked1"><a name="line158" />158       make_request(&quot;AuthorizeSecurityGroupIngress&quot;, params)
-</span><span class="marked0"><a name="line159" />159       response = AuthorizeSecurityGroupIngressResponse.new
-</span><span class="inferred1"><a name="line160" />160       
-</span><span class="inferred0"><a name="line161" />161     end
-</span><span class="inferred1"><a name="line162" />162     
-</span><span class="inferred0"><a name="line163" />163     
-</span><span class="inferred1"><a name="line164" />164     # The RevokeSecurityGroupIngress operation revokes existing permissions 
-</span><span class="inferred0"><a name="line165" />165     # that were previously granted to a security group. The permissions to 
-</span><span class="inferred1"><a name="line166" />166     # revoke must be specified using the same values originally used to grant 
-</span><span class="inferred0"><a name="line167" />167     # the permission.
-</span><span class="inferred1"><a name="line168" />168     #
-</span><span class="inferred0"><a name="line169" />169     # Permissions are specified in terms of the IP protocol (TCP, UDP or ICMP), 
-</span><span class="inferred1"><a name="line170" />170     # the source of the request (by IP range or an Amazon EC2 user-group pair), 
-</span><span class="inferred0"><a name="line171" />171     # source and destination port ranges (for TCP and UDP), and ICMP codes and 
-</span><span class="inferred1"><a name="line172" />172     # types (for ICMP). When authorizing ICMP, -1 may be used as a wildcard 
-</span><span class="inferred0"><a name="line173" />173     # in the type and code fields.
-</span><span class="inferred1"><a name="line174" />174     #
-</span><span class="inferred0"><a name="line175" />175     # Permission changes are propagated to instances within the security group 
-</span><span class="inferred1"><a name="line176" />176     # being modified as quickly as possible. However, a small delay is likely, 
-</span><span class="inferred0"><a name="line177" />177     # depending on the number of instances that are members of the indicated group.
-</span><span class="inferred1"><a name="line178" />178     #
-</span><span class="inferred0"><a name="line179" />179     # When revoking a user/group pair permission, GroupName, SourceSecurityGroupName 
-</span><span class="inferred1"><a name="line180" />180     # and SourceSecurityGroupOwnerId must be specified. When authorizing a CIDR IP 
-</span><span class="inferred0"><a name="line181" />181     # permission, GroupName, IpProtocol, FromPort, ToPort and CidrIp must be 
-</span><span class="inferred1"><a name="line182" />182     # specified. Mixing these two types of parameters is not allowed.
-</span><span class="marked0"><a name="line183" />183     def revoke_security_group_ingress( options = {} )
-</span><span class="inferred1"><a name="line184" />184     
-</span><span class="marked0"><a name="line185" />185       options = { :group_name =&gt; nil,
-</span><span class="inferred1"><a name="line186" />186                   :ip_protocol =&gt; nil,
-</span><span class="inferred0"><a name="line187" />187                   :from_port =&gt; nil, 
-</span><span class="inferred1"><a name="line188" />188                   :to_port =&gt; nil, 
-</span><span class="inferred0"><a name="line189" />189                   :cidr_ip =&gt; nil, 
-</span><span class="inferred1"><a name="line190" />190                   :source_security_group_name =&gt; nil,
-</span><span class="inferred0"><a name="line191" />191                   :source_security_group_owner_id =&gt; nil }.merge(options)
-</span><span class="inferred1"><a name="line192" />192       
-</span><span class="inferred0"><a name="line193" />193       # lets not validate the rest of the possible permutations of required params and instead let
-</span><span class="inferred1"><a name="line194" />194       # EC2 sort it out on the server side.  We'll only require :group_name as that is always needed.
-</span><span class="marked0"><a name="line195" />195       raise ArgumentError, &quot;No :group_name provided&quot; if options[:group_name].nil? || options[:group_name].empty?
-</span><span class="inferred1"><a name="line196" />196       
-</span><span class="marked0"><a name="line197" />197       params = { &quot;GroupName&quot; =&gt; options[:group_name],
-</span><span class="inferred1"><a name="line198" />198                  &quot;IpProtocol&quot; =&gt; options[:ip_protocol],
-</span><span class="inferred0"><a name="line199" />199                  &quot;FromPort&quot; =&gt; options[:from_port].to_s,
-</span><span class="inferred1"><a name="line200" />200                  &quot;ToPort&quot; =&gt; options[:to_port].to_s, 
-</span><span class="inferred0"><a name="line201" />201                  &quot;CidrIp&quot; =&gt; options[:cidr_ip], 
-</span><span class="inferred1"><a name="line202" />202                  &quot;SourceSecurityGroupName&quot; =&gt; options[:source_security_group_name],
-</span><span class="inferred0"><a name="line203" />203                  &quot;SourceSecurityGroupOwnerId&quot; =&gt; options[:source_security_group_owner_id]
-</span><span class="marked1"><a name="line204" />204                  }.reject { |key, value| value.nil? or value.empty?}
-</span><span class="inferred0"><a name="line205" />205       
-</span><span class="marked1"><a name="line206" />206       make_request(&quot;RevokeSecurityGroupIngress&quot;, params)
-</span><span class="marked0"><a name="line207" />207       response = RevokeSecurityGroupIngressResponse.new
-</span><span class="inferred1"><a name="line208" />208     
-</span><span class="inferred0"><a name="line209" />209     end
-</span><span class="inferred1"><a name="line210" />210     
-</span><span class="inferred0"><a name="line211" />211   end
-</span><span class="inferred1"><a name="line212" />212   
-</span><span class="inferred0"><a name="line213" />213 end
+    </table><pre><span class="inferred1"><a name="line1" />  1 # Amazon Web Services EC2 Query API Ruby library.  This library was 
+</span><span class="inferred0"><a name="line2" />  2 # heavily modified from original Amazon Web Services sample code 
+</span><span class="inferred1"><a name="line3" />  3 # and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
+</span><span class="inferred0"><a name="line4" />  4 # 
+</span><span class="inferred1"><a name="line5" />  5 # Source code and gem hosted on RubyForge
+</span><span class="inferred0"><a name="line6" />  6 # under the Ruby License as of 12/14/2006:
+</span><span class="inferred1"><a name="line7" />  7 # http://amazon-ec2.rubyforge.org
+</span><span class="inferred0"><a name="line8" />  8 
+</span><span class="marked1"><a name="line9" />  9 module EC2
+</span><span class="inferred0"><a name="line10" /> 10   
+</span><span class="marked1"><a name="line11" /> 11   class AWSAuthConnection
+</span><span class="inferred0"><a name="line12" /> 12     
+</span><span class="inferred1"><a name="line13" /> 13     # The CreateSecurityGroup operation creates a new security group.
+</span><span class="inferred0"><a name="line14" /> 14     #
+</span><span class="inferred1"><a name="line15" /> 15     # Every instance is launched in a security group. If none is specified 
+</span><span class="inferred0"><a name="line16" /> 16     # as part of the launch request then instances are launched in the 
+</span><span class="inferred1"><a name="line17" /> 17     # default security group. Instances within the same security group 
+</span><span class="inferred0"><a name="line18" /> 18     # have unrestricted network access to one another. Instances will reject 
+</span><span class="inferred1"><a name="line19" /> 19     # network access attempts from other instances in a different security 
+</span><span class="inferred0"><a name="line20" /> 20     # group. As the owner of instances you may grant or revoke specific 
+</span><span class="inferred1"><a name="line21" /> 21     # permissions using the AuthorizeSecurityGroupIngress and 
+</span><span class="inferred0"><a name="line22" /> 22     # RevokeSecurityGroupIngress operations.
+</span><span class="marked1"><a name="line23" /> 23     def create_security_group( options = {} )
+</span><span class="inferred0"><a name="line24" /> 24       
+</span><span class="inferred1"><a name="line25" /> 25       # defaults
+</span><span class="marked0"><a name="line26" /> 26       options = {:group_name =&gt; &quot;&quot;,
+</span><span class="inferred1"><a name="line27" /> 27                  :group_description =&gt; &quot;&quot;
+</span><span class="inferred0"><a name="line28" /> 28                  }.merge(options)
+</span><span class="inferred1"><a name="line29" /> 29       
+</span><span class="marked0"><a name="line30" /> 30       raise ArgumentError, &quot;No :group_name provided&quot; if options[:group_name].nil? || options[:group_name].empty?
+</span><span class="marked1"><a name="line31" /> 31       raise ArgumentError, &quot;No :group_description provided&quot; if options[:group_description].nil? || options[:group_description].empty?
+</span><span class="inferred0"><a name="line32" /> 32       
+</span><span class="marked1"><a name="line33" /> 33       params = {
+</span><span class="inferred0"><a name="line34" /> 34         &quot;GroupName&quot; =&gt; options[:group_name],
+</span><span class="inferred1"><a name="line35" /> 35         &quot;GroupDescription&quot; =&gt; options[:group_description]
+</span><span class="inferred0"><a name="line36" /> 36       }
+</span><span class="inferred1"><a name="line37" /> 37       
+</span><span class="marked0"><a name="line38" /> 38       make_request(&quot;CreateSecurityGroup&quot;, params)
+</span><span class="marked1"><a name="line39" /> 39       return response = CreateSecurityGroupResponse.new
+</span><span class="inferred0"><a name="line40" /> 40       
+</span><span class="inferred1"><a name="line41" /> 41     end
+</span><span class="inferred0"><a name="line42" /> 42     
+</span><span class="inferred1"><a name="line43" /> 43     
+</span><span class="inferred0"><a name="line44" /> 44     # The DescribeSecurityGroups operation returns information about security 
+</span><span class="inferred1"><a name="line45" /> 45     # groups owned by the user making the request.
+</span><span class="inferred0"><a name="line46" /> 46     # 
+</span><span class="inferred1"><a name="line47" /> 47     # An optional list of security group names may be provided to request 
+</span><span class="inferred0"><a name="line48" /> 48     # information for those security groups only. If no security group 
+</span><span class="inferred1"><a name="line49" /> 49     # names are provided, information of all security groups will be returned. 
+</span><span class="inferred0"><a name="line50" /> 50     # If a group is specified that does not exist a fault is returned.
+</span><span class="marked1"><a name="line51" /> 51     def describe_security_groups( options = {} )
+</span><span class="inferred0"><a name="line52" /> 52       
+</span><span class="inferred1"><a name="line53" /> 53       # defaults
+</span><span class="marked0"><a name="line54" /> 54       options = { :group_name =&gt; [] }.merge(options)
+</span><span class="inferred1"><a name="line55" /> 55       
+</span><span class="marked0"><a name="line56" /> 56       raise ArgumentError, &quot;No :group_name provided&quot; if options[:group_name] == &quot;&quot;
+</span><span class="marked1"><a name="line57" /> 57       raise ArgumentError, &quot;No :group_name provided&quot; if options[:group_name].nil?
+</span><span class="inferred0"><a name="line58" /> 58       
+</span><span class="marked1"><a name="line59" /> 59       params = pathlist(&quot;GroupName&quot;, options[:group_name] )
+</span><span class="marked0"><a name="line60" /> 60       describe_security_groups_response = DescribeSecurityGroupsResponseSet.new
+</span><span class="marked1"><a name="line61" /> 61       http_response = make_request(&quot;DescribeSecurityGroups&quot;, params)
+</span><span class="marked0"><a name="line62" /> 62       http_xml = http_response.body
+</span><span class="marked1"><a name="line63" /> 63       doc = REXML::Document.new(http_xml)
+</span><span class="inferred0"><a name="line64" /> 64       
+</span><span class="marked1"><a name="line65" /> 65       doc.elements.each(&quot;DescribeSecurityGroupsResponse/securityGroupInfo/item&quot;) do |element|
+</span><span class="marked0"><a name="line66" /> 66         item = Item.new
+</span><span class="marked1"><a name="line67" /> 67         item.owner_id = REXML::XPath.first(element, &quot;ownerId&quot;).text
+</span><span class="marked0"><a name="line68" /> 68         item.group_name = REXML::XPath.first(element, &quot;groupName&quot;).text
+</span><span class="marked1"><a name="line69" /> 69         item.group_description = REXML::XPath.first(element, &quot;groupDescription&quot;).text
+</span><span class="inferred0"><a name="line70" /> 70         
+</span><span class="marked1"><a name="line71" /> 71           ip_permissions_set = IpPermissionsResponseSet.new
+</span><span class="marked0"><a name="line72" /> 72           element.elements.each(&quot;ipPermissions/item&quot;) do |element|
+</span><span class="marked1"><a name="line73" /> 73             ip_permissions_set_item = Item.new
+</span><span class="marked0"><a name="line74" /> 74             ip_permissions_set_item.ip_protocol = REXML::XPath.first(element, &quot;ipProtocol&quot;).text
+</span><span class="marked1"><a name="line75" /> 75             ip_permissions_set_item.from_port = REXML::XPath.first(element, &quot;fromPort&quot;).text
+</span><span class="marked0"><a name="line76" /> 76             ip_permissions_set_item.to_port = REXML::XPath.first(element, &quot;toPort&quot;).text
+</span><span class="marked1"><a name="line77" /> 77             ip_permissions_set_item.groups = REXML::XPath.first(element, &quot;groups&quot;).text
+</span><span class="inferred0"><a name="line78" /> 78             
+</span><span class="marked1"><a name="line79" /> 79               ip_ranges_set = IpRangesResponseSet.new
+</span><span class="marked0"><a name="line80" /> 80               element.elements.each(&quot;ipRanges/item&quot;) do |element|
+</span><span class="marked1"><a name="line81" /> 81                 ip_ranges_set_item = Item.new
+</span><span class="marked0"><a name="line82" /> 82                 ip_ranges_set_item.cidr_ip = REXML::XPath.first(element, &quot;cidrIp&quot;).text
+</span><span class="marked1"><a name="line83" /> 83                 ip_ranges_set &lt;&lt; ip_ranges_set_item
+</span><span class="inferred0"><a name="line84" /> 84               end
+</span><span class="marked1"><a name="line85" /> 85               ip_permissions_set_item.ip_ranges = ip_ranges_set
+</span><span class="inferred0"><a name="line86" /> 86             
+</span><span class="marked1"><a name="line87" /> 87             ip_permissions_set &lt;&lt; ip_permissions_set_item
+</span><span class="inferred0"><a name="line88" /> 88           end
+</span><span class="marked1"><a name="line89" /> 89           item.ip_permissions = ip_permissions_set
+</span><span class="inferred0"><a name="line90" /> 90         
+</span><span class="marked1"><a name="line91" /> 91         describe_security_groups_response &lt;&lt; item
+</span><span class="inferred0"><a name="line92" /> 92       end
+</span><span class="marked1"><a name="line93" /> 93       return describe_security_groups_response
+</span><span class="inferred0"><a name="line94" /> 94     end
+</span><span class="inferred1"><a name="line95" /> 95     
+</span><span class="inferred0"><a name="line96" /> 96     
+</span><span class="inferred1"><a name="line97" /> 97     # The DeleteSecurityGroup operation deletes a security group.
+</span><span class="inferred0"><a name="line98" /> 98     # 
+</span><span class="inferred1"><a name="line99" /> 99     # If an attempt is made to delete a security group and any 
+</span><span class="inferred0"><a name="line100" />100     # instances exist that are members of that group a fault is 
+</span><span class="inferred1"><a name="line101" />101     # returned.
+</span><span class="marked0"><a name="line102" />102     def delete_security_group( options = {} )
+</span><span class="inferred1"><a name="line103" />103       
+</span><span class="inferred0"><a name="line104" />104       # defaults
+</span><span class="marked1"><a name="line105" />105       options = { :group_name =&gt; &quot;&quot; }.merge(options)
+</span><span class="inferred0"><a name="line106" />106       
+</span><span class="marked1"><a name="line107" />107       raise ArgumentError, &quot;No :group_name provided&quot; if options[:group_name].nil? || options[:group_name].empty?
+</span><span class="inferred0"><a name="line108" />108       
+</span><span class="marked1"><a name="line109" />109       params = { &quot;GroupName&quot; =&gt; options[:group_name] }
+</span><span class="inferred0"><a name="line110" />110       
+</span><span class="marked1"><a name="line111" />111       make_request(&quot;DeleteSecurityGroup&quot;, params)
+</span><span class="marked0"><a name="line112" />112       return response = DeleteSecurityGroupResponse.new
+</span><span class="inferred1"><a name="line113" />113       
+</span><span class="inferred0"><a name="line114" />114     end
+</span><span class="inferred1"><a name="line115" />115     
+</span><span class="inferred0"><a name="line116" />116     
+</span><span class="inferred1"><a name="line117" />117     # The AuthorizeSecurityGroupIngress operation adds permissions to a security 
+</span><span class="inferred0"><a name="line118" />118     # group.
+</span><span class="inferred1"><a name="line119" />119     #
+</span><span class="inferred0"><a name="line120" />120     # Permissions are specified in terms of the IP protocol (TCP, UDP or ICMP), 
+</span><span class="inferred1"><a name="line121" />121     # the source of the request (by IP range or an Amazon EC2 user-group pair), 
+</span><span class="inferred0"><a name="line122" />122     # source and destination port ranges (for TCP and UDP), and ICMP codes and 
+</span><span class="inferred1"><a name="line123" />123     # types (for ICMP). When authorizing ICMP, -1 may be used as a wildcard in 
+</span><span class="inferred0"><a name="line124" />124     # the type and code fields.
+</span><span class="inferred1"><a name="line125" />125     #
+</span><span class="inferred0"><a name="line126" />126     # Permission changes are propagated to instances within the security group 
+</span><span class="inferred1"><a name="line127" />127     # being modified as quickly as possible. However, a small delay is likely, 
+</span><span class="inferred0"><a name="line128" />128     # depending on the number of instances that are members of the indicated group.
+</span><span class="inferred1"><a name="line129" />129     #
+</span><span class="inferred0"><a name="line130" />130     # When authorizing a user/group pair permission, GroupName, 
+</span><span class="inferred1"><a name="line131" />131     # SourceSecurityGroupName and SourceSecurityGroupOwnerId must be specified. 
+</span><span class="inferred0"><a name="line132" />132     # When authorizing a CIDR IP permission, GroupName, IpProtocol, FromPort, 
+</span><span class="inferred1"><a name="line133" />133     # ToPort and CidrIp must be specified. Mixing these two types of parameters 
+</span><span class="inferred0"><a name="line134" />134     # is not allowed.
+</span><span class="marked1"><a name="line135" />135     def authorize_security_group_ingress( options = {} )
+</span><span class="inferred0"><a name="line136" />136       
+</span><span class="inferred1"><a name="line137" />137       # defaults
+</span><span class="marked0"><a name="line138" />138       options = { :group_name =&gt; nil,
+</span><span class="inferred1"><a name="line139" />139                   :ip_protocol =&gt; nil,
+</span><span class="inferred0"><a name="line140" />140                   :from_port =&gt; nil, 
+</span><span class="inferred1"><a name="line141" />141                   :to_port =&gt; nil, 
+</span><span class="inferred0"><a name="line142" />142                   :cidr_ip =&gt; nil, 
+</span><span class="inferred1"><a name="line143" />143                   :source_security_group_name =&gt; nil,
+</span><span class="inferred0"><a name="line144" />144                   :source_security_group_owner_id =&gt; nil }.merge(options)
+</span><span class="inferred1"><a name="line145" />145       
+</span><span class="inferred0"><a name="line146" />146       # lets not validate the rest of the possible permutations of required params and instead let
+</span><span class="inferred1"><a name="line147" />147       # EC2 sort it out on the server side.  We'll only require :group_name as that is always needed.
+</span><span class="marked0"><a name="line148" />148       raise ArgumentError, &quot;No :group_name provided&quot; if options[:group_name].nil? || options[:group_name].empty?
+</span><span class="inferred1"><a name="line149" />149       
+</span><span class="marked0"><a name="line150" />150       params = { &quot;GroupName&quot; =&gt; options[:group_name],
+</span><span class="inferred1"><a name="line151" />151                  &quot;IpProtocol&quot; =&gt; options[:ip_protocol],
+</span><span class="inferred0"><a name="line152" />152                  &quot;FromPort&quot; =&gt; options[:from_port].to_s,
+</span><span class="inferred1"><a name="line153" />153                  &quot;ToPort&quot; =&gt; options[:to_port].to_s, 
+</span><span class="inferred0"><a name="line154" />154                  &quot;CidrIp&quot; =&gt; options[:cidr_ip], 
+</span><span class="inferred1"><a name="line155" />155                  &quot;SourceSecurityGroupName&quot; =&gt; options[:source_security_group_name],
+</span><span class="inferred0"><a name="line156" />156                  &quot;SourceSecurityGroupOwnerId&quot; =&gt; options[:source_security_group_owner_id]
+</span><span class="inferred1"><a name="line157" />157                  }
+</span><span class="inferred0"><a name="line158" />158       
+</span><span class="marked1"><a name="line159" />159       make_request(&quot;AuthorizeSecurityGroupIngress&quot;, params)
+</span><span class="marked0"><a name="line160" />160       response = AuthorizeSecurityGroupIngressResponse.new
+</span><span class="inferred1"><a name="line161" />161       
+</span><span class="inferred0"><a name="line162" />162     end
+</span><span class="inferred1"><a name="line163" />163     
+</span><span class="inferred0"><a name="line164" />164     
+</span><span class="inferred1"><a name="line165" />165     # The RevokeSecurityGroupIngress operation revokes existing permissions 
+</span><span class="inferred0"><a name="line166" />166     # that were previously granted to a security group. The permissions to 
+</span><span class="inferred1"><a name="line167" />167     # revoke must be specified using the same values originally used to grant 
+</span><span class="inferred0"><a name="line168" />168     # the permission.
+</span><span class="inferred1"><a name="line169" />169     #
+</span><span class="inferred0"><a name="line170" />170     # Permissions are specified in terms of the IP protocol (TCP, UDP or ICMP), 
+</span><span class="inferred1"><a name="line171" />171     # the source of the request (by IP range or an Amazon EC2 user-group pair), 
+</span><span class="inferred0"><a name="line172" />172     # source and destination port ranges (for TCP and UDP), and ICMP codes and 
+</span><span class="inferred1"><a name="line173" />173     # types (for ICMP). When authorizing ICMP, -1 may be used as a wildcard 
+</span><span class="inferred0"><a name="line174" />174     # in the type and code fields.
+</span><span class="inferred1"><a name="line175" />175     #
+</span><span class="inferred0"><a name="line176" />176     # Permission changes are propagated to instances within the security group 
+</span><span class="inferred1"><a name="line177" />177     # being modified as quickly as possible. However, a small delay is likely, 
+</span><span class="inferred0"><a name="line178" />178     # depending on the number of instances that are members of the indicated group.
+</span><span class="inferred1"><a name="line179" />179     #
+</span><span class="inferred0"><a name="line180" />180     # When revoking a user/group pair permission, GroupName, SourceSecurityGroupName 
+</span><span class="inferred1"><a name="line181" />181     # and SourceSecurityGroupOwnerId must be specified. When authorizing a CIDR IP 
+</span><span class="inferred0"><a name="line182" />182     # permission, GroupName, IpProtocol, FromPort, ToPort and CidrIp must be 
+</span><span class="inferred1"><a name="line183" />183     # specified. Mixing these two types of parameters is not allowed.
+</span><span class="marked0"><a name="line184" />184     def revoke_security_group_ingress( options = {} )
+</span><span class="inferred1"><a name="line185" />185     
+</span><span class="inferred0"><a name="line186" />186       # defaults
+</span><span class="marked1"><a name="line187" />187       options = { :group_name =&gt; nil,
+</span><span class="inferred0"><a name="line188" />188                   :ip_protocol =&gt; nil,
+</span><span class="inferred1"><a name="line189" />189                   :from_port =&gt; nil, 
+</span><span class="inferred0"><a name="line190" />190                   :to_port =&gt; nil, 
+</span><span class="inferred1"><a name="line191" />191                   :cidr_ip =&gt; nil, 
+</span><span class="inferred0"><a name="line192" />192                   :source_security_group_name =&gt; nil,
+</span><span class="inferred1"><a name="line193" />193                   :source_security_group_owner_id =&gt; nil }.merge(options)
+</span><span class="inferred0"><a name="line194" />194       
+</span><span class="inferred1"><a name="line195" />195       # lets not validate the rest of the possible permutations of required params and instead let
+</span><span class="inferred0"><a name="line196" />196       # EC2 sort it out on the server side.  We'll only require :group_name as that is always needed.
+</span><span class="marked1"><a name="line197" />197       raise ArgumentError, &quot;No :group_name provided&quot; if options[:group_name].nil? || options[:group_name].empty?
+</span><span class="inferred0"><a name="line198" />198       
+</span><span class="marked1"><a name="line199" />199       params = { &quot;GroupName&quot; =&gt; options[:group_name],
+</span><span class="inferred0"><a name="line200" />200                  &quot;IpProtocol&quot; =&gt; options[:ip_protocol],
+</span><span class="inferred1"><a name="line201" />201                  &quot;FromPort&quot; =&gt; options[:from_port].to_s,
+</span><span class="inferred0"><a name="line202" />202                  &quot;ToPort&quot; =&gt; options[:to_port].to_s, 
+</span><span class="inferred1"><a name="line203" />203                  &quot;CidrIp&quot; =&gt; options[:cidr_ip], 
+</span><span class="inferred0"><a name="line204" />204                  &quot;SourceSecurityGroupName&quot; =&gt; options[:source_security_group_name],
+</span><span class="inferred1"><a name="line205" />205                  &quot;SourceSecurityGroupOwnerId&quot; =&gt; options[:source_security_group_owner_id]
+</span><span class="inferred0"><a name="line206" />206                  }
+</span><span class="inferred1"><a name="line207" />207       
+</span><span class="marked0"><a name="line208" />208       make_request(&quot;RevokeSecurityGroupIngress&quot;, params)
+</span><span class="marked1"><a name="line209" />209       response = RevokeSecurityGroupIngressResponse.new
+</span><span class="inferred0"><a name="line210" />210     
+</span><span class="inferred1"><a name="line211" />211     end
+</span><span class="inferred0"><a name="line212" />212     
+</span><span class="inferred1"><a name="line213" />213   end
+</span><span class="inferred0"><a name="line214" />214   
+</span><span class="inferred1"><a name="line215" />215 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

@@ -1,18 +1,42 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
-class TestEC2 < Test::Unit::TestCase
+context "The EC2 method " do
   
-  def setup
-    @ec2 = EC2::AWSAuthConnection.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+  setup do
   end
   
-  def test_register_image
+  specify "EC2::AWSAuthConnection attribute readers should be available" do
+    @ec2 = EC2::AWSAuthConnection.new( :access_key_id => "not a key",
+                                       :secret_access_key => "not a secret",
+                                       :use_ssl => true,
+                                       :server => "foo.example.com" )
+    
+    @ec2.use_ssl.should.equal true
+    @ec2.port.should.equal 443
+    @ec2.server.should.equal "foo.example.com"
   end
   
-  def test_describe_images
+  
+  specify "EC2::AWSAuthConnection should work with insecure connections as well" do
+    @ec2 = EC2::AWSAuthConnection.new( :access_key_id => "not a key",
+                                       :secret_access_key => "not a secret",
+                                       :use_ssl => false,
+                                       :server => "foo.example.com" )
+    
+    @ec2.use_ssl.should.equal false
+    @ec2.port.should.equal 80
+    @ec2.server.should.equal "foo.example.com"
   end
   
-  def test_deregister_image
+  
+  specify "EC2.canonical_string(path) should data that is stripped of ?,&,= " do
+    path = "?name1=value1&name2=value2&name3=value3"
+    EC2.canonical_string(path).should.equal "name1value1name2value2name3value3"
+  end
+  
+  specify "EC2.encode should return the expected string" do
+    EC2.encode("secretaccesskey", "foobar123", urlencode=true).should.equal "e3jeuDc3DIX2mW8cVqWiByj4j5g%3D"
+    EC2.encode("secretaccesskey", "foobar123", urlencode=false).should.equal "e3jeuDc3DIX2mW8cVqWiByj4j5g="
   end
   
 end

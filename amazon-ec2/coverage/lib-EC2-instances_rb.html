@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Sun Jun 10 17:37:57 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Sun Jun 10 18:51:50 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,7 +580,7 @@ span.run100 {
             <a href='lib-EC2-instances_rb.html'>lib/EC2/instances.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>238</tt>
+            <tt>240</tt>
           </td>
           <td class='lines_code'>
             <tt>125</tt>
@@ -619,244 +619,246 @@ span.run100 {
           </td>
         </tr>
       </tbody>
-    </table><pre><span class="inferred0"><a name="line1" />  1 # Amazon Web Services EC2 Query API Ruby library.  This library was 
-</span><span class="inferred1"><a name="line2" />  2 # heavily modified from original Amazon Web Services sample code 
-</span><span class="inferred0"><a name="line3" />  3 # and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
-</span><span class="inferred1"><a name="line4" />  4 # 
-</span><span class="inferred0"><a name="line5" />  5 # Source code and gem hosted on RubyForge
-</span><span class="inferred1"><a name="line6" />  6 # under the Ruby License as of 12/14/2006:
-</span><span class="inferred0"><a name="line7" />  7 # http://amazon-ec2.rubyforge.org
-</span><span class="inferred1"><a name="line8" />  8 
-</span><span class="marked0"><a name="line9" />  9 module EC2
-</span><span class="inferred1"><a name="line10" /> 10   
-</span><span class="marked0"><a name="line11" /> 11   class AWSAuthConnection
-</span><span class="inferred1"><a name="line12" /> 12     
-</span><span class="inferred0"><a name="line13" /> 13     # The RunInstances operation launches a specified number of instances.
-</span><span class="inferred1"><a name="line14" /> 14     #
-</span><span class="inferred0"><a name="line15" /> 15     # Note:
-</span><span class="inferred1"><a name="line16" /> 16     #   The Query version of RunInstances only allows instances of a 
-</span><span class="inferred0"><a name="line17" /> 17     #   single AMI to be launched in one call. This is different 
-</span><span class="inferred1"><a name="line18" /> 18     #   from the SOAP API call of the same name but similar to the 
-</span><span class="inferred0"><a name="line19" /> 19     #   ec2-run-instances command line tool.
-</span><span class="inferred1"><a name="line20" /> 20     # 
-</span><span class="inferred0"><a name="line21" /> 21     # A call to RunInstances is guaranteed to start no fewer than the 
-</span><span class="inferred1"><a name="line22" /> 22     # requested minimum. If there is insufficient capacity available 
-</span><span class="inferred0"><a name="line23" /> 23     # then no instances will be started. Amazon EC2 will make a best 
-</span><span class="inferred1"><a name="line24" /> 24     # effort attempt to satisfy the requested maximum values.
-</span><span class="inferred0"><a name="line25" /> 25     #
-</span><span class="inferred1"><a name="line26" /> 26     # Every instance is launched in a security group. This may be 
-</span><span class="inferred0"><a name="line27" /> 27     # specified as part of the launch request. If a security group is 
-</span><span class="inferred1"><a name="line28" /> 28     # not indicated then instances are started in a the default security group.
-</span><span class="inferred0"><a name="line29" /> 29     #
-</span><span class="inferred1"><a name="line30" /> 30     # An optional keypair ID may be provided for each image in the launch 
-</span><span class="inferred0"><a name="line31" /> 31     # request. All instances that are created from images for which this 
-</span><span class="inferred1"><a name="line32" /> 32     # is provided will have access to the associated public key at boot 
-</span><span class="inferred0"><a name="line33" /> 33     # time (detailed below). This key may be used to provide secure access 
-</span><span class="inferred1"><a name="line34" /> 34     # to an instance of an image on a per-instance basis. Amazon EC2 public 
-</span><span class="inferred0"><a name="line35" /> 35     # images make use of this functionality to provide secure passwordless 
-</span><span class="inferred1"><a name="line36" /> 36     # access to instances (and launching those images without a keypair ID 
-</span><span class="inferred0"><a name="line37" /> 37     # will leave them inaccessible).
-</span><span class="inferred1"><a name="line38" /> 38     #
-</span><span class="inferred0"><a name="line39" /> 39     # The public key material is made available to the instance at boot 
-</span><span class="inferred1"><a name="line40" /> 40     # time by placing it in a file named openssh_id.pub on a logical 
-</span><span class="inferred0"><a name="line41" /> 41     # device that is exposed to the instance as /dev/sda2 (the ephemeral store). 
-</span><span class="inferred1"><a name="line42" /> 42     # The format of this file is suitable for use as an entry within 
-</span><span class="inferred0"><a name="line43" /> 43     # ~/.ssh/authorized_keys (the OpenSSH format). This can be done at boot 
-</span><span class="inferred1"><a name="line44" /> 44     # time (as part of rclocal, for example) allowing for secure 
-</span><span class="inferred0"><a name="line45" /> 45     # password-less access. As the need arises, other formats will 
-</span><span class="inferred1"><a name="line46" /> 46     # also be considered.
-</span><span class="marked0"><a name="line47" /> 47     def run_instances( options = {} )
-</span><span class="inferred1"><a name="line48" /> 48       
-</span><span class="inferred0"><a name="line49" /> 49       # defaults
-</span><span class="marked1"><a name="line50" /> 50       options = { :image_id =&gt; &quot;&quot;,
-</span><span class="inferred0"><a name="line51" /> 51                   :min_count =&gt; 1, 
-</span><span class="inferred1"><a name="line52" /> 52                   :max_count =&gt; 1,
-</span><span class="inferred0"><a name="line53" /> 53                   :key_name =&gt; nil,
-</span><span class="inferred1"><a name="line54" /> 54                   :group_id =&gt; [],
-</span><span class="inferred0"><a name="line55" /> 55                   :user_data =&gt; nil,
-</span><span class="inferred1"><a name="line56" /> 56                   :addressing_type =&gt; &quot;public&quot;,
-</span><span class="inferred0"><a name="line57" /> 57                   :base64_encoded =&gt; false }.merge(options)
-</span><span class="inferred1"><a name="line58" /> 58       
-</span><span class="inferred0"><a name="line59" /> 59       # Do some validation on the arguments provided
-</span><span class="marked1"><a name="line60" /> 60       raise ArgumentError, &quot;:image_id must be provided&quot; if options[:image_id].nil? || options[:image_id].empty?
-</span><span class="marked0"><a name="line61" /> 61       raise ArgumentError, &quot;:min_count is not valid&quot; unless options[:min_count].to_i &gt; 0
-</span><span class="marked1"><a name="line62" /> 62       raise ArgumentError, &quot;:max_count is not valid&quot; unless options[:max_count].to_i &gt; 0
-</span><span class="marked0"><a name="line63" /> 63       raise ArgumentError, &quot;:addressing_type must be 'direct' or 'public'&quot; unless options[:addressing_type] == &quot;public&quot; || options[:addressing_type] == &quot;direct&quot;
-</span><span class="marked1"><a name="line64" /> 64       raise ArgumentError, &quot;:base64_encoded must be 'true' or 'false'&quot; unless options[:base64_encoded] == true || options[:base64_encoded] == false
-</span><span class="inferred0"><a name="line65" /> 65       
-</span><span class="inferred1"><a name="line66" /> 66       # If :user_data is passed in then URL escape and Base64 encode it
-</span><span class="inferred0"><a name="line67" /> 67       # as needed.  Need for URL Escape + Base64 encoding is determined 
-</span><span class="inferred1"><a name="line68" /> 68       # by :base64_encoded param.
-</span><span class="marked0"><a name="line69" /> 69       if options[:user_data]
-</span><span class="marked1"><a name="line70" /> 70         if options[:base64_encoded]
-</span><span class="marked0"><a name="line71" /> 71           user_data = options[:user_data]
-</span><span class="inferred1"><a name="line72" /> 72         else
-</span><span class="marked0"><a name="line73" /> 73           user_data = Base64.encode64(options[:user_data]).gsub(/\n/,&quot;&quot;).strip()
-</span><span class="inferred1"><a name="line74" /> 74         end
-</span><span class="inferred0"><a name="line75" /> 75       else
-</span><span class="marked1"><a name="line76" /> 76         user_data = nil
-</span><span class="inferred0"><a name="line77" /> 77       end
-</span><span class="inferred1"><a name="line78" /> 78       
-</span><span class="marked0"><a name="line79" /> 79       params = {
-</span><span class="inferred1"><a name="line80" /> 80         &quot;ImageId&quot;  =&gt; options[:image_id],
-</span><span class="inferred0"><a name="line81" /> 81         &quot;MinCount&quot; =&gt; options[:min_count].to_s,
-</span><span class="inferred1"><a name="line82" /> 82         &quot;MaxCount&quot; =&gt; options[:max_count].to_s,
-</span><span class="marked0"><a name="line83" /> 83       }.merge(pathlist(&quot;SecurityGroup&quot;, options[:group_id])) 
-</span><span class="inferred1"><a name="line84" /> 84       
-</span><span class="marked0"><a name="line85" /> 85       params[&quot;KeyName&quot;] = options[:key_name] unless options[:key_name].nil? 
-</span><span class="marked1"><a name="line86" /> 86       params[&quot;UserData&quot;] = user_data unless user_data.nil?
-</span><span class="inferred0"><a name="line87" /> 87       
-</span><span class="marked1"><a name="line88" /> 88       run_instances_response = RunInstancesResponse.new
-</span><span class="inferred0"><a name="line89" /> 89       
-</span><span class="marked1"><a name="line90" /> 90       http_response = make_request(&quot;RunInstances&quot;, params)
-</span><span class="marked0"><a name="line91" /> 91       http_xml = http_response.body
-</span><span class="marked1"><a name="line92" /> 92       doc = REXML::Document.new(http_xml)
-</span><span class="inferred0"><a name="line93" /> 93       
-</span><span class="marked1"><a name="line94" /> 94       doc.elements.each(&quot;RunInstancesResponse&quot;) do |element|
-</span><span class="marked0"><a name="line95" /> 95         run_instances_response.reservation_id = REXML::XPath.first(element, &quot;reservationId&quot;).text
-</span><span class="marked1"><a name="line96" /> 96         run_instances_response.owner_id = REXML::XPath.first(element, &quot;ownerId&quot;).text
-</span><span class="inferred0"><a name="line97" /> 97         
-</span><span class="marked1"><a name="line98" /> 98         group_set = GroupResponseSet.new
-</span><span class="marked0"><a name="line99" /> 99         doc.elements.each(&quot;RunInstancesResponse/groupSet/item&quot;) do |element|
-</span><span class="marked1"><a name="line100" />100           group_set_item = Item.new
-</span><span class="marked0"><a name="line101" />101           group_set_item.group_id = REXML::XPath.first(element, &quot;groupId&quot;).text
-</span><span class="marked1"><a name="line102" />102           group_set &lt;&lt; group_set_item
-</span><span class="inferred0"><a name="line103" />103         end
-</span><span class="marked1"><a name="line104" />104         run_instances_response.group_set = group_set
-</span><span class="inferred0"><a name="line105" />105         
-</span><span class="marked1"><a name="line106" />106         instances_set = InstancesResponseSet.new
-</span><span class="marked0"><a name="line107" />107         doc.elements.each(&quot;RunInstancesResponse/instancesSet/item&quot;) do |element|
-</span><span class="marked1"><a name="line108" />108           instances_set_item = Item.new
-</span><span class="marked0"><a name="line109" />109           instances_set_item.instance_id = REXML::XPath.first(element, &quot;instanceId&quot;).text
-</span><span class="marked1"><a name="line110" />110           instances_set_item.image_id = REXML::XPath.first(element, &quot;imageId&quot;).text
-</span><span class="marked0"><a name="line111" />111           instances_set_item.instance_state_code = REXML::XPath.first(element, &quot;instanceState/code&quot;).text
-</span><span class="marked1"><a name="line112" />112           instances_set_item.instance_state_name = REXML::XPath.first(element, &quot;instanceState/name&quot;).text
-</span><span class="marked0"><a name="line113" />113           instances_set_item.private_dns_name = REXML::XPath.first(element, &quot;privateDnsName&quot;).text
-</span><span class="marked1"><a name="line114" />114           instances_set_item.dns_name = REXML::XPath.first(element, &quot;dnsName&quot;).text
-</span><span class="marked0"><a name="line115" />115           instances_set_item.key_name = REXML::XPath.first(element, &quot;keyName&quot;).text
-</span><span class="marked1"><a name="line116" />116           instances_set &lt;&lt; instances_set_item
-</span><span class="inferred0"><a name="line117" />117         end
-</span><span class="marked1"><a name="line118" />118         run_instances_response.instances_set = instances_set
-</span><span class="inferred0"><a name="line119" />119         
-</span><span class="inferred1"><a name="line120" />120       end
-</span><span class="marked0"><a name="line121" />121       return run_instances_response
-</span><span class="inferred1"><a name="line122" />122     end
-</span><span class="inferred0"><a name="line123" />123     
-</span><span class="inferred1"><a name="line124" />124     
-</span><span class="inferred0"><a name="line125" />125     # The DescribeInstances operation returns information about instances owned 
-</span><span class="inferred1"><a name="line126" />126     # by the user making the request.
-</span><span class="inferred0"><a name="line127" />127     #
-</span><span class="inferred1"><a name="line128" />128     # An optional list of instance IDs may be provided to request information 
-</span><span class="inferred0"><a name="line129" />129     # for those instances only. If no instance IDs are provided, information of 
-</span><span class="inferred1"><a name="line130" />130     # all relevant instances information will be returned. If an instance is 
-</span><span class="inferred0"><a name="line131" />131     # specified that does not exist a fault is returned. If an instance is specified 
-</span><span class="inferred1"><a name="line132" />132     # that exists but is not owned by the user making the request, then that 
-</span><span class="inferred0"><a name="line133" />133     # instance will not be included in the returned results.
-</span><span class="inferred1"><a name="line134" />134     #
-</span><span class="inferred0"><a name="line135" />135     # Recently terminated instances will be included in the returned results 
-</span><span class="inferred1"><a name="line136" />136     # for a small interval subsequent to their termination. This interval 
-</span><span class="inferred0"><a name="line137" />137     # is typically of the order of one hour.
-</span><span class="marked1"><a name="line138" />138     def describe_instances( options = {} )
-</span><span class="inferred0"><a name="line139" />139       
-</span><span class="inferred1"><a name="line140" />140       # defaults
-</span><span class="marked0"><a name="line141" />141       options = { :instance_id =&gt; &quot;&quot; }.merge(options)
-</span><span class="inferred1"><a name="line142" />142       
-</span><span class="marked0"><a name="line143" />143       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
-</span><span class="marked1"><a name="line144" />144       desc_instances_response = DescribeInstancesResponseSet.new
-</span><span class="inferred0"><a name="line145" />145       
-</span><span class="marked1"><a name="line146" />146       http_response = make_request(&quot;DescribeInstances&quot;, params)
-</span><span class="marked0"><a name="line147" />147       http_xml = http_response.body
-</span><span class="marked1"><a name="line148" />148       doc = REXML::Document.new(http_xml)
-</span><span class="inferred0"><a name="line149" />149       
-</span><span class="marked1"><a name="line150" />150       doc.elements.each(&quot;DescribeInstancesResponse/reservationSet/item&quot;) do |element|
-</span><span class="marked0"><a name="line151" />151         item = Item.new
-</span><span class="marked1"><a name="line152" />152         item.reservation_id = REXML::XPath.first(element, &quot;reservationId&quot;).text
-</span><span class="marked0"><a name="line153" />153         item.owner_id = REXML::XPath.first(element, &quot;ownerId&quot;).text
-</span><span class="inferred1"><a name="line154" />154         
-</span><span class="marked0"><a name="line155" />155         group_set = GroupResponseSet.new
-</span><span class="marked1"><a name="line156" />156         doc.elements.each(&quot;DescribeInstancesResponse/reservationSet/item/groupSet/item&quot;) do |element|
-</span><span class="marked0"><a name="line157" />157           group_set_item = Item.new
-</span><span class="marked1"><a name="line158" />158           group_set_item.group_id = REXML::XPath.first(element, &quot;groupId&quot;).text
-</span><span class="marked0"><a name="line159" />159           group_set &lt;&lt; group_set_item
-</span><span class="inferred1"><a name="line160" />160         end
-</span><span class="marked0"><a name="line161" />161         item.group_set = group_set
-</span><span class="inferred1"><a name="line162" />162         
-</span><span class="marked0"><a name="line163" />163         instances_set = InstancesResponseSet.new
-</span><span class="marked1"><a name="line164" />164         doc.elements.each(&quot;DescribeInstancesResponse/reservationSet/item/instancesSet/item&quot;) do |element|
-</span><span class="marked0"><a name="line165" />165           instances_set_item = Item.new
-</span><span class="marked1"><a name="line166" />166           instances_set_item.instance_id = REXML::XPath.first(element, &quot;instanceId&quot;).text
-</span><span class="marked0"><a name="line167" />167           instances_set_item.image_id = REXML::XPath.first(element, &quot;imageId&quot;).text
-</span><span class="marked1"><a name="line168" />168           instances_set_item.instance_state_code = REXML::XPath.first(element, &quot;instanceState/code&quot;).text
-</span><span class="marked0"><a name="line169" />169           instances_set_item.instance_state_name = REXML::XPath.first(element, &quot;instanceState/name&quot;).text
-</span><span class="marked1"><a name="line170" />170           instances_set_item.private_dns_name = REXML::XPath.first(element, &quot;privateDnsName&quot;).text
-</span><span class="marked0"><a name="line171" />171           instances_set_item.dns_name = REXML::XPath.first(element, &quot;dnsName&quot;).text
-</span><span class="marked1"><a name="line172" />172           instances_set_item.key_name = REXML::XPath.first(element, &quot;keyName&quot;).text
-</span><span class="marked0"><a name="line173" />173           instances_set &lt;&lt; instances_set_item
-</span><span class="inferred1"><a name="line174" />174         end
-</span><span class="marked0"><a name="line175" />175         item.instances_set = instances_set
-</span><span class="inferred1"><a name="line176" />176         
-</span><span class="marked0"><a name="line177" />177         desc_instances_response &lt;&lt; item
-</span><span class="inferred1"><a name="line178" />178       end
-</span><span class="marked0"><a name="line179" />179       return desc_instances_response
-</span><span class="inferred1"><a name="line180" />180     end
-</span><span class="inferred0"><a name="line181" />181     
-</span><span class="inferred1"><a name="line182" />182     
-</span><span class="inferred0"><a name="line183" />183     # The RebootInstances operation requests a reboot of one or more instances. 
-</span><span class="inferred1"><a name="line184" />184     # This operation is asynchronous; it only queues a request to reboot the specified 
-</span><span class="inferred0"><a name="line185" />185     # instance(s). The operation will succeed provided the instances are valid and 
-</span><span class="inferred1"><a name="line186" />186     # belong to the user. Terminated instances will be ignored.
-</span><span class="marked0"><a name="line187" />187     def reboot_instances( options = {} )
-</span><span class="inferred1"><a name="line188" />188       
-</span><span class="inferred0"><a name="line189" />189       # defaults
-</span><span class="marked1"><a name="line190" />190       options = { :instance_id =&gt; &quot;&quot; }.merge(options)
-</span><span class="inferred0"><a name="line191" />191       
-</span><span class="marked1"><a name="line192" />192       raise ArgumentError, &quot;No instance IDs provided&quot; if options[:instance_id].nil? || options[:instance_id].empty?
-</span><span class="inferred0"><a name="line193" />193       
-</span><span class="marked1"><a name="line194" />194       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
-</span><span class="marked0"><a name="line195" />195       make_request(&quot;RebootInstances&quot;, params)
-</span><span class="marked1"><a name="line196" />196       return response = RebootInstancesResponse.new
-</span><span class="inferred0"><a name="line197" />197     end
-</span><span class="inferred1"><a name="line198" />198     
-</span><span class="inferred0"><a name="line199" />199     # The TerminateInstances operation shuts down one or more instances. 
-</span><span class="inferred1"><a name="line200" />200     # This operation is idempotent and terminating an instance that is 
-</span><span class="inferred0"><a name="line201" />201     # in the process of shutting down (or already terminated) will succeed.
-</span><span class="inferred1"><a name="line202" />202     #
-</span><span class="inferred0"><a name="line203" />203     # Terminated instances remain visible for a short period of time 
-</span><span class="inferred1"><a name="line204" />204     # (approximately one hour) after termination, after which their 
-</span><span class="inferred0"><a name="line205" />205     # instance ID is invalidated.
-</span><span class="marked1"><a name="line206" />206     def terminate_instances( options = {} )
-</span><span class="inferred0"><a name="line207" />207       
-</span><span class="inferred1"><a name="line208" />208       # defaults
-</span><span class="marked0"><a name="line209" />209       options = { :instance_id =&gt; &quot;&quot; }.merge(options)
-</span><span class="inferred1"><a name="line210" />210       
-</span><span class="marked0"><a name="line211" />211       raise ArgumentError, &quot;No :instance_id provided&quot; if options[:instance_id].nil? || options[:instance_id].empty?
-</span><span class="inferred1"><a name="line212" />212       
-</span><span class="marked0"><a name="line213" />213       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
-</span><span class="inferred1"><a name="line214" />214       
-</span><span class="marked0"><a name="line215" />215       terminate_instances_response = TerminateInstancesResponseSet.new
-</span><span class="inferred1"><a name="line216" />216       
-</span><span class="marked0"><a name="line217" />217       http_response = make_request(&quot;TerminateInstances&quot;, params)
-</span><span class="marked1"><a name="line218" />218       http_xml = http_response.body
-</span><span class="marked0"><a name="line219" />219       doc = REXML::Document.new(http_xml)
-</span><span class="inferred1"><a name="line220" />220       
-</span><span class="marked0"><a name="line221" />221       doc.elements.each(&quot;TerminateInstancesResponse/instancesSet/item&quot;) do |element|
-</span><span class="inferred1"><a name="line222" />222         
-</span><span class="marked0"><a name="line223" />223         item = Item.new
-</span><span class="marked1"><a name="line224" />224         item.instance_id = REXML::XPath.first(element, &quot;instanceId&quot;).text
-</span><span class="marked0"><a name="line225" />225         item.shutdown_state_code = REXML::XPath.first(element, &quot;shutdownState/code&quot;).text
-</span><span class="marked1"><a name="line226" />226         item.shutdown_state_name = REXML::XPath.first(element, &quot;shutdownState/name&quot;).text
-</span><span class="marked0"><a name="line227" />227         item.previous_state_code = REXML::XPath.first(element, &quot;previousState/code&quot;).text
-</span><span class="marked1"><a name="line228" />228         item.previous_state_name = REXML::XPath.first(element, &quot;previousState/name&quot;).text
-</span><span class="inferred0"><a name="line229" />229         
-</span><span class="marked1"><a name="line230" />230         terminate_instances_response &lt;&lt; item
-</span><span class="inferred0"><a name="line231" />231       end
-</span><span class="marked1"><a name="line232" />232       return terminate_instances_response
-</span><span class="inferred0"><a name="line233" />233       
-</span><span class="inferred1"><a name="line234" />234     end
-</span><span class="inferred0"><a name="line235" />235     
-</span><span class="inferred1"><a name="line236" />236   end
-</span><span class="inferred0"><a name="line237" />237   
-</span><span class="inferred1"><a name="line238" />238 end
+    </table><pre><span class="inferred1"><a name="line1" />  1 # Amazon Web Services EC2 Query API Ruby library.  This library was 
+</span><span class="inferred0"><a name="line2" />  2 # heavily modified from original Amazon Web Services sample code 
+</span><span class="inferred1"><a name="line3" />  3 # and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
+</span><span class="inferred0"><a name="line4" />  4 # 
+</span><span class="inferred1"><a name="line5" />  5 # Source code and gem hosted on RubyForge
+</span><span class="inferred0"><a name="line6" />  6 # under the Ruby License as of 12/14/2006:
+</span><span class="inferred1"><a name="line7" />  7 # http://amazon-ec2.rubyforge.org
+</span><span class="inferred0"><a name="line8" />  8 
+</span><span class="marked1"><a name="line9" />  9 module EC2
+</span><span class="inferred0"><a name="line10" /> 10   
+</span><span class="marked1"><a name="line11" /> 11   class AWSAuthConnection
+</span><span class="inferred0"><a name="line12" /> 12     
+</span><span class="inferred1"><a name="line13" /> 13     # The RunInstances operation launches a specified number of instances.
+</span><span class="inferred0"><a name="line14" /> 14     #
+</span><span class="inferred1"><a name="line15" /> 15     # Note:
+</span><span class="inferred0"><a name="line16" /> 16     #   The Query version of RunInstances only allows instances of a 
+</span><span class="inferred1"><a name="line17" /> 17     #   single AMI to be launched in one call. This is different 
+</span><span class="inferred0"><a name="line18" /> 18     #   from the SOAP API call of the same name but similar to the 
+</span><span class="inferred1"><a name="line19" /> 19     #   ec2-run-instances command line tool.
+</span><span class="inferred0"><a name="line20" /> 20     # 
+</span><span class="inferred1"><a name="line21" /> 21     # A call to RunInstances is guaranteed to start no fewer than the 
+</span><span class="inferred0"><a name="line22" /> 22     # requested minimum. If there is insufficient capacity available 
+</span><span class="inferred1"><a name="line23" /> 23     # then no instances will be started. Amazon EC2 will make a best 
+</span><span class="inferred0"><a name="line24" /> 24     # effort attempt to satisfy the requested maximum values.
+</span><span class="inferred1"><a name="line25" /> 25     #
+</span><span class="inferred0"><a name="line26" /> 26     # Every instance is launched in a security group. This may be 
+</span><span class="inferred1"><a name="line27" /> 27     # specified as part of the launch request. If a security group is 
+</span><span class="inferred0"><a name="line28" /> 28     # not indicated then instances are started in a the default security group.
+</span><span class="inferred1"><a name="line29" /> 29     #
+</span><span class="inferred0"><a name="line30" /> 30     # An optional keypair ID may be provided for each image in the launch 
+</span><span class="inferred1"><a name="line31" /> 31     # request. All instances that are created from images for which this 
+</span><span class="inferred0"><a name="line32" /> 32     # is provided will have access to the associated public key at boot 
+</span><span class="inferred1"><a name="line33" /> 33     # time (detailed below). This key may be used to provide secure access 
+</span><span class="inferred0"><a name="line34" /> 34     # to an instance of an image on a per-instance basis. Amazon EC2 public 
+</span><span class="inferred1"><a name="line35" /> 35     # images make use of this functionality to provide secure passwordless 
+</span><span class="inferred0"><a name="line36" /> 36     # access to instances (and launching those images without a keypair ID 
+</span><span class="inferred1"><a name="line37" /> 37     # will leave them inaccessible).
+</span><span class="inferred0"><a name="line38" /> 38     #
+</span><span class="inferred1"><a name="line39" /> 39     # The public key material is made available to the instance at boot 
+</span><span class="inferred0"><a name="line40" /> 40     # time by placing it in a file named openssh_id.pub on a logical 
+</span><span class="inferred1"><a name="line41" /> 41     # device that is exposed to the instance as /dev/sda2 (the ephemeral store). 
+</span><span class="inferred0"><a name="line42" /> 42     # The format of this file is suitable for use as an entry within 
+</span><span class="inferred1"><a name="line43" /> 43     # ~/.ssh/authorized_keys (the OpenSSH format). This can be done at boot 
+</span><span class="inferred0"><a name="line44" /> 44     # time (as part of rclocal, for example) allowing for secure 
+</span><span class="inferred1"><a name="line45" /> 45     # password-less access. As the need arises, other formats will 
+</span><span class="inferred0"><a name="line46" /> 46     # also be considered.
+</span><span class="marked1"><a name="line47" /> 47     def run_instances( options = {} )
+</span><span class="inferred0"><a name="line48" /> 48       
+</span><span class="inferred1"><a name="line49" /> 49       # defaults
+</span><span class="marked0"><a name="line50" /> 50       options = { :image_id =&gt; &quot;&quot;,
+</span><span class="inferred1"><a name="line51" /> 51                   :min_count =&gt; 1, 
+</span><span class="inferred0"><a name="line52" /> 52                   :max_count =&gt; 1,
+</span><span class="inferred1"><a name="line53" /> 53                   :key_name =&gt; nil,
+</span><span class="inferred0"><a name="line54" /> 54                   :group_id =&gt; [],
+</span><span class="inferred1"><a name="line55" /> 55                   :user_data =&gt; nil,
+</span><span class="inferred0"><a name="line56" /> 56                   :addressing_type =&gt; &quot;public&quot;,
+</span><span class="inferred1"><a name="line57" /> 57                   :base64_encoded =&gt; false }.merge(options)
+</span><span class="inferred0"><a name="line58" /> 58       
+</span><span class="inferred1"><a name="line59" /> 59       # Do some validation on the arguments provided
+</span><span class="marked0"><a name="line60" /> 60       raise ArgumentError, &quot;:image_id must be provided&quot; if options[:image_id].nil? || options[:image_id].empty?
+</span><span class="marked1"><a name="line61" /> 61       raise ArgumentError, &quot;:min_count is not valid&quot; unless options[:min_count].to_i &gt; 0
+</span><span class="marked0"><a name="line62" /> 62       raise ArgumentError, &quot;:max_count is not valid&quot; unless options[:max_count].to_i &gt; 0
+</span><span class="marked1"><a name="line63" /> 63       raise ArgumentError, &quot;:addressing_type must be 'direct' or 'public'&quot; unless options[:addressing_type] == &quot;public&quot; || options[:addressing_type] == &quot;direct&quot;
+</span><span class="marked0"><a name="line64" /> 64       raise ArgumentError, &quot;:base64_encoded must be 'true' or 'false'&quot; unless options[:base64_encoded] == true || options[:base64_encoded] == false
+</span><span class="inferred1"><a name="line65" /> 65       
+</span><span class="inferred0"><a name="line66" /> 66       # If :user_data is passed in then URL escape and Base64 encode it
+</span><span class="inferred1"><a name="line67" /> 67       # as needed.  Need for URL Escape + Base64 encoding is determined 
+</span><span class="inferred0"><a name="line68" /> 68       # by :base64_encoded param.
+</span><span class="marked1"><a name="line69" /> 69       if options[:user_data]
+</span><span class="marked0"><a name="line70" /> 70         if options[:base64_encoded]
+</span><span class="marked1"><a name="line71" /> 71           user_data = options[:user_data]
+</span><span class="inferred0"><a name="line72" /> 72         else
+</span><span class="marked1"><a name="line73" /> 73           user_data = Base64.encode64(options[:user_data]).gsub(/\n/,&quot;&quot;).strip()
+</span><span class="inferred0"><a name="line74" /> 74         end
+</span><span class="inferred1"><a name="line75" /> 75       else
+</span><span class="marked0"><a name="line76" /> 76         user_data = nil
+</span><span class="inferred1"><a name="line77" /> 77       end
+</span><span class="inferred0"><a name="line78" /> 78       
+</span><span class="marked1"><a name="line79" /> 79       params = {
+</span><span class="inferred0"><a name="line80" /> 80         &quot;ImageId&quot;  =&gt; options[:image_id],
+</span><span class="inferred1"><a name="line81" /> 81         &quot;MinCount&quot; =&gt; options[:min_count].to_s,
+</span><span class="inferred0"><a name="line82" /> 82         &quot;MaxCount&quot; =&gt; options[:max_count].to_s,
+</span><span class="marked1"><a name="line83" /> 83       }.merge(pathlist(&quot;SecurityGroup&quot;, options[:group_id])) 
+</span><span class="inferred0"><a name="line84" /> 84       
+</span><span class="marked1"><a name="line85" /> 85       params[&quot;KeyName&quot;] = options[:key_name] unless options[:key_name].nil? 
+</span><span class="marked0"><a name="line86" /> 86       params[&quot;UserData&quot;] = user_data unless user_data.nil?
+</span><span class="inferred1"><a name="line87" /> 87       
+</span><span class="marked0"><a name="line88" /> 88       run_instances_response = RunInstancesResponse.new
+</span><span class="inferred1"><a name="line89" /> 89       
+</span><span class="marked0"><a name="line90" /> 90       http_response = make_request(&quot;RunInstances&quot;, params)
+</span><span class="marked1"><a name="line91" /> 91       http_xml = http_response.body
+</span><span class="marked0"><a name="line92" /> 92       doc = REXML::Document.new(http_xml)
+</span><span class="inferred1"><a name="line93" /> 93       
+</span><span class="marked0"><a name="line94" /> 94       doc.elements.each(&quot;RunInstancesResponse&quot;) do |element|
+</span><span class="marked1"><a name="line95" /> 95         run_instances_response.reservation_id = REXML::XPath.first(element, &quot;reservationId&quot;).text
+</span><span class="marked0"><a name="line96" /> 96         run_instances_response.owner_id = REXML::XPath.first(element, &quot;ownerId&quot;).text
+</span><span class="inferred1"><a name="line97" /> 97         
+</span><span class="marked0"><a name="line98" /> 98         group_set = GroupResponseSet.new
+</span><span class="marked1"><a name="line99" /> 99         doc.elements.each(&quot;RunInstancesResponse/groupSet/item&quot;) do |element|
+</span><span class="marked0"><a name="line100" />100           group_set_item = Item.new
+</span><span class="marked1"><a name="line101" />101           group_set_item.group_id = REXML::XPath.first(element, &quot;groupId&quot;).text
+</span><span class="marked0"><a name="line102" />102           group_set &lt;&lt; group_set_item
+</span><span class="inferred1"><a name="line103" />103         end
+</span><span class="marked0"><a name="line104" />104         run_instances_response.group_set = group_set
+</span><span class="inferred1"><a name="line105" />105         
+</span><span class="marked0"><a name="line106" />106         instances_set = InstancesResponseSet.new
+</span><span class="marked1"><a name="line107" />107         doc.elements.each(&quot;RunInstancesResponse/instancesSet/item&quot;) do |element|
+</span><span class="marked0"><a name="line108" />108           instances_set_item = Item.new
+</span><span class="marked1"><a name="line109" />109           instances_set_item.instance_id = REXML::XPath.first(element, &quot;instanceId&quot;).text
+</span><span class="marked0"><a name="line110" />110           instances_set_item.image_id = REXML::XPath.first(element, &quot;imageId&quot;).text
+</span><span class="marked1"><a name="line111" />111           instances_set_item.instance_state_code = REXML::XPath.first(element, &quot;instanceState/code&quot;).text
+</span><span class="marked0"><a name="line112" />112           instances_set_item.instance_state_name = REXML::XPath.first(element, &quot;instanceState/name&quot;).text
+</span><span class="marked1"><a name="line113" />113           instances_set_item.private_dns_name = REXML::XPath.first(element, &quot;privateDnsName&quot;).text
+</span><span class="marked0"><a name="line114" />114           instances_set_item.dns_name = REXML::XPath.first(element, &quot;dnsName&quot;).text
+</span><span class="marked1"><a name="line115" />115           instances_set_item.key_name = REXML::XPath.first(element, &quot;keyName&quot;).text
+</span><span class="marked0"><a name="line116" />116           instances_set &lt;&lt; instances_set_item
+</span><span class="inferred1"><a name="line117" />117         end
+</span><span class="marked0"><a name="line118" />118         run_instances_response.instances_set = instances_set
+</span><span class="inferred1"><a name="line119" />119         
+</span><span class="inferred0"><a name="line120" />120       end
+</span><span class="marked1"><a name="line121" />121       return run_instances_response
+</span><span class="inferred0"><a name="line122" />122     end
+</span><span class="inferred1"><a name="line123" />123     
+</span><span class="inferred0"><a name="line124" />124     
+</span><span class="inferred1"><a name="line125" />125     # The DescribeInstances operation returns information about instances owned 
+</span><span class="inferred0"><a name="line126" />126     # by the user making the request.
+</span><span class="inferred1"><a name="line127" />127     #
+</span><span class="inferred0"><a name="line128" />128     # An optional list of instance IDs may be provided to request information 
+</span><span class="inferred1"><a name="line129" />129     # for those instances only. If no instance IDs are provided, information of 
+</span><span class="inferred0"><a name="line130" />130     # all relevant instances information will be returned. If an instance is 
+</span><span class="inferred1"><a name="line131" />131     # specified that does not exist a fault is returned. If an instance is specified 
+</span><span class="inferred0"><a name="line132" />132     # that exists but is not owned by the user making the request, then that 
+</span><span class="inferred1"><a name="line133" />133     # instance will not be included in the returned results.
+</span><span class="inferred0"><a name="line134" />134     #
+</span><span class="inferred1"><a name="line135" />135     # Recently terminated instances will be included in the returned results 
+</span><span class="inferred0"><a name="line136" />136     # for a small interval subsequent to their termination. This interval 
+</span><span class="inferred1"><a name="line137" />137     # is typically of the order of one hour.
+</span><span class="marked0"><a name="line138" />138     def describe_instances( options = {} )
+</span><span class="inferred1"><a name="line139" />139       
+</span><span class="inferred0"><a name="line140" />140       # defaults
+</span><span class="marked1"><a name="line141" />141       options = { :instance_id =&gt; &quot;&quot; }.merge(options)
+</span><span class="inferred0"><a name="line142" />142       
+</span><span class="marked1"><a name="line143" />143       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
+</span><span class="inferred0"><a name="line144" />144       
+</span><span class="marked1"><a name="line145" />145       desc_instances_response = DescribeInstancesResponseSet.new
+</span><span class="inferred0"><a name="line146" />146       
+</span><span class="marked1"><a name="line147" />147       http_response = make_request(&quot;DescribeInstances&quot;, params)
+</span><span class="marked0"><a name="line148" />148       http_xml = http_response.body
+</span><span class="marked1"><a name="line149" />149       doc = REXML::Document.new(http_xml)
+</span><span class="inferred0"><a name="line150" />150       
+</span><span class="marked1"><a name="line151" />151       doc.elements.each(&quot;DescribeInstancesResponse/reservationSet/item&quot;) do |element|
+</span><span class="marked0"><a name="line152" />152         item = Item.new
+</span><span class="marked1"><a name="line153" />153         item.reservation_id = REXML::XPath.first(element, &quot;reservationId&quot;).text
+</span><span class="marked0"><a name="line154" />154         item.owner_id = REXML::XPath.first(element, &quot;ownerId&quot;).text
+</span><span class="inferred1"><a name="line155" />155         
+</span><span class="marked0"><a name="line156" />156         group_set = GroupResponseSet.new
+</span><span class="marked1"><a name="line157" />157         doc.elements.each(&quot;DescribeInstancesResponse/reservationSet/item/groupSet/item&quot;) do |element|
+</span><span class="marked0"><a name="line158" />158           group_set_item = Item.new
+</span><span class="marked1"><a name="line159" />159           group_set_item.group_id = REXML::XPath.first(element, &quot;groupId&quot;).text
+</span><span class="marked0"><a name="line160" />160           group_set &lt;&lt; group_set_item
+</span><span class="inferred1"><a name="line161" />161         end
+</span><span class="marked0"><a name="line162" />162         item.group_set = group_set
+</span><span class="inferred1"><a name="line163" />163         
+</span><span class="marked0"><a name="line164" />164         instances_set = InstancesResponseSet.new
+</span><span class="marked1"><a name="line165" />165         doc.elements.each(&quot;DescribeInstancesResponse/reservationSet/item/instancesSet/item&quot;) do |element|
+</span><span class="marked0"><a name="line166" />166           instances_set_item = Item.new
+</span><span class="marked1"><a name="line167" />167           instances_set_item.instance_id = REXML::XPath.first(element, &quot;instanceId&quot;).text
+</span><span class="marked0"><a name="line168" />168           instances_set_item.image_id = REXML::XPath.first(element, &quot;imageId&quot;).text
+</span><span class="marked1"><a name="line169" />169           instances_set_item.instance_state_code = REXML::XPath.first(element, &quot;instanceState/code&quot;).text
+</span><span class="marked0"><a name="line170" />170           instances_set_item.instance_state_name = REXML::XPath.first(element, &quot;instanceState/name&quot;).text
+</span><span class="marked1"><a name="line171" />171           instances_set_item.private_dns_name = REXML::XPath.first(element, &quot;privateDnsName&quot;).text
+</span><span class="marked0"><a name="line172" />172           instances_set_item.dns_name = REXML::XPath.first(element, &quot;dnsName&quot;).text
+</span><span class="marked1"><a name="line173" />173           instances_set_item.key_name = REXML::XPath.first(element, &quot;keyName&quot;).text
+</span><span class="marked0"><a name="line174" />174           instances_set &lt;&lt; instances_set_item
+</span><span class="inferred1"><a name="line175" />175         end
+</span><span class="marked0"><a name="line176" />176         item.instances_set = instances_set
+</span><span class="inferred1"><a name="line177" />177         
+</span><span class="marked0"><a name="line178" />178         desc_instances_response &lt;&lt; item
+</span><span class="inferred1"><a name="line179" />179       end
+</span><span class="marked0"><a name="line180" />180       return desc_instances_response
+</span><span class="inferred1"><a name="line181" />181     end
+</span><span class="inferred0"><a name="line182" />182     
+</span><span class="inferred1"><a name="line183" />183     
+</span><span class="inferred0"><a name="line184" />184     # The RebootInstances operation requests a reboot of one or more instances. 
+</span><span class="inferred1"><a name="line185" />185     # This operation is asynchronous; it only queues a request to reboot the specified 
+</span><span class="inferred0"><a name="line186" />186     # instance(s). The operation will succeed provided the instances are valid and 
+</span><span class="inferred1"><a name="line187" />187     # belong to the user. Terminated instances will be ignored.
+</span><span class="marked0"><a name="line188" />188     def reboot_instances( options = {} )
+</span><span class="inferred1"><a name="line189" />189       
+</span><span class="inferred0"><a name="line190" />190       # defaults
+</span><span class="marked1"><a name="line191" />191       options = { :instance_id =&gt; &quot;&quot; }.merge(options)
+</span><span class="inferred0"><a name="line192" />192       
+</span><span class="marked1"><a name="line193" />193       raise ArgumentError, &quot;No instance IDs provided&quot; if options[:instance_id].nil? || options[:instance_id].empty?
+</span><span class="inferred0"><a name="line194" />194       
+</span><span class="marked1"><a name="line195" />195       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
+</span><span class="inferred0"><a name="line196" />196       
+</span><span class="marked1"><a name="line197" />197       make_request(&quot;RebootInstances&quot;, params)
+</span><span class="marked0"><a name="line198" />198       return response = RebootInstancesResponse.new
+</span><span class="inferred1"><a name="line199" />199     end
+</span><span class="inferred0"><a name="line200" />200     
+</span><span class="inferred1"><a name="line201" />201     # The TerminateInstances operation shuts down one or more instances. 
+</span><span class="inferred0"><a name="line202" />202     # This operation is idempotent and terminating an instance that is 
+</span><span class="inferred1"><a name="line203" />203     # in the process of shutting down (or already terminated) will succeed.
+</span><span class="inferred0"><a name="line204" />204     #
+</span><span class="inferred1"><a name="line205" />205     # Terminated instances remain visible for a short period of time 
+</span><span class="inferred0"><a name="line206" />206     # (approximately one hour) after termination, after which their 
+</span><span class="inferred1"><a name="line207" />207     # instance ID is invalidated.
+</span><span class="marked0"><a name="line208" />208     def terminate_instances( options = {} )
+</span><span class="inferred1"><a name="line209" />209       
+</span><span class="inferred0"><a name="line210" />210       # defaults
+</span><span class="marked1"><a name="line211" />211       options = { :instance_id =&gt; &quot;&quot; }.merge(options)
+</span><span class="inferred0"><a name="line212" />212       
+</span><span class="marked1"><a name="line213" />213       raise ArgumentError, &quot;No :instance_id provided&quot; if options[:instance_id].nil? || options[:instance_id].empty?
+</span><span class="inferred0"><a name="line214" />214       
+</span><span class="marked1"><a name="line215" />215       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
+</span><span class="inferred0"><a name="line216" />216       
+</span><span class="marked1"><a name="line217" />217       terminate_instances_response = TerminateInstancesResponseSet.new
+</span><span class="inferred0"><a name="line218" />218       
+</span><span class="marked1"><a name="line219" />219       http_response = make_request(&quot;TerminateInstances&quot;, params)
+</span><span class="marked0"><a name="line220" />220       http_xml = http_response.body
+</span><span class="marked1"><a name="line221" />221       doc = REXML::Document.new(http_xml)
+</span><span class="inferred0"><a name="line222" />222       
+</span><span class="marked1"><a name="line223" />223       doc.elements.each(&quot;TerminateInstancesResponse/instancesSet/item&quot;) do |element|
+</span><span class="inferred0"><a name="line224" />224         
+</span><span class="marked1"><a name="line225" />225         item = Item.new
+</span><span class="marked0"><a name="line226" />226         item.instance_id = REXML::XPath.first(element, &quot;instanceId&quot;).text
+</span><span class="marked1"><a name="line227" />227         item.shutdown_state_code = REXML::XPath.first(element, &quot;shutdownState/code&quot;).text
+</span><span class="marked0"><a name="line228" />228         item.shutdown_state_name = REXML::XPath.first(element, &quot;shutdownState/name&quot;).text
+</span><span class="marked1"><a name="line229" />229         item.previous_state_code = REXML::XPath.first(element, &quot;previousState/code&quot;).text
+</span><span class="marked0"><a name="line230" />230         item.previous_state_name = REXML::XPath.first(element, &quot;previousState/name&quot;).text
+</span><span class="inferred1"><a name="line231" />231         
+</span><span class="marked0"><a name="line232" />232         terminate_instances_response &lt;&lt; item
+</span><span class="inferred1"><a name="line233" />233       end
+</span><span class="marked0"><a name="line234" />234       return terminate_instances_response
+</span><span class="inferred1"><a name="line235" />235       
+</span><span class="inferred0"><a name="line236" />236     end
+</span><span class="inferred1"><a name="line237" />237     
+</span><span class="inferred0"><a name="line238" />238   end
+</span><span class="inferred1"><a name="line239" />239   
+</span><span class="inferred0"><a name="line240" />240 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

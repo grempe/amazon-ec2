@@ -134,6 +134,7 @@ module EC2
     # is not allowed.
     def authorize_security_group_ingress( options = {} )
       
+      # defaults
       options = { :group_name => nil,
                   :ip_protocol => nil,
                   :from_port => nil, 
@@ -153,7 +154,7 @@ module EC2
                  "CidrIp" => options[:cidr_ip], 
                  "SourceSecurityGroupName" => options[:source_security_group_name],
                  "SourceSecurityGroupOwnerId" => options[:source_security_group_owner_id]
-                 }.reject { |key, value| value.nil? or value.empty?}
+                 }
       
       make_request("AuthorizeSecurityGroupIngress", params)
       response = AuthorizeSecurityGroupIngressResponse.new
@@ -182,6 +183,7 @@ module EC2
     # specified. Mixing these two types of parameters is not allowed.
     def revoke_security_group_ingress( options = {} )
     
+      # defaults
       options = { :group_name => nil,
                   :ip_protocol => nil,
                   :from_port => nil, 
@@ -201,7 +203,7 @@ module EC2
                  "CidrIp" => options[:cidr_ip], 
                  "SourceSecurityGroupName" => options[:source_security_group_name],
                  "SourceSecurityGroupOwnerId" => options[:source_security_group_owner_id]
-                 }.reject { |key, value| value.nil? or value.empty?}
+                 }
       
       make_request("RevokeSecurityGroupIngress", params)
       response = RevokeSecurityGroupIngressResponse.new

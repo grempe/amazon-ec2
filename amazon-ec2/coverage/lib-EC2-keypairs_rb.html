@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Sun Jun 10 17:37:57 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Sun Jun 10 18:51:50 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,7 +580,7 @@ span.run100 {
             <a href='lib-EC2-keypairs_rb.html'>lib/EC2/keypairs.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>75</tt>
+            <tt>77</tt>
           </td>
           <td class='lines_code'>
             <tt>39</tt>
@@ -619,81 +619,83 @@ span.run100 {
           </td>
         </tr>
       </tbody>
-    </table><pre><span class="inferred0"><a name="line1" /> 1 # Amazon Web Services EC2 Query API Ruby library.  This library was 
-</span><span class="inferred1"><a name="line2" /> 2 # heavily modified from original Amazon Web Services sample code 
-</span><span class="inferred0"><a name="line3" /> 3 # and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
-</span><span class="inferred1"><a name="line4" /> 4 # 
-</span><span class="inferred0"><a name="line5" /> 5 # Source code and gem hosted on RubyForge
-</span><span class="inferred1"><a name="line6" /> 6 # under the Ruby License as of 12/14/2006:
-</span><span class="inferred0"><a name="line7" /> 7 # http://amazon-ec2.rubyforge.org
-</span><span class="inferred1"><a name="line8" /> 8 
-</span><span class="marked0"><a name="line9" /> 9 module EC2
-</span><span class="inferred1"><a name="line10" />10   
-</span><span class="marked0"><a name="line11" />11   class AWSAuthConnection
-</span><span class="inferred1"><a name="line12" />12     
-</span><span class="inferred0"><a name="line13" />13     # The CreateKeyPair operation creates a new 2048 bit RSA keypair 
-</span><span class="inferred1"><a name="line14" />14     # and returns a unique ID that can be used to reference this 
-</span><span class="inferred0"><a name="line15" />15     # keypair when launching new instances.
-</span><span class="marked1"><a name="line16" />16     def create_keypair( options = {} )
-</span><span class="inferred0"><a name="line17" />17       
-</span><span class="inferred1"><a name="line18" />18       # defaults
-</span><span class="marked0"><a name="line19" />19       options = { :key_name =&gt; &quot;&quot; }.merge(options)
-</span><span class="inferred1"><a name="line20" />20       
-</span><span class="marked0"><a name="line21" />21       raise ArgumentError, &quot;No :key_name provided&quot; if options[:key_name].nil? || options[:key_name].empty?
-</span><span class="inferred1"><a name="line22" />22       
-</span><span class="marked0"><a name="line23" />23       params = { &quot;KeyName&quot; =&gt; options[:key_name] }
-</span><span class="marked1"><a name="line24" />24       http_response = make_request(&quot;CreateKeyPair&quot;, params)
-</span><span class="marked0"><a name="line25" />25       http_xml = http_response.body
-</span><span class="marked1"><a name="line26" />26       doc = REXML::Document.new(http_xml)
-</span><span class="marked0"><a name="line27" />27       response = CreateKeyPairResponse.new
-</span><span class="marked1"><a name="line28" />28       response.key_name = REXML::XPath.first(doc, &quot;CreateKeyPairResponse/keyName&quot;).text
-</span><span class="marked0"><a name="line29" />29       response.key_fingerprint = REXML::XPath.first(doc, &quot;CreateKeyPairResponse/keyFingerprint&quot;).text
-</span><span class="marked1"><a name="line30" />30       response.key_material = REXML::XPath.first(doc, &quot;CreateKeyPairResponse/keyMaterial&quot;).text
-</span><span class="marked0"><a name="line31" />31       return response
-</span><span class="inferred1"><a name="line32" />32     end
-</span><span class="inferred0"><a name="line33" />33     
-</span><span class="inferred1"><a name="line34" />34     
-</span><span class="inferred0"><a name="line35" />35     # The DescribeKeyPairs operation returns information about keypairs 
-</span><span class="inferred1"><a name="line36" />36     # available for use by the user making the request. Selected keypairs 
-</span><span class="inferred0"><a name="line37" />37     # may be specified or the list may be left empty if information for 
-</span><span class="inferred1"><a name="line38" />38     # all registered keypairs is required.
-</span><span class="marked0"><a name="line39" />39     def describe_keypairs( options = {} )
-</span><span class="inferred1"><a name="line40" />40       
-</span><span class="inferred0"><a name="line41" />41       # defaults
-</span><span class="marked1"><a name="line42" />42       options = { :key_name =&gt; [] }.merge(options)
-</span><span class="inferred0"><a name="line43" />43       
-</span><span class="marked1"><a name="line44" />44       params = pathlist(&quot;KeyName&quot;, options[:key_name] )
-</span><span class="marked0"><a name="line45" />45       describe_keypairs_response = DescribeKeyPairsResponseSet.new
-</span><span class="marked1"><a name="line46" />46       http_response = make_request(&quot;DescribeKeyPairs&quot;, params)
-</span><span class="marked0"><a name="line47" />47       http_xml = http_response.body
-</span><span class="marked1"><a name="line48" />48       doc = REXML::Document.new(http_xml)
-</span><span class="inferred0"><a name="line49" />49       
-</span><span class="marked1"><a name="line50" />50       doc.elements.each(&quot;DescribeKeyPairsResponse/keySet/item&quot;) do |element|
-</span><span class="marked0"><a name="line51" />51         item = Item.new
-</span><span class="marked1"><a name="line52" />52         item.key_name = REXML::XPath.first(element, &quot;keyName&quot;).text
-</span><span class="marked0"><a name="line53" />53         item.key_fingerprint = REXML::XPath.first(element, &quot;keyFingerprint&quot;).text
-</span><span class="marked1"><a name="line54" />54         describe_keypairs_response &lt;&lt; item
-</span><span class="inferred0"><a name="line55" />55       end
-</span><span class="marked1"><a name="line56" />56       return describe_keypairs_response
-</span><span class="inferred0"><a name="line57" />57     end
-</span><span class="inferred1"><a name="line58" />58     
-</span><span class="inferred0"><a name="line59" />59     
-</span><span class="inferred1"><a name="line60" />60     # The DeleteKeyPair operation deletes a keypair.
-</span><span class="marked0"><a name="line61" />61     def delete_keypair( options = {} )
-</span><span class="inferred1"><a name="line62" />62       
-</span><span class="inferred0"><a name="line63" />63       # defaults
-</span><span class="marked1"><a name="line64" />64       options = { :key_name =&gt; &quot;&quot; }.merge(options)
-</span><span class="inferred0"><a name="line65" />65       
-</span><span class="marked1"><a name="line66" />66       raise ArgumentError, &quot;No :key_name provided&quot; if options[:key_name].nil? || options[:key_name].empty?
-</span><span class="inferred0"><a name="line67" />67       
-</span><span class="marked1"><a name="line68" />68       params = { &quot;KeyName&quot; =&gt; options[:key_name] }
-</span><span class="marked0"><a name="line69" />69       make_request(&quot;DeleteKeyPair&quot;, params)
-</span><span class="marked1"><a name="line70" />70       return response = DeleteKeyPairResponse.new
-</span><span class="inferred0"><a name="line71" />71     end
-</span><span class="inferred1"><a name="line72" />72     
-</span><span class="inferred0"><a name="line73" />73   end
-</span><span class="inferred1"><a name="line74" />74   
-</span><span class="inferred0"><a name="line75" />75 end
+    </table><pre><span class="inferred1"><a name="line1" /> 1 # Amazon Web Services EC2 Query API Ruby library.  This library was 
+</span><span class="inferred0"><a name="line2" /> 2 # heavily modified from original Amazon Web Services sample code 
+</span><span class="inferred1"><a name="line3" /> 3 # and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
+</span><span class="inferred0"><a name="line4" /> 4 # 
+</span><span class="inferred1"><a name="line5" /> 5 # Source code and gem hosted on RubyForge
+</span><span class="inferred0"><a name="line6" /> 6 # under the Ruby License as of 12/14/2006:
+</span><span class="inferred1"><a name="line7" /> 7 # http://amazon-ec2.rubyforge.org
+</span><span class="inferred0"><a name="line8" /> 8 
+</span><span class="marked1"><a name="line9" /> 9 module EC2
+</span><span class="inferred0"><a name="line10" />10   
+</span><span class="marked1"><a name="line11" />11   class AWSAuthConnection
+</span><span class="inferred0"><a name="line12" />12     
+</span><span class="inferred1"><a name="line13" />13     # The CreateKeyPair operation creates a new 2048 bit RSA keypair 
+</span><span class="inferred0"><a name="line14" />14     # and returns a unique ID that can be used to reference this 
+</span><span class="inferred1"><a name="line15" />15     # keypair when launching new instances.
+</span><span class="marked0"><a name="line16" />16     def create_keypair( options = {} )
+</span><span class="inferred1"><a name="line17" />17       
+</span><span class="inferred0"><a name="line18" />18       # defaults
+</span><span class="marked1"><a name="line19" />19       options = { :key_name =&gt; &quot;&quot; }.merge(options)
+</span><span class="inferred0"><a name="line20" />20       
+</span><span class="marked1"><a name="line21" />21       raise ArgumentError, &quot;No :key_name provided&quot; if options[:key_name].nil? || options[:key_name].empty?
+</span><span class="inferred0"><a name="line22" />22       
+</span><span class="marked1"><a name="line23" />23       params = { &quot;KeyName&quot; =&gt; options[:key_name] }
+</span><span class="inferred0"><a name="line24" />24       
+</span><span class="marked1"><a name="line25" />25       http_response = make_request(&quot;CreateKeyPair&quot;, params)
+</span><span class="marked0"><a name="line26" />26       http_xml = http_response.body
+</span><span class="marked1"><a name="line27" />27       doc = REXML::Document.new(http_xml)
+</span><span class="marked0"><a name="line28" />28       response = CreateKeyPairResponse.new
+</span><span class="marked1"><a name="line29" />29       response.key_name = REXML::XPath.first(doc, &quot;CreateKeyPairResponse/keyName&quot;).text
+</span><span class="marked0"><a name="line30" />30       response.key_fingerprint = REXML::XPath.first(doc, &quot;CreateKeyPairResponse/keyFingerprint&quot;).text
+</span><span class="marked1"><a name="line31" />31       response.key_material = REXML::XPath.first(doc, &quot;CreateKeyPairResponse/keyMaterial&quot;).text
+</span><span class="marked0"><a name="line32" />32       return response
+</span><span class="inferred1"><a name="line33" />33     end
+</span><span class="inferred0"><a name="line34" />34     
+</span><span class="inferred1"><a name="line35" />35     
+</span><span class="inferred0"><a name="line36" />36     # The DescribeKeyPairs operation returns information about keypairs 
+</span><span class="inferred1"><a name="line37" />37     # available for use by the user making the request. Selected keypairs 
+</span><span class="inferred0"><a name="line38" />38     # may be specified or the list may be left empty if information for 
+</span><span class="inferred1"><a name="line39" />39     # all registered keypairs is required.
+</span><span class="marked0"><a name="line40" />40     def describe_keypairs( options = {} )
+</span><span class="inferred1"><a name="line41" />41       
+</span><span class="inferred0"><a name="line42" />42       # defaults
+</span><span class="marked1"><a name="line43" />43       options = { :key_name =&gt; [] }.merge(options)
+</span><span class="inferred0"><a name="line44" />44       
+</span><span class="marked1"><a name="line45" />45       params = pathlist(&quot;KeyName&quot;, options[:key_name] )
+</span><span class="marked0"><a name="line46" />46       describe_keypairs_response = DescribeKeyPairsResponseSet.new
+</span><span class="marked1"><a name="line47" />47       http_response = make_request(&quot;DescribeKeyPairs&quot;, params)
+</span><span class="marked0"><a name="line48" />48       http_xml = http_response.body
+</span><span class="marked1"><a name="line49" />49       doc = REXML::Document.new(http_xml)
+</span><span class="inferred0"><a name="line50" />50       
+</span><span class="marked1"><a name="line51" />51       doc.elements.each(&quot;DescribeKeyPairsResponse/keySet/item&quot;) do |element|
+</span><span class="marked0"><a name="line52" />52         item = Item.new
+</span><span class="marked1"><a name="line53" />53         item.key_name = REXML::XPath.first(element, &quot;keyName&quot;).text
+</span><span class="marked0"><a name="line54" />54         item.key_fingerprint = REXML::XPath.first(element, &quot;keyFingerprint&quot;).text
+</span><span class="marked1"><a name="line55" />55         describe_keypairs_response &lt;&lt; item
+</span><span class="inferred0"><a name="line56" />56       end
+</span><span class="marked1"><a name="line57" />57       return describe_keypairs_response
+</span><span class="inferred0"><a name="line58" />58     end
+</span><span class="inferred1"><a name="line59" />59     
+</span><span class="inferred0"><a name="line60" />60     
+</span><span class="inferred1"><a name="line61" />61     # The DeleteKeyPair operation deletes a keypair.
+</span><span class="marked0"><a name="line62" />62     def delete_keypair( options = {} )
+</span><span class="inferred1"><a name="line63" />63       
+</span><span class="inferred0"><a name="line64" />64       # defaults
+</span><span class="marked1"><a name="line65" />65       options = { :key_name =&gt; &quot;&quot; }.merge(options)
+</span><span class="inferred0"><a name="line66" />66       
+</span><span class="marked1"><a name="line67" />67       raise ArgumentError, &quot;No :key_name provided&quot; if options[:key_name].nil? || options[:key_name].empty?
+</span><span class="inferred0"><a name="line68" />68       
+</span><span class="marked1"><a name="line69" />69       params = { &quot;KeyName&quot; =&gt; options[:key_name] }
+</span><span class="inferred0"><a name="line70" />70       
+</span><span class="marked1"><a name="line71" />71       make_request(&quot;DeleteKeyPair&quot;, params)
+</span><span class="marked0"><a name="line72" />72       return response = DeleteKeyPairResponse.new
+</span><span class="inferred1"><a name="line73" />73     end
+</span><span class="inferred0"><a name="line74" />74     
+</span><span class="inferred1"><a name="line75" />75   end
+</span><span class="inferred0"><a name="line76" />76   
+</span><span class="inferred1"><a name="line77" />77 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

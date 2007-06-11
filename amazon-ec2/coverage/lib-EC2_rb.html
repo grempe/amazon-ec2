@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Sun Jun 10 17:37:57 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Sun Jun 10 18:51:50 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,21 +580,21 @@ span.run100 {
             <a href='lib-EC2_rb.html'>lib/EC2.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>218</tt>
+            <tt>227</tt>
           </td>
           <td class='lines_code'>
-            <tt>96</tt>
+            <tt>100</tt>
           </td>
           <td>
             <table cellspacing='0' cellpadding='0' align='right'>
               <tr>
                 <td>
-                  <tt class='coverage_total'>54.1%</tt>&nbsp;</td>
+                  <tt class='coverage_total'>63.9%</tt>&nbsp;</td>
                 <td>
                   <table cellspacing='0' class='percent_graph' cellpadding='0' width='100'>
                     <tr>
-                      <td class='covered' width='54' />
-                      <td class='uncovered' width='46' />
+                      <td class='covered' width='64' />
+                      <td class='uncovered' width='36' />
                     </tr>
                   </table>
                 </td>
@@ -605,12 +605,12 @@ span.run100 {
             <table cellspacing='0' cellpadding='0' align='right'>
               <tr>
                 <td>
-                  <tt class='coverage_code'>41.7%</tt>&nbsp;</td>
+                  <tt class='coverage_code'>62.0%</tt>&nbsp;</td>
                 <td>
                   <table cellspacing='0' class='percent_graph' cellpadding='0' width='100'>
                     <tr>
-                      <td class='covered' width='42' />
-                      <td class='uncovered' width='58' />
+                      <td class='covered' width='62' />
+                      <td class='uncovered' width='38' />
                     </tr>
                   </table>
                 </td>
@@ -665,29 +665,29 @@ span.run100 {
 </span><span class="inferred0"><a name="line44" /> 44   #   Note:  The parameters in the path passed in must already be sorted in
 </span><span class="inferred1"><a name="line45" /> 45   #   case-insensitive alphabetical order and must not be url encoded.
 </span><span class="marked0"><a name="line46" /> 46   def EC2.canonical_string(path)
-</span><span class="uncovered1"><a name="line47" /> 47     buf = &quot;&quot;
-</span><span class="uncovered0"><a name="line48" /> 48     path.split('&amp;').each { |field|
-</span><span class="uncovered1"><a name="line49" /> 49       buf &lt;&lt; field.gsub(/\&amp;|\?/,&quot;&quot;).sub(/=/,&quot;&quot;)
-</span><span class="uncovered0"><a name="line50" /> 50     }
-</span><span class="uncovered1"><a name="line51" /> 51     return buf
-</span><span class="uncovered0"><a name="line52" /> 52   end
+</span><span class="marked1"><a name="line47" /> 47     buf = &quot;&quot;
+</span><span class="marked0"><a name="line48" /> 48     path.split('&amp;').each { |field|
+</span><span class="marked1"><a name="line49" /> 49       buf &lt;&lt; field.gsub(/\&amp;|\?/,&quot;&quot;).sub(/=/,&quot;&quot;)
+</span><span class="inferred0"><a name="line50" /> 50     }
+</span><span class="marked1"><a name="line51" /> 51     return buf
+</span><span class="inferred0"><a name="line52" /> 52   end
 </span><span class="inferred1"><a name="line53" /> 53   
 </span><span class="inferred0"><a name="line54" /> 54   # Encodes the given string with the secret_access_key, by taking the
 </span><span class="inferred1"><a name="line55" /> 55   # hmac-sha1 sum, and then base64 encoding it.  Optionally, it will also
 </span><span class="inferred0"><a name="line56" /> 56   # url encode the result of that to protect the string if it's going to
 </span><span class="inferred1"><a name="line57" /> 57   # be used as a query string parameter.
 </span><span class="marked0"><a name="line58" /> 58   def EC2.encode(secret_access_key, str, urlencode=true)
-</span><span class="uncovered1"><a name="line59" /> 59     digest = OpenSSL::Digest::Digest.new('sha1')
-</span><span class="uncovered0"><a name="line60" /> 60     b64_hmac =
-</span><span class="uncovered1"><a name="line61" /> 61       Base64.encode64(
-</span><span class="uncovered0"><a name="line62" /> 62         OpenSSL::HMAC.digest(digest, secret_access_key, str)).strip
-</span><span class="uncovered1"><a name="line63" /> 63         
-</span><span class="uncovered0"><a name="line64" /> 64     if urlencode
-</span><span class="uncovered1"><a name="line65" /> 65       return CGI::escape(b64_hmac)
-</span><span class="uncovered0"><a name="line66" /> 66     else
-</span><span class="uncovered1"><a name="line67" /> 67       return b64_hmac
-</span><span class="uncovered0"><a name="line68" /> 68     end
-</span><span class="uncovered1"><a name="line69" /> 69   end
+</span><span class="marked1"><a name="line59" /> 59     digest = OpenSSL::Digest::Digest.new('sha1')
+</span><span class="marked0"><a name="line60" /> 60     b64_hmac =
+</span><span class="marked1"><a name="line61" /> 61       Base64.encode64(
+</span><span class="inferred0"><a name="line62" /> 62         OpenSSL::HMAC.digest(digest, secret_access_key, str)).strip
+</span><span class="inferred1"><a name="line63" /> 63         
+</span><span class="marked0"><a name="line64" /> 64     if urlencode
+</span><span class="marked1"><a name="line65" /> 65       return CGI::escape(b64_hmac)
+</span><span class="inferred0"><a name="line66" /> 66     else
+</span><span class="marked1"><a name="line67" /> 67       return b64_hmac
+</span><span class="inferred0"><a name="line68" /> 68     end
+</span><span class="inferred1"><a name="line69" /> 69   end
 </span><span class="inferred0"><a name="line70" /> 70   
 </span><span class="inferred1"><a name="line71" /> 71   
 </span><span class="inferred0"><a name="line72" /> 72   # The library exposes one main interface class, 'AWSAuthConnection'.
@@ -696,147 +696,156 @@ span.run100 {
 </span><span class="inferred1"><a name="line75" /> 75   # with EC2 Query API interface.
 </span><span class="marked0"><a name="line76" /> 76   class AWSAuthConnection
 </span><span class="inferred1"><a name="line77" /> 77     
-</span><span class="marked0"><a name="line78" /> 78     def initialize( options = {} )
-</span><span class="inferred1"><a name="line79" /> 79       
-</span><span class="marked0"><a name="line80" /> 80       options = { :access_key_id =&gt; &quot;&quot;,
-</span><span class="inferred1"><a name="line81" /> 81                   :secret_access_key =&gt; &quot;&quot;,
-</span><span class="inferred0"><a name="line82" /> 82                   :use_ssl =&gt; true,
-</span><span class="inferred1"><a name="line83" /> 83                   :server =&gt; DEFAULT_HOST
-</span><span class="inferred0"><a name="line84" /> 84                   }.merge(options)
-</span><span class="inferred1"><a name="line85" /> 85       
-</span><span class="marked0"><a name="line86" /> 86       raise ArgumentError, &quot;No :access_key_id provided&quot; if options[:access_key_id].nil? || options[:access_key_id].empty?
-</span><span class="marked1"><a name="line87" /> 87       raise ArgumentError, &quot;No :secret_access_key provided&quot; if options[:secret_access_key].nil? || options[:secret_access_key].empty?
-</span><span class="marked0"><a name="line88" /> 88       raise ArgumentError, &quot;No :use_ssl value provided&quot; if options[:use_ssl].nil?
-</span><span class="marked1"><a name="line89" /> 89       raise ArgumentError, &quot;Invalid :use_ssl value provided, only 'true' or 'false'&quot; unless options[:use_ssl] == true || options[:use_ssl] == false
-</span><span class="marked0"><a name="line90" /> 90       raise ArgumentError, &quot;No :server provided&quot; if options[:server].nil? || options[:server].empty?
-</span><span class="inferred1"><a name="line91" /> 91       
-</span><span class="inferred0"><a name="line92" /> 92       # based on the :is_secure boolean, determine which port we should connect to
-</span><span class="marked1"><a name="line93" /> 93       case options[:use_ssl]
-</span><span class="marked0"><a name="line94" /> 94       when true
-</span><span class="inferred1"><a name="line95" /> 95         # https
-</span><span class="marked0"><a name="line96" /> 96         @port = 443
-</span><span class="uncovered1"><a name="line97" /> 97       when false
-</span><span class="uncovered0"><a name="line98" /> 98         # http
-</span><span class="uncovered1"><a name="line99" /> 99         @port = 80
-</span><span class="uncovered0"><a name="line100" />100       end
-</span><span class="inferred1"><a name="line101" />101       
-</span><span class="marked0"><a name="line102" />102       @access_key_id = options[:access_key_id]
-</span><span class="marked1"><a name="line103" />103       @secret_access_key = options[:secret_access_key]
-</span><span class="marked0"><a name="line104" />104       @http = Net::HTTP.new(options[:server], @port)
-</span><span class="marked1"><a name="line105" />105       @http.use_ssl = options[:use_ssl]
-</span><span class="inferred0"><a name="line106" />106       
-</span><span class="inferred1"><a name="line107" />107       # Don't verify the SSL certificates.  Avoids SSL Cert warning in log on every GET.
-</span><span class="marked0"><a name="line108" />108       @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-</span><span class="inferred1"><a name="line109" />109       
-</span><span class="inferred0"><a name="line110" />110     end
-</span><span class="inferred1"><a name="line111" />111     
-</span><span class="inferred0"><a name="line112" />112     
-</span><span class="marked1"><a name="line113" />113     private
-</span><span class="inferred0"><a name="line114" />114       
-</span><span class="inferred1"><a name="line115" />115       # pathlist is a utility method which takes a key string and and array as input.
-</span><span class="inferred0"><a name="line116" />116       # It converts the array into a Hash with the hash key being 'Key.n' where
-</span><span class="inferred1"><a name="line117" />117       # 'n' increments by 1 for each iteration.  So if you pass in args 
-</span><span class="inferred0"><a name="line118" />118       # (&quot;ImageId&quot;, [&quot;123&quot;, &quot;456&quot;]) you should get 
-</span><span class="inferred1"><a name="line119" />119       # {&quot;ImageId.1&quot;=&gt;&quot;123&quot;, &quot;ImageId.2&quot;=&gt;&quot;456&quot;} returned.
-</span><span class="marked0"><a name="line120" />120       def pathlist(key, arr)
-</span><span class="marked1"><a name="line121" />121         params = {}
-</span><span class="marked0"><a name="line122" />122         arr.each_with_index do |value, i|
-</span><span class="marked1"><a name="line123" />123           params[&quot;#{key}.#{i+1}&quot;] = value
-</span><span class="inferred0"><a name="line124" />124         end
-</span><span class="marked1"><a name="line125" />125         params
-</span><span class="inferred0"><a name="line126" />126       end
-</span><span class="inferred1"><a name="line127" />127       
-</span><span class="inferred0"><a name="line128" />128       
-</span><span class="inferred1"><a name="line129" />129       # Make the connection to AWS EC2 passing in our request.  This is generally called from 
-</span><span class="inferred0"><a name="line130" />130       # within a 'Response' class object or one of its sub-classes so the response is interpreted
-</span><span class="inferred1"><a name="line131" />131       # in its proper context.  See lib/EC2/responses.rb
-</span><span class="marked0"><a name="line132" />132       def make_request(action, params, data='')
-</span><span class="uncovered1"><a name="line133" />133         
-</span><span class="uncovered0"><a name="line134" />134         @http.start do
-</span><span class="uncovered1"><a name="line135" />135           
-</span><span class="uncovered0"><a name="line136" />136           params.merge!( {&quot;Action&quot; =&gt; action,
-</span><span class="uncovered1"><a name="line137" />137                           &quot;SignatureVersion&quot; =&gt; &quot;1&quot;,
-</span><span class="uncovered0"><a name="line138" />138                           &quot;AWSAccessKeyId&quot; =&gt; @access_key_id,
-</span><span class="uncovered1"><a name="line139" />139                           &quot;Version&quot; =&gt; API_VERSION,
-</span><span class="uncovered0"><a name="line140" />140                           &quot;Timestamp&quot;=&gt;Time.now.getutc.iso8601} )
+</span><span class="marked0"><a name="line78" /> 78     attr_reader :port, :use_ssl, :server
+</span><span class="inferred1"><a name="line79" /> 79     
+</span><span class="marked0"><a name="line80" /> 80     def initialize( options = {} )
+</span><span class="inferred1"><a name="line81" /> 81       
+</span><span class="marked0"><a name="line82" /> 82       options = { :access_key_id =&gt; &quot;&quot;,
+</span><span class="inferred1"><a name="line83" /> 83                   :secret_access_key =&gt; &quot;&quot;,
+</span><span class="inferred0"><a name="line84" /> 84                   :use_ssl =&gt; true,
+</span><span class="inferred1"><a name="line85" /> 85                   :server =&gt; DEFAULT_HOST
+</span><span class="inferred0"><a name="line86" /> 86                   }.merge(options)
+</span><span class="inferred1"><a name="line87" /> 87                   
+</span><span class="marked0"><a name="line88" /> 88       @server = options[:server]
+</span><span class="marked1"><a name="line89" /> 89       @use_ssl = options[:use_ssl]
+</span><span class="inferred0"><a name="line90" /> 90       
+</span><span class="marked1"><a name="line91" /> 91       raise ArgumentError, &quot;No :access_key_id provided&quot; if options[:access_key_id].nil? || options[:access_key_id].empty?
+</span><span class="marked0"><a name="line92" /> 92       raise ArgumentError, &quot;No :secret_access_key provided&quot; if options[:secret_access_key].nil? || options[:secret_access_key].empty?
+</span><span class="marked1"><a name="line93" /> 93       raise ArgumentError, &quot;No :use_ssl value provided&quot; if options[:use_ssl].nil?
+</span><span class="marked0"><a name="line94" /> 94       raise ArgumentError, &quot;Invalid :use_ssl value provided, only 'true' or 'false'&quot; unless options[:use_ssl] == true || options[:use_ssl] == false
+</span><span class="marked1"><a name="line95" /> 95       raise ArgumentError, &quot;No :server provided&quot; if options[:server].nil? || options[:server].empty?
+</span><span class="inferred0"><a name="line96" /> 96       
+</span><span class="inferred1"><a name="line97" /> 97       
+</span><span class="inferred0"><a name="line98" /> 98       # based on the :use_ssl boolean, determine which port we should connect to
+</span><span class="marked1"><a name="line99" /> 99       case @use_ssl
+</span><span class="marked0"><a name="line100" />100       when true
+</span><span class="inferred1"><a name="line101" />101         # https
+</span><span class="marked0"><a name="line102" />102         @port = 443
+</span><span class="marked1"><a name="line103" />103       when false
+</span><span class="inferred0"><a name="line104" />104         # http
+</span><span class="marked1"><a name="line105" />105         @port = 80
+</span><span class="inferred0"><a name="line106" />106       end
+</span><span class="inferred1"><a name="line107" />107       
+</span><span class="marked0"><a name="line108" />108       @access_key_id = options[:access_key_id]
+</span><span class="marked1"><a name="line109" />109       @secret_access_key = options[:secret_access_key]
+</span><span class="marked0"><a name="line110" />110       @http = Net::HTTP.new(options[:server], @port)
+</span><span class="marked1"><a name="line111" />111       @http.use_ssl = @use_ssl
+</span><span class="inferred0"><a name="line112" />112       
+</span><span class="inferred1"><a name="line113" />113       # Don't verify the SSL certificates.  Avoids SSL Cert warning in log on every GET.
+</span><span class="marked0"><a name="line114" />114       @http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+</span><span class="inferred1"><a name="line115" />115       
+</span><span class="inferred0"><a name="line116" />116     end
+</span><span class="inferred1"><a name="line117" />117     
+</span><span class="inferred0"><a name="line118" />118     
+</span><span class="marked1"><a name="line119" />119     private
+</span><span class="inferred0"><a name="line120" />120       
+</span><span class="inferred1"><a name="line121" />121       # pathlist is a utility method which takes a key string and and array as input.
+</span><span class="inferred0"><a name="line122" />122       # It converts the array into a Hash with the hash key being 'Key.n' where
+</span><span class="inferred1"><a name="line123" />123       # 'n' increments by 1 for each iteration.  So if you pass in args 
+</span><span class="inferred0"><a name="line124" />124       # (&quot;ImageId&quot;, [&quot;123&quot;, &quot;456&quot;]) you should get 
+</span><span class="inferred1"><a name="line125" />125       # {&quot;ImageId.1&quot;=&gt;&quot;123&quot;, &quot;ImageId.2&quot;=&gt;&quot;456&quot;} returned.
+</span><span class="marked0"><a name="line126" />126       def pathlist(key, arr)
+</span><span class="marked1"><a name="line127" />127         params = {}
+</span><span class="marked0"><a name="line128" />128         arr.each_with_index do |value, i|
+</span><span class="marked1"><a name="line129" />129           params[&quot;#{key}.#{i+1}&quot;] = value
+</span><span class="inferred0"><a name="line130" />130         end
+</span><span class="marked1"><a name="line131" />131         params
+</span><span class="inferred0"><a name="line132" />132       end
+</span><span class="inferred1"><a name="line133" />133       
+</span><span class="inferred0"><a name="line134" />134       
+</span><span class="inferred1"><a name="line135" />135       # Make the connection to AWS EC2 passing in our request.  This is generally called from 
+</span><span class="inferred0"><a name="line136" />136       # within a 'Response' class object or one of its sub-classes so the response is interpreted
+</span><span class="inferred1"><a name="line137" />137       # in its proper context.  See lib/EC2/responses.rb
+</span><span class="marked0"><a name="line138" />138       def make_request(action, params, data='')
+</span><span class="uncovered1"><a name="line139" />139         
+</span><span class="uncovered0"><a name="line140" />140         @http.start do
 </span><span class="uncovered1"><a name="line141" />141           
-</span><span class="uncovered0"><a name="line142" />142           sigpath = &quot;?&quot; + params.sort_by { |param| param[0].downcase }.collect { |param| param.join(&quot;=&quot;) }.join(&quot;&amp;&quot;)
-</span><span class="uncovered1"><a name="line143" />143           
-</span><span class="uncovered0"><a name="line144" />144           sig = get_aws_auth_param(sigpath, @secret_access_key)
-</span><span class="uncovered1"><a name="line145" />145           
-</span><span class="uncovered0"><a name="line146" />146           path = &quot;?&quot; + params.sort.collect do |param|
-</span><span class="uncovered1"><a name="line147" />147             CGI::escape(param[0]) + &quot;=&quot; + CGI::escape(param[1])
-</span><span class="uncovered0"><a name="line148" />148           end.join(&quot;&amp;&quot;) + &quot;&amp;Signature=&quot; + sig
-</span><span class="uncovered1"><a name="line149" />149           
-</span><span class="uncovered0"><a name="line150" />150           req = Net::HTTP::Get.new(&quot;/#{path}&quot;)
-</span><span class="uncovered1"><a name="line151" />151           
-</span><span class="uncovered0"><a name="line152" />152           # Ruby will automatically add a random content-type on some verbs, so
-</span><span class="uncovered1"><a name="line153" />153           # here we add a dummy one to 'supress' it.  Change this logic if having
-</span><span class="uncovered0"><a name="line154" />154           # an empty content-type header becomes semantically meaningful for any
-</span><span class="uncovered1"><a name="line155" />155           # other verb.
-</span><span class="uncovered0"><a name="line156" />156           req['Content-Type'] ||= ''
-</span><span class="uncovered1"><a name="line157" />157           req['User-Agent'] = &quot;rubyforge-amazon-ec2-ruby-gem-query-api v-#{RELEASE_VERSION}&quot;
+</span><span class="uncovered0"><a name="line142" />142           # remove any keys that have nil or empty values
+</span><span class="uncovered1"><a name="line143" />143           params.reject { |key, value| value.nil? or value.empty?}
+</span><span class="uncovered0"><a name="line144" />144           
+</span><span class="uncovered1"><a name="line145" />145           params.merge!( {&quot;Action&quot; =&gt; action,
+</span><span class="uncovered0"><a name="line146" />146                           &quot;SignatureVersion&quot; =&gt; &quot;1&quot;,
+</span><span class="uncovered1"><a name="line147" />147                           &quot;AWSAccessKeyId&quot; =&gt; @access_key_id,
+</span><span class="uncovered0"><a name="line148" />148                           &quot;Version&quot; =&gt; API_VERSION,
+</span><span class="uncovered1"><a name="line149" />149                           &quot;Timestamp&quot;=&gt;Time.now.getutc.iso8601} )
+</span><span class="uncovered0"><a name="line150" />150           
+</span><span class="uncovered1"><a name="line151" />151           sigpath = &quot;?&quot; + params.sort_by { |param| param[0].downcase }.collect { |param| param.join(&quot;=&quot;) }.join(&quot;&amp;&quot;)
+</span><span class="uncovered0"><a name="line152" />152           
+</span><span class="uncovered1"><a name="line153" />153           sig = get_aws_auth_param(sigpath, @secret_access_key)
+</span><span class="uncovered0"><a name="line154" />154           
+</span><span class="uncovered1"><a name="line155" />155           path = &quot;?&quot; + params.sort.collect do |param|
+</span><span class="uncovered0"><a name="line156" />156             CGI::escape(param[0]) + &quot;=&quot; + CGI::escape(param[1])
+</span><span class="uncovered1"><a name="line157" />157           end.join(&quot;&amp;&quot;) + &quot;&amp;Signature=&quot; + sig
 </span><span class="uncovered0"><a name="line158" />158           
-</span><span class="uncovered1"><a name="line159" />159           #data = nil unless req.request_body_permitted?
-</span><span class="uncovered0"><a name="line160" />160           response = @http.request(req, nil)
-</span><span class="uncovered1"><a name="line161" />161           
-</span><span class="uncovered0"><a name="line162" />162           # Make a call to see if we need to throw an error based on the response given by EC2
-</span><span class="uncovered1"><a name="line163" />163           # All error classes are defined in exceptions.rb
-</span><span class="uncovered0"><a name="line164" />164           ec2_error?(response)
-</span><span class="uncovered1"><a name="line165" />165           
-</span><span class="uncovered0"><a name="line166" />166           return response
+</span><span class="uncovered1"><a name="line159" />159           req = Net::HTTP::Get.new(&quot;/#{path}&quot;)
+</span><span class="uncovered0"><a name="line160" />160           
+</span><span class="uncovered1"><a name="line161" />161           # Ruby will automatically add a random content-type on some verbs, so
+</span><span class="uncovered0"><a name="line162" />162           # here we add a dummy one to 'supress' it.  Change this logic if having
+</span><span class="uncovered1"><a name="line163" />163           # an empty content-type header becomes semantically meaningful for any
+</span><span class="uncovered0"><a name="line164" />164           # other verb.
+</span><span class="uncovered1"><a name="line165" />165           req['Content-Type'] ||= ''
+</span><span class="uncovered0"><a name="line166" />166           req['User-Agent'] = &quot;rubyforge-amazon-ec2-ruby-gem-query-api v-#{RELEASE_VERSION}&quot;
 </span><span class="uncovered1"><a name="line167" />167           
-</span><span class="uncovered0"><a name="line168" />168         end
-</span><span class="uncovered1"><a name="line169" />169         
-</span><span class="uncovered0"><a name="line170" />170       end
-</span><span class="inferred1"><a name="line171" />171       
-</span><span class="inferred0"><a name="line172" />172       # Set the Authorization header using AWS signed header authentication
-</span><span class="marked1"><a name="line173" />173       def get_aws_auth_param(path, secret_access_key)
-</span><span class="uncovered0"><a name="line174" />174         canonical_string =  EC2.canonical_string(path)
-</span><span class="uncovered1"><a name="line175" />175         encoded_canonical = EC2.encode(secret_access_key, canonical_string)
-</span><span class="uncovered0"><a name="line176" />176       end
-</span><span class="inferred1"><a name="line177" />177       
-</span><span class="inferred0"><a name="line178" />178       # Raises the appropriate error if the specified Net::HTTPResponse object
-</span><span class="inferred1"><a name="line179" />179       # contains an Amazon EC2 error; returns +false+ otherwise.
-</span><span class="marked0"><a name="line180" />180       def ec2_error?(response)
-</span><span class="uncovered1"><a name="line181" />181         
-</span><span class="uncovered0"><a name="line182" />182         # return false if we got a HTTP 200 code,
-</span><span class="uncovered1"><a name="line183" />183         # otherwise there is some type of error (40x,50x) and
-</span><span class="uncovered0"><a name="line184" />184         # we should try to raise an appropriate exception
-</span><span class="uncovered1"><a name="line185" />185         # from one of our exception classes defined in
-</span><span class="uncovered0"><a name="line186" />186         # exceptions.rb
-</span><span class="uncovered1"><a name="line187" />187         return false if response.is_a?(Net::HTTPSuccess)
-</span><span class="uncovered0"><a name="line188" />188 
-</span><span class="uncovered1"><a name="line189" />189         # parse the XML document so we can walk through it
-</span><span class="uncovered0"><a name="line190" />190         doc = REXML::Document.new(response.body)
-</span><span class="uncovered1"><a name="line191" />191         
-</span><span class="uncovered0"><a name="line192" />192         # Check that the Error element is in the place we would expect.
-</span><span class="uncovered1"><a name="line193" />193         # and if not raise a generic error exception
-</span><span class="uncovered0"><a name="line194" />194         unless doc.root.elements['Errors'].elements['Error'].name == 'Error'
-</span><span class="uncovered1"><a name="line195" />195           raise Error, &quot;Unexpected error format. response.body is: #{response.body}&quot;
-</span><span class="uncovered0"><a name="line196" />196         end
-</span><span class="uncovered1"><a name="line197" />197         
-</span><span class="uncovered0"><a name="line198" />198         # An valid error response looks like this:
-</span><span class="uncovered1"><a name="line199" />199         # &lt;?xml version=&quot;1.0&quot;?&gt;&lt;Response&gt;&lt;Errors&gt;&lt;Error&gt;&lt;Code&gt;InvalidParameterCombination&lt;/Code&gt;&lt;Message&gt;Unknown parameter: foo&lt;/Message&gt;&lt;/Error&gt;&lt;/Errors&gt;&lt;RequestID&gt;291cef62-3e86-414b-900e-17246eccfae8&lt;/RequestID&gt;&lt;/Response&gt;
-</span><span class="uncovered0"><a name="line200" />200         # AWS EC2 throws some exception codes that look like Error.SubError.  Since we can't name classes this way
-</span><span class="uncovered1"><a name="line201" />201         # we need to strip out the '.' in the error 'Code' and we name the error exceptions with this
-</span><span class="uncovered0"><a name="line202" />202         # non '.' name as well.
-</span><span class="uncovered1"><a name="line203" />203         error_code    = doc.root.elements['Errors'].elements['Error'].elements['Code'].text.gsub('.', '')
-</span><span class="uncovered0"><a name="line204" />204         error_message = doc.root.elements['Errors'].elements['Error'].elements['Message'].text
-</span><span class="uncovered1"><a name="line205" />205         
-</span><span class="uncovered0"><a name="line206" />206         # Raise one of our specific error classes if it exists.
-</span><span class="uncovered1"><a name="line207" />207         # otherwise, throw a generic EC2 Error with a few details.
-</span><span class="uncovered0"><a name="line208" />208         if EC2.const_defined?(error_code)
-</span><span class="uncovered1"><a name="line209" />209           raise EC2.const_get(error_code), error_message
-</span><span class="uncovered0"><a name="line210" />210         else
-</span><span class="uncovered1"><a name="line211" />211           raise Error, &quot;This is an undefined error code which needs to be added to exceptions.rb : error_code =&gt; #{error_code} : error_message =&gt; #{error_message}&quot;
-</span><span class="uncovered0"><a name="line212" />212         end
-</span><span class="uncovered1"><a name="line213" />213         
-</span><span class="uncovered0"><a name="line214" />214       end
-</span><span class="uncovered1"><a name="line215" />215       
-</span><span class="uncovered0"><a name="line216" />216   end
-</span><span class="uncovered1"><a name="line217" />217   
-</span><span class="uncovered0"><a name="line218" />218 end
+</span><span class="uncovered0"><a name="line168" />168           #data = nil unless req.request_body_permitted?
+</span><span class="uncovered1"><a name="line169" />169           response = @http.request(req, nil)
+</span><span class="uncovered0"><a name="line170" />170           
+</span><span class="uncovered1"><a name="line171" />171           # Make a call to see if we need to throw an error based on the response given by EC2
+</span><span class="uncovered0"><a name="line172" />172           # All error classes are defined in exceptions.rb
+</span><span class="uncovered1"><a name="line173" />173           ec2_error?(response)
+</span><span class="uncovered0"><a name="line174" />174           
+</span><span class="uncovered1"><a name="line175" />175           return response
+</span><span class="uncovered0"><a name="line176" />176           
+</span><span class="uncovered1"><a name="line177" />177         end
+</span><span class="uncovered0"><a name="line178" />178         
+</span><span class="uncovered1"><a name="line179" />179       end
+</span><span class="inferred0"><a name="line180" />180       
+</span><span class="inferred1"><a name="line181" />181       # Set the Authorization header using AWS signed header authentication
+</span><span class="marked0"><a name="line182" />182       def get_aws_auth_param(path, secret_access_key)
+</span><span class="uncovered1"><a name="line183" />183         canonical_string =  EC2.canonical_string(path)
+</span><span class="uncovered0"><a name="line184" />184         encoded_canonical = EC2.encode(secret_access_key, canonical_string)
+</span><span class="uncovered1"><a name="line185" />185       end
+</span><span class="inferred0"><a name="line186" />186       
+</span><span class="inferred1"><a name="line187" />187       # Raises the appropriate error if the specified Net::HTTPResponse object
+</span><span class="inferred0"><a name="line188" />188       # contains an Amazon EC2 error; returns +false+ otherwise.
+</span><span class="marked1"><a name="line189" />189       def ec2_error?(response)
+</span><span class="uncovered0"><a name="line190" />190         
+</span><span class="uncovered1"><a name="line191" />191         # return false if we got a HTTP 200 code,
+</span><span class="uncovered0"><a name="line192" />192         # otherwise there is some type of error (40x,50x) and
+</span><span class="uncovered1"><a name="line193" />193         # we should try to raise an appropriate exception
+</span><span class="uncovered0"><a name="line194" />194         # from one of our exception classes defined in
+</span><span class="uncovered1"><a name="line195" />195         # exceptions.rb
+</span><span class="uncovered0"><a name="line196" />196         return false if response.is_a?(Net::HTTPSuccess)
+</span><span class="uncovered1"><a name="line197" />197 
+</span><span class="uncovered0"><a name="line198" />198         # parse the XML document so we can walk through it
+</span><span class="uncovered1"><a name="line199" />199         doc = REXML::Document.new(response.body)
+</span><span class="uncovered0"><a name="line200" />200         
+</span><span class="uncovered1"><a name="line201" />201         # Check that the Error element is in the place we would expect.
+</span><span class="uncovered0"><a name="line202" />202         # and if not raise a generic error exception
+</span><span class="uncovered1"><a name="line203" />203         unless doc.root.elements['Errors'].elements['Error'].name == 'Error'
+</span><span class="uncovered0"><a name="line204" />204           raise Error, &quot;Unexpected error format. response.body is: #{response.body}&quot;
+</span><span class="uncovered1"><a name="line205" />205         end
+</span><span class="uncovered0"><a name="line206" />206         
+</span><span class="uncovered1"><a name="line207" />207         # An valid error response looks like this:
+</span><span class="uncovered0"><a name="line208" />208         # &lt;?xml version=&quot;1.0&quot;?&gt;&lt;Response&gt;&lt;Errors&gt;&lt;Error&gt;&lt;Code&gt;InvalidParameterCombination&lt;/Code&gt;&lt;Message&gt;Unknown parameter: foo&lt;/Message&gt;&lt;/Error&gt;&lt;/Errors&gt;&lt;RequestID&gt;291cef62-3e86-414b-900e-17246eccfae8&lt;/RequestID&gt;&lt;/Response&gt;
+</span><span class="uncovered1"><a name="line209" />209         # AWS EC2 throws some exception codes that look like Error.SubError.  Since we can't name classes this way
+</span><span class="uncovered0"><a name="line210" />210         # we need to strip out the '.' in the error 'Code' and we name the error exceptions with this
+</span><span class="uncovered1"><a name="line211" />211         # non '.' name as well.
+</span><span class="uncovered0"><a name="line212" />212         error_code    = doc.root.elements['Errors'].elements['Error'].elements['Code'].text.gsub('.', '')
+</span><span class="uncovered1"><a name="line213" />213         error_message = doc.root.elements['Errors'].elements['Error'].elements['Message'].text
+</span><span class="uncovered0"><a name="line214" />214         
+</span><span class="uncovered1"><a name="line215" />215         # Raise one of our specific error classes if it exists.
+</span><span class="uncovered0"><a name="line216" />216         # otherwise, throw a generic EC2 Error with a few details.
+</span><span class="uncovered1"><a name="line217" />217         if EC2.const_defined?(error_code)
+</span><span class="uncovered0"><a name="line218" />218           raise EC2.const_get(error_code), error_message
+</span><span class="uncovered1"><a name="line219" />219         else
+</span><span class="uncovered0"><a name="line220" />220           raise Error, &quot;This is an undefined error code which needs to be added to exceptions.rb : error_code =&gt; #{error_code} : error_message =&gt; #{error_message}&quot;
+</span><span class="uncovered1"><a name="line221" />221         end
+</span><span class="uncovered0"><a name="line222" />222         
+</span><span class="uncovered1"><a name="line223" />223       end
+</span><span class="uncovered0"><a name="line224" />224       
+</span><span class="uncovered1"><a name="line225" />225   end
+</span><span class="uncovered0"><a name="line226" />226   
+</span><span class="uncovered1"><a name="line227" />227 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />
