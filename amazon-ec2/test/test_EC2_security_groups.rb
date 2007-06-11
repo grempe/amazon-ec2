@@ -55,6 +55,19 @@ context "EC2 security groups " do
       </securityGroupInfo>
     </DescribeSecurityGroupsResponse>
     RESPONSE
+    
+    @authorize_security_group_ingress_response_body = <<-RESPONSE
+    <AuthorizeSecurityGroupIngressResponse xm-lns="http://ec2.amazonaws.com/doc/2007-01-19">
+      <return>true</return>
+    </AuthorizeSecurityGroupIngressResponse>
+    RESPONSE
+    
+    @revoke_security_group_ingress_response_body = <<-RESPONSE
+    <RevokeSecurityGroupIngressResponse xm-lns="http://ec2.amazonaws.com/doc/2007-01-19">
+      <return>true</return>
+    </AuthorizeSecurityGroupIngressResponse>
+    RESPONSE
+    
   end
   
   
@@ -142,6 +155,48 @@ context "EC2 security groups " do
       # :group_name can't be nil or empty
       lambda { @ec2.describe_security_groups( :group_name => "" ) }.should.raise(EC2::ArgumentError)
       lambda { @ec2.describe_security_groups( :group_name => nil ) }.should.raise(EC2::ArgumentError)
+  end
+  
+  
+  specify "permissions should be able to be added to a security group with authorize_security_group_ingress." do
+    @ec2.stubs(:make_request).with('AuthorizeSecurityGroupIngress', { "GroupName"=>"WebServers",
+                                                                      "IpProtocol"=>"tcp",
+                                                                      "FromPort"=>"8000",
+                                                                      "ToPort"=>"80",
+                                                                      "CidrIp"=>"0.0.0.0/24",
+                                                                      "SourceSecurityGroupName"=>"Source SG Name",
+                                                                      "SourceSecurityGroupOwnerId"=>"123"}).
+      returns stub(:body => @authorize_security_group_ingress_response_body, :is_a? => true)
+    
+    @ec2.authorize_security_group_ingress( :group_name => "WebServers", 
+                                           :ip_protocol => "tcp", 
+                                           :from_port => "8000", 
+                                           :to_port => "80", 
+                                           :cidr_ip => "0.0.0.0/24", 
+                                           :source_security_group_name => "Source SG Name",
+                                           :source_security_group_owner_id => "123"
+                                           ).should.be.an.instance_of EC2::AuthorizeSecurityGroupIngressResponse
+  end
+  
+  
+  specify "permissions should be able to be revoked from a security group with revoke_security_group_ingress." do
+    @ec2.stubs(:make_request).with('RevokeSecurityGroupIngress', { "GroupName"=>"WebServers",
+                                                                   "IpProtocol"=>"tcp",
+                                                                   "FromPort"=>"8000",
+                                                                   "ToPort"=>"80",
+                                                                   "CidrIp"=>"0.0.0.0/24",
+                                                                   "SourceSecurityGroupName"=>"Source SG Name",
+                                                                   "SourceSecurityGroupOwnerId"=>"123"}).
+      returns stub(:body => @revoke_security_group_ingress_response_body, :is_a? => true)
+    
+    @ec2.revoke_security_group_ingress( :group_name => "WebServers", 
+                                        :ip_protocol => "tcp", 
+                                        :from_port => "8000", 
+                                        :to_port => "80", 
+                                        :cidr_ip => "0.0.0.0/24", 
+                                        :source_security_group_name => "Source SG Name",
+                                        :source_security_group_owner_id => "123"
+                                        ).should.be.an.instance_of EC2::RevokeSecurityGroupIngressResponse
   end
   
 end

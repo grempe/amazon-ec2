@@ -132,21 +132,34 @@ module EC2
     # When authorizing a CIDR IP permission, GroupName, IpProtocol, FromPort, 
     # ToPort and CidrIp must be specified. Mixing these two types of parameters 
     # is not allowed.
-    def authorize_security_group_ingress(*args)
-      params = auth_revoke_impl(*args)
-      AuthorizeSecurityGroupIngressResponse.new(make_request("AuthorizeSecurityGroupIngress", params))
+    def authorize_security_group_ingress( options = {} )
+      
+      options = { :group_name => nil,
+                  :ip_protocol => nil,
+                  :from_port => nil, 
+                  :to_port => nil, 
+                  :cidr_ip => nil, 
+                  :source_security_group_name => nil,
+                  :source_security_group_owner_id => nil }.merge(options)
+      
+      # lets not validate the rest of the possible permutations of required params and instead let
+      # EC2 sort it out on the server side.  We'll only require :group_name as that is always needed.
+      raise ArgumentError, "No :group_name provided" if options[:group_name].nil? || options[:group_name].empty?
+      
+      params = { "GroupName" => options[:group_name],
+                 "IpProtocol" => options[:ip_protocol],
+                 "FromPort" => options[:from_port].to_s,
+                 "ToPort" => options[:to_port].to_s, 
+                 "CidrIp" => options[:cidr_ip], 
+                 "SourceSecurityGroupName" => options[:source_security_group_name],
+                 "SourceSecurityGroupOwnerId" => options[:source_security_group_owner_id]
+                 }.reject { |key, value| value.nil? or value.empty?}
+      
+      make_request("AuthorizeSecurityGroupIngress", params)
+      response = AuthorizeSecurityGroupIngressResponse.new
+      
     end
     
-# REMOVE
-
-#  class AuthorizeSecurityGroupIngressResponse < Response
-#    def parse
-#      # If we don't get an error, the authorization succeeded.
-#      [["Ingress authorized."]]
-#    end
-#  end
-
-
     
     # The RevokeSecurityGroupIngress operation revokes existing permissions 
     # that were previously granted to a security group. The permissions to 
@@ -167,37 +180,33 @@ module EC2
     # and SourceSecurityGroupOwnerId must be specified. When authorizing a CIDR IP 
     # permission, GroupName, IpProtocol, FromPort, ToPort and CidrIp must be 
     # specified. Mixing these two types of parameters is not allowed.
-    def revoke_security_group_ingress(*args)
-      params = auth_revoke_impl(*args)
-      RevokeSecurityGroupIngressResponse.new(make_request("RevokeSecurityGroupIngress", params))
+    def revoke_security_group_ingress( options = {} )
+    
+      options = { :group_name => nil,
+                  :ip_protocol => nil,
+                  :from_port => nil, 
+                  :to_port => nil, 
+                  :cidr_ip => nil, 
+                  :source_security_group_name => nil,
+                  :source_security_group_owner_id => nil }.merge(options)
+      
+      # lets not validate the rest of the possible permutations of required params and instead let
+      # EC2 sort it out on the server side.  We'll only require :group_name as that is always needed.
+      raise ArgumentError, "No :group_name provided" if options[:group_name].nil? || options[:group_name].empty?
+      
+      params = { "GroupName" => options[:group_name],
+                 "IpProtocol" => options[:ip_protocol],
+                 "FromPort" => options[:from_port].to_s,
+                 "ToPort" => options[:to_port].to_s, 
+                 "CidrIp" => options[:cidr_ip], 
+                 "SourceSecurityGroupName" => options[:source_security_group_name],
+                 "SourceSecurityGroupOwnerId" => options[:source_security_group_owner_id]
+                 }.reject { |key, value| value.nil? or value.empty?}
+      
+      make_request("RevokeSecurityGroupIngress", params)
+      response = RevokeSecurityGroupIngressResponse.new
+    
     end
-    
-# REMOVE
-
-#  class RevokeSecurityGroupIngressResponse < Response
-#    def parse
-#      # If we don't get an error, the revocation succeeded.
-#      [["Ingress revoked."]]
-#    end
-#  end
-
-    private
-    
-      def auth_revoke_impl(groupName, kwargs={})
-        in_params = { :ipProtocol=>nil, :fromPort=>nil, :toPort=>nil, :cidrIp=>nil, :sourceSecurityGroupName=>nil,
-          :sourceSecurityGroupOwnerId=>nil}
-        in_params.merge! kwargs
-        
-        { "GroupName" => in_params[:groupName] ,
-          "IpProtocol" => in_params[:ipProtocol],
-          "FromPort" => in_params[:fromPort].to_s,
-          "ToPort" => in_params[:toPort].to_s, 
-          "CidrIp" => in_params[:cidrIp], 
-          "SourceSecurityGroupName" => in_params[:sourceSecurityGroupName],
-          "SourceSecurityGroupOwnerId" => in_params[:sourceSecurityGroupOwnerId],
-        }.reject { |key, value| value.nil? or value.empty?}
-        
-      end
     
   end
   

@@ -123,6 +123,11 @@ module EC2
   class DeleteSecurityGroupResponse < Response
   end
   
+  class AuthorizeSecurityGroupIngressResponse < Response
+  end
+  
+  class RevokeSecurityGroupIngressResponse < Response
+  end
   
   # Sub-Classes of 'Set'
   ################################################
