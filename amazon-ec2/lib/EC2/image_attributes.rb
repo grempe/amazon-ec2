@@ -58,10 +58,9 @@ module EC2
         raise ArgumentError, ":operation_type was #{options[:operation_type].to_s} but must be 'add' or 'remove'"
       end
       
-      make_request("ModifyImageAttribute", params)
-      response = ModifyImageAttributeResponse.new
-      response.return = true
-      return response
+      http_response = make_request("ModifyImageAttribute", params)
+      http_xml = http_response.body
+      return Response.parse(:xml => http_xml)
       
     end
     
@@ -84,25 +83,9 @@ module EC2
         raise ArgumentError, "attribute : #{options[:attribute].to_s} is not an known option."
       end
       
-      describe_image_attribute_response = DescribeImageAttributeResponse.new
-      
       http_response = make_request("DescribeImageAttribute", params)
       http_xml = http_response.body
-      doc = REXML::Document.new(http_xml)
-      
-      doc.elements.each("DescribeImageAttributeResponse") do |element|
-        describe_image_attribute_response.image_id = REXML::XPath.first(element, "imageId").text
-        
-        launch_permission_set = LaunchPermissionResponseSet.new
-        doc.elements.each("DescribeImageAttributeResponse/launchPermission/item") do |element|
-          item = Item.new
-          item.group = REXML::XPath.first(element, "group").text unless REXML::XPath.first(element, "group").nil?
-          item.user_id = REXML::XPath.first(element, "userId").text unless REXML::XPath.first(element, "userId").nil?
-          launch_permission_set << item
-        end
-        describe_image_attribute_response.launch_permission_set = launch_permission_set
-      end
-      return describe_image_attribute_response
+      return Response.parse(:xml => http_xml)
     end
     
     
@@ -126,10 +109,9 @@ module EC2
         raise ArgumentError, "attribute : #{options[:attribute].to_s} is not an known option."
       end
       
-      make_request("ResetImageAttribute", params)
-      response = ResetImageAttributeResponse.new
-      response.return = true
-      return response
+      http_response = make_request("ResetImageAttribute", params)
+      http_xml = http_response.body
+      return Response.parse(:xml => http_xml)
       
     end
     

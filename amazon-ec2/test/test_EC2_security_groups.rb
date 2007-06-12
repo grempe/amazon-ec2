@@ -65,7 +65,7 @@ context "EC2 security groups " do
     @revoke_security_group_ingress_response_body = <<-RESPONSE
     <RevokeSecurityGroupIngressResponse xm-lns="http://ec2.amazonaws.com/doc/2007-01-19">
       <return>true</return>
-    </AuthorizeSecurityGroupIngressResponse>
+    </RevokeSecurityGroupIngressResponse>
     RESPONSE
     
   end
@@ -74,7 +74,7 @@ context "EC2 security groups " do
   specify "should be able to be created" do
     @ec2.stubs(:make_request).with('CreateSecurityGroup', {"GroupName"=>"WebServers", "GroupDescription"=>"Web"}).
       returns stub(:body => @create_security_group_response_body, :is_a? => true)
-    @ec2.create_security_group( :group_name => "WebServers", :group_description => "Web" ).should.be.an.instance_of EC2::CreateSecurityGroupResponse
+    @ec2.create_security_group( :group_name => "WebServers", :group_description => "Web" ).should.be.an.instance_of EC2::Response
   end
   
   
@@ -98,7 +98,7 @@ context "EC2 security groups " do
   specify "should be able to be deleted" do
     @ec2.stubs(:make_request).with('DeleteSecurityGroup', {"GroupName"=>"WebServers"}).
       returns stub(:body => @delete_security_group_response_body, :is_a? => true)
-    @ec2.delete_security_group( :group_name => "WebServers" ).should.be.an.instance_of EC2::DeleteSecurityGroupResponse
+    @ec2.delete_security_group( :group_name => "WebServers" ).should.be.an.instance_of EC2::Response
   end
   
   
@@ -118,31 +118,27 @@ context "EC2 security groups " do
   specify "should be able to be described with describe_security_groups" do
     @ec2.stubs(:make_request).with('DescribeSecurityGroups', { "GroupName.1" => "WebServers", "GroupName.2" => "RangedPortsBySource" }).
       returns stub(:body => @describe_security_groups_response_body, :is_a? => true)
-    @ec2.describe_security_groups( :group_name => ["WebServers", "RangedPortsBySource"] ).should.be.an.instance_of EC2::DescribeSecurityGroupsResponseSet
+    @ec2.describe_security_groups( :group_name => ["WebServers", "RangedPortsBySource"] ).should.be.an.instance_of EC2::Response
     
     response = @ec2.describe_security_groups( :group_name => ["WebServers", "RangedPortsBySource"] )
-    response[0].owner_id.should.equal "UYY3TLBUXIEON5NQVUUX6OMPWBZIQNFM"
-    response[0].group_name.should.equal "WebServers"
-    response[0].group_description.should.equal "Web"
-    response[0].ip_permissions[0].ip_protocol.should.equal "tcp"
-    response[0].ip_permissions[0].from_port.should.equal "80"
-    response[0].ip_permissions[0].to_port.should.equal "80"
-    response[0].ip_permissions[0].groups.should.be.nil
-    response[0].ip_permissions[0].ip_ranges[0].cidr_ip.should.equal "0.0.0.0/0"
     
-    response[1].owner_id.should.equal "UYY3TLBUXIEON5NQVUUX6OMPWBZIQNFM"
-    response[1].group_name.should.equal "RangedPortsBySource"
-    response[1].group_description.should.equal "A"
+    response.securityGroupInfo.item[0].ownerId.should.equal "UYY3TLBUXIEON5NQVUUX6OMPWBZIQNFM"
+    response.securityGroupInfo.item[0].groupName.should.equal "WebServers"
+    response.securityGroupInfo.item[0].groupDescription.should.equal "Web"
+    response.securityGroupInfo.item[0].ipPermissions.item[0].ipProtocol.should.equal "tcp"
+    response.securityGroupInfo.item[0].ipPermissions.item[0].fromPort.should.equal "80"
+    response.securityGroupInfo.item[0].ipPermissions.item[0].toPort.should.equal "80"
+    response.securityGroupInfo.item[0].ipPermissions.item[0].groups.should.be.nil
+    response.securityGroupInfo.item[0].ipPermissions.item[0].ipRanges.item[0].cidrIp.should.equal "0.0.0.0/0"
     
-    # debugging display of responses
-    #puts "response[0] : " + response[0].inspect
-    #puts "response[1] : " + response[1].inspect
-    
-    response[1].ip_permissions[0].ip_protocol.should.equal "tcp"
-    response[1].ip_permissions[0].from_port.should.equal "6000"
-    response[1].ip_permissions[0].to_port.should.equal "7000"
-    response[1].ip_permissions[0].groups.should.be.nil
-    response[1].ip_permissions[0].ip_ranges[0].should.be.nil
+    response.securityGroupInfo.item[1].ownerId.should.equal "UYY3TLBUXIEON5NQVUUX6OMPWBZIQNFM"
+    response.securityGroupInfo.item[1].groupName.should.equal "RangedPortsBySource"
+    response.securityGroupInfo.item[1].groupDescription.should.equal "A"
+    response.securityGroupInfo.item[1].ipPermissions.item[0].ipProtocol.should.equal "tcp"
+    response.securityGroupInfo.item[1].ipPermissions.item[0].fromPort.should.equal "6000"
+    response.securityGroupInfo.item[1].ipPermissions.item[0].toPort.should.equal "7000"
+    response.securityGroupInfo.item[1].ipPermissions.item[0].groups.should.be.nil
+    response.securityGroupInfo.item[1].ipPermissions.item[0].ipRanges.should.be.nil
   end
   
   
@@ -175,7 +171,7 @@ context "EC2 security groups " do
                                            :cidr_ip => "0.0.0.0/24", 
                                            :source_security_group_name => "Source SG Name",
                                            :source_security_group_owner_id => "123"
-                                           ).should.be.an.instance_of EC2::AuthorizeSecurityGroupIngressResponse
+                                           ).should.be.an.instance_of EC2::Response
   end
   
   
@@ -196,7 +192,7 @@ context "EC2 security groups " do
                                         :cidr_ip => "0.0.0.0/24", 
                                         :source_security_group_name => "Source SG Name",
                                         :source_security_group_owner_id => "123"
-                                        ).should.be.an.instance_of EC2::RevokeSecurityGroupIngressResponse
+                                        ).should.be.an.instance_of EC2::Response
   end
   
 end

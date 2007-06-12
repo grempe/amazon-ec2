@@ -44,8 +44,8 @@ context "An EC2 image " do
   specify "should be able to be registered" do
     @ec2.stubs(:make_request).with('RegisterImage', {"ImageLocation"=>"mybucket-myimage.manifest.xml"}).
       returns stub(:body => @register_image_response_body, :is_a? => true)
-    @ec2.register_image(:image_location => "mybucket-myimage.manifest.xml").image_id.should.equal "ami-61a54008"
-    @ec2.register_image(:image_location => "mybucket-myimage.manifest.xml").should.be.an.instance_of EC2::RegisterImageResponse
+    @ec2.register_image(:image_location => "mybucket-myimage.manifest.xml").imageId.should.equal "ami-61a54008"
+    @ec2.register_image(:image_location => "mybucket-myimage.manifest.xml").should.be.an.instance_of EC2::Response
   end
   
   
@@ -58,118 +58,116 @@ context "An EC2 image " do
   specify "should be able to be described and return the correct Ruby response class for parent and members" do
     @ec2.stubs(:make_request).with('DescribeImages', {}).
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images.should.be.an.instance_of EC2::DescribeImagesResponseSet
+    @ec2.describe_images.should.be.an.instance_of EC2::Response
     response = @ec2.describe_images
-    response[0].should.be.an.instance_of EC2::Item
+    response.should.be.an.instance_of EC2::Response
   end
   
   
-  specify "should be able to be described with no params and return an array of more than one items" do
+  specify "should be able to be described with no params and return an imagesSet" do
     @ec2.stubs(:make_request).with('DescribeImages', {}).
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images.length.should.equal 2
-    response = @ec2.describe_images
-    response[0].image_id.should.equal "ami-61a54008"
-    response[1].image_id.should.equal "ami-61a54009"
+    @ec2.describe_images.imagesSet.item.length.should.equal 2
   end
   
   specify "should be able to be described by an Array of ImageId.N ID's and return an array of Items" do
     @ec2.stubs(:make_request).with('DescribeImages', {"ImageId.1"=>"ami-61a54008", "ImageId.2"=>"ami-61a54009"}).
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images( :image_id => ["ami-61a54008", "ami-61a54009"] ).length.should.equal 2
+    @ec2.describe_images( :image_id => ["ami-61a54008", "ami-61a54009"] ).imagesSet.item.length.should.equal 2
     
     response = @ec2.describe_images( :image_id => ["ami-61a54008", "ami-61a54009"] )
     
     # test first 'Item' object returned
-    response[0].image_id.should.equal "ami-61a54008"
-    response[0].image_location.should.equal "foobar1/image.manifest.xml"
-    response[0].image_state.should.equal "available"
-    response[0].image_owner_id.should.equal "AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA"
-    response[0].is_public.should.equal true
+    response.imagesSet.item[0].imageId.should.equal "ami-61a54008"
+    response.imagesSet.item[0].imageLocation.should.equal "foobar1/image.manifest.xml"
+    response.imagesSet.item[0].imageState.should.equal "available"
+    response.imagesSet.item[0].imageOwnerId.should.equal "AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA"
+    response.imagesSet.item[0].isPublic.should.equal "true"
     
     # test second 'Item' object returned
-    response[1].image_id.should.equal "ami-61a54009"
-    response[1].image_location.should.equal "foobar2/image.manifest.xml"
-    response[1].image_state.should.equal "deregistered"
-    response[1].image_owner_id.should.equal "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"
-    response[1].is_public.should.equal false
+    response.imagesSet.item[1].imageId.should.equal "ami-61a54009"
+    response.imagesSet.item[1].imageLocation.should.equal "foobar2/image.manifest.xml"
+    response.imagesSet.item[1].imageState.should.equal "deregistered"
+    response.imagesSet.item[1].imageOwnerId.should.equal "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"
+    response.imagesSet.item[1].isPublic.should.equal "false"
   end
   
   
   specify "should be able to be described by an owners with Owner.N ID's and return an array of Items" do
     @ec2.stubs(:make_request).with('DescribeImages', "Owner.1" => "AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "Owner.2" => "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ").
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images( :owner_id => ["AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"] ).length.should.equal 2
+    @ec2.describe_images( :owner_id => ["AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"] ).imagesSet.item.length.should.equal 2
     
     # owner ID's
     response = @ec2.describe_images( :owner_id => ["AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"] )
-    response[0].image_id.should.equal "ami-61a54008"
-    response[1].image_id.should.equal "ami-61a54009"
+    response.imagesSet.item[0].imageId.should.equal "ami-61a54008"
+    response.imagesSet.item[1].imageId.should.equal "ami-61a54009"
   end
   
   
   specify "should be able to be described by an owner of 'self' and return an array of Items that I own" do
     @ec2.stubs(:make_request).with('DescribeImages', "Owner.1" => "self").
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images( :owner_id => "self" ).length.should.equal 2
+    @ec2.describe_images( :owner_id => "self" ).imagesSet.item.length.should.equal 2
     
     # 'self' - Those that I own
     response = @ec2.describe_images( :owner_id => "self" )
-    response[0].image_id.should.equal "ami-61a54008"
+    response.imagesSet.item[0].imageId.should.equal "ami-61a54008"
   end
   
   
   specify "should be able to be described by an owner of 'amazon' and return an array of Items that are Amazon Public AMI's" do
     @ec2.stubs(:make_request).with('DescribeImages', "Owner.1" => "amazon").
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images( :owner_id => "amazon" ).length.should.equal 2
+    @ec2.describe_images( :owner_id => "amazon" ).imagesSet.item.length.should.equal 2
     
     # 'self' - Those that I own
     response = @ec2.describe_images( :owner_id => "amazon" )
-    response[0].image_id.should.equal "ami-61a54008"
+    response.imagesSet.item[0].imageId.should.equal "ami-61a54008"
   end
   
   
   specify "should be able to be described by an owners with Owner.N ID's who can execute AMI's and return an array of Items" do
     @ec2.stubs(:make_request).with('DescribeImages', "ExecutableBy.1" => "AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ExecutableBy.2" => "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ").
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images( :executable_by => ["AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"] ).length.should.equal 2
+    @ec2.describe_images( :executable_by => ["AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"] ).imagesSet.item.length.should.equal 2
     
     # executable by owner ID's
     response = @ec2.describe_images( :executable_by => ["AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA", "ZZZZTLBUXIEON5NQVUUX6OMPWBZIZZZZ"] )
-    response[0].image_id.should.equal "ami-61a54008"
-    response[1].image_id.should.equal "ami-61a54009"
+    response.imagesSet.item[0].imageId.should.equal "ami-61a54008"
+    response.imagesSet.item[1].imageId.should.equal "ami-61a54009"
   end
   
   
   specify "should be able to be described by an owners with Owner.N of 'self' who can execute AMI's and return an array of Items" do
     @ec2.stubs(:make_request).with('DescribeImages', "ExecutableBy.1" => "self").
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images( :executable_by => "self" ).length.should.equal 2
+    @ec2.describe_images( :executable_by => "self" ).imagesSet.item.length.should.equal 2
     
     # executable by owner ID's
     response = @ec2.describe_images( :executable_by => "self" )
-    response[0].image_id.should.equal "ami-61a54008"
-    response[1].image_id.should.equal "ami-61a54009"
+    response.imagesSet.item[0].imageId.should.equal "ami-61a54008"
+    response.imagesSet.item[1].imageId.should.equal "ami-61a54009"
   end
   
   
   specify "should be able to be described by an owners with Owner.N of 'all' who can execute AMI's and return an array of Items" do
     @ec2.stubs(:make_request).with('DescribeImages', "ExecutableBy.1" => "all").
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images( :executable_by => "all" ).length.should.equal 2
+    @ec2.describe_images( :executable_by => "all" ).imagesSet.item.length.should.equal 2
     
     # executable by owner ID's
     response = @ec2.describe_images( :executable_by => "all" )
-    response[0].image_id.should.equal "ami-61a54008"
-    response[1].image_id.should.equal "ami-61a54009"
+    response.imagesSet.item[0].imageId.should.equal "ami-61a54008"
+    response.imagesSet.item[1].imageId.should.equal "ami-61a54009"
   end
   
   
   specify "should be able to be de-registered" do
-    @ec2.expects(:make_request).with('DeregisterImage', {"ImageId"=>"ami-61a54008"}).
+    @ec2.stubs(:make_request).with('DeregisterImage', {"ImageId"=>"ami-61a54008"}).
       returns stub(:body => @deregister_image_response_body, :is_a? => true)
-    @ec2.deregister_image(:image_id => "ami-61a54008" ).should.be.an.instance_of EC2::DeregisterImageResponse
+    @ec2.deregister_image(:image_id => "ami-61a54008" ).should.be.an.instance_of EC2::Response
+    @ec2.deregister_image(:image_id => "ami-61a54008" ).return.should.equal "true"
   end
   
   

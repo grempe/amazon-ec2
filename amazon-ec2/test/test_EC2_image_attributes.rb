@@ -41,7 +41,7 @@ context "EC2 image_attributes " do
                                                             "UserId.1"=>"123",
                                                             "Group.1"=>"all"}).
        returns stub(:body => @modify_image_attribute_response_body, :is_a? => true)
-    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :user_ids=>["123"], :groups=>["all"]).should.be.an.instance_of EC2::ModifyImageAttributeResponse
+    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :user_ids=>["123"], :groups=>["all"]).should.be.an.instance_of EC2::Response
   end
   
   
@@ -51,7 +51,7 @@ context "EC2 image_attributes " do
                                                             "OperationType"=>"add",
                                                             "Group.1"=>"all"}).
        returns stub(:body => @modify_image_attribute_response_body, :is_a? => true)
-    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :groups=>["all"]).should.be.an.instance_of EC2::ModifyImageAttributeResponse
+    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :groups=>["all"]).should.be.an.instance_of EC2::Response
   end
   
   
@@ -61,7 +61,7 @@ context "EC2 image_attributes " do
                                                             "OperationType"=>"remove",
                                                             "Group.1"=>"all"}).
        returns stub(:body => @modify_image_attribute_response_body, :is_a? => true)
-    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"remove", :groups=>["all"]).should.be.an.instance_of EC2::ModifyImageAttributeResponse
+    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"remove", :groups=>["all"]).should.be.an.instance_of EC2::Response
   end
   
   
@@ -74,7 +74,7 @@ context "EC2 image_attributes " do
     @ec2.modify_image_attribute(:image_id=>"ami-61a54008", 
                                 :attribute=>"launchPermission", 
                                 :operation_type=>"add", 
-                                :user_ids=>["123"]).should.be.an.instance_of EC2::ModifyImageAttributeResponse
+                                :user_ids=>["123"]).should.be.an.instance_of EC2::Response
   end
   
   
@@ -91,7 +91,7 @@ context "EC2 image_attributes " do
                                 :attribute=>"launchPermission", 
                                 :operation_type=>"add", 
                                 :user_ids=>["123", "345"], 
-                                :groups=>["123", "all"]).should.be.an.instance_of EC2::ModifyImageAttributeResponse
+                                :groups=>["123", "all"]).should.be.an.instance_of EC2::Response
   end
   
   
@@ -119,42 +119,18 @@ context "EC2 image_attributes " do
   end
   
   
-  specify "should be able to reset attributes with reset_image_attribute " do
-    @ec2.stubs(:make_request).with('ResetImageAttribute', {"ImageId"=>"ami-61a54008", 
-                                                            "Attribute"=>"launchPermission"}).
-       returns stub(:body => @reset_image_attribute_response_body, :is_a? => true)
-    @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission").should.be.an.instance_of EC2::ResetImageAttributeResponse
-  end
-  
-  
-  specify "should raise an exception when reset_image_attribute is called with incorrect arguments" do
-    # method args can't be nil or empty
-    lambda { @ec2.reset_image_attribute() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.reset_image_attribute(:image_id=>"") }.should.raise(EC2::ArgumentError)
-    
-    # :image_id option must be not be empty or nil
-    lambda { @ec2.reset_image_attribute(:image_id=>nil, :attribute=>"launchPermission") }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.reset_image_attribute(:image_id=>"", :attribute=>"launchPermission") }.should.raise(EC2::ArgumentError)
-    
-    # :attribute currently has one option which is 'launchPermission', it should fail with any other value, nil, or empty
-    lambda { @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>nil) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>"") }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>"foo") }.should.raise(EC2::ArgumentError)
-  end
-  
-  
   specify "method describe_image_attribute should return the proper attributes" do
     @ec2.stubs(:make_request).with('DescribeImageAttribute', {"ImageId"=>"ami-61a54008", 
                                                               "Attribute"=>"launchPermission" }).
       returns stub(:body => @describe_image_attribute_response_body, :is_a? => true)
     
-    @ec2.describe_image_attribute(:image_id => "ami-61a54008", :attribute => "launchPermission")
-    
     @ec2.describe_image_attribute(:image_id => "ami-61a54008", :attribute => "launchPermission").
-      should.be.an.instance_of EC2::DescribeImageAttributeResponse
+      should.be.an.instance_of EC2::Response
     
     response = @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission")
-    response.image_id.should.equal "ami-61a54008"
+    response.imageId.should.equal "ami-61a54008"
+    response.launchPermission.item[0].group.should.equal "all"
+    response.launchPermission.item[1].userId.should.equal "495219933132"
   end
   
   
@@ -171,6 +147,31 @@ context "EC2 image_attributes " do
     lambda { @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>nil) }.should.raise(EC2::ArgumentError)
     lambda { @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>"") }.should.raise(EC2::ArgumentError)
     lambda { @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>"foo") }.should.raise(EC2::ArgumentError)
+  end
+  
+  
+  specify "should be able to reset attributes with reset_image_attribute " do
+    @ec2.stubs(:make_request).with('ResetImageAttribute', {"ImageId"=>"ami-61a54008", 
+                                                            "Attribute"=>"launchPermission"}).
+       returns stub(:body => @reset_image_attribute_response_body, :is_a? => true)
+    @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission").should.be.an.instance_of EC2::Response
+    @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission").return.should.equal "true"
+  end
+  
+  
+  specify "should raise an exception when reset_image_attribute is called with incorrect arguments" do
+    # method args can't be nil or empty
+    lambda { @ec2.reset_image_attribute() }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.reset_image_attribute(:image_id=>"") }.should.raise(EC2::ArgumentError)
+    
+    # :image_id option must be not be empty or nil
+    lambda { @ec2.reset_image_attribute(:image_id=>nil, :attribute=>"launchPermission") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.reset_image_attribute(:image_id=>"", :attribute=>"launchPermission") }.should.raise(EC2::ArgumentError)
+    
+    # :attribute currently has one option which is 'launchPermission', it should fail with any other value, nil, or empty
+    lambda { @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>nil) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>"") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>"foo") }.should.raise(EC2::ArgumentError)
   end
   
   

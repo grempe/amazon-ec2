@@ -20,12 +20,7 @@ module EC2
       params = { "instanceId" => options[:instance_id] }
       http_response = make_request("GetConsoleOutput", params)
       http_xml = http_response.body
-      doc = REXML::Document.new(http_xml)
-      response = GetConsoleOutputResponse.new
-      response.instance_id = REXML::XPath.first(doc, "GetConsoleOutputResponse/instanceId").text
-      response.timestamp = REXML::XPath.first(doc, "GetConsoleOutputResponse/timestamp").text
-      response.output = REXML::XPath.first(doc, "GetConsoleOutputResponse/output").text
-      return response
+      return Response.parse(:xml => http_xml)
     end
   end
   

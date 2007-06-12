@@ -40,10 +40,8 @@ module EC2
       
       http_response = make_request("RegisterImage", params)
       http_xml = http_response.body
-      doc = REXML::Document.new(http_xml)
-      response = RegisterImageResponse.new
-      response.image_id = REXML::XPath.first(doc, "RegisterImageResponse/imageId").text
-      return response
+      return Response.parse(:xml => http_xml)
+      
     end
     
     # Amazon Docs:
@@ -91,10 +89,6 @@ module EC2
     # Deregistered images will be included in the returned results for an 
     # unspecified interval subsequent to deregistration.
     #
-    # amazon-ec2 docs:
-    #
-    # This method returns an DescribeImagesResponse object which is an Array of Item objects
-    #
     def describe_images( options = {} )
       
       # defaults
@@ -104,24 +98,10 @@ module EC2
       params.merge!(pathlist( "Owner", options[:owner_id] ))
       params.merge!(pathlist( "ExecutableBy", options[:executable_by] ))
       
-      describe_images_response = DescribeImagesResponseSet.new
-      
       http_response = make_request("DescribeImages", params)
       http_xml = http_response.body
-      doc = REXML::Document.new(http_xml)
+      return Response.parse(:xml => http_xml)
       
-      doc.elements.each("DescribeImagesResponse/imagesSet/item") do |element|
-        
-        item = Item.new
-        item.image_id = REXML::XPath.first(element, "imageId").text
-        item.image_location = REXML::XPath.first(element, "imageLocation").text
-        item.image_owner_id = REXML::XPath.first(element, "imageOwnerId").text
-        item.image_state = REXML::XPath.first(element, "imageState").text
-        item.is_public = REXML::XPath.first(element, "isPublic").text == "true" ? true : false
-        
-        describe_images_response << item
-      end
-      return describe_images_response
     end
     
     # The DeregisterImage operation deregisters an AMI. Once deregistered, 
@@ -133,11 +113,12 @@ module EC2
       options = { :image_id => "" }.merge(options)
       
       raise ArgumentError, "No :image_id provided" if options[:image_id].nil? || options[:image_id].empty?
+      
       params = { "ImageId" => options[:image_id] }
-      make_request("DeregisterImage", params)
-      response = DeregisterImageResponse.new
-      response.return = true
-      return response
+      
+      http_response = make_request("DeregisterImage", params)
+      http_xml = http_response.body
+      return Response.parse(:xml => http_xml)
       
     end
     

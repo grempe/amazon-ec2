@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Sun Jun 10 19:05:40 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Mon Jun 11 19:13:35 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,10 +580,10 @@ span.run100 {
             <a href='lib-EC2-responses_rb.html'>lib/EC2/responses.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>165</tt>
+            <tt>101</tt>
           </td>
           <td class='lines_code'>
-            <tt>78</tt>
+            <tt>58</tt>
           </td>
           <td>
             <table cellspacing='0' cellpadding='0' align='right'>
@@ -629,161 +629,97 @@ span.run100 {
 </span><span class="inferred0"><a name="line8" />  8 
 </span><span class="marked1"><a name="line9" />  9 module EC2
 </span><span class="inferred0"><a name="line10" /> 10   
-</span><span class="inferred1"><a name="line11" /> 11   # There are two major types of responses that can come back from EC2#method calls:
-</span><span class="inferred0"><a name="line12" /> 12   #
-</span><span class="inferred1"><a name="line13" /> 13   # * A 'Set' Array which is a collection of objects
-</span><span class="inferred0"><a name="line14" /> 14   # * A 'Response' object (Response or Subclasses) which encapsulates data returned 
-</span><span class="inferred1"><a name="line15" /> 15   #   as a result of running the method.  In this case the object is an OpenStruct 
-</span><span class="inferred0"><a name="line16" /> 16   #   and is Enumerable so you can iterate over all of the data returned.
-</span><span class="inferred1"><a name="line17" /> 17   # * Note regarding Boolean responses.  Those EC2 methods that simply respond with a 
-</span><span class="inferred0"><a name="line18" /> 18   #   'true' when called will return an empty sub-class of the Response object that
-</span><span class="inferred1"><a name="line19" /> 19   #   matches the calling method.  The presence of this object (as opposed to an Exception)
-</span><span class="inferred0"><a name="line20" /> 20   #   means that that method call succeeded.
-</span><span class="inferred1"><a name="line21" /> 21   #
-</span><span class="inferred0"><a name="line22" /> 22  
-</span><span class="inferred1"><a name="line23" /> 23   # The make_request() and ec2_error? methods, which are shared by all, will raise any 
-</span><span class="inferred0"><a name="line24" /> 24   # exceptions encountered along the way as it converses with EC2.
-</span><span class="inferred1"><a name="line25" /> 25   #
-</span><span class="inferred0"><a name="line26" /> 26   # Exception Handling:  A call to any of these methods will respond with one of the
-</span><span class="inferred1"><a name="line27" /> 27   # types mentioned above.  If for some reason an error occurrs when executing a method
-</span><span class="inferred0"><a name="line28" /> 28   # (e.g. its arguments were incorrect, or it simply failed) then an exception will 
-</span><span class="inferred1"><a name="line29" /> 29   # be thrown.  The exceptions are defined in exceptions.rb as individual classes and should
-</span><span class="inferred0"><a name="line30" /> 30   # match the exceptions that Amazon has defined for EC2.  If the exception raised cannot be
-</span><span class="inferred1"><a name="line31" /> 31   # identified then a more generic exception class will be thrown.
-</span><span class="inferred0"><a name="line32" /> 32   #
-</span><span class="inferred1"><a name="line33" /> 33   # The implication of this is that you need to be prepared to handle any exceptions that
-</span><span class="inferred0"><a name="line34" /> 34   # may be raised by this library in YOUR code with 'rescue' clauses.  It is up to you
-</span><span class="inferred1"><a name="line35" /> 35   # how gracefully you want to handle these exceptions that are raised.
-</span><span class="inferred0"><a name="line36" /> 36   
-</span><span class="inferred1"><a name="line37" /> 37   
-</span><span class="inferred0"><a name="line38" /> 38   # The superclass for all general responses.  A Set (or one of its sub-classes)
-</span><span class="inferred1"><a name="line39" /> 39   # may return an Array of these objects.
-</span><span class="inferred0"><a name="line40" /> 40   #
-</span><span class="inferred1"><a name="line41" /> 41   # I learned the magic of making an OpenStruct object able to respond as a fully Enumerable 
-</span><span class="inferred0"><a name="line42" /> 42   # object (responds to .each, etc.) thanks to a great blog article on Struct and OpenStruct 
-</span><span class="inferred1"><a name="line43" /> 43   # at http://errtheblog.com/post/30
-</span><span class="inferred0"><a name="line44" /> 44   #
-</span><span class="marked1"><a name="line45" /> 45   class Response &lt; OpenStruct
-</span><span class="inferred0"><a name="line46" /> 46     
-</span><span class="marked1"><a name="line47" /> 47     include Enumerable
-</span><span class="inferred0"><a name="line48" /> 48     
-</span><span class="marked1"><a name="line49" /> 49     def members
-</span><span class="marked0"><a name="line50" /> 50       methods(false).grep(/=/).map { |m| m[0...-1] }
-</span><span class="marked1"><a name="line51" /> 51     end
-</span><span class="inferred0"><a name="line52" /> 52     
-</span><span class="marked1"><a name="line53" /> 53     def each
-</span><span class="marked0"><a name="line54" /> 54       members.each do |method|
-</span><span class="marked1"><a name="line55" /> 55         yield send(method)
-</span><span class="inferred0"><a name="line56" /> 56       end
-</span><span class="marked1"><a name="line57" /> 57       self
-</span><span class="inferred0"><a name="line58" /> 58     end
-</span><span class="inferred1"><a name="line59" /> 59     
-</span><span class="marked0"><a name="line60" /> 60     def each_pair
-</span><span class="marked1"><a name="line61" /> 61       members.each do |method|
-</span><span class="marked0"><a name="line62" /> 62         yield method, send(method)
-</span><span class="inferred1"><a name="line63" /> 63       end
-</span><span class="marked0"><a name="line64" /> 64       self
-</span><span class="inferred1"><a name="line65" /> 65     end
-</span><span class="inferred0"><a name="line66" /> 66      
-</span><span class="marked1"><a name="line67" /> 67     def [](member)
-</span><span class="marked0"><a name="line68" /> 68       send(member)
-</span><span class="marked1"><a name="line69" /> 69     end
-</span><span class="inferred0"><a name="line70" /> 70     
-</span><span class="marked1"><a name="line71" /> 71     def []=(member, value)
-</span><span class="marked0"><a name="line72" /> 72       send(&quot;#{member}=&quot;, value)
-</span><span class="marked1"><a name="line73" /> 73     end
-</span><span class="inferred0"><a name="line74" /> 74     
-</span><span class="inferred1"><a name="line75" /> 75   end
-</span><span class="inferred0"><a name="line76" /> 76   
-</span><span class="inferred1"><a name="line77" /> 77   # The superclass for all List objects which inherits from Array since we are
-</span><span class="inferred0"><a name="line78" /> 78   # just using these objects to collect up other responses (e.g. a collection of Images)
-</span><span class="marked1"><a name="line79" /> 79   class Set &lt; Array
-</span><span class="inferred0"><a name="line80" /> 80   end
-</span><span class="inferred1"><a name="line81" /> 81   
-</span><span class="inferred0"><a name="line82" /> 82   # Sub-Classes Of 'Response'
-</span><span class="inferred1"><a name="line83" /> 83   # These are the responses that we need to define as they will be filled with data
-</span><span class="inferred0"><a name="line84" /> 84   # that needs to be encapsulated (rather than a simple boolean).
-</span><span class="inferred1"><a name="line85" /> 85   ################################################
-</span><span class="inferred0"><a name="line86" /> 86   
-</span><span class="marked1"><a name="line87" /> 87   class Item &lt; Response
-</span><span class="inferred0"><a name="line88" /> 88   end
-</span><span class="inferred1"><a name="line89" /> 89   
-</span><span class="marked0"><a name="line90" /> 90   class DeregisterImageResponse &lt; Response
-</span><span class="inferred1"><a name="line91" /> 91   end
-</span><span class="inferred0"><a name="line92" /> 92   
-</span><span class="marked1"><a name="line93" /> 93   class RegisterImageResponse &lt; Response
-</span><span class="inferred0"><a name="line94" /> 94   end
-</span><span class="inferred1"><a name="line95" /> 95   
-</span><span class="marked0"><a name="line96" /> 96   class RebootInstancesResponse &lt; Response
-</span><span class="inferred1"><a name="line97" /> 97   end
-</span><span class="inferred0"><a name="line98" /> 98   
-</span><span class="marked1"><a name="line99" /> 99   class RunInstancesResponse &lt; Response
-</span><span class="inferred0"><a name="line100" />100   end
-</span><span class="inferred1"><a name="line101" />101   
-</span><span class="marked0"><a name="line102" />102   class CreateKeyPairResponse &lt; Response
-</span><span class="inferred1"><a name="line103" />103   end
-</span><span class="inferred0"><a name="line104" />104   
-</span><span class="marked1"><a name="line105" />105   class DeleteKeyPairResponse &lt; Response
-</span><span class="inferred0"><a name="line106" />106   end
-</span><span class="inferred1"><a name="line107" />107   
-</span><span class="marked0"><a name="line108" />108   class GetConsoleOutputResponse &lt; Response
-</span><span class="inferred1"><a name="line109" />109   end
-</span><span class="inferred0"><a name="line110" />110   
-</span><span class="marked1"><a name="line111" />111   class ModifyImageAttributeResponse &lt; Response
-</span><span class="inferred0"><a name="line112" />112   end
-</span><span class="inferred1"><a name="line113" />113   
-</span><span class="marked0"><a name="line114" />114   class ResetImageAttributeResponse &lt; Response
-</span><span class="inferred1"><a name="line115" />115   end
-</span><span class="inferred0"><a name="line116" />116   
-</span><span class="marked1"><a name="line117" />117   class DescribeImageAttributeResponse &lt; Response
-</span><span class="inferred0"><a name="line118" />118   end
-</span><span class="inferred1"><a name="line119" />119   
-</span><span class="marked0"><a name="line120" />120   class CreateSecurityGroupResponse &lt; Response
-</span><span class="inferred1"><a name="line121" />121   end
-</span><span class="inferred0"><a name="line122" />122   
-</span><span class="marked1"><a name="line123" />123   class DeleteSecurityGroupResponse &lt; Response
-</span><span class="inferred0"><a name="line124" />124   end
-</span><span class="inferred1"><a name="line125" />125   
-</span><span class="marked0"><a name="line126" />126   class AuthorizeSecurityGroupIngressResponse &lt; Response
-</span><span class="inferred1"><a name="line127" />127   end
-</span><span class="inferred0"><a name="line128" />128   
-</span><span class="marked1"><a name="line129" />129   class RevokeSecurityGroupIngressResponse &lt; Response
-</span><span class="inferred0"><a name="line130" />130   end
-</span><span class="inferred1"><a name="line131" />131   
-</span><span class="inferred0"><a name="line132" />132   # Sub-Classes of 'Set'
-</span><span class="inferred1"><a name="line133" />133   ################################################
-</span><span class="inferred0"><a name="line134" />134   
-</span><span class="marked1"><a name="line135" />135   class DescribeImagesResponseSet &lt; Set
-</span><span class="inferred0"><a name="line136" />136   end
-</span><span class="inferred1"><a name="line137" />137   
-</span><span class="marked0"><a name="line138" />138   class DescribeInstancesResponseSet &lt; Set
-</span><span class="inferred1"><a name="line139" />139   end
-</span><span class="inferred0"><a name="line140" />140   
-</span><span class="marked1"><a name="line141" />141   class TerminateInstancesResponseSet &lt; Set
-</span><span class="inferred0"><a name="line142" />142   end
-</span><span class="inferred1"><a name="line143" />143   
-</span><span class="marked0"><a name="line144" />144   class GroupResponseSet &lt; Set
-</span><span class="inferred1"><a name="line145" />145   end
-</span><span class="inferred0"><a name="line146" />146   
-</span><span class="marked1"><a name="line147" />147   class InstancesResponseSet &lt; Set
-</span><span class="inferred0"><a name="line148" />148   end
-</span><span class="inferred1"><a name="line149" />149   
-</span><span class="marked0"><a name="line150" />150   class DescribeKeyPairsResponseSet &lt; Set
-</span><span class="inferred1"><a name="line151" />151   end
-</span><span class="inferred0"><a name="line152" />152   
-</span><span class="marked1"><a name="line153" />153   class LaunchPermissionResponseSet &lt; Set
-</span><span class="inferred0"><a name="line154" />154   end
-</span><span class="inferred1"><a name="line155" />155   
-</span><span class="marked0"><a name="line156" />156   class DescribeSecurityGroupsResponseSet &lt; Set
-</span><span class="inferred1"><a name="line157" />157   end
-</span><span class="inferred0"><a name="line158" />158   
-</span><span class="marked1"><a name="line159" />159   class IpPermissionsResponseSet &lt; Set
-</span><span class="inferred0"><a name="line160" />160   end
-</span><span class="inferred1"><a name="line161" />161   
-</span><span class="marked0"><a name="line162" />162   class IpRangesResponseSet &lt; Set
-</span><span class="inferred1"><a name="line163" />163   end
-</span><span class="inferred0"><a name="line164" />164   
-</span><span class="inferred1"><a name="line165" />165 end
+</span><span class="inferred1"><a name="line11" /> 11   # The make_request() and ec2_error? methods, which are shared by all, will raise any 
+</span><span class="inferred0"><a name="line12" /> 12   # exceptions encountered along the way as it converses with EC2.
+</span><span class="inferred1"><a name="line13" /> 13   #
+</span><span class="inferred0"><a name="line14" /> 14   # Exception Handling: If for some reason an error occurrs when executing a method
+</span><span class="inferred1"><a name="line15" /> 15   # (e.g. its arguments were incorrect, or it simply failed) then an exception will 
+</span><span class="inferred0"><a name="line16" /> 16   # be thrown.  The exceptions are defined in exceptions.rb as individual classes and should
+</span><span class="inferred1"><a name="line17" /> 17   # match the exceptions that Amazon has defined for EC2.  If the exception raised cannot be
+</span><span class="inferred0"><a name="line18" /> 18   # identified then a more generic exception class will be thrown.
+</span><span class="inferred1"><a name="line19" /> 19   #
+</span><span class="inferred0"><a name="line20" /> 20   # The implication of this is that you need to be prepared to handle any exceptions that
+</span><span class="inferred1"><a name="line21" /> 21   # may be raised by this library in YOUR code with 'rescue' clauses.  It is up to you
+</span><span class="inferred0"><a name="line22" /> 22   # how gracefully you want to handle these exceptions that are raised.
+</span><span class="inferred1"><a name="line23" /> 23   
+</span><span class="inferred0"><a name="line24" /> 24   # Credits :
+</span><span class="inferred1"><a name="line25" /> 25   # I learned the magic of making an OpenStruct object able to respond as a fully Enumerable 
+</span><span class="inferred0"><a name="line26" /> 26   # object (responds to .each, etc.) thanks to a great blog article on Struct and OpenStruct 
+</span><span class="inferred1"><a name="line27" /> 27   # at http://errtheblog.com/post/30
+</span><span class="inferred0"><a name="line28" /> 28   #
+</span><span class="inferred1"><a name="line29" /> 29   # Thanks to Sean Knapp for the XmlSimple response patch which greatly simplified the response
+</span><span class="inferred0"><a name="line30" /> 30   # mechanism for the whole library while making it more accurate and much less brittle to boot!
+</span><span class="inferred1"><a name="line31" /> 31   #
+</span><span class="inferred0"><a name="line32" /> 32   
+</span><span class="marked1"><a name="line33" /> 33   require 'ostruct'
+</span><span class="marked0"><a name="line34" /> 34   require 'xmlsimple'
+</span><span class="inferred1"><a name="line35" /> 35   
+</span><span class="marked0"><a name="line36" /> 36   class Response &lt; OpenStruct
+</span><span class="marked1"><a name="line37" /> 37     include Enumerable
+</span><span class="inferred0"><a name="line38" /> 38   
+</span><span class="marked1"><a name="line39" /> 39     def self.parse(options = {})
+</span><span class="marked0"><a name="line40" /> 40       options = {
+</span><span class="inferred1"><a name="line41" /> 41         :xml =&gt; &quot;&quot;,
+</span><span class="inferred0"><a name="line42" /> 42         :parse_options =&gt; { 'ForceArray' =&gt; ['item'], 'SuppressEmpty' =&gt; nil }
+</span><span class="inferred1"><a name="line43" /> 43       }.merge(options)
+</span><span class="marked0"><a name="line44" /> 44       return Response.new(XmlSimple.xml_in(options[:xml], options[:parse_options])) 
+</span><span class="inferred1"><a name="line45" /> 45     end
+</span><span class="inferred0"><a name="line46" /> 46    
+</span><span class="marked1"><a name="line47" /> 47     def members
+</span><span class="marked0"><a name="line48" /> 48       methods(false).grep(/=/).map { |m| m[0...-1] } 
+</span><span class="marked1"><a name="line49" /> 49     end
+</span><span class="inferred0"><a name="line50" /> 50    
+</span><span class="marked1"><a name="line51" /> 51     def each
+</span><span class="marked0"><a name="line52" /> 52       members.each do |method|
+</span><span class="marked1"><a name="line53" /> 53         yield send(method)
+</span><span class="inferred0"><a name="line54" /> 54       end
+</span><span class="marked1"><a name="line55" /> 55       self
+</span><span class="inferred0"><a name="line56" /> 56     end
+</span><span class="inferred1"><a name="line57" /> 57   
+</span><span class="marked0"><a name="line58" /> 58     def each_pair 
+</span><span class="marked1"><a name="line59" /> 59       members.each do |method|
+</span><span class="marked0"><a name="line60" /> 60         yield method, send(method)
+</span><span class="inferred1"><a name="line61" /> 61       end
+</span><span class="marked0"><a name="line62" /> 62       self
+</span><span class="inferred1"><a name="line63" /> 63     end
+</span><span class="inferred0"><a name="line64" /> 64   
+</span><span class="marked1"><a name="line65" /> 65     def [](member)
+</span><span class="marked0"><a name="line66" /> 66       send(member)
+</span><span class="marked1"><a name="line67" /> 67     end
+</span><span class="inferred0"><a name="line68" /> 68   
+</span><span class="marked1"><a name="line69" /> 69     def []=(member, value)
+</span><span class="marked0"><a name="line70" /> 70       send(&quot;#{member}=&quot;, value)
+</span><span class="marked1"><a name="line71" /> 71     end
+</span><span class="inferred0"><a name="line72" /> 72   
+</span><span class="marked1"><a name="line73" /> 73     def initialize(data)
+</span><span class="marked0"><a name="line74" /> 74       super(data)
+</span><span class="marked1"><a name="line75" /> 75       convert(self)
+</span><span class="inferred0"><a name="line76" /> 76     end
+</span><span class="inferred1"><a name="line77" /> 77   
+</span><span class="marked0"><a name="line78" /> 78     private 
+</span><span class="marked1"><a name="line79" /> 79     def convert(obj)
+</span><span class="marked0"><a name="line80" /> 80       if (obj.class == Response)
+</span><span class="marked1"><a name="line81" /> 81         obj.each_pair { |k,v|
+</span><span class="marked0"><a name="line82" /> 82           obj[k] = convert(v)
+</span><span class="inferred1"><a name="line83" /> 83         }
+</span><span class="marked0"><a name="line84" /> 84         return obj
+</span><span class="marked1"><a name="line85" /> 85       elsif (obj.class == Hash)
+</span><span class="inferred0"><a name="line86" /> 86         # Hashes make good Responses already
+</span><span class="marked1"><a name="line87" /> 87         return Response.new(obj)
+</span><span class="marked0"><a name="line88" /> 88       elsif (obj.class == Array)
+</span><span class="inferred1"><a name="line89" /> 89         # With arrays, need to 
+</span><span class="marked0"><a name="line90" /> 90         new_arr = []
+</span><span class="marked1"><a name="line91" /> 91         obj.each { |elem|
+</span><span class="marked0"><a name="line92" /> 92           new_arr &lt;&lt; convert(elem)
+</span><span class="inferred1"><a name="line93" /> 93         }
+</span><span class="marked0"><a name="line94" /> 94         return new_arr
+</span><span class="inferred1"><a name="line95" /> 95       else
+</span><span class="marked0"><a name="line96" /> 96         return obj
+</span><span class="inferred1"><a name="line97" /> 97       end
+</span><span class="marked0"><a name="line98" /> 98     end
+</span><span class="inferred1"><a name="line99" /> 99   end
+</span><span class="inferred0"><a name="line100" />100   
+</span><span class="inferred1"><a name="line101" />101 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

@@ -24,12 +24,8 @@ module EC2
       
       http_response = make_request("CreateKeyPair", params)
       http_xml = http_response.body
-      doc = REXML::Document.new(http_xml)
-      response = CreateKeyPairResponse.new
-      response.key_name = REXML::XPath.first(doc, "CreateKeyPairResponse/keyName").text
-      response.key_fingerprint = REXML::XPath.first(doc, "CreateKeyPairResponse/keyFingerprint").text
-      response.key_material = REXML::XPath.first(doc, "CreateKeyPairResponse/keyMaterial").text
-      return response
+      return Response.parse(:xml => http_xml)
+      
     end
     
     
@@ -43,18 +39,9 @@ module EC2
       options = { :key_name => [] }.merge(options)
       
       params = pathlist("KeyName", options[:key_name] )
-      describe_keypairs_response = DescribeKeyPairsResponseSet.new
       http_response = make_request("DescribeKeyPairs", params)
       http_xml = http_response.body
-      doc = REXML::Document.new(http_xml)
-      
-      doc.elements.each("DescribeKeyPairsResponse/keySet/item") do |element|
-        item = Item.new
-        item.key_name = REXML::XPath.first(element, "keyName").text
-        item.key_fingerprint = REXML::XPath.first(element, "keyFingerprint").text
-        describe_keypairs_response << item
-      end
-      return describe_keypairs_response
+      return Response.parse(:xml => http_xml)
     end
     
     
@@ -68,10 +55,9 @@ module EC2
       
       params = { "KeyName" => options[:key_name] }
       
-      make_request("DeleteKeyPair", params)
-      response = DeleteKeyPairResponse.new
-      response.return = true
-      return response
+      http_response = make_request("DeleteKeyPair", params)
+      http_xml = http_response.body
+      return Response.parse(:xml => http_xml)
       
     end
     

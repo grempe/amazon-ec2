@@ -85,40 +85,9 @@ module EC2
       params["KeyName"] = options[:key_name] unless options[:key_name].nil? 
       params["UserData"] = user_data unless user_data.nil?
       
-      run_instances_response = RunInstancesResponse.new
-      
       http_response = make_request("RunInstances", params)
       http_xml = http_response.body
-      doc = REXML::Document.new(http_xml)
-      
-      doc.elements.each("RunInstancesResponse") do |element|
-        run_instances_response.reservation_id = REXML::XPath.first(element, "reservationId").text
-        run_instances_response.owner_id = REXML::XPath.first(element, "ownerId").text
-        
-        group_set = GroupResponseSet.new
-        doc.elements.each("RunInstancesResponse/groupSet/item") do |element|
-          group_set_item = Item.new
-          group_set_item.group_id = REXML::XPath.first(element, "groupId").text
-          group_set << group_set_item
-        end
-        run_instances_response.group_set = group_set
-        
-        instances_set = InstancesResponseSet.new
-        doc.elements.each("RunInstancesResponse/instancesSet/item") do |element|
-          instances_set_item = Item.new
-          instances_set_item.instance_id = REXML::XPath.first(element, "instanceId").text
-          instances_set_item.image_id = REXML::XPath.first(element, "imageId").text
-          instances_set_item.instance_state_code = REXML::XPath.first(element, "instanceState/code").text
-          instances_set_item.instance_state_name = REXML::XPath.first(element, "instanceState/name").text
-          instances_set_item.private_dns_name = REXML::XPath.first(element, "privateDnsName").text
-          instances_set_item.dns_name = REXML::XPath.first(element, "dnsName").text
-          instances_set_item.key_name = REXML::XPath.first(element, "keyName").text
-          instances_set << instances_set_item
-        end
-        run_instances_response.instances_set = instances_set
-        
-      end
-      return run_instances_response
+      return Response.parse(:xml => http_xml)
     end
     
     
@@ -142,42 +111,9 @@ module EC2
       
       params = pathlist("InstanceId", options[:instance_id])
       
-      desc_instances_response = DescribeInstancesResponseSet.new
-      
       http_response = make_request("DescribeInstances", params)
       http_xml = http_response.body
-      doc = REXML::Document.new(http_xml)
-      
-      doc.elements.each("DescribeInstancesResponse/reservationSet/item") do |element|
-        item = Item.new
-        item.reservation_id = REXML::XPath.first(element, "reservationId").text
-        item.owner_id = REXML::XPath.first(element, "ownerId").text
-        
-        group_set = GroupResponseSet.new
-        doc.elements.each("DescribeInstancesResponse/reservationSet/item/groupSet/item") do |element|
-          group_set_item = Item.new
-          group_set_item.group_id = REXML::XPath.first(element, "groupId").text
-          group_set << group_set_item
-        end
-        item.group_set = group_set
-        
-        instances_set = InstancesResponseSet.new
-        doc.elements.each("DescribeInstancesResponse/reservationSet/item/instancesSet/item") do |element|
-          instances_set_item = Item.new
-          instances_set_item.instance_id = REXML::XPath.first(element, "instanceId").text
-          instances_set_item.image_id = REXML::XPath.first(element, "imageId").text
-          instances_set_item.instance_state_code = REXML::XPath.first(element, "instanceState/code").text
-          instances_set_item.instance_state_name = REXML::XPath.first(element, "instanceState/name").text
-          instances_set_item.private_dns_name = REXML::XPath.first(element, "privateDnsName").text
-          instances_set_item.dns_name = REXML::XPath.first(element, "dnsName").text
-          instances_set_item.key_name = REXML::XPath.first(element, "keyName").text
-          instances_set << instances_set_item
-        end
-        item.instances_set = instances_set
-        
-        desc_instances_response << item
-      end
-      return desc_instances_response
+      return Response.parse(:xml => http_xml)
     end
     
     
@@ -194,10 +130,9 @@ module EC2
       
       params = pathlist("InstanceId", options[:instance_id])
       
-      make_request("RebootInstances", params)
-      response = RebootInstancesResponse.new
-      response.return = true
-      return response
+      http_response = make_request("RebootInstances", params)
+      http_xml = http_response.body
+      return Response.parse(:xml => http_xml)
       
     end
     
@@ -217,24 +152,9 @@ module EC2
       
       params = pathlist("InstanceId", options[:instance_id])
       
-      terminate_instances_response = TerminateInstancesResponseSet.new
-      
       http_response = make_request("TerminateInstances", params)
       http_xml = http_response.body
-      doc = REXML::Document.new(http_xml)
-      
-      doc.elements.each("TerminateInstancesResponse/instancesSet/item") do |element|
-        
-        item = Item.new
-        item.instance_id = REXML::XPath.first(element, "instanceId").text
-        item.shutdown_state_code = REXML::XPath.first(element, "shutdownState/code").text
-        item.shutdown_state_name = REXML::XPath.first(element, "shutdownState/name").text
-        item.previous_state_code = REXML::XPath.first(element, "previousState/code").text
-        item.previous_state_name = REXML::XPath.first(element, "previousState/name").text
-        
-        terminate_instances_response << item
-      end
-      return terminate_instances_response
+      return Response.parse(:xml => http_xml)
       
     end
     
