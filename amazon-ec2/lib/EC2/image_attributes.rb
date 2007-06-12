@@ -59,7 +59,10 @@ module EC2
       end
       
       make_request("ModifyImageAttribute", params)
-      return response = ModifyImageAttributeResponse.new
+      response = ModifyImageAttributeResponse.new
+      response.return = true
+      return response
+      
     end
     
     # The DescribeImageAttribute operation returns information about an attribute of an AMI.
@@ -124,7 +127,10 @@ module EC2
       end
       
       make_request("ResetImageAttribute", params)
-      return response = ResetImageAttributeResponse.new
+      response = ResetImageAttributeResponse.new
+      response.return = true
+      return response
+      
     end
     
   end

@@ -36,7 +36,9 @@ module EC2
       }
       
       make_request("CreateSecurityGroup", params)
-      return response = CreateSecurityGroupResponse.new
+      response = CreateSecurityGroupResponse.new
+      response.return = true
+      return response
       
     end
     
@@ -110,6 +112,8 @@ module EC2
       
       make_request("DeleteSecurityGroup", params)
       return response = DeleteSecurityGroupResponse.new
+      response.return = true
+      return response
       
     end
     
@@ -158,6 +162,8 @@ module EC2
       
       make_request("AuthorizeSecurityGroupIngress", params)
       response = AuthorizeSecurityGroupIngressResponse.new
+      response.return = true
+      return response
       
     end
     
@@ -207,6 +213,8 @@ module EC2
       
       make_request("RevokeSecurityGroupIngress", params)
       response = RevokeSecurityGroupIngressResponse.new
+      response.return = true
+      return response
     
     end
     

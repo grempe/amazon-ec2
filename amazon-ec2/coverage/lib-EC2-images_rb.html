@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Sun Jun 10 18:51:50 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Sun Jun 10 19:05:40 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,10 +580,10 @@ span.run100 {
             <a href='lib-EC2-images_rb.html'>lib/EC2/images.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>143</tt>
+            <tt>146</tt>
           </td>
           <td class='lines_code'>
-            <tt>42</tt>
+            <tt>44</tt>
           </td>
           <td>
             <table cellspacing='0' cellpadding='0' align='right'>
@@ -756,12 +756,15 @@ span.run100 {
 </span><span class="marked0"><a name="line135" />135       raise ArgumentError, &quot;No :image_id provided&quot; if options[:image_id].nil? || options[:image_id].empty?
 </span><span class="marked1"><a name="line136" />136       params = { &quot;ImageId&quot; =&gt; options[:image_id] }
 </span><span class="marked0"><a name="line137" />137       make_request(&quot;DeregisterImage&quot;, params)
-</span><span class="marked1"><a name="line138" />138       return response = DeregisterImageResponse.new
-</span><span class="inferred0"><a name="line139" />139     end
-</span><span class="inferred1"><a name="line140" />140     
-</span><span class="inferred0"><a name="line141" />141   end
-</span><span class="inferred1"><a name="line142" />142   
-</span><span class="inferred0"><a name="line143" />143 end
+</span><span class="marked1"><a name="line138" />138       response = DeregisterImageResponse.new
+</span><span class="marked0"><a name="line139" />139       response.return = true
+</span><span class="marked1"><a name="line140" />140       return response
+</span><span class="inferred0"><a name="line141" />141       
+</span><span class="inferred1"><a name="line142" />142     end
+</span><span class="inferred0"><a name="line143" />143     
+</span><span class="inferred1"><a name="line144" />144   end
+</span><span class="inferred0"><a name="line145" />145   
+</span><span class="inferred1"><a name="line146" />146 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

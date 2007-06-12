@@ -135,7 +135,10 @@ module EC2
       raise ArgumentError, "No :image_id provided" if options[:image_id].nil? || options[:image_id].empty?
       params = { "ImageId" => options[:image_id] }
       make_request("DeregisterImage", params)
-      return response = DeregisterImageResponse.new
+      response = DeregisterImageResponse.new
+      response.return = true
+      return response
+      
     end
     
   end

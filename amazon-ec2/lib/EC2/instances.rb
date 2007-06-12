@@ -195,7 +195,10 @@ module EC2
       params = pathlist("InstanceId", options[:instance_id])
       
       make_request("RebootInstances", params)
-      return response = RebootInstancesResponse.new
+      response = RebootInstancesResponse.new
+      response.return = true
+      return response
+      
     end
     
     # The TerminateInstances operation shuts down one or more instances. 

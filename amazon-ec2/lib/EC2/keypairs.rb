@@ -69,7 +69,10 @@ module EC2
       params = { "KeyName" => options[:key_name] }
       
       make_request("DeleteKeyPair", params)
-      return response = DeleteKeyPairResponse.new
+      response = DeleteKeyPairResponse.new
+      response.return = true
+      return response
+      
     end
     
   end
