@@ -22,9 +22,7 @@ module EC2
       
       params = { "KeyName" => options[:key_name] }
       
-      http_response = make_request("CreateKeyPair", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "CreateKeyPair", :params => params)
       
     end
     
@@ -39,9 +37,9 @@ module EC2
       options = { :key_name => [] }.merge(options)
       
       params = pathlist("KeyName", options[:key_name] )
-      http_response = make_request("DescribeKeyPairs", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      
+      return response_generator(:action => "DescribeKeyPairs", :params => params)
+      
     end
     
     
@@ -55,9 +53,7 @@ module EC2
       
       params = { "KeyName" => options[:key_name] }
       
-      http_response = make_request("DeleteKeyPair", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "DeleteKeyPair", :params => params)
       
     end
     

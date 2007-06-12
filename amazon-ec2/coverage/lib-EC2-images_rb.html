@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Mon Jun 11 19:13:35 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Mon Jun 11 21:06:56 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,10 +580,10 @@ span.run100 {
             <a href='lib-EC2-images_rb.html'>lib/EC2/images.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>127</tt>
+            <tt>121</tt>
           </td>
           <td class='lines_code'>
-            <tt>29</tt>
+            <tt>23</tt>
           </td>
           <td>
             <table cellspacing='0' cellpadding='0' align='right'>
@@ -659,93 +659,87 @@ span.run100 {
 </span><span class="inferred0"><a name="line38" /> 38       
 </span><span class="marked1"><a name="line39" /> 39       params = { &quot;ImageLocation&quot; =&gt; options[:image_location] }
 </span><span class="inferred0"><a name="line40" /> 40       
-</span><span class="marked1"><a name="line41" /> 41       http_response = make_request(&quot;RegisterImage&quot;, params)
-</span><span class="marked0"><a name="line42" /> 42       http_xml = http_response.body
-</span><span class="marked1"><a name="line43" /> 43       return Response.parse(:xml =&gt; http_xml)
-</span><span class="inferred0"><a name="line44" /> 44       
-</span><span class="inferred1"><a name="line45" /> 45     end
-</span><span class="inferred0"><a name="line46" /> 46     
-</span><span class="inferred1"><a name="line47" /> 47     # Amazon Docs:
-</span><span class="inferred0"><a name="line48" /> 48     #
-</span><span class="inferred1"><a name="line49" /> 49     # The DescribeImages operation returns information about AMIs available 
-</span><span class="inferred0"><a name="line50" /> 50     # for use by the user. This includes both public AMIs (those available 
-</span><span class="inferred1"><a name="line51" /> 51     # for any user to launch) and private AMIs (those owned by the user 
-</span><span class="inferred0"><a name="line52" /> 52     # making the request and those owned by other users that the user 
-</span><span class="inferred1"><a name="line53" /> 53     # making the request has explicit launch permissions for).
-</span><span class="inferred0"><a name="line54" /> 54     #
-</span><span class="inferred1"><a name="line55" /> 55     # The list of AMIs returned can be modified via optional lists of AMI IDs, 
-</span><span class="inferred0"><a name="line56" /> 56     # owners or users with launch permissions. If all three optional lists 
-</span><span class="inferred1"><a name="line57" /> 57     # are empty all AMIs the user has launch permissions for are returned. 
-</span><span class="inferred0"><a name="line58" /> 58     # Launch permissions fall into three categories:
-</span><span class="inferred1"><a name="line59" /> 59     #
-</span><span class="inferred0"><a name="line60" /> 60     # Launch Permission	Description
-</span><span class="inferred1"><a name="line61" /> 61     #  * public	The all group has launch permissions for the AMI. All users have 
-</span><span class="inferred0"><a name="line62" /> 62     #    launch permissions for these AMIs.
-</span><span class="inferred1"><a name="line63" /> 63     #  * explicit	The owner of the AMIs has granted a specific user launch permissions for the AMI.
-</span><span class="inferred0"><a name="line64" /> 64     #  * implicit	A user has implicit launch permissions for all AMIs he or she owns.
-</span><span class="inferred1"><a name="line65" /> 65     #
-</span><span class="inferred0"><a name="line66" /> 66     # If one or more of the lists are specified the result set is the intersection 
-</span><span class="inferred1"><a name="line67" /> 67     # of AMIs matching the criteria of the individual lists.
-</span><span class="inferred0"><a name="line68" /> 68     #
-</span><span class="inferred1"><a name="line69" /> 69     # Providing the list of AMI IDs requests information for those AMIs only. 
-</span><span class="inferred0"><a name="line70" /> 70     # If no AMI IDs are provided, information of all relevant AMIs will be 
-</span><span class="inferred1"><a name="line71" /> 71     # returned. If an AMI is specified that does not exist a fault is returned. 
-</span><span class="inferred0"><a name="line72" /> 72     # If an AMI is specified that exists but the user making the request does 
-</span><span class="inferred1"><a name="line73" /> 73     # not have launch permissions for, then that AMI will not be included in 
-</span><span class="inferred0"><a name="line74" /> 74     # the returned results.
-</span><span class="inferred1"><a name="line75" /> 75     #
-</span><span class="inferred0"><a name="line76" /> 76     # Providing the list of owners requests information for AMIs owned 
-</span><span class="inferred1"><a name="line77" /> 77     # by the specified owners only. Only AMIs the user has launch permissions 
-</span><span class="inferred0"><a name="line78" /> 78     # for are returned. The items of the list may be account ids for AMIs 
-</span><span class="inferred1"><a name="line79" /> 79     # owned by users with those account ids, amazon for AMIs owned by Amazon 
-</span><span class="inferred0"><a name="line80" /> 80     # or self for AMIs owned by the user making the request.
-</span><span class="inferred1"><a name="line81" /> 81     # 
-</span><span class="inferred0"><a name="line82" /> 82     # The executable list may be provided to request information for AMIs 
-</span><span class="inferred1"><a name="line83" /> 83     # that only the specified users have launch permissions for. The items of 
-</span><span class="inferred0"><a name="line84" /> 84     # the list may be account ids for AMIs owned by the user making the request 
-</span><span class="inferred1"><a name="line85" /> 85     # that the users with the specified account ids have explicit launch permissions 
-</span><span class="inferred0"><a name="line86" /> 86     # for, self for AMIs the user making the request has explicit launch permissions 
-</span><span class="inferred1"><a name="line87" /> 87     # for or all for public AMIs.
-</span><span class="inferred0"><a name="line88" /> 88     #
-</span><span class="inferred1"><a name="line89" /> 89     # Deregistered images will be included in the returned results for an 
-</span><span class="inferred0"><a name="line90" /> 90     # unspecified interval subsequent to deregistration.
-</span><span class="inferred1"><a name="line91" /> 91     #
-</span><span class="marked0"><a name="line92" /> 92     def describe_images( options = {} )
-</span><span class="inferred1"><a name="line93" /> 93       
-</span><span class="inferred0"><a name="line94" /> 94       # defaults
-</span><span class="marked1"><a name="line95" /> 95       options = { :image_id =&gt; [], :owner_id =&gt; [], :executable_by =&gt; [] }.merge(options)
-</span><span class="inferred0"><a name="line96" /> 96       
-</span><span class="marked1"><a name="line97" /> 97       params = pathlist( &quot;ImageId&quot;, options[:image_id] )
-</span><span class="marked0"><a name="line98" /> 98       params.merge!(pathlist( &quot;Owner&quot;, options[:owner_id] ))
-</span><span class="marked1"><a name="line99" /> 99       params.merge!(pathlist( &quot;ExecutableBy&quot;, options[:executable_by] ))
+</span><span class="marked1"><a name="line41" /> 41       return response_generator(:action =&gt; &quot;RegisterImage&quot;, :params =&gt; params)
+</span><span class="inferred0"><a name="line42" /> 42       
+</span><span class="inferred1"><a name="line43" /> 43     end
+</span><span class="inferred0"><a name="line44" /> 44     
+</span><span class="inferred1"><a name="line45" /> 45     # Amazon Docs:
+</span><span class="inferred0"><a name="line46" /> 46     #
+</span><span class="inferred1"><a name="line47" /> 47     # The DescribeImages operation returns information about AMIs available 
+</span><span class="inferred0"><a name="line48" /> 48     # for use by the user. This includes both public AMIs (those available 
+</span><span class="inferred1"><a name="line49" /> 49     # for any user to launch) and private AMIs (those owned by the user 
+</span><span class="inferred0"><a name="line50" /> 50     # making the request and those owned by other users that the user 
+</span><span class="inferred1"><a name="line51" /> 51     # making the request has explicit launch permissions for).
+</span><span class="inferred0"><a name="line52" /> 52     #
+</span><span class="inferred1"><a name="line53" /> 53     # The list of AMIs returned can be modified via optional lists of AMI IDs, 
+</span><span class="inferred0"><a name="line54" /> 54     # owners or users with launch permissions. If all three optional lists 
+</span><span class="inferred1"><a name="line55" /> 55     # are empty all AMIs the user has launch permissions for are returned. 
+</span><span class="inferred0"><a name="line56" /> 56     # Launch permissions fall into three categories:
+</span><span class="inferred1"><a name="line57" /> 57     #
+</span><span class="inferred0"><a name="line58" /> 58     # Launch Permission	Description
+</span><span class="inferred1"><a name="line59" /> 59     #  * public	The all group has launch permissions for the AMI. All users have 
+</span><span class="inferred0"><a name="line60" /> 60     #    launch permissions for these AMIs.
+</span><span class="inferred1"><a name="line61" /> 61     #  * explicit	The owner of the AMIs has granted a specific user launch permissions for the AMI.
+</span><span class="inferred0"><a name="line62" /> 62     #  * implicit	A user has implicit launch permissions for all AMIs he or she owns.
+</span><span class="inferred1"><a name="line63" /> 63     #
+</span><span class="inferred0"><a name="line64" /> 64     # If one or more of the lists are specified the result set is the intersection 
+</span><span class="inferred1"><a name="line65" /> 65     # of AMIs matching the criteria of the individual lists.
+</span><span class="inferred0"><a name="line66" /> 66     #
+</span><span class="inferred1"><a name="line67" /> 67     # Providing the list of AMI IDs requests information for those AMIs only. 
+</span><span class="inferred0"><a name="line68" /> 68     # If no AMI IDs are provided, information of all relevant AMIs will be 
+</span><span class="inferred1"><a name="line69" /> 69     # returned. If an AMI is specified that does not exist a fault is returned. 
+</span><span class="inferred0"><a name="line70" /> 70     # If an AMI is specified that exists but the user making the request does 
+</span><span class="inferred1"><a name="line71" /> 71     # not have launch permissions for, then that AMI will not be included in 
+</span><span class="inferred0"><a name="line72" /> 72     # the returned results.
+</span><span class="inferred1"><a name="line73" /> 73     #
+</span><span class="inferred0"><a name="line74" /> 74     # Providing the list of owners requests information for AMIs owned 
+</span><span class="inferred1"><a name="line75" /> 75     # by the specified owners only. Only AMIs the user has launch permissions 
+</span><span class="inferred0"><a name="line76" /> 76     # for are returned. The items of the list may be account ids for AMIs 
+</span><span class="inferred1"><a name="line77" /> 77     # owned by users with those account ids, amazon for AMIs owned by Amazon 
+</span><span class="inferred0"><a name="line78" /> 78     # or self for AMIs owned by the user making the request.
+</span><span class="inferred1"><a name="line79" /> 79     # 
+</span><span class="inferred0"><a name="line80" /> 80     # The executable list may be provided to request information for AMIs 
+</span><span class="inferred1"><a name="line81" /> 81     # that only the specified users have launch permissions for. The items of 
+</span><span class="inferred0"><a name="line82" /> 82     # the list may be account ids for AMIs owned by the user making the request 
+</span><span class="inferred1"><a name="line83" /> 83     # that the users with the specified account ids have explicit launch permissions 
+</span><span class="inferred0"><a name="line84" /> 84     # for, self for AMIs the user making the request has explicit launch permissions 
+</span><span class="inferred1"><a name="line85" /> 85     # for or all for public AMIs.
+</span><span class="inferred0"><a name="line86" /> 86     #
+</span><span class="inferred1"><a name="line87" /> 87     # Deregistered images will be included in the returned results for an 
+</span><span class="inferred0"><a name="line88" /> 88     # unspecified interval subsequent to deregistration.
+</span><span class="inferred1"><a name="line89" /> 89     #
+</span><span class="marked0"><a name="line90" /> 90     def describe_images( options = {} )
+</span><span class="inferred1"><a name="line91" /> 91       
+</span><span class="inferred0"><a name="line92" /> 92       # defaults
+</span><span class="marked1"><a name="line93" /> 93       options = { :image_id =&gt; [], :owner_id =&gt; [], :executable_by =&gt; [] }.merge(options)
+</span><span class="inferred0"><a name="line94" /> 94       
+</span><span class="marked1"><a name="line95" /> 95       params = pathlist( &quot;ImageId&quot;, options[:image_id] )
+</span><span class="marked0"><a name="line96" /> 96       params.merge!(pathlist( &quot;Owner&quot;, options[:owner_id] ))
+</span><span class="marked1"><a name="line97" /> 97       params.merge!(pathlist( &quot;ExecutableBy&quot;, options[:executable_by] ))
+</span><span class="inferred0"><a name="line98" /> 98       
+</span><span class="marked1"><a name="line99" /> 99       return response_generator(:action =&gt; &quot;DescribeImages&quot;, :params =&gt; params)
 </span><span class="inferred0"><a name="line100" />100       
-</span><span class="marked1"><a name="line101" />101       http_response = make_request(&quot;DescribeImages&quot;, params)
-</span><span class="marked0"><a name="line102" />102       http_xml = http_response.body
-</span><span class="marked1"><a name="line103" />103       return Response.parse(:xml =&gt; http_xml)
-</span><span class="inferred0"><a name="line104" />104       
-</span><span class="inferred1"><a name="line105" />105     end
-</span><span class="inferred0"><a name="line106" />106     
-</span><span class="inferred1"><a name="line107" />107     # The DeregisterImage operation deregisters an AMI. Once deregistered, 
-</span><span class="inferred0"><a name="line108" />108     # instances of the AMI may no longer be launched. Returns true if it works
-</span><span class="inferred1"><a name="line109" />109     # otherwise an exception will be thrown.
-</span><span class="marked0"><a name="line110" />110     def deregister_image( options = {} )
-</span><span class="inferred1"><a name="line111" />111       
-</span><span class="inferred0"><a name="line112" />112       # defaults
-</span><span class="marked1"><a name="line113" />113       options = { :image_id =&gt; &quot;&quot; }.merge(options)
+</span><span class="inferred1"><a name="line101" />101     end
+</span><span class="inferred0"><a name="line102" />102     
+</span><span class="inferred1"><a name="line103" />103     # The DeregisterImage operation deregisters an AMI. Once deregistered, 
+</span><span class="inferred0"><a name="line104" />104     # instances of the AMI may no longer be launched. Returns true if it works
+</span><span class="inferred1"><a name="line105" />105     # otherwise an exception will be thrown.
+</span><span class="marked0"><a name="line106" />106     def deregister_image( options = {} )
+</span><span class="inferred1"><a name="line107" />107       
+</span><span class="inferred0"><a name="line108" />108       # defaults
+</span><span class="marked1"><a name="line109" />109       options = { :image_id =&gt; &quot;&quot; }.merge(options)
+</span><span class="inferred0"><a name="line110" />110       
+</span><span class="marked1"><a name="line111" />111       raise ArgumentError, &quot;No :image_id provided&quot; if options[:image_id].nil? || options[:image_id].empty?
+</span><span class="inferred0"><a name="line112" />112       
+</span><span class="marked1"><a name="line113" />113       params = { &quot;ImageId&quot; =&gt; options[:image_id] }
 </span><span class="inferred0"><a name="line114" />114       
-</span><span class="marked1"><a name="line115" />115       raise ArgumentError, &quot;No :image_id provided&quot; if options[:image_id].nil? || options[:image_id].empty?
+</span><span class="marked1"><a name="line115" />115       return response_generator(:action =&gt; &quot;DeregisterImage&quot;, :params =&gt; params)
 </span><span class="inferred0"><a name="line116" />116       
-</span><span class="marked1"><a name="line117" />117       params = { &quot;ImageId&quot; =&gt; options[:image_id] }
-</span><span class="inferred0"><a name="line118" />118       
-</span><span class="marked1"><a name="line119" />119       http_response = make_request(&quot;DeregisterImage&quot;, params)
-</span><span class="marked0"><a name="line120" />120       http_xml = http_response.body
-</span><span class="marked1"><a name="line121" />121       return Response.parse(:xml =&gt; http_xml)
-</span><span class="inferred0"><a name="line122" />122       
-</span><span class="inferred1"><a name="line123" />123     end
-</span><span class="inferred0"><a name="line124" />124     
-</span><span class="inferred1"><a name="line125" />125   end
-</span><span class="inferred0"><a name="line126" />126   
-</span><span class="inferred1"><a name="line127" />127 end
+</span><span class="inferred1"><a name="line117" />117     end
+</span><span class="inferred0"><a name="line118" />118     
+</span><span class="inferred1"><a name="line119" />119   end
+</span><span class="inferred0"><a name="line120" />120   
+</span><span class="inferred1"><a name="line121" />121 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

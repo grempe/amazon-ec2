@@ -58,9 +58,7 @@ module EC2
         raise ArgumentError, ":operation_type was #{options[:operation_type].to_s} but must be 'add' or 'remove'"
       end
       
-      http_response = make_request("ModifyImageAttribute", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "ModifyImageAttribute", :params => params)
       
     end
     
@@ -83,9 +81,8 @@ module EC2
         raise ArgumentError, "attribute : #{options[:attribute].to_s} is not an known option."
       end
       
-      http_response = make_request("DescribeImageAttribute", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "DescribeImageAttribute", :params => params)
+      
     end
     
     
@@ -109,9 +106,7 @@ module EC2
         raise ArgumentError, "attribute : #{options[:attribute].to_s} is not an known option."
       end
       
-      http_response = make_request("ResetImageAttribute", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "ResetImageAttribute", :params => params)
       
     end
     

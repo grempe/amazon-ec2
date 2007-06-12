@@ -184,6 +184,23 @@ module EC2
         encoded_canonical = EC2.encode(secret_access_key, canonical_string)
       end
       
+      # allow us to have a one line call in each method which will do all of the work
+      # in making the actual request to AWS.
+      def response_generator( options = {} )
+        
+        options = {
+          :action => "",
+          :params => {}
+        }.merge(options)
+        
+        raise ArgumentError, ":action must be provided to response_generator" if options[:action].nil? || options[:action].empty?
+        
+        http_response = make_request(options[:action], options[:params])
+        http_xml = http_response.body
+        return Response.parse(:xml => http_xml)
+        
+      end
+      
       # Raises the appropriate error if the specified Net::HTTPResponse object
       # contains an Amazon EC2 error; returns +false+ otherwise.
       def ec2_error?(response)

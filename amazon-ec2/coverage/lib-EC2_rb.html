@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Mon Jun 11 19:13:35 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Mon Jun 11 21:06:56 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,21 +580,21 @@ span.run100 {
             <a href='lib-EC2_rb.html'>lib/EC2.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>227</tt>
+            <tt>244</tt>
           </td>
           <td class='lines_code'>
-            <tt>100</tt>
+            <tt>110</tt>
           </td>
           <td>
             <table cellspacing='0' cellpadding='0' align='right'>
               <tr>
                 <td>
-                  <tt class='coverage_total'>63.9%</tt>&nbsp;</td>
+                  <tt class='coverage_total'>66.4%</tt>&nbsp;</td>
                 <td>
                   <table cellspacing='0' class='percent_graph' cellpadding='0' width='100'>
                     <tr>
-                      <td class='covered' width='64' />
-                      <td class='uncovered' width='36' />
+                      <td class='covered' width='66' />
+                      <td class='uncovered' width='34' />
                     </tr>
                   </table>
                 </td>
@@ -605,12 +605,12 @@ span.run100 {
             <table cellspacing='0' cellpadding='0' align='right'>
               <tr>
                 <td>
-                  <tt class='coverage_code'>62.0%</tt>&nbsp;</td>
+                  <tt class='coverage_code'>65.5%</tt>&nbsp;</td>
                 <td>
                   <table cellspacing='0' class='percent_graph' cellpadding='0' width='100'>
                     <tr>
-                      <td class='covered' width='62' />
-                      <td class='uncovered' width='38' />
+                      <td class='covered' width='65' />
+                      <td class='uncovered' width='35' />
                     </tr>
                   </table>
                 </td>
@@ -805,47 +805,64 @@ span.run100 {
 </span><span class="uncovered0"><a name="line184" />184         encoded_canonical = EC2.encode(secret_access_key, canonical_string)
 </span><span class="uncovered1"><a name="line185" />185       end
 </span><span class="inferred0"><a name="line186" />186       
-</span><span class="inferred1"><a name="line187" />187       # Raises the appropriate error if the specified Net::HTTPResponse object
-</span><span class="inferred0"><a name="line188" />188       # contains an Amazon EC2 error; returns +false+ otherwise.
-</span><span class="marked1"><a name="line189" />189       def ec2_error?(response)
-</span><span class="uncovered0"><a name="line190" />190         
-</span><span class="uncovered1"><a name="line191" />191         # return false if we got a HTTP 200 code,
-</span><span class="uncovered0"><a name="line192" />192         # otherwise there is some type of error (40x,50x) and
-</span><span class="uncovered1"><a name="line193" />193         # we should try to raise an appropriate exception
-</span><span class="uncovered0"><a name="line194" />194         # from one of our exception classes defined in
-</span><span class="uncovered1"><a name="line195" />195         # exceptions.rb
-</span><span class="uncovered0"><a name="line196" />196         return false if response.is_a?(Net::HTTPSuccess)
-</span><span class="uncovered1"><a name="line197" />197 
-</span><span class="uncovered0"><a name="line198" />198         # parse the XML document so we can walk through it
-</span><span class="uncovered1"><a name="line199" />199         doc = REXML::Document.new(response.body)
-</span><span class="uncovered0"><a name="line200" />200         
-</span><span class="uncovered1"><a name="line201" />201         # Check that the Error element is in the place we would expect.
-</span><span class="uncovered0"><a name="line202" />202         # and if not raise a generic error exception
-</span><span class="uncovered1"><a name="line203" />203         unless doc.root.elements['Errors'].elements['Error'].name == 'Error'
-</span><span class="uncovered0"><a name="line204" />204           raise Error, &quot;Unexpected error format. response.body is: #{response.body}&quot;
-</span><span class="uncovered1"><a name="line205" />205         end
-</span><span class="uncovered0"><a name="line206" />206         
-</span><span class="uncovered1"><a name="line207" />207         # An valid error response looks like this:
-</span><span class="uncovered0"><a name="line208" />208         # &lt;?xml version=&quot;1.0&quot;?&gt;&lt;Response&gt;&lt;Errors&gt;&lt;Error&gt;&lt;Code&gt;InvalidParameterCombination&lt;/Code&gt;&lt;Message&gt;Unknown parameter: foo&lt;/Message&gt;&lt;/Error&gt;&lt;/Errors&gt;&lt;RequestID&gt;291cef62-3e86-414b-900e-17246eccfae8&lt;/RequestID&gt;&lt;/Response&gt;
-</span><span class="uncovered1"><a name="line209" />209         # AWS EC2 throws some exception codes that look like Error.SubError.  Since we can't name classes this way
-</span><span class="uncovered0"><a name="line210" />210         # we need to strip out the '.' in the error 'Code' and we name the error exceptions with this
-</span><span class="uncovered1"><a name="line211" />211         # non '.' name as well.
-</span><span class="uncovered0"><a name="line212" />212         error_code    = doc.root.elements['Errors'].elements['Error'].elements['Code'].text.gsub('.', '')
-</span><span class="uncovered1"><a name="line213" />213         error_message = doc.root.elements['Errors'].elements['Error'].elements['Message'].text
-</span><span class="uncovered0"><a name="line214" />214         
-</span><span class="uncovered1"><a name="line215" />215         # Raise one of our specific error classes if it exists.
-</span><span class="uncovered0"><a name="line216" />216         # otherwise, throw a generic EC2 Error with a few details.
-</span><span class="uncovered1"><a name="line217" />217         if EC2.const_defined?(error_code)
-</span><span class="uncovered0"><a name="line218" />218           raise EC2.const_get(error_code), error_message
-</span><span class="uncovered1"><a name="line219" />219         else
-</span><span class="uncovered0"><a name="line220" />220           raise Error, &quot;This is an undefined error code which needs to be added to exceptions.rb : error_code =&gt; #{error_code} : error_message =&gt; #{error_message}&quot;
-</span><span class="uncovered1"><a name="line221" />221         end
-</span><span class="uncovered0"><a name="line222" />222         
-</span><span class="uncovered1"><a name="line223" />223       end
-</span><span class="uncovered0"><a name="line224" />224       
-</span><span class="uncovered1"><a name="line225" />225   end
-</span><span class="uncovered0"><a name="line226" />226   
-</span><span class="uncovered1"><a name="line227" />227 end
+</span><span class="inferred1"><a name="line187" />187       # allow us to have a one line call in each method which will do all of the work
+</span><span class="inferred0"><a name="line188" />188       # in making the actual request to AWS.
+</span><span class="marked1"><a name="line189" />189       def response_generator( options = {} )
+</span><span class="inferred0"><a name="line190" />190         
+</span><span class="marked1"><a name="line191" />191         options = {
+</span><span class="inferred0"><a name="line192" />192           :action =&gt; &quot;&quot;,
+</span><span class="inferred1"><a name="line193" />193           :params =&gt; {}
+</span><span class="inferred0"><a name="line194" />194         }.merge(options)
+</span><span class="inferred1"><a name="line195" />195         
+</span><span class="marked0"><a name="line196" />196         raise ArgumentError, &quot;:action must be provided to response_generator&quot; if options[:action].nil? || options[:action].empty?
+</span><span class="inferred1"><a name="line197" />197         
+</span><span class="marked0"><a name="line198" />198         http_response = make_request(options[:action], options[:params])
+</span><span class="marked1"><a name="line199" />199         http_xml = http_response.body
+</span><span class="marked0"><a name="line200" />200         return Response.parse(:xml =&gt; http_xml)
+</span><span class="inferred1"><a name="line201" />201         
+</span><span class="inferred0"><a name="line202" />202       end
+</span><span class="inferred1"><a name="line203" />203       
+</span><span class="inferred0"><a name="line204" />204       # Raises the appropriate error if the specified Net::HTTPResponse object
+</span><span class="inferred1"><a name="line205" />205       # contains an Amazon EC2 error; returns +false+ otherwise.
+</span><span class="marked0"><a name="line206" />206       def ec2_error?(response)
+</span><span class="uncovered1"><a name="line207" />207         
+</span><span class="uncovered0"><a name="line208" />208         # return false if we got a HTTP 200 code,
+</span><span class="uncovered1"><a name="line209" />209         # otherwise there is some type of error (40x,50x) and
+</span><span class="uncovered0"><a name="line210" />210         # we should try to raise an appropriate exception
+</span><span class="uncovered1"><a name="line211" />211         # from one of our exception classes defined in
+</span><span class="uncovered0"><a name="line212" />212         # exceptions.rb
+</span><span class="uncovered1"><a name="line213" />213         return false if response.is_a?(Net::HTTPSuccess)
+</span><span class="uncovered0"><a name="line214" />214 
+</span><span class="uncovered1"><a name="line215" />215         # parse the XML document so we can walk through it
+</span><span class="uncovered0"><a name="line216" />216         doc = REXML::Document.new(response.body)
+</span><span class="uncovered1"><a name="line217" />217         
+</span><span class="uncovered0"><a name="line218" />218         # Check that the Error element is in the place we would expect.
+</span><span class="uncovered1"><a name="line219" />219         # and if not raise a generic error exception
+</span><span class="uncovered0"><a name="line220" />220         unless doc.root.elements['Errors'].elements['Error'].name == 'Error'
+</span><span class="uncovered1"><a name="line221" />221           raise Error, &quot;Unexpected error format. response.body is: #{response.body}&quot;
+</span><span class="uncovered0"><a name="line222" />222         end
+</span><span class="uncovered1"><a name="line223" />223         
+</span><span class="uncovered0"><a name="line224" />224         # An valid error response looks like this:
+</span><span class="uncovered1"><a name="line225" />225         # &lt;?xml version=&quot;1.0&quot;?&gt;&lt;Response&gt;&lt;Errors&gt;&lt;Error&gt;&lt;Code&gt;InvalidParameterCombination&lt;/Code&gt;&lt;Message&gt;Unknown parameter: foo&lt;/Message&gt;&lt;/Error&gt;&lt;/Errors&gt;&lt;RequestID&gt;291cef62-3e86-414b-900e-17246eccfae8&lt;/RequestID&gt;&lt;/Response&gt;
+</span><span class="uncovered0"><a name="line226" />226         # AWS EC2 throws some exception codes that look like Error.SubError.  Since we can't name classes this way
+</span><span class="uncovered1"><a name="line227" />227         # we need to strip out the '.' in the error 'Code' and we name the error exceptions with this
+</span><span class="uncovered0"><a name="line228" />228         # non '.' name as well.
+</span><span class="uncovered1"><a name="line229" />229         error_code    = doc.root.elements['Errors'].elements['Error'].elements['Code'].text.gsub('.', '')
+</span><span class="uncovered0"><a name="line230" />230         error_message = doc.root.elements['Errors'].elements['Error'].elements['Message'].text
+</span><span class="uncovered1"><a name="line231" />231         
+</span><span class="uncovered0"><a name="line232" />232         # Raise one of our specific error classes if it exists.
+</span><span class="uncovered1"><a name="line233" />233         # otherwise, throw a generic EC2 Error with a few details.
+</span><span class="uncovered0"><a name="line234" />234         if EC2.const_defined?(error_code)
+</span><span class="uncovered1"><a name="line235" />235           raise EC2.const_get(error_code), error_message
+</span><span class="uncovered0"><a name="line236" />236         else
+</span><span class="uncovered1"><a name="line237" />237           raise Error, &quot;This is an undefined error code which needs to be added to exceptions.rb : error_code =&gt; #{error_code} : error_message =&gt; #{error_message}&quot;
+</span><span class="uncovered0"><a name="line238" />238         end
+</span><span class="uncovered1"><a name="line239" />239         
+</span><span class="uncovered0"><a name="line240" />240       end
+</span><span class="uncovered1"><a name="line241" />241       
+</span><span class="uncovered0"><a name="line242" />242   end
+</span><span class="uncovered1"><a name="line243" />243   
+</span><span class="uncovered0"><a name="line244" />244 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

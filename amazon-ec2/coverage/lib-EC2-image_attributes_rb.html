@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Mon Jun 11 19:13:35 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Mon Jun 11 21:06:56 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,10 +580,10 @@ span.run100 {
             <a href='lib-EC2-image_attributes_rb.html'>lib/EC2/image_attributes.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>120</tt>
+            <tt>115</tt>
           </td>
           <td class='lines_code'>
-            <tt>66</tt>
+            <tt>60</tt>
           </td>
           <td>
             <table cellspacing='0' cellpadding='0' align='right'>
@@ -619,126 +619,121 @@ span.run100 {
           </td>
         </tr>
       </tbody>
-    </table><pre><span class="inferred1"><a name="line1" />  1 # Amazon Web Services EC2 Query API Ruby library.  This library was 
-</span><span class="inferred0"><a name="line2" />  2 # heavily modified from original Amazon Web Services sample code 
-</span><span class="inferred1"><a name="line3" />  3 # and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
-</span><span class="inferred0"><a name="line4" />  4 # 
-</span><span class="inferred1"><a name="line5" />  5 # 
-</span><span class="inferred0"><a name="line6" />  6 # Source code and gem hosted on RubyForge
-</span><span class="inferred1"><a name="line7" />  7 # under the Ruby License as of 12/14/2006:
-</span><span class="inferred0"><a name="line8" />  8 # http://amazon-ec2.rubyforge.org
-</span><span class="inferred1"><a name="line9" />  9 
-</span><span class="marked0"><a name="line10" /> 10 module EC2
-</span><span class="inferred1"><a name="line11" /> 11   
-</span><span class="marked0"><a name="line12" /> 12   class AWSAuthConnection
-</span><span class="inferred1"><a name="line13" /> 13     
-</span><span class="inferred0"><a name="line14" /> 14     # The ModifyImageAttribute operation modifies an attribute of an AMI.
-</span><span class="inferred1"><a name="line15" /> 15     #
-</span><span class="inferred0"><a name="line16" /> 16     # Currently the only attribute supported is launchPermission. By 
-</span><span class="inferred1"><a name="line17" /> 17     # modifying this attribute it is possible to make an AMI public or 
-</span><span class="inferred0"><a name="line18" /> 18     # to grant specific users launch permissions for the AMI. To make the 
-</span><span class="inferred1"><a name="line19" /> 19     # AMI public add the group=all attribute item. To grant launch permissions 
-</span><span class="inferred0"><a name="line20" /> 20     # for a specific user add a userId=&lt;userid&gt; attribute item.
-</span><span class="marked1"><a name="line21" /> 21     def modify_image_attribute( options = {} )
-</span><span class="inferred0"><a name="line22" /> 22       
-</span><span class="inferred1"><a name="line23" /> 23       # defaults
-</span><span class="marked0"><a name="line24" /> 24       options = { :image_id =&gt; &quot;&quot;, 
-</span><span class="inferred1"><a name="line25" /> 25                   :attribute =&gt; &quot;launchPermission&quot;, 
-</span><span class="inferred0"><a name="line26" /> 26                   :operation_type =&gt; &quot;add&quot;, 
-</span><span class="inferred1"><a name="line27" /> 27                   :user_ids =&gt; [], 
-</span><span class="inferred0"><a name="line28" /> 28                   :groups =&gt; [] }.merge(options)
-</span><span class="inferred1"><a name="line29" /> 29       
-</span><span class="marked0"><a name="line30" /> 30       raise ArgumentError, &quot;No ':image_id' provided&quot; if options[:image_id].nil? || options[:image_id].empty?
-</span><span class="marked1"><a name="line31" /> 31       raise ArgumentError, &quot;No ':attribute' provided&quot; if options[:attribute].nil? || options[:attribute].empty?
-</span><span class="marked0"><a name="line32" /> 32       raise ArgumentError, &quot;No ':operation_type' provided&quot; if options[:operation_type].nil? || options[:operation_type].empty?
-</span><span class="inferred1"><a name="line33" /> 33       
-</span><span class="marked0"><a name="line34" /> 34       params = {
-</span><span class="inferred1"><a name="line35" /> 35         &quot;ImageId&quot; =&gt; options[:image_id],
-</span><span class="inferred0"><a name="line36" /> 36         &quot;Attribute&quot; =&gt; options[:attribute],
-</span><span class="inferred1"><a name="line37" /> 37         &quot;OperationType&quot; =&gt; options[:operation_type]
-</span><span class="inferred0"><a name="line38" /> 38       }
-</span><span class="inferred1"><a name="line39" /> 39       
-</span><span class="inferred0"><a name="line40" /> 40       # test options provided and make sure they are valid
-</span><span class="marked1"><a name="line41" /> 41       case options[:attribute]
-</span><span class="marked0"><a name="line42" /> 42       when &quot;launchPermission&quot;
-</span><span class="marked1"><a name="line43" /> 43         if (options[:user_ids].nil? || options[:user_ids].empty?) &amp;&amp; (options[:groups].nil? || options[:groups].empty?)
-</span><span class="marked0"><a name="line44" /> 44           raise ArgumentError, &quot;Option :attribute=&gt;'launchPermission' requires ':user_ids' or ':groups' options to also be specified&quot;
-</span><span class="inferred1"><a name="line45" /> 45         end
-</span><span class="inferred0"><a name="line46" /> 46         
-</span><span class="marked1"><a name="line47" /> 47         params.merge!(pathlist(&quot;UserId&quot;, options[:user_ids])) unless options[:user_ids].nil?
-</span><span class="marked0"><a name="line48" /> 48         params.merge!(pathlist(&quot;Group&quot;, options[:groups])) unless options[:groups].nil?
-</span><span class="inferred1"><a name="line49" /> 49       else
-</span><span class="marked0"><a name="line50" /> 50         raise ArgumentError, &quot;attribute : #{options[:attribute].to_s} is not an known option.&quot;
-</span><span class="inferred1"><a name="line51" /> 51       end
-</span><span class="inferred0"><a name="line52" /> 52       
-</span><span class="inferred1"><a name="line53" /> 53       # test options provided and make sure they are valid
-</span><span class="marked0"><a name="line54" /> 54       case options[:operation_type]
-</span><span class="marked1"><a name="line55" /> 55       when &quot;add&quot;, &quot;remove&quot;
-</span><span class="inferred0"><a name="line56" /> 56         # these args are ok
-</span><span class="inferred1"><a name="line57" /> 57       else
-</span><span class="marked0"><a name="line58" /> 58         raise ArgumentError, &quot;:operation_type was #{options[:operation_type].to_s} but must be 'add' or 'remove'&quot;
-</span><span class="inferred1"><a name="line59" /> 59       end
-</span><span class="inferred0"><a name="line60" /> 60       
-</span><span class="marked1"><a name="line61" /> 61       http_response = make_request(&quot;ModifyImageAttribute&quot;, params)
-</span><span class="marked0"><a name="line62" /> 62       http_xml = http_response.body
-</span><span class="marked1"><a name="line63" /> 63       return Response.parse(:xml =&gt; http_xml)
-</span><span class="inferred0"><a name="line64" /> 64       
-</span><span class="inferred1"><a name="line65" /> 65     end
-</span><span class="inferred0"><a name="line66" /> 66     
-</span><span class="inferred1"><a name="line67" /> 67     # The DescribeImageAttribute operation returns information about an attribute of an AMI.
-</span><span class="marked0"><a name="line68" /> 68     def describe_image_attribute( options = {} )
-</span><span class="inferred1"><a name="line69" /> 69       
-</span><span class="inferred0"><a name="line70" /> 70       # defaults
-</span><span class="marked1"><a name="line71" /> 71       options = {:image_id =&gt; &quot;&quot;, :attribute =&gt; &quot;launchPermission&quot;}.merge(options)
-</span><span class="inferred0"><a name="line72" /> 72       
-</span><span class="marked1"><a name="line73" /> 73       raise ArgumentError, &quot;No ':image_id' provided&quot; if options[:image_id].nil? || options[:image_id].empty?
-</span><span class="marked0"><a name="line74" /> 74       raise ArgumentError, &quot;No ':attribute' provided&quot; if options[:attribute].nil? || options[:attribute].empty?
-</span><span class="inferred1"><a name="line75" /> 75       
-</span><span class="marked0"><a name="line76" /> 76       params = { &quot;ImageId&quot; =&gt; options[:image_id], &quot;Attribute&quot; =&gt; options[:attribute] }
-</span><span class="inferred1"><a name="line77" /> 77       
-</span><span class="inferred0"><a name="line78" /> 78       # test options provided and make sure they are valid
-</span><span class="marked1"><a name="line79" /> 79       case options[:attribute]
-</span><span class="marked0"><a name="line80" /> 80       when &quot;launchPermission&quot;
-</span><span class="inferred1"><a name="line81" /> 81         # these args are ok
-</span><span class="inferred0"><a name="line82" /> 82       else
-</span><span class="marked1"><a name="line83" /> 83         raise ArgumentError, &quot;attribute : #{options[:attribute].to_s} is not an known option.&quot;
-</span><span class="inferred0"><a name="line84" /> 84       end
-</span><span class="inferred1"><a name="line85" /> 85       
-</span><span class="marked0"><a name="line86" /> 86       http_response = make_request(&quot;DescribeImageAttribute&quot;, params)
-</span><span class="marked1"><a name="line87" /> 87       http_xml = http_response.body
-</span><span class="marked0"><a name="line88" /> 88       return Response.parse(:xml =&gt; http_xml)
-</span><span class="inferred1"><a name="line89" /> 89     end
-</span><span class="inferred0"><a name="line90" /> 90     
-</span><span class="inferred1"><a name="line91" /> 91     
-</span><span class="inferred0"><a name="line92" /> 92     # The ResetImageAttribute operation resets an attribute of an AMI to its default value.
-</span><span class="marked1"><a name="line93" /> 93     def reset_image_attribute( options = {} )
-</span><span class="inferred0"><a name="line94" /> 94       
-</span><span class="inferred1"><a name="line95" /> 95       # defaults
-</span><span class="marked0"><a name="line96" /> 96       options = {:image_id =&gt; &quot;&quot;, :attribute =&gt; &quot;launchPermission&quot;}.merge(options)
-</span><span class="inferred1"><a name="line97" /> 97       
-</span><span class="marked0"><a name="line98" /> 98       raise ArgumentError, &quot;No ':image_id' provided&quot; if options[:image_id].nil? || options[:image_id].empty?
-</span><span class="marked1"><a name="line99" /> 99       raise ArgumentError, &quot;No ':attribute' provided&quot; if options[:attribute].nil? || options[:attribute].empty?
-</span><span class="inferred0"><a name="line100" />100       
-</span><span class="marked1"><a name="line101" />101       params = {&quot;ImageId&quot; =&gt; options[:image_id], 
-</span><span class="inferred0"><a name="line102" />102                 &quot;Attribute&quot; =&gt; options[:attribute] }
-</span><span class="inferred1"><a name="line103" />103       
-</span><span class="inferred0"><a name="line104" />104       # test options provided and make sure they are valid
-</span><span class="marked1"><a name="line105" />105       case options[:attribute]
-</span><span class="marked0"><a name="line106" />106       when &quot;launchPermission&quot;
-</span><span class="inferred1"><a name="line107" />107         # these args are ok
-</span><span class="inferred0"><a name="line108" />108       else
-</span><span class="marked1"><a name="line109" />109         raise ArgumentError, &quot;attribute : #{options[:attribute].to_s} is not an known option.&quot;
-</span><span class="inferred0"><a name="line110" />110       end
-</span><span class="inferred1"><a name="line111" />111       
-</span><span class="marked0"><a name="line112" />112       http_response = make_request(&quot;ResetImageAttribute&quot;, params)
-</span><span class="marked1"><a name="line113" />113       http_xml = http_response.body
-</span><span class="marked0"><a name="line114" />114       return Response.parse(:xml =&gt; http_xml)
-</span><span class="inferred1"><a name="line115" />115       
-</span><span class="inferred0"><a name="line116" />116     end
-</span><span class="inferred1"><a name="line117" />117     
-</span><span class="inferred0"><a name="line118" />118   end
-</span><span class="inferred1"><a name="line119" />119   
-</span><span class="inferred0"><a name="line120" />120 end
+    </table><pre><span class="inferred0"><a name="line1" />  1 # Amazon Web Services EC2 Query API Ruby library.  This library was 
+</span><span class="inferred1"><a name="line2" />  2 # heavily modified from original Amazon Web Services sample code 
+</span><span class="inferred0"><a name="line3" />  3 # and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
+</span><span class="inferred1"><a name="line4" />  4 # 
+</span><span class="inferred0"><a name="line5" />  5 # 
+</span><span class="inferred1"><a name="line6" />  6 # Source code and gem hosted on RubyForge
+</span><span class="inferred0"><a name="line7" />  7 # under the Ruby License as of 12/14/2006:
+</span><span class="inferred1"><a name="line8" />  8 # http://amazon-ec2.rubyforge.org
+</span><span class="inferred0"><a name="line9" />  9 
+</span><span class="marked1"><a name="line10" /> 10 module EC2
+</span><span class="inferred0"><a name="line11" /> 11   
+</span><span class="marked1"><a name="line12" /> 12   class AWSAuthConnection
+</span><span class="inferred0"><a name="line13" /> 13     
+</span><span class="inferred1"><a name="line14" /> 14     # The ModifyImageAttribute operation modifies an attribute of an AMI.
+</span><span class="inferred0"><a name="line15" /> 15     #
+</span><span class="inferred1"><a name="line16" /> 16     # Currently the only attribute supported is launchPermission. By 
+</span><span class="inferred0"><a name="line17" /> 17     # modifying this attribute it is possible to make an AMI public or 
+</span><span class="inferred1"><a name="line18" /> 18     # to grant specific users launch permissions for the AMI. To make the 
+</span><span class="inferred0"><a name="line19" /> 19     # AMI public add the group=all attribute item. To grant launch permissions 
+</span><span class="inferred1"><a name="line20" /> 20     # for a specific user add a userId=&lt;userid&gt; attribute item.
+</span><span class="marked0"><a name="line21" /> 21     def modify_image_attribute( options = {} )
+</span><span class="inferred1"><a name="line22" /> 22       
+</span><span class="inferred0"><a name="line23" /> 23       # defaults
+</span><span class="marked1"><a name="line24" /> 24       options = { :image_id =&gt; &quot;&quot;, 
+</span><span class="inferred0"><a name="line25" /> 25                   :attribute =&gt; &quot;launchPermission&quot;, 
+</span><span class="inferred1"><a name="line26" /> 26                   :operation_type =&gt; &quot;add&quot;, 
+</span><span class="inferred0"><a name="line27" /> 27                   :user_ids =&gt; [], 
+</span><span class="inferred1"><a name="line28" /> 28                   :groups =&gt; [] }.merge(options)
+</span><span class="inferred0"><a name="line29" /> 29       
+</span><span class="marked1"><a name="line30" /> 30       raise ArgumentError, &quot;No ':image_id' provided&quot; if options[:image_id].nil? || options[:image_id].empty?
+</span><span class="marked0"><a name="line31" /> 31       raise ArgumentError, &quot;No ':attribute' provided&quot; if options[:attribute].nil? || options[:attribute].empty?
+</span><span class="marked1"><a name="line32" /> 32       raise ArgumentError, &quot;No ':operation_type' provided&quot; if options[:operation_type].nil? || options[:operation_type].empty?
+</span><span class="inferred0"><a name="line33" /> 33       
+</span><span class="marked1"><a name="line34" /> 34       params = {
+</span><span class="inferred0"><a name="line35" /> 35         &quot;ImageId&quot; =&gt; options[:image_id],
+</span><span class="inferred1"><a name="line36" /> 36         &quot;Attribute&quot; =&gt; options[:attribute],
+</span><span class="inferred0"><a name="line37" /> 37         &quot;OperationType&quot; =&gt; options[:operation_type]
+</span><span class="inferred1"><a name="line38" /> 38       }
+</span><span class="inferred0"><a name="line39" /> 39       
+</span><span class="inferred1"><a name="line40" /> 40       # test options provided and make sure they are valid
+</span><span class="marked0"><a name="line41" /> 41       case options[:attribute]
+</span><span class="marked1"><a name="line42" /> 42       when &quot;launchPermission&quot;
+</span><span class="marked0"><a name="line43" /> 43         if (options[:user_ids].nil? || options[:user_ids].empty?) &amp;&amp; (options[:groups].nil? || options[:groups].empty?)
+</span><span class="marked1"><a name="line44" /> 44           raise ArgumentError, &quot;Option :attribute=&gt;'launchPermission' requires ':user_ids' or ':groups' options to also be specified&quot;
+</span><span class="inferred0"><a name="line45" /> 45         end
+</span><span class="inferred1"><a name="line46" /> 46         
+</span><span class="marked0"><a name="line47" /> 47         params.merge!(pathlist(&quot;UserId&quot;, options[:user_ids])) unless options[:user_ids].nil?
+</span><span class="marked1"><a name="line48" /> 48         params.merge!(pathlist(&quot;Group&quot;, options[:groups])) unless options[:groups].nil?
+</span><span class="inferred0"><a name="line49" /> 49       else
+</span><span class="marked1"><a name="line50" /> 50         raise ArgumentError, &quot;attribute : #{options[:attribute].to_s} is not an known option.&quot;
+</span><span class="inferred0"><a name="line51" /> 51       end
+</span><span class="inferred1"><a name="line52" /> 52       
+</span><span class="inferred0"><a name="line53" /> 53       # test options provided and make sure they are valid
+</span><span class="marked1"><a name="line54" /> 54       case options[:operation_type]
+</span><span class="marked0"><a name="line55" /> 55       when &quot;add&quot;, &quot;remove&quot;
+</span><span class="inferred1"><a name="line56" /> 56         # these args are ok
+</span><span class="inferred0"><a name="line57" /> 57       else
+</span><span class="marked1"><a name="line58" /> 58         raise ArgumentError, &quot;:operation_type was #{options[:operation_type].to_s} but must be 'add' or 'remove'&quot;
+</span><span class="inferred0"><a name="line59" /> 59       end
+</span><span class="inferred1"><a name="line60" /> 60       
+</span><span class="marked0"><a name="line61" /> 61       return response_generator(:action =&gt; &quot;ModifyImageAttribute&quot;, :params =&gt; params)
+</span><span class="inferred1"><a name="line62" /> 62       
+</span><span class="inferred0"><a name="line63" /> 63     end
+</span><span class="inferred1"><a name="line64" /> 64     
+</span><span class="inferred0"><a name="line65" /> 65     # The DescribeImageAttribute operation returns information about an attribute of an AMI.
+</span><span class="marked1"><a name="line66" /> 66     def describe_image_attribute( options = {} )
+</span><span class="inferred0"><a name="line67" /> 67       
+</span><span class="inferred1"><a name="line68" /> 68       # defaults
+</span><span class="marked0"><a name="line69" /> 69       options = {:image_id =&gt; &quot;&quot;, :attribute =&gt; &quot;launchPermission&quot;}.merge(options)
+</span><span class="inferred1"><a name="line70" /> 70       
+</span><span class="marked0"><a name="line71" /> 71       raise ArgumentError, &quot;No ':image_id' provided&quot; if options[:image_id].nil? || options[:image_id].empty?
+</span><span class="marked1"><a name="line72" /> 72       raise ArgumentError, &quot;No ':attribute' provided&quot; if options[:attribute].nil? || options[:attribute].empty?
+</span><span class="inferred0"><a name="line73" /> 73       
+</span><span class="marked1"><a name="line74" /> 74       params = { &quot;ImageId&quot; =&gt; options[:image_id], &quot;Attribute&quot; =&gt; options[:attribute] }
+</span><span class="inferred0"><a name="line75" /> 75       
+</span><span class="inferred1"><a name="line76" /> 76       # test options provided and make sure they are valid
+</span><span class="marked0"><a name="line77" /> 77       case options[:attribute]
+</span><span class="marked1"><a name="line78" /> 78       when &quot;launchPermission&quot;
+</span><span class="inferred0"><a name="line79" /> 79         # these args are ok
+</span><span class="inferred1"><a name="line80" /> 80       else
+</span><span class="marked0"><a name="line81" /> 81         raise ArgumentError, &quot;attribute : #{options[:attribute].to_s} is not an known option.&quot;
+</span><span class="inferred1"><a name="line82" /> 82       end
+</span><span class="inferred0"><a name="line83" /> 83       
+</span><span class="marked1"><a name="line84" /> 84       return response_generator(:action =&gt; &quot;DescribeImageAttribute&quot;, :params =&gt; params)
+</span><span class="inferred0"><a name="line85" /> 85       
+</span><span class="inferred1"><a name="line86" /> 86     end
+</span><span class="inferred0"><a name="line87" /> 87     
+</span><span class="inferred1"><a name="line88" /> 88     
+</span><span class="inferred0"><a name="line89" /> 89     # The ResetImageAttribute operation resets an attribute of an AMI to its default value.
+</span><span class="marked1"><a name="line90" /> 90     def reset_image_attribute( options = {} )
+</span><span class="inferred0"><a name="line91" /> 91       
+</span><span class="inferred1"><a name="line92" /> 92       # defaults
+</span><span class="marked0"><a name="line93" /> 93       options = {:image_id =&gt; &quot;&quot;, :attribute =&gt; &quot;launchPermission&quot;}.merge(options)
+</span><span class="inferred1"><a name="line94" /> 94       
+</span><span class="marked0"><a name="line95" /> 95       raise ArgumentError, &quot;No ':image_id' provided&quot; if options[:image_id].nil? || options[:image_id].empty?
+</span><span class="marked1"><a name="line96" /> 96       raise ArgumentError, &quot;No ':attribute' provided&quot; if options[:attribute].nil? || options[:attribute].empty?
+</span><span class="inferred0"><a name="line97" /> 97       
+</span><span class="marked1"><a name="line98" /> 98       params = {&quot;ImageId&quot; =&gt; options[:image_id], 
+</span><span class="inferred0"><a name="line99" /> 99                 &quot;Attribute&quot; =&gt; options[:attribute] }
+</span><span class="inferred1"><a name="line100" />100       
+</span><span class="inferred0"><a name="line101" />101       # test options provided and make sure they are valid
+</span><span class="marked1"><a name="line102" />102       case options[:attribute]
+</span><span class="marked0"><a name="line103" />103       when &quot;launchPermission&quot;
+</span><span class="inferred1"><a name="line104" />104         # these args are ok
+</span><span class="inferred0"><a name="line105" />105       else
+</span><span class="marked1"><a name="line106" />106         raise ArgumentError, &quot;attribute : #{options[:attribute].to_s} is not an known option.&quot;
+</span><span class="inferred0"><a name="line107" />107       end
+</span><span class="inferred1"><a name="line108" />108       
+</span><span class="marked0"><a name="line109" />109       return response_generator(:action =&gt; &quot;ResetImageAttribute&quot;, :params =&gt; params)
+</span><span class="inferred1"><a name="line110" />110       
+</span><span class="inferred0"><a name="line111" />111     end
+</span><span class="inferred1"><a name="line112" />112     
+</span><span class="inferred0"><a name="line113" />113   end
+</span><span class="inferred1"><a name="line114" />114   
+</span><span class="inferred0"><a name="line115" />115 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

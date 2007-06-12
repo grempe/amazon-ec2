@@ -35,9 +35,7 @@ module EC2
         "GroupDescription" => options[:group_description]
       }
       
-      http_response = make_request("CreateSecurityGroup", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "CreateSecurityGroup", :params => params)
       
     end
     
@@ -58,9 +56,9 @@ module EC2
       raise ArgumentError, "No :group_name provided" if options[:group_name].nil?
       
       params = pathlist("GroupName", options[:group_name] )
-      http_response = make_request("DescribeSecurityGroups", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      
+      return response_generator(:action => "DescribeSecurityGroups", :params => params)
+      
     end
     
     
@@ -78,9 +76,7 @@ module EC2
       
       params = { "GroupName" => options[:group_name] }
       
-      http_response = make_request("DeleteSecurityGroup", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "DeleteSecurityGroup", :params => params)
       
     end
     
@@ -127,9 +123,7 @@ module EC2
                  "SourceSecurityGroupOwnerId" => options[:source_security_group_owner_id]
                  }
       
-      http_response = make_request("AuthorizeSecurityGroupIngress", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "AuthorizeSecurityGroupIngress", :params => params)
       
     end
     
@@ -177,9 +171,7 @@ module EC2
                  "SourceSecurityGroupOwnerId" => options[:source_security_group_owner_id]
                  }
       
-      http_response = make_request("RevokeSecurityGroupIngress", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "RevokeSecurityGroupIngress", :params => params)
       
     end
     

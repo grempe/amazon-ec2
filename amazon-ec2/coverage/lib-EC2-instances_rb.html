@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Mon Jun 11 19:13:35 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Mon Jun 11 21:06:56 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,10 +580,10 @@ span.run100 {
             <a href='lib-EC2-instances_rb.html'>lib/EC2/instances.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>163</tt>
+            <tt>157</tt>
           </td>
           <td class='lines_code'>
-            <tt>61</tt>
+            <tt>53</tt>
           </td>
           <td>
             <table cellspacing='0' cellpadding='0' align='right'>
@@ -706,82 +706,76 @@ span.run100 {
 </span><span class="marked0"><a name="line85" /> 85       params[&quot;KeyName&quot;] = options[:key_name] unless options[:key_name].nil? 
 </span><span class="marked1"><a name="line86" /> 86       params[&quot;UserData&quot;] = user_data unless user_data.nil?
 </span><span class="inferred0"><a name="line87" /> 87       
-</span><span class="marked1"><a name="line88" /> 88       http_response = make_request(&quot;RunInstances&quot;, params)
-</span><span class="marked0"><a name="line89" /> 89       http_xml = http_response.body
-</span><span class="marked1"><a name="line90" /> 90       return Response.parse(:xml =&gt; http_xml)
-</span><span class="inferred0"><a name="line91" /> 91     end
+</span><span class="marked1"><a name="line88" /> 88       return response_generator(:action =&gt; &quot;RunInstances&quot;, :params =&gt; params)
+</span><span class="inferred0"><a name="line89" /> 89       
+</span><span class="inferred1"><a name="line90" /> 90     end
+</span><span class="inferred0"><a name="line91" /> 91     
 </span><span class="inferred1"><a name="line92" /> 92     
-</span><span class="inferred0"><a name="line93" /> 93     
-</span><span class="inferred1"><a name="line94" /> 94     # The DescribeInstances operation returns information about instances owned 
-</span><span class="inferred0"><a name="line95" /> 95     # by the user making the request.
-</span><span class="inferred1"><a name="line96" /> 96     #
-</span><span class="inferred0"><a name="line97" /> 97     # An optional list of instance IDs may be provided to request information 
-</span><span class="inferred1"><a name="line98" /> 98     # for those instances only. If no instance IDs are provided, information of 
-</span><span class="inferred0"><a name="line99" /> 99     # all relevant instances information will be returned. If an instance is 
-</span><span class="inferred1"><a name="line100" />100     # specified that does not exist a fault is returned. If an instance is specified 
-</span><span class="inferred0"><a name="line101" />101     # that exists but is not owned by the user making the request, then that 
-</span><span class="inferred1"><a name="line102" />102     # instance will not be included in the returned results.
-</span><span class="inferred0"><a name="line103" />103     #
-</span><span class="inferred1"><a name="line104" />104     # Recently terminated instances will be included in the returned results 
-</span><span class="inferred0"><a name="line105" />105     # for a small interval subsequent to their termination. This interval 
-</span><span class="inferred1"><a name="line106" />106     # is typically of the order of one hour.
-</span><span class="marked0"><a name="line107" />107     def describe_instances( options = {} )
-</span><span class="inferred1"><a name="line108" />108       
-</span><span class="inferred0"><a name="line109" />109       # defaults
-</span><span class="marked1"><a name="line110" />110       options = { :instance_id =&gt; &quot;&quot; }.merge(options)
-</span><span class="inferred0"><a name="line111" />111       
-</span><span class="marked1"><a name="line112" />112       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
-</span><span class="inferred0"><a name="line113" />113       
-</span><span class="marked1"><a name="line114" />114       http_response = make_request(&quot;DescribeInstances&quot;, params)
-</span><span class="marked0"><a name="line115" />115       http_xml = http_response.body
-</span><span class="marked1"><a name="line116" />116       return Response.parse(:xml =&gt; http_xml)
-</span><span class="inferred0"><a name="line117" />117     end
-</span><span class="inferred1"><a name="line118" />118     
-</span><span class="inferred0"><a name="line119" />119     
-</span><span class="inferred1"><a name="line120" />120     # The RebootInstances operation requests a reboot of one or more instances. 
-</span><span class="inferred0"><a name="line121" />121     # This operation is asynchronous; it only queues a request to reboot the specified 
-</span><span class="inferred1"><a name="line122" />122     # instance(s). The operation will succeed provided the instances are valid and 
-</span><span class="inferred0"><a name="line123" />123     # belong to the user. Terminated instances will be ignored.
-</span><span class="marked1"><a name="line124" />124     def reboot_instances( options = {} )
-</span><span class="inferred0"><a name="line125" />125       
-</span><span class="inferred1"><a name="line126" />126       # defaults
-</span><span class="marked0"><a name="line127" />127       options = { :instance_id =&gt; &quot;&quot; }.merge(options)
+</span><span class="inferred0"><a name="line93" /> 93     # The DescribeInstances operation returns information about instances owned 
+</span><span class="inferred1"><a name="line94" /> 94     # by the user making the request.
+</span><span class="inferred0"><a name="line95" /> 95     #
+</span><span class="inferred1"><a name="line96" /> 96     # An optional list of instance IDs may be provided to request information 
+</span><span class="inferred0"><a name="line97" /> 97     # for those instances only. If no instance IDs are provided, information of 
+</span><span class="inferred1"><a name="line98" /> 98     # all relevant instances information will be returned. If an instance is 
+</span><span class="inferred0"><a name="line99" /> 99     # specified that does not exist a fault is returned. If an instance is specified 
+</span><span class="inferred1"><a name="line100" />100     # that exists but is not owned by the user making the request, then that 
+</span><span class="inferred0"><a name="line101" />101     # instance will not be included in the returned results.
+</span><span class="inferred1"><a name="line102" />102     #
+</span><span class="inferred0"><a name="line103" />103     # Recently terminated instances will be included in the returned results 
+</span><span class="inferred1"><a name="line104" />104     # for a small interval subsequent to their termination. This interval 
+</span><span class="inferred0"><a name="line105" />105     # is typically of the order of one hour.
+</span><span class="marked1"><a name="line106" />106     def describe_instances( options = {} )
+</span><span class="inferred0"><a name="line107" />107       
+</span><span class="inferred1"><a name="line108" />108       # defaults
+</span><span class="marked0"><a name="line109" />109       options = { :instance_id =&gt; &quot;&quot; }.merge(options)
+</span><span class="inferred1"><a name="line110" />110       
+</span><span class="marked0"><a name="line111" />111       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
+</span><span class="inferred1"><a name="line112" />112       
+</span><span class="marked0"><a name="line113" />113       return response_generator(:action =&gt; &quot;DescribeInstances&quot;, :params =&gt; params)
+</span><span class="inferred1"><a name="line114" />114       
+</span><span class="inferred0"><a name="line115" />115     end
+</span><span class="inferred1"><a name="line116" />116     
+</span><span class="inferred0"><a name="line117" />117     
+</span><span class="inferred1"><a name="line118" />118     # The RebootInstances operation requests a reboot of one or more instances. 
+</span><span class="inferred0"><a name="line119" />119     # This operation is asynchronous; it only queues a request to reboot the specified 
+</span><span class="inferred1"><a name="line120" />120     # instance(s). The operation will succeed provided the instances are valid and 
+</span><span class="inferred0"><a name="line121" />121     # belong to the user. Terminated instances will be ignored.
+</span><span class="marked1"><a name="line122" />122     def reboot_instances( options = {} )
+</span><span class="inferred0"><a name="line123" />123       
+</span><span class="inferred1"><a name="line124" />124       # defaults
+</span><span class="marked0"><a name="line125" />125       options = { :instance_id =&gt; &quot;&quot; }.merge(options)
+</span><span class="inferred1"><a name="line126" />126       
+</span><span class="marked0"><a name="line127" />127       raise ArgumentError, &quot;No instance IDs provided&quot; if options[:instance_id].nil? || options[:instance_id].empty?
 </span><span class="inferred1"><a name="line128" />128       
-</span><span class="marked0"><a name="line129" />129       raise ArgumentError, &quot;No instance IDs provided&quot; if options[:instance_id].nil? || options[:instance_id].empty?
+</span><span class="marked0"><a name="line129" />129       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
 </span><span class="inferred1"><a name="line130" />130       
-</span><span class="marked0"><a name="line131" />131       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
+</span><span class="marked0"><a name="line131" />131       return response_generator(:action =&gt; &quot;RebootInstances&quot;, :params =&gt; params)
 </span><span class="inferred1"><a name="line132" />132       
-</span><span class="marked0"><a name="line133" />133       http_response = make_request(&quot;RebootInstances&quot;, params)
-</span><span class="marked1"><a name="line134" />134       http_xml = http_response.body
-</span><span class="marked0"><a name="line135" />135       return Response.parse(:xml =&gt; http_xml)
-</span><span class="inferred1"><a name="line136" />136       
-</span><span class="inferred0"><a name="line137" />137     end
-</span><span class="inferred1"><a name="line138" />138     
-</span><span class="inferred0"><a name="line139" />139     # The TerminateInstances operation shuts down one or more instances. 
-</span><span class="inferred1"><a name="line140" />140     # This operation is idempotent and terminating an instance that is 
-</span><span class="inferred0"><a name="line141" />141     # in the process of shutting down (or already terminated) will succeed.
-</span><span class="inferred1"><a name="line142" />142     #
-</span><span class="inferred0"><a name="line143" />143     # Terminated instances remain visible for a short period of time 
-</span><span class="inferred1"><a name="line144" />144     # (approximately one hour) after termination, after which their 
-</span><span class="inferred0"><a name="line145" />145     # instance ID is invalidated.
-</span><span class="marked1"><a name="line146" />146     def terminate_instances( options = {} )
-</span><span class="inferred0"><a name="line147" />147       
-</span><span class="inferred1"><a name="line148" />148       # defaults
-</span><span class="marked0"><a name="line149" />149       options = { :instance_id =&gt; &quot;&quot; }.merge(options)
+</span><span class="inferred0"><a name="line133" />133     end
+</span><span class="inferred1"><a name="line134" />134     
+</span><span class="inferred0"><a name="line135" />135     # The TerminateInstances operation shuts down one or more instances. 
+</span><span class="inferred1"><a name="line136" />136     # This operation is idempotent and terminating an instance that is 
+</span><span class="inferred0"><a name="line137" />137     # in the process of shutting down (or already terminated) will succeed.
+</span><span class="inferred1"><a name="line138" />138     #
+</span><span class="inferred0"><a name="line139" />139     # Terminated instances remain visible for a short period of time 
+</span><span class="inferred1"><a name="line140" />140     # (approximately one hour) after termination, after which their 
+</span><span class="inferred0"><a name="line141" />141     # instance ID is invalidated.
+</span><span class="marked1"><a name="line142" />142     def terminate_instances( options = {} )
+</span><span class="inferred0"><a name="line143" />143       
+</span><span class="inferred1"><a name="line144" />144       # defaults
+</span><span class="marked0"><a name="line145" />145       options = { :instance_id =&gt; &quot;&quot; }.merge(options)
+</span><span class="inferred1"><a name="line146" />146       
+</span><span class="marked0"><a name="line147" />147       raise ArgumentError, &quot;No :instance_id provided&quot; if options[:instance_id].nil? || options[:instance_id].empty?
+</span><span class="inferred1"><a name="line148" />148       
+</span><span class="marked0"><a name="line149" />149       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
 </span><span class="inferred1"><a name="line150" />150       
-</span><span class="marked0"><a name="line151" />151       raise ArgumentError, &quot;No :instance_id provided&quot; if options[:instance_id].nil? || options[:instance_id].empty?
+</span><span class="marked0"><a name="line151" />151       return response_generator(:action =&gt; &quot;TerminateInstances&quot;, :params =&gt; params)
 </span><span class="inferred1"><a name="line152" />152       
-</span><span class="marked0"><a name="line153" />153       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
-</span><span class="inferred1"><a name="line154" />154       
-</span><span class="marked0"><a name="line155" />155       http_response = make_request(&quot;TerminateInstances&quot;, params)
-</span><span class="marked1"><a name="line156" />156       http_xml = http_response.body
-</span><span class="marked0"><a name="line157" />157       return Response.parse(:xml =&gt; http_xml)
-</span><span class="inferred1"><a name="line158" />158       
-</span><span class="inferred0"><a name="line159" />159     end
-</span><span class="inferred1"><a name="line160" />160     
-</span><span class="inferred0"><a name="line161" />161   end
-</span><span class="inferred1"><a name="line162" />162   
-</span><span class="inferred0"><a name="line163" />163 end
+</span><span class="inferred0"><a name="line153" />153     end
+</span><span class="inferred1"><a name="line154" />154     
+</span><span class="inferred0"><a name="line155" />155   end
+</span><span class="inferred1"><a name="line156" />156   
+</span><span class="inferred0"><a name="line157" />157 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

@@ -18,9 +18,9 @@ module EC2
       raise ArgumentError, "No instance ID provided" if options[:instance_id].nil? || options[:instance_id].empty?
       
       params = { "instanceId" => options[:instance_id] }
-      http_response = make_request("GetConsoleOutput", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      
+      return response_generator(:action => "GetConsoleOutput", :params => params)
+      
     end
   end
   

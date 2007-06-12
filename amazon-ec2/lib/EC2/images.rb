@@ -38,9 +38,7 @@ module EC2
       
       params = { "ImageLocation" => options[:image_location] }
       
-      http_response = make_request("RegisterImage", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "RegisterImage", :params => params)
       
     end
     
@@ -98,9 +96,7 @@ module EC2
       params.merge!(pathlist( "Owner", options[:owner_id] ))
       params.merge!(pathlist( "ExecutableBy", options[:executable_by] ))
       
-      http_response = make_request("DescribeImages", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "DescribeImages", :params => params)
       
     end
     
@@ -116,9 +112,7 @@ module EC2
       
       params = { "ImageId" => options[:image_id] }
       
-      http_response = make_request("DeregisterImage", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "DeregisterImage", :params => params)
       
     end
     

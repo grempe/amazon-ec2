@@ -85,9 +85,8 @@ module EC2
       params["KeyName"] = options[:key_name] unless options[:key_name].nil? 
       params["UserData"] = user_data unless user_data.nil?
       
-      http_response = make_request("RunInstances", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "RunInstances", :params => params)
+      
     end
     
     
@@ -111,9 +110,8 @@ module EC2
       
       params = pathlist("InstanceId", options[:instance_id])
       
-      http_response = make_request("DescribeInstances", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "DescribeInstances", :params => params)
+      
     end
     
     
@@ -130,9 +128,7 @@ module EC2
       
       params = pathlist("InstanceId", options[:instance_id])
       
-      http_response = make_request("RebootInstances", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "RebootInstances", :params => params)
       
     end
     
@@ -152,9 +148,7 @@ module EC2
       
       params = pathlist("InstanceId", options[:instance_id])
       
-      http_response = make_request("TerminateInstances", params)
-      http_xml = http_response.body
-      return Response.parse(:xml => http_xml)
+      return response_generator(:action => "TerminateInstances", :params => params)
       
     end
     
