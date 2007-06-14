@@ -1,142 +1,178 @@
 === 0.2.0 2007-06-01
-* MAJOR library changes : THESE CHANGES ARE NOT BACKWARD COMPATIBLE!!  You
-	will need to update the way in which you make calls, handle responses, and rescue exceptions
-	from this library.  If you prefer not to make these changes you can feel free to continue to 
-	use the older version of the gem.  These older versions however will no longer be maintained.
-* MAJOR refactoring of how methods calls are made.  Now all methods are called with a simple hash
-	of arguments.  This feels more 'Ruby.ish'.
-* MAJOR refactoring of how responses are returned to users.  No longer do you have to call the 
-	.parse method, and no longer are you getting back simple arrays of information.  Responses 
-	now come in the form of structured objects that contain all of the data for an object in 
-	Enumerable form so you can use .each iterators.
-* Added an exception framework which will now throw appropriate Ruby exceptions
-	that match those handed to us by Amazon EC2.  ArgumentError exceptions will also
-	be thrown if you are making calls we know to be illegal.  You can rescue these exceptions and
-	they all descend from EC2::Error.
-* Added an EC2 command shell : 'ec2sh' which can be called from anywhere and gives you
-	and interactive irb session with an EC2 connection pre-made for you as @ec2.  You can use this 
-	to interactively execute any command on EC2 that this library supports.  Try @ec2.methods.sort 
-	or @ec2.describe_images to test it out.  You must first setup two shell environment variables
-	which contain your ACCESS_KEY_ID and SECRET_ACCESS_KEY for this to work.  Otherwise and error
-	will be thrown when you try to start it.  This is way cool and shamelessly borrowed from 
-	Marcel Molina's fine AWS::S3 library.
-* Updated API version in the query API request to 2007-01-19
-* Removed .parse method as it is no longer needed or wanted.
-* Removed 'verbose' attribute writer and a couple of related debug 'puts' calls in EC2.rb.
+
+ * MAJOR library changes : THESE CHANGES ARE NOT BACKWARD COMPATIBLE!!  You will need to update 
+ the way in which you make calls, handle responses, and rescue exceptions from this library.  
+ If you prefer not to make these changes you can feel free to continue to use the older version 
+ of the gem.  These older versions however will no longer be maintained.
+ 
+ * MAJOR refactoring of how methods calls are made.  Now all methods are called with a simple hash
+ of arguments.  This feels more "Ruby'ish".
+ 
+ * MAJOR refactoring of how responses are returned to users.  No longer do you have to call the 
+ .parse method, and no longer are you getting back simple arrays of information.  Responses 
+ now come in the form of structured objects that contain all of the data for an object in 
+ Enumerable form so you can use .each iterators.  All methods return an EC2::Response object
+ which inherits from OpenStruct.  The return data from EC2, which is in XML form, is parsed
+ with XmlSimple and is used to directly populate the return data structure.  This allows us
+ to know with some confidence that the data structure returned from AWS will always be consistent
+ with this library's responses.
+ 
+ * Added an exception framework which will now throw appropriate Ruby exceptions
+ that match those handed to us by Amazon EC2.  ArgumentError exceptions will also
+ be thrown if you are making calls we know to be illegal.  You can rescue these exceptions and
+ they all descend from EC2::Error.
+ 
+ * Added an EC2 command shell : 'ec2sh' which can be called from anywhere and gives you
+ and interactive irb session with an EC2 connection pre-made for you as @ec2.  You can use this 
+ to interactively execute any command on EC2 that this library supports.  Try @ec2.methods.sort 
+ or @ec2.describe_images to test it out.  You must first setup two shell environment variables
+ which contain your ACCESS_KEY_ID and SECRET_ACCESS_KEY for this to work.  Otherwise an error
+ will be thrown when you try to start it.  This is way cool and shamelessly borrowed from 
+ Marcel Molina's fine AWS::S3 library.
+ 
+ * Updated API version in the query API request to 2007-01-19
+ 
+ * Removed .parse method as it is no longer needed or wanted.
+ 
+ * Removed 'verbose' attribute writer and a couple of related debug 'puts' calls in EC2.rb.
+
+ * Removed deprecated alias's used in the library that were added in v0.0.3
+
+ * Gem now requires XmlSimple gem to be installed.
+
 
 === 0.1.0 2007-05-30
-* Repackaged with updated newgem generator v. 0.10.3 from http://newgem.rubyforge.org/ to take advantage of new deployment goodness.
+
+ * Repackaged with updated newgem generator v. 0.10.3 from http://newgem.rubyforge.org/ to take advantage of new deployment goodness.
+
 
 === 0.0.7 2007-03-15
-* Applied patch from Kevin Clark which does the following:
-  * New method to the instances.rb to allow for issuing a reboot command to an EC2 instance.
-  * New Mocha based tests (Mocha test suite must be installed to run tests.  'sudo gem install mocha')
-  * Cleanup of the test directory.
-* Applied patch from Randy Bias related to CGI escaping error.  From his notes:
 
-I finally figured out what was going on.  It was a compound problem.  The first being that you can't CGI::encode the UserData early.  You have to just Base64 encode it.  Unfortunately, when you Base64 encode it, it means that some encodings will be padded with extra chars, specifically the '=', but &, ? and = get stripped by EC2.canonial_string.  So if a Base64 encoding has trailing ='s for padding, these get stripped and then you sign the UserData Base64 payload sans the padding.  But it looks like Amazon's side is doing the right thing and is signing the padding.  So, the signatures mis-match.
-
-I've got the complete patch here and it's about as elegant/clean as I could make it in a short period of time.  It's a little tough to strip those equal signs when there are so many in the URI.  I think this works pretty well, though.  I'm splitting the URI on '&', then for each field ripping out all '&' and '?' and only the first '='.  Then stitching it back together.
+ * Applied patch from Kevin Clark which does the following:
+   * New method to the instances.rb to allow for issuing a reboot command to an EC2 instance.
+   * New Mocha based tests (Mocha test suite must be installed to run tests.  'sudo gem install mocha')
+   * Cleanup of the test directory.
+ * Applied patch from Randy Bias related to CGI escaping error.  From his notes:
+ 
+ I finally figured out what was going on.  It was a compound problem.  The first being that you can't 
+ CGI::encode the UserData early.    You have to just Base64 encode it.  Unfortunately, when you Base64 
+ encode it, it means that some encodings will be padded with extra chars, specifically the '=', but &, ? 
+ and = get stripped by EC2.canonial_string.  So if a Base64 encoding has trailing ='s for padding, 
+ these get stripped and then you sign the UserData Base64 payload sans the padding.  But it looks 
+ like Amazon's side is doing the right thing and is signing the padding.  So, the signatures mis-match.
+ 
+ I've got the complete patch here and it's about as elegant/clean as I could make it in a short 
+ period of time.  It's a little tough to strip those equal signs when there are so many in the URI.  
+ I think this works pretty well, though.  I'm splitting the URI on '&', then for each field ripping 
+ out all '&' and '?' and only the first '='.  Then stitching it back together.
 
 
 === 0.0.6 2007-03-02
-* Patched instances.rb with a bugfix and patch provided by Randy Bias (Thanks Randy!).
-Only minimally tested so please let me know if this causes any problems for anyone.
+ * Patched instances.rb with a bugfix and patch provided by Randy Bias (Thanks Randy!).
+ Only minimally tested so please let me know if this causes any problems for anyone.
+ 
+ From his notes:
+ I wanted to let you know that there appears to be a bug in how user data is passed.  In  
+ instances.rb the line that creates the base64 encoded package of user data is as follows:
+ 
+ userData = CGI::escape(Base64.encode64(in_params[:userData]).strip())
+ 
+ This may have worked prior, but at least right now the CGI::escape appears to cause a 
+ breakage.  More specifically it turns something like this (the actual base64 encoded string):
 
-From his notes:
-I wanted to let you know that there appears to be a bug in how user data is passed.  In  
-instances.rb the line that creates the base64 encoded package of user data is as follows:
+ YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFh
+ eHh4eHh4eHh4eHh4eHh4eHh4eHgg
+ 
+ Into this:
+ 
+ YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFh% 
+ 0AeHh4eHh4eHh4eHh4eHh4eHh4eHgg
+ 
+ And it looks like EC2 chokes on the %0, which is CGI::escape's way for handling an EOL.  
+ Unfortunately, the Base64.encode64 (at least in my 1.8.5 version of Ruby) inserts a 
+ EOL at every 47 chars, no matter what:
 
-userData = CGI::escape(Base64.encode64(in_params[:userData]).strip())
+ ---
+ [randyb@master randyb] cat /tmp/foo.rb
+ #!/usr/bin/env ruby
+ #
+ require 'rubygems'
+ require_gem 'amazon-ec2'
+ require 'getoptlong'
+ puts Base64.encode64 
+ ("012345678901234567890123456789012345678901234567890123456789")
+ 
+ [randyb@master randyb] /tmp/foo.rb
+ MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0
+ NTY3ODkwMTIzNDU2Nzg5
+ ---
 
-This may have worked prior, but at least right now the  
-CGI::escape appears to cause a breakage.  More specifically it  
-turns something like this (the actual base64 encoded string):
-
-YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFh
-eHh4eHh4eHh4eHh4eHh4eHh4eHgg
-
-  Into this:
-
-YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFh% 
-0AeHh4eHh4eHh4eHh4eHh4eHh4eHgg
-
-And it looks like EC2 chokes on the %0, which is CGI::escape's  
-way for handling an EOL.  Unfortunately, the Base64.encode64 (at  
-least in my 1.8.5 version of Ruby) inserts a EOL at every 47 chars,  
-no matter what:
-
----
-[randyb@master randyb] cat /tmp/foo.rb
-#!/usr/bin/env ruby
-#
-require 'rubygems'
-require_gem 'amazon-ec2'
-require 'getoptlong'
-puts Base64.encode64 
-("012345678901234567890123456789012345678901234567890123456789")
-
-[randyb@master randyb] /tmp/foo.rb
-MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0
-NTY3ODkwMTIzNDU2Nzg5
----
-
-The best way to handle this is to strip the CRLFs/EOLs before passing to CGI.escape.
+ The best way to handle this is to strip the CRLFs/EOLs before passing to CGI.escape.
 
 
 === 0.0.5 2006-12-21
-* Changes to home page documentation and example files to indicate that you 
-  should use 'require_gem' instead of a simple require.  Not sure if this 
-  is a result of something I am doing in the packaging of the gem that is 
-  incorrect or if this is right and proper.  I will investigate further.
-* Patched instances.rb run_instances method to allow for submission of 
-  user data with the command to start an instance.  Patch submitted 
-  anonymously on RubyForge.  This had not been functionally implemented
-  in the Amazon Web Services sample library prior to this patch.
-* Added simple framework for adding unit tests for the library under test dir.  
-  No functional unit tests exist yet.
+
+ * Changes to home page documentation and example files to indicate that you 
+   should use 'require_gem' instead of a simple require.  Not sure if this 
+   is a result of something I am doing in the packaging of the gem that is 
+   incorrect or if this is right and proper.  I will investigate further.
+ * Patched instances.rb run_instances method to allow for submission of 
+   user data with the command to start an instance.  Patch submitted 
+   anonymously on RubyForge.  This had not been functionally implemented
+   in the Amazon Web Services sample library prior to this patch.
+ * Added simple framework for adding unit tests for the library under test dir.  
+   No functional unit tests exist yet.
+
 
 === 0.0.4 2006-12-21
-* Applied patch from Kevin Clark to svn version 7.  Thanks for the 
-  patch and the description Kevin!  Please report if you 
-  encounter any issues with this patched version.  Here is Kevin's 
-  description which I requested :  "It helps me to think of modules as boxes full of classes and 
-  methods.  REXML is a module which holds various classes related to parsing XML
-  including REXML::Node, REXML::Document and REXML::XPath. When you
-  include a module it takes everything out of the box and places it in
-  the local context.  So, when you include REXML in the global namespace 
-  on line 27 of EC2.rb, it includes classes called Node, Document and XPath in the
-  global object space. This means that I can't have a class called Node
-  in my own project (which I do). The library would be a much better
-  neighbor if it instead accessed the REXML::Document and REXML::XPath
-  classes explicitly through the module."
+
+ * Applied patch from Kevin Clark to svn version 7.  Thanks for the 
+   patch and the description Kevin!  Please report if you 
+   encounter any issues with this patched version.  Here is Kevin's 
+   description which I requested :  "It helps me to think of modules as boxes full of classes and 
+   methods.  REXML is a module which holds various classes related to parsing XML
+   including REXML::Node, REXML::Document and REXML::XPath. When you
+   include a module it takes everything out of the box and places it in
+   the local context.  So, when you include REXML in the global namespace 
+   on line 27 of EC2.rb, it includes classes called Node, Document and XPath in the
+   global object space. This means that I can't have a class called Node
+   in my own project (which I do). The library would be a much better
+   neighbor if it instead accessed the REXML::Document and REXML::XPath
+   classes explicitly through the module."
+
 
 === 0.0.3 2006-12-16
-* API CHANGE : Changed method name 'authorize' to 'authorize_security_group_ingress' to ensure consistent 
-  naming of Ruby library methods to match AWS EC2 API actions. Alias to 'authorize' for backwards compatibility.
-* API CHANGE : Changed method name 'revoke' to 'revoke_security_group_ingress' to ensure consistent 
-	naming of Ruby library methods to match AWS EC2 API actions. Alias to 'revoke' for backwards compatibility.
-* API CHANGE : Changed method name 'delete_securitygroup' to 'delete_security_group' to ensure consistent 
-	naming of Ruby library methods to match AWS EC2 API actions. Alias to 'delete_securitygroup' for backwards compatibility.
-* API CHANGE : Changed method name 'describe_securitygroups' to 'describe_security_group' to ensure consistent 
-	naming of Ruby library methods to match AWS EC2 API actions. Alias to 'describe_securitygroups' for backwards compatibility.
-* API CHANGE : Changed method name 'create_securitygroup' to 'create_security_group' to ensure consistent 
-	naming of Ruby library methods to match AWS EC2 API actions. Alias to 'create_securitygroup' for backwards compatibility.
-* Added many API rdoc's, some method descriptions copied from Amazon Query API Developer Guide.
-* Extracted some parts of the formerly monolithic EC2 library out into separate files for manageability.
-* Changed the HTTP 'User-Agent' string used for each request so that we have our own user agent
-  to identify this library's calls.  Now set the version # in the user agent string based on the
-  master version number for this library which is stored in lib/EC2/version.rb and should only
-  be defined in one place.
-* Set @http.verify_mode = OpenSSL::SSL::VERIFY_NONE to avoid seeing SSL Cert warning 
-  "warning: peer certificate won't be verified in this SSL session". File EC2.rb:96
-* Make 'pathlist' utility method a private method (EC2.rb:111).  No reason I can see for this to be exposed.
+
+ * API CHANGE : Changed method name 'authorize' to 'authorize_security_group_ingress' to ensure consistent 
+   naming of Ruby library methods to match AWS EC2 API actions. Alias to 'authorize' for backwards compatibility.
+ * API CHANGE : Changed method name 'revoke' to 'revoke_security_group_ingress' to ensure consistent 
+ 	naming of Ruby library methods to match AWS EC2 API actions. Alias to 'revoke' for backwards compatibility.
+ * API CHANGE : Changed method name 'delete_securitygroup' to 'delete_security_group' to ensure consistent 
+ 	naming of Ruby library methods to match AWS EC2 API actions. Alias to 'delete_securitygroup' for backwards compatibility.
+ * API CHANGE : Changed method name 'describe_securitygroups' to 'describe_security_group' to ensure consistent 
+ 	naming of Ruby library methods to match AWS EC2 API actions. Alias to 'describe_securitygroups' for backwards compatibility.
+ * API CHANGE : Changed method name 'create_securitygroup' to 'create_security_group' to ensure consistent 
+ 	naming of Ruby library methods to match AWS EC2 API actions. Alias to 'create_securitygroup' for backwards compatibility.
+ * Added many API rdoc's, some method descriptions copied from Amazon Query API Developer Guide.
+ * Extracted some parts of the formerly monolithic EC2 library out into separate files for manageability.
+ * Changed the HTTP 'User-Agent' string used for each request so that we have our own user agent
+   to identify this library's calls.  Now set the version # in the user agent string based on the
+   master version number for this library which is stored in lib/EC2/version.rb and should only
+   be defined in one place.
+ * Set @http.verify_mode = OpenSSL::SSL::VERIFY_NONE to avoid seeing SSL Cert warning 
+   "warning: peer certificate won't be verified in this SSL session". File EC2.rb:96
+ * Make 'pathlist' utility method a private method (EC2.rb:111).  No reason I can see for this to be exposed.
+
 
 === 0.0.2 2006-12-14
-* Bugfix in run_instances method.  Method works now.  Patch submitted by Stephen Caudill on AWS forums.  Thanks!
+
+ * Bugfix in run_instances method.  Method works now.  Patch submitted by Stephen Caudill on AWS forums.  Thanks!
+
 
 === 0.0.1 2006-12-13
-* Initial release of the Ruby Gem.  This includes the version of the library exactly as provided by 
-  Amazon Web Services as example code.  No changes or enhancements to that code were made other than 
-  packaging it as a Ruby Gem.
-* RubyForge project created.  http://amazon-ec2.rubyforge.org
+
+ * Initial release of the Ruby Gem.  This includes the version of the library exactly as provided by 
+   Amazon Web Services as example code.  No changes or enhancements to that code were made other than 
+   packaging it as a Ruby Gem.
+ * RubyForge project created.  http://amazon-ec2.rubyforge.org
+ 

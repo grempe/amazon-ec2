@@ -1,21 +1,33 @@
-# Amazon Web Services EC2 Query API Ruby library.  This library was 
-# heavily modified from original Amazon Web Services sample code 
-# and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
-# 
-# Source code and gem hosted on RubyForge
-# under the Ruby License as of 12/14/2006:
-# http://amazon-ec2.rubyforge.org
+#--
+# Amazon Web Services EC2 Query API Ruby library
+#
+# Ruby Gem Name::  amazon-ec2
+# Author::    Glenn Rempe  (mailto:glenn@elasticworkbench.com)
+# Copyright:: Copyright (c) 2007 Elastic Workbench, LLC
+# License::   Distributes under the same terms as Ruby
+# Home::      http://amazon-ec2.rubyforge.org
+#++
 
 module EC2
   
   class AWSAuthConnection
     
-    # The CreateKeyPair operation creates a new 2048 bit RSA keypair 
-    # and returns a unique ID that can be used to reference this 
-    # keypair when launching new instances.
+    
+    #Amazon Developer Guide Docs:
+    #
+    # The CreateKeyPair operation creates a new 2048 bit RSA keypair and returns a unique ID that can be 
+    # used to reference this keypair when launching new instances.
+    #
+    #Required Arguments:
+    #
+    # :key_name => String (default : "")
+    #
+    #Optional Arguments:
+    #
+    # none
+    #
     def create_keypair( options = {} )
       
-      # defaults
       options = { :key_name => "" }.merge(options)
       
       raise ArgumentError, "No :key_name provided" if options[:key_name].nil? || options[:key_name].empty?
@@ -27,13 +39,22 @@ module EC2
     end
     
     
-    # The DescribeKeyPairs operation returns information about keypairs 
-    # available for use by the user making the request. Selected keypairs 
-    # may be specified or the list may be left empty if information for 
+    #Amazon Developer Guide Docs:
+    #
+    # The DescribeKeyPairs operation returns information about keypairs available for use by the user 
+    # making the request. Selected keypairs may be specified or the list may be left empty if information for 
     # all registered keypairs is required.
+    #
+    #Required Arguments:
+    #
+    # :key_name => Array (default : [])
+    #
+    #Optional Arguments:
+    #
+    # none
+    #
     def describe_keypairs( options = {} )
       
-      # defaults
       options = { :key_name => [] }.merge(options)
       
       params = pathlist("KeyName", options[:key_name] )
@@ -43,10 +64,20 @@ module EC2
     end
     
     
+    #Amazon Developer Guide Docs:
+    #
     # The DeleteKeyPair operation deletes a keypair.
+    #
+    #Required Arguments:
+    #
+    # :key_name => String (default : "")
+    #
+    #Optional Arguments:
+    #
+    # none
+    #
     def delete_keypair( options = {} )
       
-      # defaults
       options = { :key_name => "" }.merge(options)
       
       raise ArgumentError, "No :key_name provided" if options[:key_name].nil? || options[:key_name].empty?

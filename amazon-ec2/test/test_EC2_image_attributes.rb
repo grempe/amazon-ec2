@@ -1,3 +1,12 @@
+# Amazon Web Services EC2 Query API Ruby library
+#
+# Ruby Gem Name::  amazon-ec2
+# Author::    Glenn Rempe  (mailto:glenn@elasticworkbench.com)
+# Copyright:: Copyright (c) 2007 Elastic Workbench, LLC
+# License::   Distributes under the same terms as Ruby
+# Home::      http://amazon-ec2.rubyforge.org
+#++
+
 require File.dirname(__FILE__) + '/test_helper.rb'
 
 context "EC2 image_attributes " do
@@ -34,24 +43,24 @@ context "EC2 image_attributes " do
   end
   
   
-  specify "should be able to be changed with modify_image_attribute (with :attribute and single value :user_ids and :groups)" do
+  specify "should be able to be changed with modify_image_attribute (with :attribute and single value :user_id and :group)" do
     @ec2.stubs(:make_request).with('ModifyImageAttribute', {"ImageId"=>"ami-61a54008", 
                                                             "Attribute"=>"launchPermission", 
                                                             "OperationType"=>"add",
                                                             "UserId.1"=>"123",
                                                             "Group.1"=>"all"}).
        returns stub(:body => @modify_image_attribute_response_body, :is_a? => true)
-    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :user_ids=>["123"], :groups=>["all"]).should.be.an.instance_of EC2::Response
+    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :user_id=>["123"], :group=>["all"]).should.be.an.instance_of EC2::Response
   end
   
   
-  specify "should be able to be changed with modify_image_attribute ( with :attribute but specifying :groups only)" do
+  specify "should be able to be changed with modify_image_attribute ( with :attribute but specifying :group only)" do
     @ec2.stubs(:make_request).with('ModifyImageAttribute', {"ImageId"=>"ami-61a54008", 
                                                             "Attribute"=>"launchPermission", 
                                                             "OperationType"=>"add",
                                                             "Group.1"=>"all"}).
        returns stub(:body => @modify_image_attribute_response_body, :is_a? => true)
-    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :groups=>["all"]).should.be.an.instance_of EC2::Response
+    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :group=>["all"]).should.be.an.instance_of EC2::Response
   end
   
   
@@ -61,11 +70,11 @@ context "EC2 image_attributes " do
                                                             "OperationType"=>"remove",
                                                             "Group.1"=>"all"}).
        returns stub(:body => @modify_image_attribute_response_body, :is_a? => true)
-    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"remove", :groups=>["all"]).should.be.an.instance_of EC2::Response
+    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"remove", :group=>["all"]).should.be.an.instance_of EC2::Response
   end
   
   
-  specify "should be able to be changed with modify_image_attribute ( with :attribute but specifying :user_ids only)" do
+  specify "should be able to be changed with modify_image_attribute ( with :attribute but specifying :user_id only)" do
     @ec2.stubs(:make_request).with('ModifyImageAttribute', {"ImageId"=>"ami-61a54008", 
                                                             "Attribute"=>"launchPermission", 
                                                             "OperationType"=>"add",
@@ -74,11 +83,11 @@ context "EC2 image_attributes " do
     @ec2.modify_image_attribute(:image_id=>"ami-61a54008", 
                                 :attribute=>"launchPermission", 
                                 :operation_type=>"add", 
-                                :user_ids=>["123"]).should.be.an.instance_of EC2::Response
+                                :user_id=>["123"]).should.be.an.instance_of EC2::Response
   end
   
   
-  specify "should be able to be changed with modify_image_attribute ( with :attribute and multiple :user_ids and :groups)" do
+  specify "should be able to be changed with modify_image_attribute ( with :attribute and multiple :user_id and :group elements)" do
     @ec2.stubs(:make_request).with('ModifyImageAttribute', {"ImageId"=>"ami-61a54008", 
                                                             "Attribute"=>"launchPermission", 
                                                             "OperationType"=>"add",
@@ -90,8 +99,8 @@ context "EC2 image_attributes " do
     @ec2.modify_image_attribute(:image_id=>"ami-61a54008", 
                                 :attribute=>"launchPermission", 
                                 :operation_type=>"add", 
-                                :user_ids=>["123", "345"], 
-                                :groups=>["123", "all"]).should.be.an.instance_of EC2::Response
+                                :user_id=>["123", "345"], 
+                                :group=>["123", "all"]).should.be.an.instance_of EC2::Response
   end
   
   
@@ -101,21 +110,21 @@ context "EC2 image_attributes " do
     lambda { @ec2.modify_image_attribute(:image_id=>"") }.should.raise(EC2::ArgumentError)
     
     # :image_id option must be not be empty or nil
-    lambda { @ec2.modify_image_attribute(:image_id=>nil, :attribute=>"launchPermission", :operation_type=>"add", :groups=>["all"]) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"", :attribute=>"launchPermission", :operation_type=>"add", :groups=>["all"]) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>nil, :attribute=>"launchPermission", :operation_type=>"add", :group=>["all"]) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"", :attribute=>"launchPermission", :operation_type=>"add", :group=>["all"]) }.should.raise(EC2::ArgumentError)
     
     # :attribute currently has one option which is 'launchPermission', it should fail with any other value, nil, or empty
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>nil, :operation_type=>"add", :groups=>["all"]) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"", :operation_type=>"add", :groups=>["all"]) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"foo", :operation_type=>"add", :groups=>["all"]) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>nil, :operation_type=>"add", :group=>["all"]) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"", :operation_type=>"add", :group=>["all"]) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"foo", :operation_type=>"add", :group=>["all"]) }.should.raise(EC2::ArgumentError)
     
-    # :attribute option should fail if neither :groups nor :user_ids are also provided
+    # :attribute option should fail if neither :group nor :user_id are also provided
     lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add") }.should.raise(EC2::ArgumentError)
     
     # :operation_type currently has two options which are 'add' and 'remove', and it should fail with any other, nil or empty
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>nil, :groups=>["all"]) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"", :groups=>["all"]) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"foo", :groups=>["all"]) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>nil, :group=>["all"]) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"", :group=>["all"]) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"foo", :group=>["all"]) }.should.raise(EC2::ArgumentError)
   end
   
   

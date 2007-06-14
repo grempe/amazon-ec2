@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Mon Jun 11 21:06:56 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Thu Jun 14 13:29:09 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,10 +580,10 @@ span.run100 {
             <a href='lib-EC2-responses_rb.html'>lib/EC2/responses.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>101</tt>
+            <tt>154</tt>
           </td>
           <td class='lines_code'>
-            <tt>58</tt>
+            <tt>57</tt>
           </td>
           <td>
             <table cellspacing='0' cellpadding='0' align='right'>
@@ -619,107 +619,160 @@ span.run100 {
           </td>
         </tr>
       </tbody>
-    </table><pre><span class="inferred1"><a name="line1" />  1 # Amazon Web Services EC2 Query API Ruby library.  This library was 
-</span><span class="inferred0"><a name="line2" />  2 # heavily modified from original Amazon Web Services sample code 
-</span><span class="inferred1"><a name="line3" />  3 # and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
-</span><span class="inferred0"><a name="line4" />  4 # 
-</span><span class="inferred1"><a name="line5" />  5 # Source code and gem hosted on RubyForge
-</span><span class="inferred0"><a name="line6" />  6 # under the Ruby License as of 12/14/2006:
-</span><span class="inferred1"><a name="line7" />  7 # http://amazon-ec2.rubyforge.org
-</span><span class="inferred0"><a name="line8" />  8 
-</span><span class="marked1"><a name="line9" />  9 module EC2
-</span><span class="inferred0"><a name="line10" /> 10   
-</span><span class="inferred1"><a name="line11" /> 11   # The make_request() and ec2_error? methods, which are shared by all, will raise any 
-</span><span class="inferred0"><a name="line12" /> 12   # exceptions encountered along the way as it converses with EC2.
-</span><span class="inferred1"><a name="line13" /> 13   #
-</span><span class="inferred0"><a name="line14" /> 14   # Exception Handling: If for some reason an error occurrs when executing a method
-</span><span class="inferred1"><a name="line15" /> 15   # (e.g. its arguments were incorrect, or it simply failed) then an exception will 
-</span><span class="inferred0"><a name="line16" /> 16   # be thrown.  The exceptions are defined in exceptions.rb as individual classes and should
-</span><span class="inferred1"><a name="line17" /> 17   # match the exceptions that Amazon has defined for EC2.  If the exception raised cannot be
-</span><span class="inferred0"><a name="line18" /> 18   # identified then a more generic exception class will be thrown.
-</span><span class="inferred1"><a name="line19" /> 19   #
-</span><span class="inferred0"><a name="line20" /> 20   # The implication of this is that you need to be prepared to handle any exceptions that
-</span><span class="inferred1"><a name="line21" /> 21   # may be raised by this library in YOUR code with 'rescue' clauses.  It is up to you
-</span><span class="inferred0"><a name="line22" /> 22   # how gracefully you want to handle these exceptions that are raised.
-</span><span class="inferred1"><a name="line23" /> 23   
-</span><span class="inferred0"><a name="line24" /> 24   # Credits :
-</span><span class="inferred1"><a name="line25" /> 25   # I learned the magic of making an OpenStruct object able to respond as a fully Enumerable 
-</span><span class="inferred0"><a name="line26" /> 26   # object (responds to .each, etc.) thanks to a great blog article on Struct and OpenStruct 
-</span><span class="inferred1"><a name="line27" /> 27   # at http://errtheblog.com/post/30
-</span><span class="inferred0"><a name="line28" /> 28   #
-</span><span class="inferred1"><a name="line29" /> 29   # Thanks to Sean Knapp for the XmlSimple response patch which greatly simplified the response
-</span><span class="inferred0"><a name="line30" /> 30   # mechanism for the whole library while making it more accurate and much less brittle to boot!
-</span><span class="inferred1"><a name="line31" /> 31   #
-</span><span class="inferred0"><a name="line32" /> 32   
-</span><span class="marked1"><a name="line33" /> 33   require 'ostruct'
-</span><span class="marked0"><a name="line34" /> 34   require 'xmlsimple'
-</span><span class="inferred1"><a name="line35" /> 35   
-</span><span class="marked0"><a name="line36" /> 36   class Response &lt; OpenStruct
-</span><span class="marked1"><a name="line37" /> 37     include Enumerable
-</span><span class="inferred0"><a name="line38" /> 38   
-</span><span class="marked1"><a name="line39" /> 39     def self.parse(options = {})
-</span><span class="marked0"><a name="line40" /> 40       options = {
-</span><span class="inferred1"><a name="line41" /> 41         :xml =&gt; &quot;&quot;,
-</span><span class="inferred0"><a name="line42" /> 42         :parse_options =&gt; { 'ForceArray' =&gt; ['item'], 'SuppressEmpty' =&gt; nil }
-</span><span class="inferred1"><a name="line43" /> 43       }.merge(options)
-</span><span class="marked0"><a name="line44" /> 44       return Response.new(XmlSimple.xml_in(options[:xml], options[:parse_options])) 
-</span><span class="inferred1"><a name="line45" /> 45     end
-</span><span class="inferred0"><a name="line46" /> 46    
-</span><span class="marked1"><a name="line47" /> 47     def members
-</span><span class="marked0"><a name="line48" /> 48       methods(false).grep(/=/).map { |m| m[0...-1] } 
-</span><span class="marked1"><a name="line49" /> 49     end
-</span><span class="inferred0"><a name="line50" /> 50    
-</span><span class="marked1"><a name="line51" /> 51     def each
-</span><span class="marked0"><a name="line52" /> 52       members.each do |method|
-</span><span class="marked1"><a name="line53" /> 53         yield send(method)
-</span><span class="inferred0"><a name="line54" /> 54       end
-</span><span class="marked1"><a name="line55" /> 55       self
-</span><span class="inferred0"><a name="line56" /> 56     end
-</span><span class="inferred1"><a name="line57" /> 57   
-</span><span class="marked0"><a name="line58" /> 58     def each_pair 
-</span><span class="marked1"><a name="line59" /> 59       members.each do |method|
-</span><span class="marked0"><a name="line60" /> 60         yield method, send(method)
-</span><span class="inferred1"><a name="line61" /> 61       end
-</span><span class="marked0"><a name="line62" /> 62       self
-</span><span class="inferred1"><a name="line63" /> 63     end
-</span><span class="inferred0"><a name="line64" /> 64   
-</span><span class="marked1"><a name="line65" /> 65     def [](member)
-</span><span class="marked0"><a name="line66" /> 66       send(member)
-</span><span class="marked1"><a name="line67" /> 67     end
-</span><span class="inferred0"><a name="line68" /> 68   
-</span><span class="marked1"><a name="line69" /> 69     def []=(member, value)
-</span><span class="marked0"><a name="line70" /> 70       send(&quot;#{member}=&quot;, value)
-</span><span class="marked1"><a name="line71" /> 71     end
-</span><span class="inferred0"><a name="line72" /> 72   
-</span><span class="marked1"><a name="line73" /> 73     def initialize(data)
-</span><span class="marked0"><a name="line74" /> 74       super(data)
-</span><span class="marked1"><a name="line75" /> 75       convert(self)
-</span><span class="inferred0"><a name="line76" /> 76     end
-</span><span class="inferred1"><a name="line77" /> 77   
-</span><span class="marked0"><a name="line78" /> 78     private 
-</span><span class="marked1"><a name="line79" /> 79     def convert(obj)
-</span><span class="marked0"><a name="line80" /> 80       if (obj.class == Response)
-</span><span class="marked1"><a name="line81" /> 81         obj.each_pair { |k,v|
-</span><span class="marked0"><a name="line82" /> 82           obj[k] = convert(v)
-</span><span class="inferred1"><a name="line83" /> 83         }
-</span><span class="marked0"><a name="line84" /> 84         return obj
-</span><span class="marked1"><a name="line85" /> 85       elsif (obj.class == Hash)
-</span><span class="inferred0"><a name="line86" /> 86         # Hashes make good Responses already
-</span><span class="marked1"><a name="line87" /> 87         return Response.new(obj)
-</span><span class="marked0"><a name="line88" /> 88       elsif (obj.class == Array)
-</span><span class="inferred1"><a name="line89" /> 89         # With arrays, need to 
-</span><span class="marked0"><a name="line90" /> 90         new_arr = []
-</span><span class="marked1"><a name="line91" /> 91         obj.each { |elem|
-</span><span class="marked0"><a name="line92" /> 92           new_arr &lt;&lt; convert(elem)
-</span><span class="inferred1"><a name="line93" /> 93         }
-</span><span class="marked0"><a name="line94" /> 94         return new_arr
-</span><span class="inferred1"><a name="line95" /> 95       else
-</span><span class="marked0"><a name="line96" /> 96         return obj
-</span><span class="inferred1"><a name="line97" /> 97       end
-</span><span class="marked0"><a name="line98" /> 98     end
-</span><span class="inferred1"><a name="line99" /> 99   end
-</span><span class="inferred0"><a name="line100" />100   
-</span><span class="inferred1"><a name="line101" />101 end
+    </table><pre><span class="inferred1"><a name="line1" />  1 #--
+</span><span class="inferred0"><a name="line2" />  2 # Amazon Web Services EC2 Query API Ruby library
+</span><span class="inferred1"><a name="line3" />  3 #
+</span><span class="inferred0"><a name="line4" />  4 # Ruby Gem Name::  amazon-ec2
+</span><span class="inferred1"><a name="line5" />  5 # Author::    Glenn Rempe  (mailto:glenn@elasticworkbench.com)
+</span><span class="inferred0"><a name="line6" />  6 # Copyright:: Copyright (c) 2007 Elastic Workbench, LLC
+</span><span class="inferred1"><a name="line7" />  7 # License::   Distributes under the same terms as Ruby
+</span><span class="inferred0"><a name="line8" />  8 # Home::      http://amazon-ec2.rubyforge.org
+</span><span class="inferred1"><a name="line9" />  9 #++
+</span><span class="inferred0"><a name="line10" /> 10 
+</span><span class="marked1"><a name="line11" /> 11 module EC2
+</span><span class="inferred0"><a name="line12" /> 12   
+</span><span class="inferred1"><a name="line13" /> 13   # The make_request() and ec2_error? methods, which are shared by all, will raise any 
+</span><span class="inferred0"><a name="line14" /> 14   # exceptions encountered along the way as it converses with EC2.
+</span><span class="inferred1"><a name="line15" /> 15   #
+</span><span class="inferred0"><a name="line16" /> 16   # Exception Handling: If for some reason an error occurrs when executing a method
+</span><span class="inferred1"><a name="line17" /> 17   # (e.g. its arguments were incorrect, or it simply failed) then an exception will 
+</span><span class="inferred0"><a name="line18" /> 18   # be thrown.  The exceptions are defined in exceptions.rb as individual classes and should
+</span><span class="inferred1"><a name="line19" /> 19   # match the exceptions that Amazon has defined for EC2.  If the exception raised cannot be
+</span><span class="inferred0"><a name="line20" /> 20   # identified then a more generic exception class will be thrown.
+</span><span class="inferred1"><a name="line21" /> 21   #
+</span><span class="inferred0"><a name="line22" /> 22   # The implication of this is that you need to be prepared to handle any exceptions that
+</span><span class="inferred1"><a name="line23" /> 23   # may be raised by this library in YOUR code with a 'rescue' clauses.  It is up to you
+</span><span class="inferred0"><a name="line24" /> 24   # how gracefully you want to handle these exceptions that are raised.
+</span><span class="inferred1"><a name="line25" /> 25   
+</span><span class="inferred0"><a name="line26" /> 26   # Credits :
+</span><span class="inferred1"><a name="line27" /> 27   # I learned the magic of making an OpenStruct object able to respond as a fully Enumerable 
+</span><span class="inferred0"><a name="line28" /> 28   # object (responds to .each, etc.) thanks to a great blog article on Struct and OpenStruct 
+</span><span class="inferred1"><a name="line29" /> 29   # at http://errtheblog.com/post/30
+</span><span class="inferred0"><a name="line30" /> 30   #
+</span><span class="inferred1"><a name="line31" /> 31   # Thanks to Sean Knapp for the XmlSimple response patch which greatly simplified the response
+</span><span class="inferred0"><a name="line32" /> 32   # mechanism for the whole library while making it more accurate and much less brittle to boot!
+</span><span class="inferred1"><a name="line33" /> 33   #
+</span><span class="inferred0"><a name="line34" /> 34   
+</span><span class="marked1"><a name="line35" /> 35   require 'xmlsimple'
+</span><span class="inferred0"><a name="line36" /> 36   
+</span><span class="inferred1"><a name="line37" /> 37   #Introduction:
+</span><span class="inferred0"><a name="line38" /> 38   #  
+</span><span class="inferred1"><a name="line39" /> 39   # The Response object is created when a call is made to EC2 and an XML response is returned.
+</span><span class="inferred0"><a name="line40" /> 40   # The XML response from EC2 is parsed using XmlSimple and the data structures it contains
+</span><span class="inferred1"><a name="line41" /> 41   # are mapped onto this Response object.
+</span><span class="inferred0"><a name="line42" /> 42   #
+</span><span class="inferred1"><a name="line43" /> 43   # Your code will need to extract the necessary data from this object directly.
+</span><span class="inferred0"><a name="line44" /> 44   #
+</span><span class="inferred1"><a name="line45" /> 45   # The Response object inherits from the OpenStruct object class.  It also includes
+</span><span class="inferred0"><a name="line46" /> 46   # the Enumerable module and some additional methods have been overriden so
+</span><span class="inferred1"><a name="line47" /> 47   # the the Response object can behave like a fully Enumerable object.  Normally 
+</span><span class="inferred0"><a name="line48" /> 48   # an OpenStruct object does not have these Enumberable methods.  e.g.:
+</span><span class="inferred1"><a name="line49" /> 49   #
+</span><span class="inferred0"><a name="line50" /> 50   #   #members
+</span><span class="inferred1"><a name="line51" /> 51   #   #each
+</span><span class="inferred0"><a name="line52" /> 52   #   #each_pair
+</span><span class="inferred1"><a name="line53" /> 53   #   #[]
+</span><span class="inferred0"><a name="line54" /> 54   #   #[]=
+</span><span class="inferred1"><a name="line55" /> 55   #
+</span><span class="inferred0"><a name="line56" /> 56   # If the request to EC2 results in an Exception instead of a successful response
+</span><span class="inferred1"><a name="line57" /> 57   # then that exception will be thrown and you will need to rescue it in your code.
+</span><span class="inferred0"><a name="line58" /> 58   #
+</span><span class="inferred1"><a name="line59" /> 59   # All Exceptions that are known are defined in EC2/exceptions.rb and they all inherit from EC2:Error.
+</span><span class="inferred0"><a name="line60" /> 60   #
+</span><span class="inferred1"><a name="line61" /> 61   # See the file README.txt for more information on using the Response object.
+</span><span class="inferred0"><a name="line62" /> 62   #
+</span><span class="inferred1"><a name="line63" /> 63   # This object type is never directly instanciated by user code.
+</span><span class="inferred0"><a name="line64" /> 64   #
+</span><span class="inferred1"><a name="line65" /> 65   #Required Arguments:
+</span><span class="inferred0"><a name="line66" /> 66   #
+</span><span class="inferred1"><a name="line67" /> 67   # none
+</span><span class="inferred0"><a name="line68" /> 68   #
+</span><span class="inferred1"><a name="line69" /> 69   #Optional Arguments:
+</span><span class="inferred0"><a name="line70" /> 70   # none
+</span><span class="inferred1"><a name="line71" /> 71   #
+</span><span class="marked0"><a name="line72" /> 72   class Response &lt; OpenStruct
+</span><span class="inferred1"><a name="line73" /> 73     
+</span><span class="marked0"><a name="line74" /> 74     include Enumerable
+</span><span class="inferred1"><a name="line75" /> 75     
+</span><span class="inferred0"><a name="line76" /> 76     #Required Arguments:
+</span><span class="inferred1"><a name="line77" /> 77     #
+</span><span class="inferred0"><a name="line78" /> 78     # :xml =&gt; http_xml (The response.body from a Net::HTTP response)
+</span><span class="inferred1"><a name="line79" /> 79     #
+</span><span class="inferred0"><a name="line80" /> 80     #Optional Arguments:
+</span><span class="inferred1"><a name="line81" /> 81     # :parse_options defines the options that you need to pass to XmlSimple.
+</span><span class="inferred0"><a name="line82" /> 82     # :parse_options =&gt; Hash (default : { 'ForceArray' =&gt; ['item'], 'SuppressEmpty' =&gt; nil } )
+</span><span class="inferred1"><a name="line83" /> 83     #
+</span><span class="marked0"><a name="line84" /> 84     def self.parse(options = {})
+</span><span class="marked1"><a name="line85" /> 85       options = {
+</span><span class="inferred0"><a name="line86" /> 86         :xml =&gt; &quot;&quot;,
+</span><span class="inferred1"><a name="line87" /> 87         :parse_options =&gt; { 'ForceArray' =&gt; ['item'], 'SuppressEmpty' =&gt; nil }
+</span><span class="inferred0"><a name="line88" /> 88       }.merge(options)
+</span><span class="marked1"><a name="line89" /> 89       return Response.new(XmlSimple.xml_in(options[:xml], options[:parse_options])) 
+</span><span class="inferred0"><a name="line90" /> 90     end
+</span><span class="inferred1"><a name="line91" /> 91     
+</span><span class="inferred0"><a name="line92" /> 92     
+</span><span class="marked1"><a name="line93" /> 93     def members
+</span><span class="marked0"><a name="line94" /> 94       methods(false).grep(/=/).map { |m| m[0...-1] } 
+</span><span class="marked1"><a name="line95" /> 95     end
+</span><span class="inferred0"><a name="line96" /> 96     
+</span><span class="inferred1"><a name="line97" /> 97     
+</span><span class="marked0"><a name="line98" /> 98     def each
+</span><span class="marked1"><a name="line99" /> 99       members.each do |method|
+</span><span class="marked0"><a name="line100" />100         yield send(method)
+</span><span class="inferred1"><a name="line101" />101       end
+</span><span class="marked0"><a name="line102" />102       self
+</span><span class="inferred1"><a name="line103" />103     end
+</span><span class="inferred0"><a name="line104" />104     
+</span><span class="inferred1"><a name="line105" />105     
+</span><span class="marked0"><a name="line106" />106     def each_pair 
+</span><span class="marked1"><a name="line107" />107       members.each do |method|
+</span><span class="marked0"><a name="line108" />108         yield method, send(method)
+</span><span class="inferred1"><a name="line109" />109       end
+</span><span class="marked0"><a name="line110" />110       self
+</span><span class="inferred1"><a name="line111" />111     end
+</span><span class="inferred0"><a name="line112" />112     
+</span><span class="inferred1"><a name="line113" />113     
+</span><span class="marked0"><a name="line114" />114     def [](member)
+</span><span class="marked1"><a name="line115" />115       send(member)
+</span><span class="marked0"><a name="line116" />116     end
+</span><span class="inferred1"><a name="line117" />117     
+</span><span class="inferred0"><a name="line118" />118     
+</span><span class="marked1"><a name="line119" />119     def []=(member, value)
+</span><span class="marked0"><a name="line120" />120       send(&quot;#{member}=&quot;, value)
+</span><span class="marked1"><a name="line121" />121     end
+</span><span class="inferred0"><a name="line122" />122     
+</span><span class="inferred1"><a name="line123" />123     
+</span><span class="marked0"><a name="line124" />124     def initialize(data)
+</span><span class="marked1"><a name="line125" />125       super(data)
+</span><span class="marked0"><a name="line126" />126       convert(self)
+</span><span class="inferred1"><a name="line127" />127     end
+</span><span class="inferred0"><a name="line128" />128     
+</span><span class="inferred1"><a name="line129" />129     
+</span><span class="marked0"><a name="line130" />130     private 
+</span><span class="marked1"><a name="line131" />131     def convert(obj)
+</span><span class="marked0"><a name="line132" />132       if (obj.class == Response)
+</span><span class="marked1"><a name="line133" />133         obj.each_pair { |k,v|
+</span><span class="marked0"><a name="line134" />134           obj[k] = convert(v)
+</span><span class="inferred1"><a name="line135" />135         }
+</span><span class="marked0"><a name="line136" />136         return obj
+</span><span class="marked1"><a name="line137" />137       elsif (obj.class == Hash)
+</span><span class="inferred0"><a name="line138" />138         # Hashes make good Responses already
+</span><span class="marked1"><a name="line139" />139         return Response.new(obj)
+</span><span class="marked0"><a name="line140" />140       elsif (obj.class == Array)
+</span><span class="inferred1"><a name="line141" />141         # With arrays, need to 
+</span><span class="marked0"><a name="line142" />142         new_arr = []
+</span><span class="marked1"><a name="line143" />143         obj.each { |elem|
+</span><span class="marked0"><a name="line144" />144           new_arr &lt;&lt; convert(elem)
+</span><span class="inferred1"><a name="line145" />145         }
+</span><span class="marked0"><a name="line146" />146         return new_arr
+</span><span class="inferred1"><a name="line147" />147       else
+</span><span class="marked0"><a name="line148" />148         return obj
+</span><span class="inferred1"><a name="line149" />149       end
+</span><span class="marked0"><a name="line150" />150     end
+</span><span class="inferred1"><a name="line151" />151     
+</span><span class="inferred0"><a name="line152" />152   end
+</span><span class="inferred1"><a name="line153" />153   
+</span><span class="inferred0"><a name="line154" />154 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

@@ -1,28 +1,38 @@
-# Amazon Web Services EC2 Query API Ruby library.  This library was 
-# heavily modified from original Amazon Web Services sample code 
-# and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
-# 
-# Source code and gem hosted on RubyForge
-# under the Ruby License as of 12/14/2006:
-# http://amazon-ec2.rubyforge.org
+#--
+# Amazon Web Services EC2 Query API Ruby library
+#
+# Ruby Gem Name::  amazon-ec2
+# Author::    Glenn Rempe  (mailto:glenn@elasticworkbench.com)
+# Copyright:: Copyright (c) 2007 Elastic Workbench, LLC
+# License::   Distributes under the same terms as Ruby
+# Home::      http://amazon-ec2.rubyforge.org
+#++
 
 module EC2
   
   class AWSAuthConnection
     
-    # The CreateSecurityGroup operation creates a new security group.
+    
+    #Amazon Developer Guide Docs:
     #
-    # Every instance is launched in a security group. If none is specified 
-    # as part of the launch request then instances are launched in the 
-    # default security group. Instances within the same security group 
-    # have unrestricted network access to one another. Instances will reject 
-    # network access attempts from other instances in a different security 
-    # group. As the owner of instances you may grant or revoke specific 
-    # permissions using the AuthorizeSecurityGroupIngress and 
-    # RevokeSecurityGroupIngress operations.
+    # The CreateSecurityGroup operation creates a new security group. Every instance is launched 
+    # in a security group. If none is specified as part of the launch request then instances 
+    # are launched in the default security group. Instances within the same security group have 
+    # unrestricted network access to one another. Instances will reject network access attempts from other 
+    # instances in a different security group. As the owner of instances you may grant or revoke specific 
+    # permissions using the AuthorizeSecurityGroupIngress and RevokeSecurityGroupIngress operations.
+    #
+    #Required Arguments:
+    #
+    # :group_name => String (default : "")
+    # :group_description => String (default : "")
+    #
+    #Optional Arguments:
+    #
+    # none
+    #
     def create_security_group( options = {} )
       
-      # defaults
       options = {:group_name => "",
                  :group_description => ""
                  }.merge(options)
@@ -40,20 +50,28 @@ module EC2
     end
     
     
-    # The DescribeSecurityGroups operation returns information about security 
-    # groups owned by the user making the request.
-    # 
-    # An optional list of security group names may be provided to request 
-    # information for those security groups only. If no security group 
-    # names are provided, information of all security groups will be returned. 
-    # If a group is specified that does not exist a fault is returned.
+    #Amazon Developer Guide Docs:
+    #
+    # The DescribeSecurityGroups operation returns information about security groups owned by the 
+    # user making the request. 
+    #
+    # An optional list of security group names may be provided to request information for those security 
+    # groups only. If no security group names are provided, information of all security groups will be 
+    # returned. If a group is specified that does not exist a fault is returned.
+    #
+    #Required Arguments:
+    #
+    # :group_name => Array (default : [])
+    #
+    #Optional Arguments:
+    #
+    # none
+    #
     def describe_security_groups( options = {} )
       
-      # defaults
       options = { :group_name => [] }.merge(options)
       
-      raise ArgumentError, "No :group_name provided" if options[:group_name] == ""
-      raise ArgumentError, "No :group_name provided" if options[:group_name].nil?
+      raise ArgumentError, "No :group_name provided" if options[:group_name].nil? || options[:group_name] == ""
       
       params = pathlist("GroupName", options[:group_name] )
       
@@ -62,14 +80,23 @@ module EC2
     end
     
     
-    # The DeleteSecurityGroup operation deletes a security group.
-    # 
-    # If an attempt is made to delete a security group and any 
-    # instances exist that are members of that group a fault is 
-    # returned.
+    #Amazon Developer Guide Docs:
+    #
+    # The DeleteSecurityGroup operation deletes a security group. 
+    #
+    # If an attempt is made to delete a security group and any instances exist that are members of that group a 
+    # fault is returned.
+    #
+    #Required Arguments:
+    #
+    # :group_name => String (default : "")
+    #
+    #Optional Arguments:
+    #
+    # none
+    #
     def delete_security_group( options = {} )
       
-      # defaults
       options = { :group_name => "" }.merge(options)
       
       raise ArgumentError, "No :group_name provided" if options[:group_name].nil? || options[:group_name].empty?
@@ -81,27 +108,39 @@ module EC2
     end
     
     
-    # The AuthorizeSecurityGroupIngress operation adds permissions to a security 
-    # group.
+    #Amazon Developer Guide Docs:
     #
-    # Permissions are specified in terms of the IP protocol (TCP, UDP or ICMP), 
-    # the source of the request (by IP range or an Amazon EC2 user-group pair), 
-    # source and destination port ranges (for TCP and UDP), and ICMP codes and 
-    # types (for ICMP). When authorizing ICMP, -1 may be used as a wildcard in 
-    # the type and code fields.
+    # The AuthorizeSecurityGroupIngress operation adds permissions to a security group. 
+    # 
+    # Permissions are specified in terms of the IP protocol (TCP, UDP or ICMP), the source of the request (by 
+    # IP range or an Amazon EC2 user-group pair), source and destination port ranges (for TCP and UDP), 
+    # and ICMP codes and types (for ICMP). When authorizing ICMP, -1 may be used as a wildcard in the 
+    # type and code fields.
+    # 
+    # Permission changes are propagated to instances within the security group being modified as quickly as 
+    # possible. However, a small delay is likely, depending on the number of instances that are members of
+    # the indicated group.
+    # 
+    # When authorizing a user/group pair permission, GroupName, SourceSecurityGroupName and 
+    # SourceSecurityGroupOwnerId must be specified. When authorizing a CIDR IP permission, 
+    # GroupName, IpProtocol, FromPort, ToPort and CidrIp must be specified. Mixing these two types 
+    # of parameters is not allowed.
     #
-    # Permission changes are propagated to instances within the security group 
-    # being modified as quickly as possible. However, a small delay is likely, 
-    # depending on the number of instances that are members of the indicated group.
+    #Required Arguments:
     #
-    # When authorizing a user/group pair permission, GroupName, 
-    # SourceSecurityGroupName and SourceSecurityGroupOwnerId must be specified. 
-    # When authorizing a CIDR IP permission, GroupName, IpProtocol, FromPort, 
-    # ToPort and CidrIp must be specified. Mixing these two types of parameters 
-    # is not allowed.
+    # :group_name => String (default : "")
+    #
+    #Optional Arguments:
+    #
+    # :ip_protocol => String (default : nil) : Required when authorizing CIDR IP permission
+    # :from_port => Integer (default : nil) : Required when authorizing CIDR IP permission
+    # :to_port => Integer (default : nil) : Required when authorizing CIDR IP permission
+    # :cidr_ip => String (default : nil): Required when authorizing CIDR IP permission
+    # :source_security_group_name => String (default : nil) : Required when authorizing user group pair permissions
+    # :source_security_group_owner_id => String (default : nil) : Required when authorizing user group pair permissions
+    #
     def authorize_security_group_ingress( options = {} )
       
-      # defaults
       options = { :group_name => nil,
                   :ip_protocol => nil,
                   :from_port => nil, 
@@ -128,28 +167,41 @@ module EC2
     end
     
     
-    # The RevokeSecurityGroupIngress operation revokes existing permissions 
-    # that were previously granted to a security group. The permissions to 
-    # revoke must be specified using the same values originally used to grant 
-    # the permission.
+    #Amazon Developer Guide Docs:
     #
-    # Permissions are specified in terms of the IP protocol (TCP, UDP or ICMP), 
-    # the source of the request (by IP range or an Amazon EC2 user-group pair), 
-    # source and destination port ranges (for TCP and UDP), and ICMP codes and 
-    # types (for ICMP). When authorizing ICMP, -1 may be used as a wildcard 
-    # in the type and code fields.
+    # The RevokeSecurityGroupIngress operation revokes existing permissions that were previously 
+    # granted to a security group. The permissions to revoke must be specified using the same values 
+    # originally used to grant the permission.
     #
-    # Permission changes are propagated to instances within the security group 
-    # being modified as quickly as possible. However, a small delay is likely, 
-    # depending on the number of instances that are members of the indicated group.
+    # Permissions are specified in terms of the IP protocol (TCP, UDP or ICMP), the source of the request (by 
+    # IP range or an Amazon EC2 user-group pair), source and destination port ranges (for TCP and UDP), 
+    # and ICMP codes and types (for ICMP). When authorizing ICMP, -1 may be used as a wildcard in the 
+    # type and code fields.
     #
-    # When revoking a user/group pair permission, GroupName, SourceSecurityGroupName 
-    # and SourceSecurityGroupOwnerId must be specified. When authorizing a CIDR IP 
-    # permission, GroupName, IpProtocol, FromPort, ToPort and CidrIp must be 
-    # specified. Mixing these two types of parameters is not allowed.
+    # Permission changes are propagated to instances within the security group being modified as quickly as 
+    # possible. However, a small delay is likely, depending on the number of instances that are members of 
+    # the indicated group.
+    #
+    # When revoking a user/group pair permission, GroupName, SourceSecurityGroupName and 
+    # SourceSecurityGroupOwnerId must be specified. When authorizing a CIDR IP permission, 
+    # GroupName, IpProtocol, FromPort, ToPort and CidrIp must be specified. Mixing these two types 
+    # of parameters is not allowed.
+    #
+    #Required Arguments:
+    #
+    # :group_name => String (default : "")
+    #
+    #Optional Arguments:
+    #
+    # :ip_protocol => String (default : nil) : Required when revoking CIDR IP permission
+    # :from_port => Integer (default : nil) : Required when revoking CIDR IP permission
+    # :to_port => Integer (default : nil) : Required when revoking CIDR IP permission
+    # :cidr_ip => String (default : nil): Required when revoking CIDR IP permission
+    # :source_security_group_name => String (default : nil) : Required when revoking user group pair permissions
+    # :source_security_group_owner_id => String (default : nil) : Required when revoking user group pair permissions
+    #
     def revoke_security_group_ingress( options = {} )
     
-      # defaults
       options = { :group_name => nil,
                   :ip_protocol => nil,
                   :from_port => nil, 

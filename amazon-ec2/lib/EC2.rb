@@ -1,20 +1,12 @@
-# Amazon Web Services EC2 Query API Ruby library.  This library was 
-# heavily modified from original Amazon Web Services sample code 
-# and packaged as a Ruby Gem by Glenn Rempe ( grempe @nospam@ rubyforge.org ).
-# 
-# Source code and gem hosted on RubyForge
-# under the Ruby License as of 12/14/2006:
-# http://amazon-ec2.rubyforge.org
-
-# Original Amazon Web Services Notice
-# This software code is made available "AS IS" without warranties of any
-# kind.  You may copy, display, modify and redistribute the software
-# code either by itself or as incorporated into your code; provided that
-# you do not remove any proprietary notices.  Your use of this software
-# code is at your own risk and you waive any claim against Amazon Web
-# Services LLC or its affiliates with respect to your use of this software
-# code. (c) 2006 Amazon Web Services LLC or its affiliates.  All rights
-# reserved.
+#--
+# Amazon Web Services EC2 Query API Ruby library
+#
+# Ruby Gem Name::  amazon-ec2
+# Author::    Glenn Rempe  (mailto:glenn@elasticworkbench.com)
+# Copyright:: Copyright (c) 2007 Elastic Workbench, LLC
+# License::   Distributes under the same terms as Ruby
+# Home::      http://amazon-ec2.rubyforge.org
+#++
 
 %w[ base64 cgi openssl digest/sha1 net/https rexml/document time ostruct ].each { |f| require f }
 
@@ -69,13 +61,26 @@ module EC2
   end
   
   
-  # The library exposes one main interface class, 'AWSAuthConnection'.
-  # This class performs all the operations for using the EC2 service 
-  # including header signing.  This class uses Net::HTTP to interface 
-  # with EC2 Query API interface.
+  #Introduction:
+  #
+  # The library exposes one main interface class, 'EC2::AWSAuthConnection'.
+  # This class provides all the methods for using the EC2 service 
+  # including the handling of header signing and other security issues .  
+  # This class uses Net::HTTP to interface with the EC2 Query API interface.
+  #
+  #Required Arguments:
+  #
+  # :access_key_id => String (default : "")
+  # :secret_access_key => String (default : "")
+  #
+  #Optional Arguments:
+  #
+  # :use_ssl => Boolean (default : true)
+  # :server => String (default : 'ec2.amazonaws.com')
+  #
   class AWSAuthConnection
     
-    attr_reader :port, :use_ssl, :server
+    attr_reader :use_ssl, :server, :port
     
     def initialize( options = {} )
       
@@ -93,7 +98,6 @@ module EC2
       raise ArgumentError, "No :use_ssl value provided" if options[:use_ssl].nil?
       raise ArgumentError, "Invalid :use_ssl value provided, only 'true' or 'false'" unless options[:use_ssl] == true || options[:use_ssl] == false
       raise ArgumentError, "No :server provided" if options[:server].nil? || options[:server].empty?
-      
       
       # based on the :use_ssl boolean, determine which port we should connect to
       case @use_ssl
@@ -129,6 +133,24 @@ module EC2
           params["#{key}.#{i+1}"] = value
         end
         params
+      end
+      
+      
+      # allow us to have a one line call in each method which will do all of the work
+      # in making the actual request to AWS.
+      def response_generator( options = {} )
+        
+        options = {
+          :action => "",
+          :params => {}
+        }.merge(options)
+        
+        raise ArgumentError, ":action must be provided to response_generator" if options[:action].nil? || options[:action].empty?
+        
+        http_response = make_request(options[:action], options[:params])
+        http_xml = http_response.body
+        return Response.parse(:xml => http_xml)
+        
       end
       
       
@@ -184,22 +206,6 @@ module EC2
         encoded_canonical = EC2.encode(secret_access_key, canonical_string)
       end
       
-      # allow us to have a one line call in each method which will do all of the work
-      # in making the actual request to AWS.
-      def response_generator( options = {} )
-        
-        options = {
-          :action => "",
-          :params => {}
-        }.merge(options)
-        
-        raise ArgumentError, ":action must be provided to response_generator" if options[:action].nil? || options[:action].empty?
-        
-        http_response = make_request(options[:action], options[:params])
-        http_xml = http_response.body
-        return Response.parse(:xml => http_xml)
-        
-      end
       
       # Raises the appropriate error if the specified Net::HTTPResponse object
       # contains an Amazon EC2 error; returns +false+ otherwise.
