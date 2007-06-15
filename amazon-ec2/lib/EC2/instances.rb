@@ -117,7 +117,7 @@ module EC2
     #
     #Optional Arguments:
     #
-    # :instance_id => String (default : [])
+    # :instance_id => Array (default : [])
     #
     def describe_instances( options = {} )
       

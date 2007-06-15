@@ -104,6 +104,10 @@ module EC2
   class InvalidParameterCombination < Error #:nodoc:
   end
   
+  # An unknown parameter was passed as an argument
+  class UnknownParameter < Error #:nodoc:
+  end
+  
   # The user ID is neither in the form of an AWS account ID or one 
   # of the special values accepted by the owner or executableBy flags 
   # in the DescribeImages call.

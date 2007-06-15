@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Thu Jun 14 13:29:09 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Thu Jun 14 22:56:12 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,10 +580,10 @@ span.run100 {
             <a href='lib-EC2-exceptions_rb.html'>lib/EC2/exceptions.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>131</tt>
+            <tt>135</tt>
           </td>
           <td class='lines_code'>
-            <tt>54</tt>
+            <tt>56</tt>
           </td>
           <td>
             <table cellspacing='0' cellpadding='0' align='right'>
@@ -725,31 +725,35 @@ span.run100 {
 </span><span class="marked0"><a name="line104" />104   class InvalidParameterCombination &lt; Error #:nodoc:
 </span><span class="inferred1"><a name="line105" />105   end
 </span><span class="inferred0"><a name="line106" />106   
-</span><span class="inferred1"><a name="line107" />107   # The user ID is neither in the form of an AWS account ID or one 
-</span><span class="inferred0"><a name="line108" />108   # of the special values accepted by the owner or executableBy flags 
-</span><span class="inferred1"><a name="line109" />109   # in the DescribeImages call.
-</span><span class="marked0"><a name="line110" />110   class InvalidUserIDMalformed &lt; Error #:nodoc:
-</span><span class="inferred1"><a name="line111" />111   end
-</span><span class="inferred0"><a name="line112" />112   
-</span><span class="inferred1"><a name="line113" />113   # The value of an item added to, or removed from, an image attribute is invalid.
-</span><span class="marked0"><a name="line114" />114   class InvalidAMIAttributeItemValue &lt; Error #:nodoc:
+</span><span class="inferred1"><a name="line107" />107   # An unknown parameter was passed as an argument
+</span><span class="marked0"><a name="line108" />108   class UnknownParameter &lt; Error #:nodoc:
+</span><span class="inferred1"><a name="line109" />109   end
+</span><span class="inferred0"><a name="line110" />110   
+</span><span class="inferred1"><a name="line111" />111   # The user ID is neither in the form of an AWS account ID or one 
+</span><span class="inferred0"><a name="line112" />112   # of the special values accepted by the owner or executableBy flags 
+</span><span class="inferred1"><a name="line113" />113   # in the DescribeImages call.
+</span><span class="marked0"><a name="line114" />114   class InvalidUserIDMalformed &lt; Error #:nodoc:
 </span><span class="inferred1"><a name="line115" />115   end
 </span><span class="inferred0"><a name="line116" />116   
-</span><span class="inferred1"><a name="line117" />117   # AWS EC2 SERVER ERROR CODES
-</span><span class="inferred0"><a name="line118" />118   
-</span><span class="inferred1"><a name="line119" />119   # Internal AWS EC2 Error.
-</span><span class="marked0"><a name="line120" />120   class InternalError &lt; Error #:nodoc:
-</span><span class="inferred1"><a name="line121" />121   end
+</span><span class="inferred1"><a name="line117" />117   # The value of an item added to, or removed from, an image attribute is invalid.
+</span><span class="marked0"><a name="line118" />118   class InvalidAMIAttributeItemValue &lt; Error #:nodoc:
+</span><span class="inferred1"><a name="line119" />119   end
+</span><span class="inferred0"><a name="line120" />120   
+</span><span class="inferred1"><a name="line121" />121   # AWS EC2 SERVER ERROR CODES
 </span><span class="inferred0"><a name="line122" />122   
-</span><span class="inferred1"><a name="line123" />123   # There are not enough available instances to satify your minimum request.
-</span><span class="marked0"><a name="line124" />124   class InsufficientInstanceCapacity &lt; Error #:nodoc:
+</span><span class="inferred1"><a name="line123" />123   # Internal AWS EC2 Error.
+</span><span class="marked0"><a name="line124" />124   class InternalError &lt; Error #:nodoc:
 </span><span class="inferred1"><a name="line125" />125   end
 </span><span class="inferred0"><a name="line126" />126   
-</span><span class="inferred1"><a name="line127" />127   # The server is overloaded and cannot handle request.
-</span><span class="marked0"><a name="line128" />128   class Unavailable &lt; Error #:nodoc:
+</span><span class="inferred1"><a name="line127" />127   # There are not enough available instances to satify your minimum request.
+</span><span class="marked0"><a name="line128" />128   class InsufficientInstanceCapacity &lt; Error #:nodoc:
 </span><span class="inferred1"><a name="line129" />129   end
 </span><span class="inferred0"><a name="line130" />130   
-</span><span class="inferred1"><a name="line131" />131 end
+</span><span class="inferred1"><a name="line131" />131   # The server is overloaded and cannot handle request.
+</span><span class="marked0"><a name="line132" />132   class Unavailable &lt; Error #:nodoc:
+</span><span class="inferred1"><a name="line133" />133   end
+</span><span class="inferred0"><a name="line134" />134   
+</span><span class="inferred1"><a name="line135" />135 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

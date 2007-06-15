@@ -34,7 +34,7 @@ context "The EC2 console " do
   
   
   specify "should return info written to a specific instances console" do
-    @ec2.stubs(:make_request).with('GetConsoleOutput', {"instanceId"=>"i-2ea64347"}).
+    @ec2.stubs(:make_request).with('GetConsoleOutput', {"InstanceId"=>"i-2ea64347"}).
        returns stub(:body => @get_console_output_response_body, :is_a? => true)
     @ec2.get_console_output( :instance_id => "i-2ea64347" ).should.be.an.instance_of EC2::Response
     response = @ec2.get_console_output( :instance_id => "i-2ea64347" )
