@@ -26,7 +26,25 @@ setup = File.dirname(__FILE__) + '/setup'
 irb_name = RUBY_PLATFORM =~ /mswin32/ ? 'irb.bat' : 'irb'
 
 if ( ENV['AMAZON_ACCESS_KEY_ID'] && ENV['AMAZON_SECRET_ACCESS_KEY'] )
-  puts "Usage : This is an interactive 'irb' command shell that allows you to use all commands available to the amazon-ec2 gem.  The EC2 connection is wired to the class instance '@ec2'.  Make method calls on this class instance to execute commands on EC2.  e.g. >> @ec2.methods.sort or >> @ec2.describe_images"
+  
+  welcome_message = <<-MESSAGE
+  
+  ec2sh usage :
+  This is an interactive 'irb' command shell that allows you to use all 
+  commands available to the amazon-ec2 gem.  The EC2 connection is 
+  wired to the class instance '@ec2'.  Make method calls on this 
+  class instance to execute commands on EC2.  Adding a #to_s method call
+  at the end of any command should give you a full representation of the
+  data in the response.
+    
+    e.g.
+    >> @ec2.methods.sort
+    >> @ec2.describe_images.to_s
+    >> @ec2.describe_keypairs.to_s
+    
+  MESSAGE
+  
+  puts welcome_message
   exec "#{irb_name} -r #{ec2_lib} -r #{setup} --simple-prompt"
 else
   puts "You must define AMAZON_ACCESS_KEY_ID and AMAZON_SECRET_ACCESS_KEY as shell environment variables before running #{$0}!"
