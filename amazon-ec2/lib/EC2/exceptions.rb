@@ -13,10 +13,13 @@ module EC2
   # OUR CUSTOM ERROR CODES
   
   # All of our errors are superclassed by Error < RuntimeError
-  class Error < RuntimeError; end
+  class Error < RuntimeError #:nodoc:
+  end
   
   # A client side only argument error
-  class ArgumentError < Error; end
+  class ArgumentError < Error #:nodoc:
+  end
+  
   
   # AWS EC2 CLIENT ERROR CODES
   
@@ -26,62 +29,81 @@ module EC2
   # the granularity of the exception.
   
   # User not authorized.
-  class AuthFailure < Error; end
+  class AuthFailure < Error #:nodoc:
+  end
   
   # Specified AMI has an unparsable manifest.
-  class InvalidManifest < Error; end
+  class InvalidManifest < Error #:nodoc:
+  end
   
   # Specified AMI ID is not valid.
-  class InvalidAMIIDMalformed < Error; end
+  class InvalidAMIIDMalformed < Error #:nodoc:
+  end
   
   # Specified AMI ID does not exist.
-  class InvalidAMIIDNotFound < Error; end
+  class InvalidAMIIDNotFound < Error #:nodoc:
+  end
   
   # Specified AMI ID has been deregistered and is no longer available.
-  class InvalidAMIIDUnavailable < Error; end
+  class InvalidAMIIDUnavailable < Error #:nodoc:
+  end
   
   # Specified instance ID is not valid.
-  class InvalidInstanceIDMalformed < Error; end
+  class InvalidInstanceIDMalformed < Error #:nodoc:
+  end
   
   # Specified instance ID does not exist.
-  class InvalidInstanceIDNotFound < Error; end
+  class InvalidInstanceIDNotFound < Error #:nodoc:
+  end
   
   # Specified keypair name does not exist.
-  class InvalidKeyPairNotFound < Error; end
+  class InvalidKeyPairNotFound < Error #:nodoc:
+  end
   
   # Attempt to create a duplicate keypair.
-  class InvalidKeyPairDuplicate < Error; end
+  class InvalidKeyPairDuplicate < Error #:nodoc:
+  end
   
   # Specified group name does not exist.
-  class InvalidGroupNotFound < Error; end
+  class InvalidGroupNotFound < Error #:nodoc:
+  end
   
   # Attempt to create a duplicate group.
-  class InvalidGroupDuplicate < Error; end
+  class InvalidGroupDuplicate < Error #:nodoc:
+  end
   
   # Specified group can not be deleted because it is in use.
-  class InvalidGroupInUse < Error; end
+  class InvalidGroupInUse < Error #:nodoc:
+  end
   
   # Specified group name is a reserved name.
-  class InvalidGroupReserved < Error; end
+  class InvalidGroupReserved < Error #:nodoc:
+  end
   
   # Attempt to authorize a permission that has already been authorized.
-  class InvalidPermissionDuplicate < Error; end
+  class InvalidPermissionDuplicate < Error #:nodoc:
+  end
   
   # Specified permission is invalid.
-  class InvalidPermissionMalformed < Error; end
+  class InvalidPermissionMalformed < Error #:nodoc:
+  end
   
   # Specified reservation ID is invalid.
-  class InvalidReservationIDMalformed < Error; end
+  class InvalidReservationIDMalformed < Error #:nodoc:
+  end
   
   # Specified reservation ID does not exist.
-  class InvalidReservationIDNotFound < Error; end
+  class InvalidReservationIDNotFound < Error #:nodoc:
+  end
   
   # User has reached max allowed concurrent running instances.
-  class InstanceLimitExceeded < Error; end
+  class InstanceLimitExceeded < Error #:nodoc:
+  end
   
   # An invalid set of parameters were passed as arguments
   # e.g. RunInstances was called with minCount and maxCount set to 0 or minCount > maxCount.
-  class InvalidParameterCombination < Error; end
+  class InvalidParameterCombination < Error #:nodoc:
+  end
   
   # An unknown parameter was passed as an argument
   class UnknownParameter < Error #:nodoc:
@@ -90,20 +112,25 @@ module EC2
   # The user ID is neither in the form of an AWS account ID or one 
   # of the special values accepted by the owner or executableBy flags 
   # in the DescribeImages call.
-  class InvalidUserIDMalformed < Error; end
+  class InvalidUserIDMalformed < Error #:nodoc:
+  end
   
   # The value of an item added to, or removed from, an image attribute is invalid.
-  class InvalidAMIAttributeItemValue < Error; end
+  class InvalidAMIAttributeItemValue < Error #:nodoc:
+  end
   
   # AWS EC2 SERVER ERROR CODES
   
   # Internal AWS EC2 Error.
-  class InternalError < Error; end
+  class InternalError < Error #:nodoc:
+  end
   
   # There are not enough available instances to satify your minimum request.
-  class InsufficientInstanceCapacity < Error; end
+  class InsufficientInstanceCapacity < Error #:nodoc:
+  end
   
   # The server is overloaded and cannot handle request.
-  class Unavailable < Error; end
+  class Unavailable < Error #:nodoc:
+  end
   
 end
