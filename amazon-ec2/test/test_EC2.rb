@@ -1,3 +1,4 @@
+#--
 # Amazon Web Services EC2 Query API Ruby library
 #
 # Ruby Gem Name::  amazon-ec2
