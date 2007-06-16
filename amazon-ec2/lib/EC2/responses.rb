@@ -52,7 +52,7 @@ module EC2
     # has a method ending in "=". Find all of these methods, excluding those defined on
     # parent classes.
     def members
-      methods(false).grep(/=/).map { |m| m[0...-1] } 
+      methods(false).sort.grep(/=/).map { |m| m[0...-1] } 
     end
 
     
@@ -105,6 +105,7 @@ module EC2
       return s
     end
     
+
     # Initialize the object by passing data to the OpenStruct initialize method
     # and then converting ourself to guarantee we have top-to-bottom data 
     # representation as a Response object.
