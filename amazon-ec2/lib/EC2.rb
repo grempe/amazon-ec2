@@ -99,6 +99,7 @@ module EC2
       raise ArgumentError, "Invalid :use_ssl value provided, only 'true' or 'false'" unless options[:use_ssl] == true || options[:use_ssl] == false
       raise ArgumentError, "No :server provided" if options[:server].nil? || options[:server].empty?
       
+      
       # based on the :use_ssl boolean, determine which port we should connect to
       case @use_ssl
       when true
@@ -133,24 +134,6 @@ module EC2
           params["#{key}.#{i+1}"] = value
         end
         params
-      end
-      
-      
-      # allow us to have a one line call in each method which will do all of the work
-      # in making the actual request to AWS.
-      def response_generator( options = {} )
-        
-        options = {
-          :action => "",
-          :params => {}
-        }.merge(options)
-        
-        raise ArgumentError, ":action must be provided to response_generator" if options[:action].nil? || options[:action].empty?
-        
-        http_response = make_request(options[:action], options[:params])
-        http_xml = http_response.body
-        return Response.parse(:xml => http_xml)
-        
       end
       
       
@@ -206,6 +189,22 @@ module EC2
         encoded_canonical = EC2.encode(secret_access_key, canonical_string)
       end
       
+      # allow us to have a one line call in each method which will do all of the work
+      # in making the actual request to AWS.
+      def response_generator( options = {} )
+        
+        options = {
+          :action => "",
+          :params => {}
+        }.merge(options)
+        
+        raise ArgumentError, ":action must be provided to response_generator" if options[:action].nil? || options[:action].empty?
+        
+        http_response = make_request(options[:action], options[:params])
+        http_xml = http_response.body
+        return Response.parse(:xml => http_xml)
+        
+      end
       
       # Raises the appropriate error if the specified Net::HTTPResponse object
       # contains an Amazon EC2 error; returns +false+ otherwise.

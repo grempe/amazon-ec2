@@ -28,6 +28,7 @@ module EC2
     #
     def create_keypair( options = {} )
       
+      # defaults
       options = { :key_name => "" }.merge(options)
       
       raise ArgumentError, "No :key_name provided" if options[:key_name].nil? || options[:key_name].empty?

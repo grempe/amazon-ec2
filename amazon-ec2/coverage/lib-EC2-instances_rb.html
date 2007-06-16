@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Thu Jun 14 22:56:13 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Sat Jun 16 12:00:21 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,7 +580,7 @@ span.run100 {
             <a href='lib-EC2-instances_rb.html'>lib/EC2/instances.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>189</tt>
+            <tt>190</tt>
           </td>
           <td class='lines_code'>
             <tt>53</tt>
@@ -619,195 +619,196 @@ span.run100 {
           </td>
         </tr>
       </tbody>
-    </table><pre><span class="inferred1"><a name="line1" />  1 #--
-</span><span class="inferred0"><a name="line2" />  2 # Amazon Web Services EC2 Query API Ruby library
-</span><span class="inferred1"><a name="line3" />  3 #
-</span><span class="inferred0"><a name="line4" />  4 # Ruby Gem Name::  amazon-ec2
-</span><span class="inferred1"><a name="line5" />  5 # Author::    Glenn Rempe  (mailto:glenn@elasticworkbench.com)
-</span><span class="inferred0"><a name="line6" />  6 # Copyright:: Copyright (c) 2007 Elastic Workbench, LLC
-</span><span class="inferred1"><a name="line7" />  7 # License::   Distributes under the same terms as Ruby
-</span><span class="inferred0"><a name="line8" />  8 # Home::      http://amazon-ec2.rubyforge.org
-</span><span class="inferred1"><a name="line9" />  9 #++
-</span><span class="inferred0"><a name="line10" /> 10 
-</span><span class="marked1"><a name="line11" /> 11 module EC2
-</span><span class="inferred0"><a name="line12" /> 12   
-</span><span class="marked1"><a name="line13" /> 13   class AWSAuthConnection
-</span><span class="inferred0"><a name="line14" /> 14     
-</span><span class="inferred1"><a name="line15" /> 15     #Amazon Developer Guide Docs:
-</span><span class="inferred0"><a name="line16" /> 16     #
-</span><span class="inferred1"><a name="line17" /> 17     # The RunInstances operation launches a specified number of instances. 
-</span><span class="inferred0"><a name="line18" /> 18     # 
-</span><span class="inferred1"><a name="line19" /> 19     # Note : The Query version of RunInstances only allows instances of a single AMI to be launched in 
-</span><span class="inferred0"><a name="line20" /> 20     # one call. This is different from the SOAP API call of the same name but similar to the 
-</span><span class="inferred1"><a name="line21" /> 21     # ec2-run-instances command line tool. 
-</span><span class="inferred0"><a name="line22" /> 22     # 
-</span><span class="inferred1"><a name="line23" /> 23     # A call to RunInstances is guaranteed to start no fewer than the requested minimum. If there is 
-</span><span class="inferred0"><a name="line24" /> 24     # insufficient capacity available then no instances will be started. Amazon EC2 will make a best effort 
-</span><span class="inferred1"><a name="line25" /> 25     # attempt to satisfy the requested maximum values. 
-</span><span class="inferred0"><a name="line26" /> 26     # 
-</span><span class="inferred1"><a name="line27" /> 27     # Every instance is launched in a security group. This may be specified as part of the launch request. If a 
-</span><span class="inferred0"><a name="line28" /> 28     # security group is not indicated then instances are started in a the default security group. 
-</span><span class="inferred1"><a name="line29" /> 29     # An optional keypair ID may be provided for each image in the launch request. All instances that are 
-</span><span class="inferred0"><a name="line30" /> 30     # created from images for which this is provided will have access to the associated public key at boot time 
-</span><span class="inferred1"><a name="line31" /> 31     # (detailed below). This key may be used to provide secure access to an instance of an image on a 
-</span><span class="inferred0"><a name="line32" /> 32     # per-instance basis. Amazon EC2 public images make use of this functionality to provide secure 
-</span><span class="inferred1"><a name="line33" /> 33     # passwordless access to instances (and launching those images without a keypair ID will leave them 
-</span><span class="inferred0"><a name="line34" /> 34     # inaccessible). 
-</span><span class="inferred1"><a name="line35" /> 35     # 
-</span><span class="inferred0"><a name="line36" /> 36     # The public key material is made available to the instance at boot time by placing it in a file named 
-</span><span class="inferred1"><a name="line37" /> 37     # openssh_id.pub on a logical device that is exposed to the instance as /dev/sda2 (the ephemeral 
-</span><span class="inferred0"><a name="line38" /> 38     # store). The format of this file is suitable for use as an entry within ~/.ssh/authorized_keys (the 
-</span><span class="inferred1"><a name="line39" /> 39     # OpenSSH format). This can be done at boot time (as part of rclocal, for example) allowing for secure 
-</span><span class="inferred0"><a name="line40" /> 40     # password-less access. As the need arises, other formats will also be considered.
-</span><span class="inferred1"><a name="line41" /> 41     #
-</span><span class="inferred0"><a name="line42" /> 42     #Required Arguments:
-</span><span class="inferred1"><a name="line43" /> 43     #
-</span><span class="inferred0"><a name="line44" /> 44     # :image_id =&gt; String (Default : &quot;&quot;)
-</span><span class="inferred1"><a name="line45" /> 45     # :min_count =&gt; Integer (default : 1 )
-</span><span class="inferred0"><a name="line46" /> 46     # :max_count =&gt; Integer (default : 1 )
-</span><span class="inferred1"><a name="line47" /> 47     #
-</span><span class="inferred0"><a name="line48" /> 48     #Optional Arguments:
-</span><span class="inferred1"><a name="line49" /> 49     #
-</span><span class="inferred0"><a name="line50" /> 50     # :key_name =&gt; String (default : nil)
-</span><span class="inferred1"><a name="line51" /> 51     # :group_id =&gt; Array (default : [])
-</span><span class="inferred0"><a name="line52" /> 52     # :user_data =&gt; String (default : nil)
-</span><span class="inferred1"><a name="line53" /> 53     # :addressing_type =&gt; String (default : &quot;public&quot;)
-</span><span class="inferred0"><a name="line54" /> 54     # :base64_encoded =&gt; Boolean (default : false)
-</span><span class="inferred1"><a name="line55" /> 55     #
-</span><span class="marked0"><a name="line56" /> 56     def run_instances( options = {} )
-</span><span class="inferred1"><a name="line57" /> 57       
-</span><span class="marked0"><a name="line58" /> 58       options = { :image_id =&gt; &quot;&quot;,
-</span><span class="inferred1"><a name="line59" /> 59                   :min_count =&gt; 1, 
-</span><span class="inferred0"><a name="line60" /> 60                   :max_count =&gt; 1,
-</span><span class="inferred1"><a name="line61" /> 61                   :key_name =&gt; nil,
-</span><span class="inferred0"><a name="line62" /> 62                   :group_id =&gt; [],
-</span><span class="inferred1"><a name="line63" /> 63                   :user_data =&gt; nil,
-</span><span class="inferred0"><a name="line64" /> 64                   :addressing_type =&gt; &quot;public&quot;,
-</span><span class="inferred1"><a name="line65" /> 65                   :base64_encoded =&gt; false }.merge(options)
-</span><span class="inferred0"><a name="line66" /> 66       
-</span><span class="inferred1"><a name="line67" /> 67       # Do some validation on the arguments provided
-</span><span class="marked0"><a name="line68" /> 68       raise ArgumentError, &quot;:image_id must be provided&quot; if options[:image_id].nil? || options[:image_id].empty?
-</span><span class="marked1"><a name="line69" /> 69       raise ArgumentError, &quot;:min_count is not valid&quot; unless options[:min_count].to_i &gt; 0
-</span><span class="marked0"><a name="line70" /> 70       raise ArgumentError, &quot;:max_count is not valid&quot; unless options[:max_count].to_i &gt; 0
-</span><span class="marked1"><a name="line71" /> 71       raise ArgumentError, &quot;:addressing_type must be 'direct' or 'public'&quot; unless options[:addressing_type] == &quot;public&quot; || options[:addressing_type] == &quot;direct&quot;
-</span><span class="marked0"><a name="line72" /> 72       raise ArgumentError, &quot;:base64_encoded must be 'true' or 'false'&quot; unless options[:base64_encoded] == true || options[:base64_encoded] == false
-</span><span class="inferred1"><a name="line73" /> 73       
-</span><span class="inferred0"><a name="line74" /> 74       # If :user_data is passed in then URL escape and Base64 encode it
-</span><span class="inferred1"><a name="line75" /> 75       # as needed.  Need for URL Escape + Base64 encoding is determined 
-</span><span class="inferred0"><a name="line76" /> 76       # by :base64_encoded param.
-</span><span class="marked1"><a name="line77" /> 77       if options[:user_data]
-</span><span class="marked0"><a name="line78" /> 78         if options[:base64_encoded]
-</span><span class="marked1"><a name="line79" /> 79           user_data = options[:user_data]
-</span><span class="inferred0"><a name="line80" /> 80         else
-</span><span class="marked1"><a name="line81" /> 81           user_data = Base64.encode64(options[:user_data]).gsub(/\n/,&quot;&quot;).strip()
-</span><span class="inferred0"><a name="line82" /> 82         end
-</span><span class="inferred1"><a name="line83" /> 83       else
-</span><span class="marked0"><a name="line84" /> 84         user_data = nil
-</span><span class="inferred1"><a name="line85" /> 85       end
-</span><span class="inferred0"><a name="line86" /> 86       
-</span><span class="marked1"><a name="line87" /> 87       params = {
-</span><span class="inferred0"><a name="line88" /> 88         &quot;ImageId&quot;  =&gt; options[:image_id],
-</span><span class="inferred1"><a name="line89" /> 89         &quot;MinCount&quot; =&gt; options[:min_count].to_s,
-</span><span class="inferred0"><a name="line90" /> 90         &quot;MaxCount&quot; =&gt; options[:max_count].to_s,
-</span><span class="marked1"><a name="line91" /> 91       }.merge(pathlist(&quot;SecurityGroup&quot;, options[:group_id])) 
-</span><span class="inferred0"><a name="line92" /> 92       
-</span><span class="marked1"><a name="line93" /> 93       params[&quot;KeyName&quot;] = options[:key_name] unless options[:key_name].nil? 
-</span><span class="marked0"><a name="line94" /> 94       params[&quot;UserData&quot;] = user_data unless user_data.nil?
-</span><span class="inferred1"><a name="line95" /> 95       
-</span><span class="marked0"><a name="line96" /> 96       return response_generator(:action =&gt; &quot;RunInstances&quot;, :params =&gt; params)
-</span><span class="inferred1"><a name="line97" /> 97       
-</span><span class="inferred0"><a name="line98" /> 98     end
-</span><span class="inferred1"><a name="line99" /> 99     
-</span><span class="inferred0"><a name="line100" />100     
-</span><span class="inferred1"><a name="line101" />101     #Amazon Developer Guide Docs:
-</span><span class="inferred0"><a name="line102" />102     #
-</span><span class="inferred1"><a name="line103" />103     # The DescribeInstances operation returns information about instances owned by the user 
-</span><span class="inferred0"><a name="line104" />104     # making the request.
-</span><span class="inferred1"><a name="line105" />105     #
-</span><span class="inferred0"><a name="line106" />106     # An optional list of instance IDs may be provided to request information for those instances only. If no 
-</span><span class="inferred1"><a name="line107" />107     # instance IDs are provided, information of all relevant instances information will be returned. If an 
-</span><span class="inferred0"><a name="line108" />108     # instance is specified that does not exist a fault is returned. If an instance is specified that exists but is not 
-</span><span class="inferred1"><a name="line109" />109     # owned by the user making the request, then that instance will not be included in the returned results. 
-</span><span class="inferred0"><a name="line110" />110     # 
-</span><span class="inferred1"><a name="line111" />111     # Recently terminated instances will be included in the returned results for a small interval subsequent to 
-</span><span class="inferred0"><a name="line112" />112     # their termination. This interval is typically of the order of one hour
-</span><span class="inferred1"><a name="line113" />113     #
-</span><span class="inferred0"><a name="line114" />114     #Required Arguments:
-</span><span class="inferred1"><a name="line115" />115     #
-</span><span class="inferred0"><a name="line116" />116     # none
-</span><span class="inferred1"><a name="line117" />117     #
-</span><span class="inferred0"><a name="line118" />118     #Optional Arguments:
-</span><span class="inferred1"><a name="line119" />119     #
-</span><span class="inferred0"><a name="line120" />120     # :instance_id =&gt; Array (default : [])
-</span><span class="inferred1"><a name="line121" />121     #
-</span><span class="marked0"><a name="line122" />122     def describe_instances( options = {} )
-</span><span class="inferred1"><a name="line123" />123       
-</span><span class="marked0"><a name="line124" />124       options = { :instance_id =&gt; [] }.merge(options)
-</span><span class="inferred1"><a name="line125" />125       
-</span><span class="marked0"><a name="line126" />126       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
-</span><span class="inferred1"><a name="line127" />127       
-</span><span class="marked0"><a name="line128" />128       return response_generator(:action =&gt; &quot;DescribeInstances&quot;, :params =&gt; params)
-</span><span class="inferred1"><a name="line129" />129       
-</span><span class="inferred0"><a name="line130" />130     end
-</span><span class="inferred1"><a name="line131" />131     
-</span><span class="inferred0"><a name="line132" />132     
-</span><span class="inferred1"><a name="line133" />133     #Amazon Developer Guide Docs:
-</span><span class="inferred0"><a name="line134" />134     #
-</span><span class="inferred1"><a name="line135" />135     # The RebootInstances operation requests a reboot of one or more instances. This operation is 
-</span><span class="inferred0"><a name="line136" />136     # asynchronous; it only queues a request to reboot the specified instance(s). The operation will succeed 
-</span><span class="inferred1"><a name="line137" />137     # provided the instances are valid and belong to the user. Terminated instances will be ignored.
-</span><span class="inferred0"><a name="line138" />138     #
-</span><span class="inferred1"><a name="line139" />139     #Required Arguments:
-</span><span class="inferred0"><a name="line140" />140     #
-</span><span class="inferred1"><a name="line141" />141     # :instance_id =&gt; Array (default : [])
-</span><span class="inferred0"><a name="line142" />142     #
-</span><span class="inferred1"><a name="line143" />143     #Optional Arguments:
-</span><span class="inferred0"><a name="line144" />144     #
-</span><span class="inferred1"><a name="line145" />145     # none
-</span><span class="inferred0"><a name="line146" />146     #
-</span><span class="marked1"><a name="line147" />147     def reboot_instances( options = {} )
-</span><span class="inferred0"><a name="line148" />148       
-</span><span class="marked1"><a name="line149" />149       options = { :instance_id =&gt; [] }.merge(options)
-</span><span class="inferred0"><a name="line150" />150       
-</span><span class="marked1"><a name="line151" />151       raise ArgumentError, &quot;No instance IDs provided&quot; if options[:instance_id].nil? || options[:instance_id].empty?
-</span><span class="inferred0"><a name="line152" />152       
-</span><span class="marked1"><a name="line153" />153       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
-</span><span class="inferred0"><a name="line154" />154       
-</span><span class="marked1"><a name="line155" />155       return response_generator(:action =&gt; &quot;RebootInstances&quot;, :params =&gt; params)
-</span><span class="inferred0"><a name="line156" />156       
-</span><span class="inferred1"><a name="line157" />157     end
-</span><span class="inferred0"><a name="line158" />158     
-</span><span class="inferred1"><a name="line159" />159     
-</span><span class="inferred0"><a name="line160" />160     #Amazon Developer Guide Docs:
-</span><span class="inferred1"><a name="line161" />161     #
-</span><span class="inferred0"><a name="line162" />162     # The TerminateInstances operation shuts down one or more instances. This operation is idempotent 
-</span><span class="inferred1"><a name="line163" />163     # and terminating an instance that is in the process of shutting down (or already terminated) will succeed. 
-</span><span class="inferred0"><a name="line164" />164     # Terminated instances remain visible for a short period of time (approximately one hour) after 
-</span><span class="inferred1"><a name="line165" />165     # termination, after which their instance ID is invalidated.
-</span><span class="inferred0"><a name="line166" />166     #
-</span><span class="inferred1"><a name="line167" />167     #Required Arguments:
-</span><span class="inferred0"><a name="line168" />168     #
-</span><span class="inferred1"><a name="line169" />169     # :instance_id =&gt; Array (default : [])
-</span><span class="inferred0"><a name="line170" />170     #
-</span><span class="inferred1"><a name="line171" />171     #Optional Arguments:
-</span><span class="inferred0"><a name="line172" />172     #
-</span><span class="inferred1"><a name="line173" />173     # none
-</span><span class="inferred0"><a name="line174" />174     #
-</span><span class="marked1"><a name="line175" />175     def terminate_instances( options = {} )
-</span><span class="inferred0"><a name="line176" />176       
-</span><span class="marked1"><a name="line177" />177       options = { :instance_id =&gt; [] }.merge(options)
-</span><span class="inferred0"><a name="line178" />178       
-</span><span class="marked1"><a name="line179" />179       raise ArgumentError, &quot;No :instance_id provided&quot; if options[:instance_id].nil? || options[:instance_id].empty?
-</span><span class="inferred0"><a name="line180" />180       
-</span><span class="marked1"><a name="line181" />181       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
-</span><span class="inferred0"><a name="line182" />182       
-</span><span class="marked1"><a name="line183" />183       return response_generator(:action =&gt; &quot;TerminateInstances&quot;, :params =&gt; params)
-</span><span class="inferred0"><a name="line184" />184       
-</span><span class="inferred1"><a name="line185" />185     end
-</span><span class="inferred0"><a name="line186" />186     
-</span><span class="inferred1"><a name="line187" />187   end
-</span><span class="inferred0"><a name="line188" />188   
-</span><span class="inferred1"><a name="line189" />189 end
+    </table><pre><span class="inferred0"><a name="line1" />  1 #--
+</span><span class="inferred1"><a name="line2" />  2 # Amazon Web Services EC2 Query API Ruby library
+</span><span class="inferred0"><a name="line3" />  3 #
+</span><span class="inferred1"><a name="line4" />  4 # Ruby Gem Name::  amazon-ec2
+</span><span class="inferred0"><a name="line5" />  5 # Author::    Glenn Rempe  (mailto:glenn@elasticworkbench.com)
+</span><span class="inferred1"><a name="line6" />  6 # Copyright:: Copyright (c) 2007 Elastic Workbench, LLC
+</span><span class="inferred0"><a name="line7" />  7 # License::   Distributes under the same terms as Ruby
+</span><span class="inferred1"><a name="line8" />  8 # Home::      http://amazon-ec2.rubyforge.org
+</span><span class="inferred0"><a name="line9" />  9 #++
+</span><span class="inferred1"><a name="line10" /> 10 
+</span><span class="marked0"><a name="line11" /> 11 module EC2
+</span><span class="inferred1"><a name="line12" /> 12   
+</span><span class="marked0"><a name="line13" /> 13   class AWSAuthConnection
+</span><span class="inferred1"><a name="line14" /> 14     
+</span><span class="inferred0"><a name="line15" /> 15     #Amazon Developer Guide Docs:
+</span><span class="inferred1"><a name="line16" /> 16     #
+</span><span class="inferred0"><a name="line17" /> 17     # The RunInstances operation launches a specified number of instances. 
+</span><span class="inferred1"><a name="line18" /> 18     # 
+</span><span class="inferred0"><a name="line19" /> 19     # Note : The Query version of RunInstances only allows instances of a single AMI to be launched in 
+</span><span class="inferred1"><a name="line20" /> 20     # one call. This is different from the SOAP API call of the same name but similar to the 
+</span><span class="inferred0"><a name="line21" /> 21     # ec2-run-instances command line tool. 
+</span><span class="inferred1"><a name="line22" /> 22     # 
+</span><span class="inferred0"><a name="line23" /> 23     # A call to RunInstances is guaranteed to start no fewer than the requested minimum. If there is 
+</span><span class="inferred1"><a name="line24" /> 24     # insufficient capacity available then no instances will be started. Amazon EC2 will make a best effort 
+</span><span class="inferred0"><a name="line25" /> 25     # attempt to satisfy the requested maximum values. 
+</span><span class="inferred1"><a name="line26" /> 26     # 
+</span><span class="inferred0"><a name="line27" /> 27     # Every instance is launched in a security group. This may be specified as part of the launch request. If a 
+</span><span class="inferred1"><a name="line28" /> 28     # security group is not indicated then instances are started in a the default security group. 
+</span><span class="inferred0"><a name="line29" /> 29     # An optional keypair ID may be provided for each image in the launch request. All instances that are 
+</span><span class="inferred1"><a name="line30" /> 30     # created from images for which this is provided will have access to the associated public key at boot time 
+</span><span class="inferred0"><a name="line31" /> 31     # (detailed below). This key may be used to provide secure access to an instance of an image on a 
+</span><span class="inferred1"><a name="line32" /> 32     # per-instance basis. Amazon EC2 public images make use of this functionality to provide secure 
+</span><span class="inferred0"><a name="line33" /> 33     # passwordless access to instances (and launching those images without a keypair ID will leave them 
+</span><span class="inferred1"><a name="line34" /> 34     # inaccessible). 
+</span><span class="inferred0"><a name="line35" /> 35     # 
+</span><span class="inferred1"><a name="line36" /> 36     # The public key material is made available to the instance at boot time by placing it in a file named 
+</span><span class="inferred0"><a name="line37" /> 37     # openssh_id.pub on a logical device that is exposed to the instance as /dev/sda2 (the ephemeral 
+</span><span class="inferred1"><a name="line38" /> 38     # store). The format of this file is suitable for use as an entry within ~/.ssh/authorized_keys (the 
+</span><span class="inferred0"><a name="line39" /> 39     # OpenSSH format). This can be done at boot time (as part of rclocal, for example) allowing for secure 
+</span><span class="inferred1"><a name="line40" /> 40     # password-less access. As the need arises, other formats will also be considered.
+</span><span class="inferred0"><a name="line41" /> 41     #
+</span><span class="inferred1"><a name="line42" /> 42     #Required Arguments:
+</span><span class="inferred0"><a name="line43" /> 43     #
+</span><span class="inferred1"><a name="line44" /> 44     # :image_id =&gt; String (Default : &quot;&quot;)
+</span><span class="inferred0"><a name="line45" /> 45     # :min_count =&gt; Integer (default : 1 )
+</span><span class="inferred1"><a name="line46" /> 46     # :max_count =&gt; Integer (default : 1 )
+</span><span class="inferred0"><a name="line47" /> 47     #
+</span><span class="inferred1"><a name="line48" /> 48     #Optional Arguments:
+</span><span class="inferred0"><a name="line49" /> 49     #
+</span><span class="inferred1"><a name="line50" /> 50     # :key_name =&gt; String (default : nil)
+</span><span class="inferred0"><a name="line51" /> 51     # :group_id =&gt; Array (default : [])
+</span><span class="inferred1"><a name="line52" /> 52     # :user_data =&gt; String (default : nil)
+</span><span class="inferred0"><a name="line53" /> 53     # :addressing_type =&gt; String (default : &quot;public&quot;)
+</span><span class="inferred1"><a name="line54" /> 54     # :base64_encoded =&gt; Boolean (default : false)
+</span><span class="inferred0"><a name="line55" /> 55     #
+</span><span class="marked1"><a name="line56" /> 56     def run_instances( options = {} )
+</span><span class="inferred0"><a name="line57" /> 57       
+</span><span class="marked1"><a name="line58" /> 58       options = { :image_id =&gt; &quot;&quot;,
+</span><span class="inferred0"><a name="line59" /> 59                   :min_count =&gt; 1, 
+</span><span class="inferred1"><a name="line60" /> 60                   :max_count =&gt; 1,
+</span><span class="inferred0"><a name="line61" /> 61                   :key_name =&gt; nil,
+</span><span class="inferred1"><a name="line62" /> 62                   :group_id =&gt; [],
+</span><span class="inferred0"><a name="line63" /> 63                   :user_data =&gt; nil,
+</span><span class="inferred1"><a name="line64" /> 64                   :addressing_type =&gt; &quot;public&quot;,
+</span><span class="inferred0"><a name="line65" /> 65                   :base64_encoded =&gt; false }.merge(options)
+</span><span class="inferred1"><a name="line66" /> 66       
+</span><span class="inferred0"><a name="line67" /> 67       # Do some validation on the arguments provided
+</span><span class="marked1"><a name="line68" /> 68       raise ArgumentError, &quot;:image_id must be provided&quot; if options[:image_id].nil? || options[:image_id].empty?
+</span><span class="marked0"><a name="line69" /> 69       raise ArgumentError, &quot;:min_count is not valid&quot; unless options[:min_count].to_i &gt; 0
+</span><span class="marked1"><a name="line70" /> 70       raise ArgumentError, &quot;:max_count is not valid&quot; unless options[:max_count].to_i &gt; 0
+</span><span class="marked0"><a name="line71" /> 71       raise ArgumentError, &quot;:addressing_type must be 'direct' or 'public'&quot; unless options[:addressing_type] == &quot;public&quot; || options[:addressing_type] == &quot;direct&quot;
+</span><span class="marked1"><a name="line72" /> 72       raise ArgumentError, &quot;:base64_encoded must be 'true' or 'false'&quot; unless options[:base64_encoded] == true || options[:base64_encoded] == false
+</span><span class="inferred0"><a name="line73" /> 73       
+</span><span class="inferred1"><a name="line74" /> 74       # If :user_data is passed in then URL escape and Base64 encode it
+</span><span class="inferred0"><a name="line75" /> 75       # as needed.  Need for URL Escape + Base64 encoding is determined 
+</span><span class="inferred1"><a name="line76" /> 76       # by :base64_encoded param.
+</span><span class="marked0"><a name="line77" /> 77       if options[:user_data]
+</span><span class="marked1"><a name="line78" /> 78         if options[:base64_encoded]
+</span><span class="marked0"><a name="line79" /> 79           user_data = options[:user_data]
+</span><span class="inferred1"><a name="line80" /> 80         else
+</span><span class="marked0"><a name="line81" /> 81           user_data = Base64.encode64(options[:user_data]).gsub(/\n/,&quot;&quot;).strip()
+</span><span class="inferred1"><a name="line82" /> 82         end
+</span><span class="inferred0"><a name="line83" /> 83       else
+</span><span class="marked1"><a name="line84" /> 84         user_data = nil
+</span><span class="inferred0"><a name="line85" /> 85       end
+</span><span class="inferred1"><a name="line86" /> 86       
+</span><span class="marked0"><a name="line87" /> 87       params = {
+</span><span class="inferred1"><a name="line88" /> 88         &quot;ImageId&quot;  =&gt; options[:image_id],
+</span><span class="inferred0"><a name="line89" /> 89         &quot;MinCount&quot; =&gt; options[:min_count].to_s,
+</span><span class="inferred1"><a name="line90" /> 90         &quot;MaxCount&quot; =&gt; options[:max_count].to_s,
+</span><span class="marked0"><a name="line91" /> 91       }.merge(pathlist(&quot;SecurityGroup&quot;, options[:group_id])) 
+</span><span class="inferred1"><a name="line92" /> 92       
+</span><span class="marked0"><a name="line93" /> 93       params[&quot;KeyName&quot;] = options[:key_name] unless options[:key_name].nil? 
+</span><span class="marked1"><a name="line94" /> 94       params[&quot;UserData&quot;] = user_data unless user_data.nil?
+</span><span class="inferred0"><a name="line95" /> 95       
+</span><span class="marked1"><a name="line96" /> 96       return response_generator(:action =&gt; &quot;RunInstances&quot;, :params =&gt; params)
+</span><span class="inferred0"><a name="line97" /> 97       
+</span><span class="inferred1"><a name="line98" /> 98     end
+</span><span class="inferred0"><a name="line99" /> 99     
+</span><span class="inferred1"><a name="line100" />100     
+</span><span class="inferred0"><a name="line101" />101     #Amazon Developer Guide Docs:
+</span><span class="inferred1"><a name="line102" />102     #
+</span><span class="inferred0"><a name="line103" />103     # The DescribeInstances operation returns information about instances owned by the user 
+</span><span class="inferred1"><a name="line104" />104     # making the request.
+</span><span class="inferred0"><a name="line105" />105     #
+</span><span class="inferred1"><a name="line106" />106     # An optional list of instance IDs may be provided to request information for those instances only. If no 
+</span><span class="inferred0"><a name="line107" />107     # instance IDs are provided, information of all relevant instances information will be returned. If an 
+</span><span class="inferred1"><a name="line108" />108     # instance is specified that does not exist a fault is returned. If an instance is specified that exists but is not 
+</span><span class="inferred0"><a name="line109" />109     # owned by the user making the request, then that instance will not be included in the returned results. 
+</span><span class="inferred1"><a name="line110" />110     # 
+</span><span class="inferred0"><a name="line111" />111     # Recently terminated instances will be included in the returned results for a small interval subsequent to 
+</span><span class="inferred1"><a name="line112" />112     # their termination. This interval is typically of the order of one hour
+</span><span class="inferred0"><a name="line113" />113     #
+</span><span class="inferred1"><a name="line114" />114     #Required Arguments:
+</span><span class="inferred0"><a name="line115" />115     #
+</span><span class="inferred1"><a name="line116" />116     # none
+</span><span class="inferred0"><a name="line117" />117     #
+</span><span class="inferred1"><a name="line118" />118     #Optional Arguments:
+</span><span class="inferred0"><a name="line119" />119     #
+</span><span class="inferred1"><a name="line120" />120     # :instance_id =&gt; Array (default : [])
+</span><span class="inferred0"><a name="line121" />121     #
+</span><span class="marked1"><a name="line122" />122     def describe_instances( options = {} )
+</span><span class="inferred0"><a name="line123" />123       
+</span><span class="marked1"><a name="line124" />124       options = { :instance_id =&gt; [] }.merge(options)
+</span><span class="inferred0"><a name="line125" />125       
+</span><span class="marked1"><a name="line126" />126       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
+</span><span class="inferred0"><a name="line127" />127       
+</span><span class="marked1"><a name="line128" />128       return response_generator(:action =&gt; &quot;DescribeInstances&quot;, :params =&gt; params)
+</span><span class="inferred0"><a name="line129" />129       
+</span><span class="inferred1"><a name="line130" />130     end
+</span><span class="inferred0"><a name="line131" />131     
+</span><span class="inferred1"><a name="line132" />132     
+</span><span class="inferred0"><a name="line133" />133     #Amazon Developer Guide Docs:
+</span><span class="inferred1"><a name="line134" />134     #
+</span><span class="inferred0"><a name="line135" />135     # The RebootInstances operation requests a reboot of one or more instances. This operation is 
+</span><span class="inferred1"><a name="line136" />136     # asynchronous; it only queues a request to reboot the specified instance(s). The operation will succeed 
+</span><span class="inferred0"><a name="line137" />137     # provided the instances are valid and belong to the user. Terminated instances will be ignored.
+</span><span class="inferred1"><a name="line138" />138     #
+</span><span class="inferred0"><a name="line139" />139     #Required Arguments:
+</span><span class="inferred1"><a name="line140" />140     #
+</span><span class="inferred0"><a name="line141" />141     # :instance_id =&gt; Array (default : [])
+</span><span class="inferred1"><a name="line142" />142     #
+</span><span class="inferred0"><a name="line143" />143     #Optional Arguments:
+</span><span class="inferred1"><a name="line144" />144     #
+</span><span class="inferred0"><a name="line145" />145     # none
+</span><span class="inferred1"><a name="line146" />146     #
+</span><span class="marked0"><a name="line147" />147     def reboot_instances( options = {} )
+</span><span class="inferred1"><a name="line148" />148       
+</span><span class="inferred0"><a name="line149" />149       # defaults
+</span><span class="marked1"><a name="line150" />150       options = { :instance_id =&gt; [] }.merge(options)
+</span><span class="inferred0"><a name="line151" />151       
+</span><span class="marked1"><a name="line152" />152       raise ArgumentError, &quot;No instance IDs provided&quot; if options[:instance_id].nil? || options[:instance_id].empty?
+</span><span class="inferred0"><a name="line153" />153       
+</span><span class="marked1"><a name="line154" />154       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
+</span><span class="inferred0"><a name="line155" />155       
+</span><span class="marked1"><a name="line156" />156       return response_generator(:action =&gt; &quot;RebootInstances&quot;, :params =&gt; params)
+</span><span class="inferred0"><a name="line157" />157       
+</span><span class="inferred1"><a name="line158" />158     end
+</span><span class="inferred0"><a name="line159" />159     
+</span><span class="inferred1"><a name="line160" />160     
+</span><span class="inferred0"><a name="line161" />161     #Amazon Developer Guide Docs:
+</span><span class="inferred1"><a name="line162" />162     #
+</span><span class="inferred0"><a name="line163" />163     # The TerminateInstances operation shuts down one or more instances. This operation is idempotent 
+</span><span class="inferred1"><a name="line164" />164     # and terminating an instance that is in the process of shutting down (or already terminated) will succeed. 
+</span><span class="inferred0"><a name="line165" />165     # Terminated instances remain visible for a short period of time (approximately one hour) after 
+</span><span class="inferred1"><a name="line166" />166     # termination, after which their instance ID is invalidated.
+</span><span class="inferred0"><a name="line167" />167     #
+</span><span class="inferred1"><a name="line168" />168     #Required Arguments:
+</span><span class="inferred0"><a name="line169" />169     #
+</span><span class="inferred1"><a name="line170" />170     # :instance_id =&gt; Array (default : [])
+</span><span class="inferred0"><a name="line171" />171     #
+</span><span class="inferred1"><a name="line172" />172     #Optional Arguments:
+</span><span class="inferred0"><a name="line173" />173     #
+</span><span class="inferred1"><a name="line174" />174     # none
+</span><span class="inferred0"><a name="line175" />175     #
+</span><span class="marked1"><a name="line176" />176     def terminate_instances( options = {} )
+</span><span class="inferred0"><a name="line177" />177       
+</span><span class="marked1"><a name="line178" />178       options = { :instance_id =&gt; [] }.merge(options)
+</span><span class="inferred0"><a name="line179" />179       
+</span><span class="marked1"><a name="line180" />180       raise ArgumentError, &quot;No :instance_id provided&quot; if options[:instance_id].nil? || options[:instance_id].empty?
+</span><span class="inferred0"><a name="line181" />181       
+</span><span class="marked1"><a name="line182" />182       params = pathlist(&quot;InstanceId&quot;, options[:instance_id])
+</span><span class="inferred0"><a name="line183" />183       
+</span><span class="marked1"><a name="line184" />184       return response_generator(:action =&gt; &quot;TerminateInstances&quot;, :params =&gt; params)
+</span><span class="inferred0"><a name="line185" />185       
+</span><span class="inferred1"><a name="line186" />186     end
+</span><span class="inferred0"><a name="line187" />187     
+</span><span class="inferred1"><a name="line188" />188   end
+</span><span class="inferred0"><a name="line189" />189   
+</span><span class="inferred1"><a name="line190" />190 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

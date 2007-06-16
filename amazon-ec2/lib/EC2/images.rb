@@ -118,6 +118,7 @@ module EC2
     #
     def deregister_image( options = {} )
       
+      # defaults
       options = { :image_id => "" }.merge(options)
       
       raise ArgumentError, "No :image_id provided" if options[:image_id].nil? || options[:image_id].empty?

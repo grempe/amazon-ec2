@@ -33,6 +33,7 @@ module EC2
     #
     def modify_image_attribute( options = {} )
       
+      # defaults
       options = { :image_id => "", 
                   :attribute => "launchPermission", 
                   :operation_type => "add", 
@@ -89,6 +90,7 @@ module EC2
     #
     def describe_image_attribute( options = {} )
       
+      # defaults
       options = {:image_id => "", 
                  :attribute => "launchPermission"
                  }.merge(options)
@@ -126,6 +128,7 @@ module EC2
     #
     def reset_image_attribute( options = {} )
       
+      # defaults
       options = {:image_id => "",
                  :attribute => "launchPermission"}.merge(options)
       

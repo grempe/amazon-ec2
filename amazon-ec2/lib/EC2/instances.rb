@@ -146,6 +146,7 @@ module EC2
     #
     def reboot_instances( options = {} )
       
+      # defaults
       options = { :instance_id => [] }.merge(options)
       
       raise ArgumentError, "No instance IDs provided" if options[:instance_id].nil? || options[:instance_id].empty?

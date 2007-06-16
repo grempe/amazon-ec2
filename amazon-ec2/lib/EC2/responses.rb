@@ -34,53 +34,11 @@ module EC2
   
   require 'xmlsimple'
   
-  #Introduction:
-  #  
-  # The Response object is created when a call is made to EC2 and an XML response is returned.
-  # The XML response from EC2 is parsed using XmlSimple and the data structures it contains
-  # are mapped onto this Response object.
-  #
-  # Your code will need to extract the necessary data from this object directly.
-  #
-  # The Response object inherits from the OpenStruct object class.  It also includes
-  # the Enumerable module and some additional methods have been overriden so
-  # the the Response object can behave like a fully Enumerable object.  Normally 
-  # an OpenStruct object does not have these Enumberable methods.  e.g.:
-  #
-  #   #members
-  #   #each
-  #   #each_pair
-  #   #[]
-  #   #[]=
-  #
-  # If the request to EC2 results in an Exception instead of a successful response
-  # then that exception will be thrown and you will need to rescue it in your code.
-  #
-  # All Exceptions that are known are defined in EC2/exceptions.rb and they all inherit from EC2:Error.
-  #
-  # See the file README.txt for more information on using the Response object.
-  #
-  # This object type is never directly instanciated by user code.
-  #
-  #Required Arguments:
-  #
-  # none
-  #
-  #Optional Arguments:
-  # none
-  #
   class Response < OpenStruct
     
     include Enumerable
     
-    #Required Arguments:
-    #
-    # :xml => http_xml (The response.body from a Net::HTTP response)
-    #
-    #Optional Arguments:
-    # :parse_options defines the options that you need to pass to XmlSimple.
-    # :parse_options => Hash (default : { 'ForceArray' => ['item'], 'SuppressEmpty' => nil } )
-    #
+    
     def self.parse(options = {})
       options = {
         :xml => "",

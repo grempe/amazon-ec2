@@ -556,7 +556,7 @@ span.run100 {
       </head>
       <body>
         <h3>C0 code coverage information</h3>
-        <p>Generated on Thu Jun 14 22:56:12 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
+        <p>Generated on Sat Jun 16 12:00:21 -0700 2007 with <a href='http://eigenclass.org/hiki.rb?rcov'>rcov 0.8.0</a>
         </p>
         <hr /><pre><span class='marked0'>Code reported as executed by Ruby looks like this...
 </span><span class='marked1'>and this: this line is also marked as covered.
@@ -580,7 +580,7 @@ span.run100 {
             <a href='lib-EC2-images_rb.html'>lib/EC2/images.rb</a>
           </td>
           <td class='lines_total'>
-            <tt>133</tt>
+            <tt>134</tt>
           </td>
           <td class='lines_code'>
             <tt>23</tt>
@@ -739,19 +739,20 @@ span.run100 {
 </span><span class="inferred1"><a name="line118" />118     #
 </span><span class="marked0"><a name="line119" />119     def deregister_image( options = {} )
 </span><span class="inferred1"><a name="line120" />120       
-</span><span class="marked0"><a name="line121" />121       options = { :image_id =&gt; &quot;&quot; }.merge(options)
-</span><span class="inferred1"><a name="line122" />122       
-</span><span class="marked0"><a name="line123" />123       raise ArgumentError, &quot;No :image_id provided&quot; if options[:image_id].nil? || options[:image_id].empty?
-</span><span class="inferred1"><a name="line124" />124       
-</span><span class="marked0"><a name="line125" />125       params = { &quot;ImageId&quot; =&gt; options[:image_id] }
-</span><span class="inferred1"><a name="line126" />126       
-</span><span class="marked0"><a name="line127" />127       return response_generator(:action =&gt; &quot;DeregisterImage&quot;, :params =&gt; params)
-</span><span class="inferred1"><a name="line128" />128       
-</span><span class="inferred0"><a name="line129" />129     end
-</span><span class="inferred1"><a name="line130" />130     
-</span><span class="inferred0"><a name="line131" />131   end
-</span><span class="inferred1"><a name="line132" />132   
-</span><span class="inferred0"><a name="line133" />133 end
+</span><span class="inferred0"><a name="line121" />121       # defaults
+</span><span class="marked1"><a name="line122" />122       options = { :image_id =&gt; &quot;&quot; }.merge(options)
+</span><span class="inferred0"><a name="line123" />123       
+</span><span class="marked1"><a name="line124" />124       raise ArgumentError, &quot;No :image_id provided&quot; if options[:image_id].nil? || options[:image_id].empty?
+</span><span class="inferred0"><a name="line125" />125       
+</span><span class="marked1"><a name="line126" />126       params = { &quot;ImageId&quot; =&gt; options[:image_id] }
+</span><span class="inferred0"><a name="line127" />127       
+</span><span class="marked1"><a name="line128" />128       return response_generator(:action =&gt; &quot;DeregisterImage&quot;, :params =&gt; params)
+</span><span class="inferred0"><a name="line129" />129       
+</span><span class="inferred1"><a name="line130" />130     end
+</span><span class="inferred0"><a name="line131" />131     
+</span><span class="inferred1"><a name="line132" />132   end
+</span><span class="inferred0"><a name="line133" />133   
+</span><span class="inferred1"><a name="line134" />134 end
 </span></pre><hr />    <p>Generated using the <a href='http://eigenclass.org/hiki.rb?rcov'>rcov code coverage analysis tool for Ruby</a> version 0.8.0.</p><p>
           <a href='http://validator.w3.org/check/referer'>
             <img src='http://www.w3.org/Icons/valid-xhtml10' height='31' alt='Valid XHTML 1.0!' width='88' />

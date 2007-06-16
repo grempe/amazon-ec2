@@ -141,6 +141,7 @@ module EC2
     #
     def authorize_security_group_ingress( options = {} )
       
+      # defaults
       options = { :group_name => nil,
                   :ip_protocol => nil,
                   :from_port => nil, 
@@ -202,6 +203,7 @@ module EC2
     #
     def revoke_security_group_ingress( options = {} )
     
+      # defaults
       options = { :group_name => nil,
                   :ip_protocol => nil,
                   :from_port => nil, 
