@@ -35,8 +35,8 @@ context "The Response classes " do
   
   
   specify "should return its members" do
-    @response.members.length.should.equal 4
-    test_array = ["return", "xmlns", "number", "name"].sort
+    @response.members.length.should.equal 5
+    test_array = ["return", "xmlns", "number", "name", "parent"].sort
     @response.members.sort.should.equal test_array
   end
   

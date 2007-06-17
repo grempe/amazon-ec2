@@ -90,49 +90,66 @@ module EC2
     end
     
     
-    # Override of to string method.
-    def to_s
-      s = "#<#{self.class}"
-      each_pair { |k,v|
-        if (v.kind_of?(String))
-          v = "\"#{v.gsub("\"", "\\\"")}\""
-        elsif (v.kind_of?(NilClass))
-          v = "nil"
-        end
-        s += " #{k}=#{v}"
-      }
+    # Helper for converting to string which support a long and short version
+    # to avoid recursion problems with parents.
+    def to_string(short=false)
+      s = "#<#{self.class}:0x#{(2 ** 32 + object_id).to_s(16).upcase}"
+      if (short)
+        s += " ..."
+      else
+        each_pair { |k,v|
+          if (v == self.parent && v.kind_of?(Response))
+            v = v.to_string(true)
+          elsif (v.kind_of?(String))
+            v = "\"#{v.gsub("\"", "\\\"")}\""
+          elsif (v.kind_of?(NilClass))
+            v = "nil"
+          end
+          s += " #{k}=#{v}"
+        }
+      end
       s += ">"
       return s
     end
+
+
+    # Override of to string method.
+    def to_s
+      return to_string
+    end
     
+
+    private 
 
     # Initialize the object by passing data to the OpenStruct initialize method
     # and then converting ourself to guarantee we have top-to-bottom data 
     # representation as a Response object.
-    def initialize(data)
+    def initialize(data, parent=nil)
       super(data)
-      Response.convert(self)
+      self.parent = parent
+      Response.convert(self, parent)
     end
     
     
-    private 
     # The "brains" of our Response class. This method takes an arbitray object and
     # depending on its class attempts to convert it.
-    def self.convert(obj)
+    def self.convert(obj, parent)
       if (obj.kind_of?(Response))
         # Recursively convert the object.
         obj.each_pair { |k,v|
-          obj[k] = convert(v)
+          if (v != obj.parent)
+            obj[k] = convert(v, obj)
+          end
         }
         return obj
       elsif (obj.kind_of?(Hash))
         # Hashes make good Responses already thanks to OpenStruct.
-        return Response.new(obj)
+        return Response.new(obj, parent)
       elsif (obj.kind_of?(Array))
         # With arrays, make sure each element is appropriately converted.
         new_arr = []
         obj.each { |elem|
-          new_arr << convert(elem)
+          new_arr << convert(elem, parent)
         }
         return new_arr
       else
