@@ -35,43 +35,28 @@
       Get Version
       <a href="http://rubyforge.org/projects/amazon-ec2" class="numbers">0.2.0</a>
     </div>
-    <h1>&#x2192; &#8216;amazon-ec2&#8217;</h1>
+    <h2>&#x2192; &#8216;amazon-ec2&#8217;</h2>
 
 
 	<h2>About</h2>
 
 
-	<p>Amazon Web Services offers a compute power on demand capability known as the Elastic Compute Cloud (EC2).  Using the current <span class="caps">API</span>&#8217;s the compute resources in the cloud can be provisioned on demand by making <span class="caps">SOAP</span> or <span class="caps">HTTP</span> Query <span class="caps">API</span> calls to <span class="caps">EC2</span>.</p>
+	<p>Amazon Web Services offers a compute power on demand capability known as the Elastic Compute Cloud (EC2).  The server resources in the cloud can be provisioned on demand by making <span class="caps">HTTP</span> Query <span class="caps">API</span> calls to <span class="caps">EC2</span>.</p>
 
 
-	<p>This &#8216;Amazon-EC2&#8217; Ruby Gem is an interface library that can be used to interact with the Amazon <span class="caps">EC2</span> system using the Query <span class="caps">API</span>.</p>
+	<p>This &#8216;amazon-ec2&#8217; Ruby Gem is an interface library that can be used to interact with the Amazon <span class="caps">EC2</span> system and control server resources on demand.</p>
 
 
-	<h2>Important Note</h2>
+	<h2>Important! : Are you upgrading from an earlier release?</h2>
 
 
-	<p>In December of 2006 Amazon Web Services released a sample Ruby code library for interacting with <span class="caps">EC2</span>.  I have packaged this sample code as this Ruby Gem as a service to the Ruby community and do not plan to be actively maintaining this code on a full-time basis.</p>
+	<p>This latest release of the gem has undergone a pretty massive re-write.  It is no longer compatible with code you may have written that made use of an older version of &#8216;amazon-ec2&#8217; (&lt; 0.2.0).</p>
 
 
-	<p>All I ask in return is if you have some Ruby skills and can contribute documentation, automated unit tests, bug fixes, or enhancements as Subversion patch files that you please do so.   I will be happy to incorporate those changes directly into the library as appropriate.</p>
+	<p>Any other gems which depended on &#8216;amazon-ec2&#8217; &lt; 0.2.0 will also no longer work with the new release.  The only project I am aware of that depended on earlier versions of &#8216;amazon-ec2&#8217; is &#8216;Capazon&#8217; which has now been deprecated and reborn as &#8216;Capsize&#8217;.  I rewrote the code with the assistance of the creator of Capazon; Jesse Newland.  Feel free to check out <a href="http://capsize.rubyforge.org/">Capsize</a> to learn more about this exciting new release.</p>
 
 
-	<p>Alternatively, if you are interested in becoming a more seriously involved contributing developer with full check-in privileges on the source code please feel free to contact me and we can discuss the best way to do so.</p>
-
-
-	<h2>Project Info</h2>
-
-
-	<p>This project is managed as a RubyForge project which you can find at <a href="http://amazon-ec2.rubyforge.org/">http://amazon-ec2.rubyforge.org/</a> and this is always the best place to find the latest news, report any bugs, submit feature requests, or provide patches.</p>
-
-
-	<h2>Documentation</h2>
-
-
-	<p>You can browse the complete RDoc generated documentation at:</p>
-
-
-	<p><a href="http://amazon-ec2.rubyforge.org/rdoc/">http://amazon-ec2.rubyforge.org/rdoc/</a></p>
+	<p>While we apologize for not being able to maintain backward compatibility, there were just too many major enhancements that needed to be made and it just would not have been possible.  I hope that the new robustness and new feature in the latest release make any pain worthwhile!  Of course the old versions are still out there, and can still be installed if you pass the version string into the gem command.  I just don&#8217;t recommend it unless you really have to.</p>
 
 
 	<h2>Installing</h2>
@@ -83,19 +68,43 @@
 	<h3>Installation pre-requisites</h3>
 
 
-	<p>Before you can make use of this gem you will need an <a href="https://aws-portal.amazon.com/gp/aws/developer/registration/index.html">Amazon Web Services developer account</a>.  This account must also be specifically enabled for Amazon <span class="caps">EC2</span> usage.  <span class="caps">AWS</span> will provide you with an &#8216;AWS Access Key ID&#8217; and a &#8216;Secret Access Key&#8217; which will allow you to authenticate any <span class="caps">API</span> calls you make and ensure correct billing to you for usage of the service.  Take note of these (and keep them secret!).</p>
+	<h4><a href="https://aws-portal.amazon.com/gp/aws/developer/registration/index.html">Amazon Web Services developer account</a>.</h4>
+
+
+	<p>You&#8217;ll need an account with <span class="caps">AWS</span> in order to use this gem at all.  That should be your first stop on this tour.  Your account must also be enabled for Amazon <span class="caps">EC2</span> usage.  After signup you&#8217;ll be provided with an &#8216;Access Key ID&#8217; and a &#8216;Secret Access Key&#8217;.  These allow you to authenticate any <span class="caps">API</span> calls you make and ensure correct billing to you for usage of their service.  Take note of these keys (and keep them safe and secret!).</p>
+
+
+	<h4>Gem Dependencies</h4>
+
+
+	<p>The following gems should be installed automatically as part of your install of amazon-ec2.  Most of them are testing dependencies but they should be painless to install even if you don&#8217;t plan on running the tests.</p>
+
+
+	<p><a href="http://xml-simple.rubyforge.org/">XmlSimple</a>  (required)</p>
+
+
+	<p><a href="http://mocha.rubyforge.org/">Mocha</a>  (optional for testing)</p>
+
+
+	<p><a href="http://eigenclass.org/hiki.rb?rcov">Rcov</a> (optional for testing)</p>
+
+
+	<p><a href="http://test-spec.rubyforge.org/test-spec/">Test-Spec</a> (optional for testing)</p>
 
 
 	<h3>Installing the gem</h3>
 
 
-	<p>Linux / <span class="caps">OS X</span> : <pre syntax="ruby">sudo gem install amazon-ec2</pre></p>
+	<p>Linux / <span class="caps">OS X</span> : <pre syntax="ruby">sudo gem install amazon-ec2 --include-dependencies</pre></p>
 
 
-	<p>Microsoft Windows : <pre syntax="ruby">gem install amazon-ec2</pre></p>
+	<p>Microsoft Windows : <pre syntax="ruby">gem install amazon-ec2 --include-dependencies</pre></p>
 
 
-	<h2>Sample Usage</h2>
+	<h2>Using the library</h2>
+
+
+	<h3>The basics&#8230;</h3>
 
 
 	<p>The library exposes one main interface class <pre syntax="ruby">AWSAuthConnection</pre></p>
@@ -107,9 +116,22 @@
 	<p>The public methods on &#8216;AWSAuthConnection&#8217; closely mirror the <span class="caps">EC2</span> Query <span class="caps">API</span>, and as such the Query <span class="caps">API</span> Reference in the <a href="http://developer.amazonwebservices.com/connect/kbcategory.jspa?categoryID=84"><span class="caps">EC2</span> Developer Guide</a> should be consulted.</p>
 
 
-	<h3>Standalone Ruby Script Usage Sample</h3>
+	<h3>Example Apps</h3>
 
 
+	<p>The best way to become familiar with &#8216;amazon-ec2&#8217; is to take it for a test drive.  We have provided two simple ways to do that to get you started.</p>
+
+
+	<h4>&#8216;ec2-gem-example.rb&#8217; Sample Test App</h4>
+
+
+	<h4>&#8216;ec2sh&#8217; command shell</h4>
+
+
+	<h3>Use in Ruby scripts</h3>
+
+
+You can take a look at a running sample
 <pre syntax="ruby">
 #!/usr/bin/env ruby
 
@@ -119,7 +141,7 @@ require 'ec2'
 ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
 SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
 
-ec2 = EC2::AWSAuthConnection.new(ACCESS_KEY_ID, SECRET_ACCESS_KEY)
+@ec2 = EC2::AWSAuthConnection.new(:access_key_id =&gt; ACCESS_KEY_ID, :secret_access_key =&gt; SECRET_ACCESS_KEY)
 
 puts "----- listing images -----" 
 ec2.describe_images.each do |image|
@@ -134,7 +156,7 @@ end
 
 <pre syntax="ruby">[your amazon-ec2 gem dir]/examples/ec2-example.rb</pre>
 
-	<h3>Ruby on Rails Usage Sample</h3>
+	<h3>Use in Ruby on Rails applications</h3>
 
 
 	<p>in config/environment.rb:</p>
@@ -217,20 +239,32 @@ ec2 = EC2::AWSAuthConnection.new(ACCESS_KEY_ID, SECRET_ACCESS_KEY)
 ...
 </pre>
 
-	<h2>Resources</h2>
+	<h2>Contributing</h2>
 
 
-	<h3>Project Related</h3>
+	<p>We can always use your help!  Do you have Ruby skills?  Do you see a bug or enhancement that you&#8217;d like to see fixed?  We would love to have your patches for documentation, test cases, or enhancements.</p>
 
 
-	<p><a href="http://aws.amazon.com/">http://aws.amazon.com/</a>
-<a href="http://amazon-ec2.rubyforge.org/">http://amazon-ec2.rubyforge.org/</a></p>
+	<h2>Project Info</h2>
 
 
-	<h3>Project Tools</h3>
+	<p>This project is managed as a RubyForge project which you can find at <a href="http://amazon-ec2.rubyforge.org/">http://amazon-ec2.rubyforge.org/</a> and this is always the best place to find the latest news, report any bugs, submit feature requests, or provide patches.</p>
 
 
-	<p><a href="http://rubyforge.org/projects/amazon-ec2/">Project Home</a>
+	<h2>Learning More</h2>
+
+
+	<h3>Documentation</h3>
+
+
+	<p>Complete RDoc generated documentation can be found at <a href="http://amazon-ec2.rubyforge.org/rdoc/">http://amazon-ec2.rubyforge.org/rdoc/</a></p>
+
+
+	<h3>Websites</h3>
+
+
+	<p><a href="http://aws.amazon.com/">Amazon Web Services Home</a>
+<a href="http://rubyforge.org/projects/amazon-ec2/">Project Home</a>
 <a href="http://rubyforge.org/frs/?group_id=2753">Downloads</a>
 <a href="http://rubyforge.org/scm/?group_id=2753">Browse Code</a>
 <a href="http://rubyforge.org/tracker/?group_id=2753">Report Bugs</a>
@@ -241,13 +275,16 @@ ec2 = EC2::AWSAuthConnection.new(ACCESS_KEY_ID, SECRET_ACCESS_KEY)
 	<h3>Related Projects</h3>
 
 
-	<p><a href="http://capazon.rubyforge.org/">Capazon</a></p>
+	<p><a href="http://capsize.rubyforge.org/">Capsize</a></p>
 
 
 	<h2>Credits</h2>
 
 
 	<p>The original sample code for this library was provided by Amazon Web Services, <span class="caps">LLC</span>.  Thanks to them for providing all of us with samples that got this started.</p>
+
+
+	<p>Thanks to all the great folks who submitted patches and kept this project rolling.  I would especially like to thank Sean Knapp, Kevin Clark, and Randy Bias.  Your patches and help are much appreciated.</p>
 
 
 	<p>Thanks to Dr. Nic Williams and his great &#8216;NewGem&#8217; Ruby Gem Generator.  This gem of a Gem helped me package up this code for distribution in a flash!  You can find Dr. Nic&#8217;s NewGem generator at <a href="http://newgem.rubyforge.org/">http://newgem.rubyforge.org/</a></p>
@@ -258,7 +295,7 @@ ec2 = EC2::AWSAuthConnection.new(ACCESS_KEY_ID, SECRET_ACCESS_KEY)
 
 	<p>Comments, patches, and bug reports are welcome. Send an email to the address below or use the RubyForge forum for this project.</p>
     <p class="coda">
-      <a href="mailto:grempe-at-rubyforge-dot-org">Glenn Rempe</a>, 10th June 2007<br>
+      <a href="mailto:grempe-at-rubyforge-dot-org">Glenn Rempe</a>, 16th June 2007<br>
     </p>
 </div>
 

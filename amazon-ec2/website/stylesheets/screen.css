@@ -1,5 +1,5 @@
 body {
-  background-color: #E1D1F1;
+  background-color: #FFFFFF;
   font-family: "Georgia", sans-serif;
   font-size: 16px;
   line-height: 1.6em;
@@ -17,6 +17,9 @@ h1 {
   letter-spacing: -0.1ex;
 	margin: 5px;
 }
+
+h2 { margin-top: 50px;}
+
 li {
   padding: 0;
   margin: 0;
