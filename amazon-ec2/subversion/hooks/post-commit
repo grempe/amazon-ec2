@@ -6,7 +6,7 @@ require 'cgi'
 # Instructions:
 # upload to grempe@rubyforge.org with sftp
 # to directory : /var/svn/amazon-ec2/hooks
-
+# chmod 774 post-commit
 
 # These are the Rubyforge config values.  Change as needed.
 SVNLOOK    = '/usr/local/bin/svnlook'
