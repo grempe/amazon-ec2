@@ -3,7 +3,7 @@
 #
 # Ruby Gem Name::  amazon-ec2
 # Author::    Glenn Rempe  (mailto:glenn@elasticworkbench.com)
-# Copyright:: Copyright (c) 2007 Elastic Workbench, LLC
+# Copyright:: Copyright (c) 2007 Glenn Rempe
 # License::   Distributes under the same terms as Ruby
 # Home::      http://amazon-ec2.rubyforge.org
 #++
@@ -25,6 +25,29 @@ context "The Response classes " do
     # test out adding arbitrary new values to the OpenStruct
     @response.name = "foo"
     @response.number = '123'
+  end
+  
+  
+  specify "should properly run the to_string(short) method for the short version" do
+    # sample response looks like: "#<EC2::Response:0x100A45F2E ...>".  Our response should look 
+    # exactly the same, except it should have different hex digits in the middle (after 0x) 
+    # that are nine chars long.
+    @response.to_string(true).should =~ /^#<EC2::Response:0x[0-9A-F]{1,9} ...>/
+  end
+  
+  
+  specify "should properly run the to_string(false) method for the long version" do
+    @response.to_string(false).should =~ /^#<EC2::Response:0x[0-9A-F]{1,9} name=\"foo\" number=\"123\" parent=nil return=\"true\"/
+  end
+  
+  
+  specify "should properly run the to_string(false) method for the long version when called with no params" do
+    @response.to_string.should =~ /^#<EC2::Response:0x[0-9A-F]{1,9} name=\"foo\" number=\"123\" parent=nil return=\"true\"/
+  end
+  
+  
+  specify "should provide the same results from to_s as from to_string(false) " do
+    @response.to_s.should =~ /^#<EC2::Response:0x[0-9A-F]{1,9} name=\"foo\" number=\"123\" parent=nil return=\"true\"/
   end
   
   

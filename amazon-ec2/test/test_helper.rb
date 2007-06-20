@@ -3,7 +3,7 @@
 #
 # Ruby Gem Name::  amazon-ec2
 # Author::    Glenn Rempe  (mailto:glenn@elasticworkbench.com)
-# Copyright:: Copyright (c) 2007 Elastic Workbench, LLC
+# Copyright:: Copyright (c) 2007 Glenn Rempe
 # License::   Distributes under the same terms as Ruby
 # Home::      http://amazon-ec2.rubyforge.org
 #++

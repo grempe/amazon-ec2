@@ -52,11 +52,15 @@ h2. Using the library
 h3. The basics...
 
 
-The library exposes one main interface class <pre syntax="ruby">AWSAuthConnection</pre>
+The library exposes one main interface module <pre syntax="ruby">EC2::Base</pre>
 
-It is through an instance of this class that you will perform all the operations for using the EC2 service including query string header signing.
+You pass this module method your connection credentials and it will return an object that you can use to make 
+method calls directly against EC2.  All the operations for using the EC2 service, including query string header signing,
+are handled automatically for you.
 
-The public methods on 'AWSAuthConnection' closely mirror the EC2 Query API, and as such the Query API Reference in the "EC2 Developer Guide":http://developer.amazonwebservices.com/connect/kbcategory.jspa?categoryID=84 should be consulted.
+We have tried to keep the public methods on 'Base' as close analogues of the EC2 Query API as defined by Amazon Web Services.  
+This similarity allows you to reference the Query API Reference in the "EC2 Developer Guide":http://developer.amazonwebservices.com/connect/kbcategory.jspa?categoryID=84. 
+In most cases the methods names only differ in how they are presented.  e.g. DescribeImages becomes '@ec2.describe_images() in Ruby.
 
 
 h3. Example Apps
@@ -83,7 +87,7 @@ require 'ec2'
 ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
 SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
   
-@ec2 = EC2::AWSAuthConnection.new(:access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY)
+@ec2 = EC2::Base.new(:access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY)
  
 puts "----- listing images -----"
 ec2.describe_images.each do |image|
@@ -111,7 +115,7 @@ require 'EC2'
 in app/controllers/your_controller.rb:
 <pre syntax="ruby">
 ...
-ec2 = EC2::AWSAuthConnection.new(ACCESS_KEY_ID, SECRET_ACCESS_KEY)
+ec2 = EC2::Base.new(ACCESS_KEY_ID, SECRET_ACCESS_KEY)
 @ec2_images = ec2.describe_images()
   
 # Or with some parameters

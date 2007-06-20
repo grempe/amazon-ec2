@@ -107,13 +107,17 @@
 	<h3>The basics&#8230;</h3>
 
 
-	<p>The library exposes one main interface class <pre syntax="ruby">AWSAuthConnection</pre></p>
+	<p>The library exposes one main interface module <pre syntax="ruby">EC2::Base</pre></p>
 
 
-	<p>It is through an instance of this class that you will perform all the operations for using the <span class="caps">EC2</span> service including query string header signing.</p>
+	<p>You pass this module method your connection credentials and it will return an object that you can use to make 
+method calls directly against <span class="caps">EC2</span>.  All the operations for using the <span class="caps">EC2</span> service, including query string header signing,
+are handled automatically for you.</p>
 
 
-	<p>The public methods on &#8216;AWSAuthConnection&#8217; closely mirror the <span class="caps">EC2</span> Query <span class="caps">API</span>, and as such the Query <span class="caps">API</span> Reference in the <a href="http://developer.amazonwebservices.com/connect/kbcategory.jspa?categoryID=84"><span class="caps">EC2</span> Developer Guide</a> should be consulted.</p>
+	<p>We have tried to keep the public methods on &#8216;Base&#8217; as close analogues of the <span class="caps">EC2</span> Query <span class="caps">API</span> as defined by Amazon Web Services.  
+This similarity allows you to reference the Query <span class="caps">API</span> Reference in the <a href="http://developer.amazonwebservices.com/connect/kbcategory.jspa?categoryID=84"><span class="caps">EC2</span> Developer Guide</a>. 
+In most cases the methods names only differ in how they are presented.  e.g. DescribeImages becomes &#8217;@ec2.describe_images() in Ruby.</p>
 
 
 	<h3>Example Apps</h3>
@@ -141,7 +145,7 @@ require 'ec2'
 ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
 SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
 
-@ec2 = EC2::AWSAuthConnection.new(:access_key_id =&gt; ACCESS_KEY_ID, :secret_access_key =&gt; SECRET_ACCESS_KEY)
+@ec2 = EC2::Base.new(:access_key_id =&gt; ACCESS_KEY_ID, :secret_access_key =&gt; SECRET_ACCESS_KEY)
 
 puts "----- listing images -----" 
 ec2.describe_images.each do |image|
@@ -170,7 +174,7 @@ require 'EC2'
 in app/controllers/your_controller.rb:
 <pre syntax="ruby">
 ...
-ec2 = EC2::AWSAuthConnection.new(ACCESS_KEY_ID, SECRET_ACCESS_KEY)
+ec2 = EC2::Base.new(ACCESS_KEY_ID, SECRET_ACCESS_KEY)
 @ec2_images = ec2.describe_images()
 
 # Or with some parameters
@@ -295,7 +299,7 @@ ec2 = EC2::AWSAuthConnection.new(ACCESS_KEY_ID, SECRET_ACCESS_KEY)
 
 	<p>Comments, patches, and bug reports are welcome. Send an email to the address below or use the RubyForge forum for this project.</p>
     <p class="coda">
-      <a href="mailto:grempe-at-rubyforge-dot-org">Glenn Rempe</a>, 16th June 2007<br>
+      <a href="mailto:grempe-at-rubyforge-dot-org">Glenn Rempe</a>, 19th June 2007<br>
     </p>
 </div>
 

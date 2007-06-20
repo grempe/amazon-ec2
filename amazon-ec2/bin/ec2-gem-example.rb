@@ -4,7 +4,7 @@
 #
 # Ruby Gem Name::  amazon-ec2
 # Author::    Glenn Rempe  (mailto:glenn@elasticworkbench.com)
-# Copyright:: Copyright (c) 2007 Elastic Workbench, LLC
+# Copyright:: Copyright (c) 2007 Glenn Rempe
 # License::   Distributes under the same terms as Ruby
 # Home::      http://amazon-ec2.rubyforge.org
 #++
@@ -29,7 +29,7 @@ if ACCESS_KEY_ID.nil? || ACCESS_KEY_ID.empty?
   exit
 end
 
-ec2 = EC2::AWSAuthConnection.new( :access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY )
+ec2 = EC2::Base.new( :access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY )
 
 puts "----- GEM Version -----"
 puts EC2::VERSION::STRING

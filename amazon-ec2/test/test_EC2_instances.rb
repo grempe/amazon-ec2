@@ -3,7 +3,7 @@
 #
 # Ruby Gem Name::  amazon-ec2
 # Author::    Glenn Rempe  (mailto:glenn@elasticworkbench.com)
-# Copyright:: Copyright (c) 2007 Elastic Workbench, LLC
+# Copyright:: Copyright (c) 2007 Glenn Rempe
 # License::   Distributes under the same terms as Ruby
 # Home::      http://amazon-ec2.rubyforge.org
 #++
@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "EC2 instances " do
   
   setup do
-    @ec2 = EC2::AWSAuthConnection.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
     
     @run_instances_response_body = <<-RESPONSE
     <RunInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">

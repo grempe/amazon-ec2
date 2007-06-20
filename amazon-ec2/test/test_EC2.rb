@@ -3,7 +3,7 @@
 #
 # Ruby Gem Name::  amazon-ec2
 # Author::    Glenn Rempe  (mailto:glenn@elasticworkbench.com)
-# Copyright:: Copyright (c) 2007 Elastic Workbench, LLC
+# Copyright:: Copyright (c) 2007 Glenn Rempe
 # License::   Distributes under the same terms as Ruby
 # Home::      http://amazon-ec2.rubyforge.org
 #++
@@ -15,8 +15,8 @@ context "The EC2 method " do
   setup do
   end
   
-  specify "EC2::AWSAuthConnection attribute readers should be available" do
-    @ec2 = EC2::AWSAuthConnection.new( :access_key_id => "not a key",
+  specify "EC2::Base attribute readers should be available" do
+    @ec2 = EC2::Base.new( :access_key_id => "not a key",
                                        :secret_access_key => "not a secret",
                                        :use_ssl => true,
                                        :server => "foo.example.com" )
@@ -27,8 +27,8 @@ context "The EC2 method " do
   end
   
   
-  specify "EC2::AWSAuthConnection should work with insecure connections as well" do
-    @ec2 = EC2::AWSAuthConnection.new( :access_key_id => "not a key",
+  specify "EC2::Base should work with insecure connections as well" do
+    @ec2 = EC2::Base.new( :access_key_id => "not a key",
                                        :secret_access_key => "not a secret",
                                        :use_ssl => false,
                                        :server => "foo.example.com" )

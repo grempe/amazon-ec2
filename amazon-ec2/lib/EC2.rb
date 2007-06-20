@@ -3,7 +3,7 @@
 #
 # Ruby Gem Name::  amazon-ec2
 # Author::    Glenn Rempe  (mailto:glenn@elasticworkbench.com)
-# Copyright:: Copyright (c) 2007 Elastic Workbench, LLC
+# Copyright:: Copyright (c) 2007 Glenn Rempe
 # License::   Distributes under the same terms as Ruby
 # Home::      http://amazon-ec2.rubyforge.org
 #++
@@ -11,7 +11,7 @@
 %w[ base64 cgi openssl digest/sha1 net/https rexml/document time ostruct ].each { |f| require f }
 
 # Require any lib files that we have bundled with this Ruby Gem in the lib/EC2 directory.
-# Parts of the EC2 module and AWSAuthConnection class are broken out into separate
+# Parts of the EC2 module and Base class are broken out into separate
 # files for maintainability and are organized by the functional groupings defined 
 # in the EC2 API developers guide.
 Dir[File.join(File.dirname(__FILE__), 'EC2/**/*.rb')].sort.each { |lib| require lib }
@@ -63,7 +63,7 @@ module EC2
   
   #Introduction:
   #
-  # The library exposes one main interface class, 'EC2::AWSAuthConnection'.
+  # The library exposes one main interface class, 'EC2::Base'.
   # This class provides all the methods for using the EC2 service 
   # including the handling of header signing and other security issues .  
   # This class uses Net::HTTP to interface with the EC2 Query API interface.
@@ -78,7 +78,7 @@ module EC2
   # :use_ssl => Boolean (default : true)
   # :server => String (default : 'ec2.amazonaws.com')
   #
-  class AWSAuthConnection
+  class Base
     
     attr_reader :use_ssl, :server, :port
     

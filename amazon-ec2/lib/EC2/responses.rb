@@ -3,7 +3,7 @@
 #
 # Ruby Gem Name::  amazon-ec2
 # Author::    Glenn Rempe  (mailto:glenn@elasticworkbench.com)
-# Copyright:: Copyright (c) 2007 Elastic Workbench, LLC
+# Copyright:: Copyright (c) 2007 Glenn Rempe
 # License::   Distributes under the same terms as Ruby
 # Home::      http://amazon-ec2.rubyforge.org
 #++
@@ -46,7 +46,7 @@ module EC2
       }.merge(options)
       return Response.new(XmlSimple.xml_in(options[:xml], options[:parse_options])) 
     end
-
+    
     
     # Every member of an OpenStruct object has getters and setters, the latter of which
     # has a method ending in "=". Find all of these methods, excluding those defined on
@@ -54,7 +54,7 @@ module EC2
     def members
       methods(false).sort.grep(/=/).map { |m| m[0...-1] } 
     end
-
+    
     
     # Required by the Enumerable module. Iterate over each item in the members array
     # and pass as a value the block passed to each using yield.
@@ -64,7 +64,7 @@ module EC2
       end
       self
     end
-
+    
     
     # Same as the each method, but with both key and value.
     #
@@ -76,14 +76,14 @@ module EC2
       end
       self
     end
-
+    
     
     # Alternative method for getting members.
     def [](member)
       send(member)
     end
-
-
+    
+    
     # Alternative method for setting members.
     def []=(member, value)
       send("#{member}=", value)
@@ -111,16 +111,16 @@ module EC2
       s += ">"
       return s
     end
-
-
+    
+    
     # Override of to string method.
     def to_s
       return to_string
     end
     
-
+    
     private 
-
+    
     # Initialize the object by passing data to the OpenStruct initialize method
     # and then converting ourself to guarantee we have top-to-bottom data 
     # representation as a Response object.

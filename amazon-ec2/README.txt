@@ -28,9 +28,9 @@ Before you can make use of this gem you will need an Amazon Web Services develop
 
 == Usage Examples
 
-The library exposes one main interface class EC2::AWSAuthConnection.  It is through an instance of this class that you will perform all the operations for using the EC2 service including query string header signing.
+The library exposes one main interface class EC2::Base.  It is through an instance of this class that you will perform all the operations for using the EC2 service including query string header signing.
 
-The public methods on EC2::AWSAuthConnection closely mirror the EC2 Query API, and as such the Query API Reference in the EC2 Developer Guide ( http://developer.amazonwebservices.com/connect/kbcategory.jspa?categoryID=84 ) will prove helpful.
+The public methods on EC2::Base closely mirror the EC2 Query API, and as such the Query API Reference in the EC2 Developer Guide ( http://developer.amazonwebservices.com/connect/kbcategory.jspa?categoryID=84 ) will prove helpful.
 
 === Ruby script usage example:
 
@@ -42,7 +42,7 @@ The public methods on EC2::AWSAuthConnection closely mirror the EC2 Query API, a
   ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
   SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
     
-  ec2 = EC2::AWSAuthConnection.new(ACCESS_KEY_ID, SECRET_ACCESS_KEY)
+  ec2 = EC2::Base.new(ACCESS_KEY_ID, SECRET_ACCESS_KEY)
    
   puts "----- listing images -----"
   ec2.describe_images.each do |image|
@@ -62,7 +62,7 @@ The public methods on EC2::AWSAuthConnection closely mirror the EC2 Query API, a
   class MyController < ApplicationController
     def index
       # Setup connection to Amazon EC2
-      ec2 = EC2::AWSAuthConnection.new("YOUR AWS ACCESS KEY ID", "YOUR AWS SECRET ACCESS KEY")
+      ec2 = EC2::Base.new("YOUR AWS ACCESS KEY ID", "YOUR AWS SECRET ACCESS KEY")
       @ec2_images = ec2.describe_images()
     end
   end
