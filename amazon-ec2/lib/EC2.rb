@@ -145,7 +145,7 @@ module EC2
         @http.start do
           
           # remove any keys that have nil or empty values
-          params.reject { |key, value| value.nil? or value.empty?}
+          params.reject! { |key, value| value.nil? or value.empty?}
           
           params.merge!( {"Action" => action,
                           "SignatureVersion" => "1",
@@ -174,7 +174,7 @@ module EC2
           response = @http.request(req, nil)
           
           # Make a call to see if we need to throw an error based on the response given by EC2
-          # All error classes are defined in exceptions.rb
+          # All error classes are defined in EC2/exceptions.rb
           ec2_error?(response)
           
           return response
