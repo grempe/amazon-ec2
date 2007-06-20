@@ -3,6 +3,11 @@
 require 'yaml'
 require 'cgi'
 
+# Instructions:
+# upload to grempe@rubyforge.org with sftp
+# to directory : /var/svn/amazon-ec2/hooks
+
+
 # These are the Rubyforge config values.  Change as needed.
 SVNLOOK    = '/usr/local/bin/svnlook'
 CURL       = '/usr/bin/curl'
@@ -11,12 +16,12 @@ LOG_PREPEND = '\n-{2}'
 
 # Configuration
 # Set your basecamp url, username, password and project id here.
-@basecamp_url = ""
+@basecamp_url = "http://rempe.grouphub.com"
 @basecamp_username = "subversion"
 @basecamp_password = ""
 # project and category should specify the ID number and not a name
-@basecamp_project = ""
-@basecamp_project_category = ""
+@basecamp_project = "1158019"
+@basecamp_project_category = "11307885"
 
 def swap_word(abr)
   case abr
