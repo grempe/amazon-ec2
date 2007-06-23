@@ -61,17 +61,15 @@ module EC2
     #
     #Required Arguments:
     #
-    # :group_name => Array (default : [])
+    # none
     #
     #Optional Arguments:
     #
-    # none
+    # :group_name => Array (default : [])
     #
     def describe_security_groups( options = {} )
       
       options = { :group_name => [] }.merge(options)
-      
-      raise ArgumentError, "No :group_name provided" if options[:group_name].nil? || options[:group_name] == ""
       
       params = pathlist("GroupName", options[:group_name] )
       

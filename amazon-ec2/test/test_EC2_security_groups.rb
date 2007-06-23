@@ -158,9 +158,6 @@ context "EC2 security groups " do
       
       lambda { @ec2.describe_security_groups( :group_name => "WebServers" ) }.should.not.raise(EC2::ArgumentError)
       
-      # :group_name can't be nil or empty
-      lambda { @ec2.describe_security_groups( :group_name => "" ) }.should.raise(EC2::ArgumentError)
-      lambda { @ec2.describe_security_groups( :group_name => nil ) }.should.raise(EC2::ArgumentError)
   end
   
   
