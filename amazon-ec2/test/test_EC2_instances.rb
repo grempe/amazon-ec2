@@ -129,7 +129,7 @@ context "EC2 instances " do
   
   
   specify "should be able to be run" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1').
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "AddressingType" => 'public').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
       
     @ec2.run_instances( :image_id => "ami-60a54009" ).should.be.an.instance_of EC2::Response
@@ -170,7 +170,7 @@ context "EC2 instances " do
   
   
   specify "method 'run_instances' should reject invalid arguments" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1').
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "AddressingType" => 'public').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
     
     lambda { @ec2.run_instances() }.should.raise(EC2::ArgumentError)
@@ -187,7 +187,7 @@ context "EC2 instances " do
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => "" ) }.should.raise(EC2::ArgumentError)
     
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "public" ) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "direct" ) }.should.not.raise(EC2::ArgumentError)
+    #lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "direct" ) }.should.not.raise(EC2::ArgumentError)
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => nil ) }.should.raise(EC2::ArgumentError)
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "" ) }.should.raise(EC2::ArgumentError)
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "foo" ) }.should.raise(EC2::ArgumentError)
@@ -201,14 +201,14 @@ context "EC2 instances " do
   
   
   specify "should be able to call run_instances with :user_data and :base64_encoded => true (default is false)" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "foo").
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "foo", "AddressingType" => 'public').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
     @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :group_id => [], :user_data => "foo", :base64_encoded => true ).should.be.an.instance_of EC2::Response
   end
   
   
   specify "should be able to call run_instances with :user_data and :base64_encoded => false" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "Zm9v").
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "Zm9v", "AddressingType" => 'public').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
     @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :group_id => [], :user_data => "foo", :base64_encoded => false ).should.be.an.instance_of EC2::Response
   end

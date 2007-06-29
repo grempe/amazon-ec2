@@ -92,7 +92,8 @@ module EC2
       
       params["KeyName"] = options[:key_name] unless options[:key_name].nil? 
       params["UserData"] = user_data unless user_data.nil?
-      
+      params["AddressingType"] = options[:addressing_type]
+       
       return response_generator(:action => "RunInstances", :params => params)
       
     end
