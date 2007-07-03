@@ -38,7 +38,7 @@ puts "----- ec2.methods.sort -----"
 p ec2.methods.sort
 
 puts "----- listing images owned by 'amazon' -----"
-ec2.describe_images(:owner_id => "amazon").each do |image|
+ec2.describe_images(:owner_id => "amazon").imagesSet.item.each do |image|
   image.members.each do |member|
     puts "#{member} => #{image[member]}" 
   end
