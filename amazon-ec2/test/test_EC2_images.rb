@@ -131,7 +131,7 @@ context "An EC2 image " do
       returns stub(:body => @describe_image_response_body, :is_a? => true)
     @ec2.describe_images( :owner_id => "amazon" ).imagesSet.item.length.should.equal 2
     
-    # 'self' - Those that I own
+    # 'amazon' - Those that are owned and created by AWS
     response = @ec2.describe_images( :owner_id => "amazon" )
     response.imagesSet.item[0].imageId.should.equal "ami-61a54008"
   end

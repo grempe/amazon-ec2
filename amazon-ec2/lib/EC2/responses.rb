@@ -44,7 +44,13 @@ module EC2
         :xml => "",
         :parse_options => { 'ForceArray' => ['item'], 'SuppressEmpty' => nil }
       }.merge(options)
-      return Response.new(XmlSimple.xml_in(options[:xml], options[:parse_options])) 
+      response = Response.new(XmlSimple.xml_in(options[:xml], options[:parse_options]))
+      
+      # set the xml attribute of the response object to contain the original XML that was
+      # returned by amazon.  This allows anyone to bypass our parsing if desired and just
+      # get right at the raw XML response.
+      response.xml = options[:xml]
+      return response
     end
     
     

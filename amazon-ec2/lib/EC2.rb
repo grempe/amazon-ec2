@@ -96,7 +96,7 @@ module EC2
       raise ArgumentError, "No :access_key_id provided" if options[:access_key_id].nil? || options[:access_key_id].empty?
       raise ArgumentError, "No :secret_access_key provided" if options[:secret_access_key].nil? || options[:secret_access_key].empty?
       raise ArgumentError, "No :use_ssl value provided" if options[:use_ssl].nil?
-      raise ArgumentError, "Invalid :use_ssl value provided, only 'true' or 'false'" unless options[:use_ssl] == true || options[:use_ssl] == false
+      raise ArgumentError, "Invalid :use_ssl value provided, only 'true' or 'false' allowed" unless options[:use_ssl] == true || options[:use_ssl] == false
       raise ArgumentError, "No :server provided" if options[:server].nil? || options[:server].empty?
       
       

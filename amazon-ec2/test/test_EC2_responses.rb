@@ -14,13 +14,13 @@ context "The Response classes " do
   
   
   setup do
-    http_xml = <<-RESPONSE
+    @http_xml = <<-RESPONSE
     <RebootInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
       <return>true</return>
     </RebootInstancesResponse>
     RESPONSE
     
-    @response = EC2::Response.parse(:xml => http_xml)
+    @response = EC2::Response.parse(:xml => @http_xml)
     
     # test out adding arbitrary new values to the OpenStruct
     @response.name = "foo"
@@ -58,8 +58,8 @@ context "The Response classes " do
   
   
   specify "should return its members" do
-    @response.members.length.should.equal 5
-    test_array = ["return", "xmlns", "number", "name", "parent"].sort
+    @response.members.length.should.equal 6
+    test_array = ["return", "xmlns", "number", "name", "parent", "xml"].sort
     @response.members.sort.should.equal test_array
   end
   
@@ -92,6 +92,10 @@ context "The Response classes " do
         v.should.equal '123'
       end
     }
+  end
+  
+  specify "should return the original amazon XML response in the 'xml' attribute of the response object." do
+    @response.xml.should.equal @http_xml
   end
   
   
