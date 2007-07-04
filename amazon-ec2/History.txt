@@ -6,34 +6,43 @@
  of the gem.  These older versions however will no longer be maintained.
  
  * MAJOR refactoring of how methods calls are made.  Now all methods are called with a simple hash
- of arguments.  This feels more "Ruby'ish".
+ of arguments and none of them are positional.  This feels much more "Ruby'ish".
  
  * MAJOR refactoring of how responses are returned to users.  No longer do you have to call the 
  .parse method, and no longer are you getting back simple arrays of information.  Responses 
- now come in the form of structured objects that contain all of the data for an object in 
- Enumerable form so you can use .each iterators.  All methods return an EC2::Response object
+ now come in the form of OpenStruct objects that contain all of the data for an object in 
+ Enumerable form so you can use iterators (.each, .each_pair, etc).  All methods return an EC2::Response object
  which inherits from OpenStruct.  The return data from EC2, which is in XML form, is parsed
- with XmlSimple and is used to directly populate the return data structure.  This allows us
+ with XmlSimple and is used to directly construct the return data structure.  This allows us
  to know with some confidence that the data structure returned from AWS will always be consistent
- with this library's responses.
+ with this library's responses.  There is also an .xml attribute for each response object that lets you 
+ see the full and complete XML response from AWS if that is useful to you.
  
  * Added an exception framework which will now throw appropriate Ruby exceptions
  that match those handed to us by Amazon EC2.  ArgumentError exceptions will also
- be thrown if you are making calls we know to be illegal.  You can rescue these exceptions and
- they all descend from EC2::Error.
+ be thrown if you are making calls we know to be illegal or malformed.  You should rescue 
+ these exceptions in your application instead of parsing text responses.  All exceptions 
+ descend from EC2::Error.  You can see them all in exceptions.rb in the gem install.
+ 
+ * Added a full suite of test/spec unit tests which currently cover 100% of the public methods
+ in this library.  We have abot 92% code coverage according to rcov.  This has greatly enhanced 
+ the reliability of the library as well as our confidence in the code.  
+ We used to have 0% test coverage. :-/ 
  
  * Added an EC2 command shell : 'ec2sh' which can be called from anywhere and gives you
- and interactive irb session with an EC2 connection pre-made for you as @ec2.  You can use this 
+ an interactive irb session with an EC2 connection pre-made for you as @ec2.  You can use this 
  to interactively execute any command on EC2 that this library supports.  Try @ec2.methods.sort 
  or @ec2.describe_images to test it out.  You must first setup two shell environment variables
  which contain your ACCESS_KEY_ID and SECRET_ACCESS_KEY for this to work.  Otherwise an error
  will be thrown when you try to start it.  This is way cool and shamelessly borrowed from 
  Marcel Molina's fine AWS::S3 library.
  
- * Updated API version in the query API request to 2007-01-19
+ * Updated API version in the query API request to 2007-01-19, and added all known method calls
+ in this version of the API to the gem (including reboot, viewing console output, NAT addressing 
+ and more!)
  
  * Removed .parse method as it is no longer needed or wanted.
- 
+
  * Removed 'verbose' attribute writer and a couple of related debug 'puts' calls in EC2.rb.
 
  * Removed deprecated alias's used in the library that were added in v0.0.3

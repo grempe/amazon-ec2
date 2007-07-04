@@ -1,6 +1,6 @@
 body {
   background-color: #FFFFFF;
-  font-family: "Georgia", sans-serif;
+  font-family: "Helvetica", sans-serif;
   font-size: 16px;
   line-height: 1.6em;
   padding: 1.6em 0 0 0;
@@ -17,17 +17,14 @@ h1 {
   letter-spacing: -0.1ex;
 	margin: 5px;
 }
-
-h2 { margin-top: 50px;}
-
 li {
   padding: 0;
   margin: 0;
   list-style-type: square;
 }
 a {
-  color: #5E5AFF;
-	background-color: #DAC;
+  color: #000000;
+	background-color: #FFFFCC;
   font-weight: normal;
   text-decoration: underline;
 }
@@ -42,7 +39,7 @@ blockquote {
 }
 
 #main {
-  width: 45em;
+  width: 47em;
   padding: 0;
   margin: 0 auto;
 }
@@ -82,9 +79,9 @@ td {
 }
 pre, code {
   font-family: monospace;
-  font-size: 90%;
-  line-height: 1.4em;
-  color: #ff8;
+  font-size: 80%;
+  line-height: 1.2em;
+  color: #FFFFFF;
   background-color: #111;
   padding: 2px 10px 2px 10px;
 }
