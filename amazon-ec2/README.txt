@@ -6,7 +6,7 @@ Amazon Web Services offers a compute power on demand capability known as the Ela
  
 This 'amazon-ec2' Ruby Gem is an interface library that can be used to interact with the Amazon EC2 system using the Query API (No SOAP please...).
 
-For more information please visit the project homepage at: http://amazon-ec2.rubyforge.org or the EC2 website at http://aws.amazon.com/ec2
+For the most complete and up-to date README information please visit the project homepage at: http://amazon-ec2.rubyforge.org or the EC2 website at http://aws.amazon.com/ec2
 
 
 == Installation
@@ -34,48 +34,90 @@ The public methods on EC2::Base closely mirror the EC2 Query API, and as such th
 
 === Ruby script usage example:
 
-  #!/usr/bin/env ruby
-  
-  require 'rubygems'
-  require 'ec2'
-  
-  ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
-  SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
-    
-  ec2 = EC2::Base.new(ACCESS_KEY_ID, SECRET_ACCESS_KEY)
-   
-  puts "----- listing images -----"
-  ec2.describe_images.each do |image|
-    image.members.each do |member|
-      puts "#{member} => #{image[member]}" 
-    end
-  end
+Try out the following bit of code.  This should walk through each image returned by a call to #describe_images and print out its key data.  Note in the example below that you cannot walk through the results of the #describe_images call with the '.each' iterator (You'll get errors if you try).  You need to instead walk through the Array of items which are in the 'imagesSet' embedded in the response.  This reflects exactly the XML hierarchy of data returned from EC2 which we parse to Ruby OpenStruct objects (EC2::Response).
+
+	#!/usr/bin/env ruby
+	
+	require 'rubygems'
+	require 'ec2'
+	
+	ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
+	SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
+	  
+	ec2 = EC2::Base.new(:access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY)
+	 
+	puts "----- listing images owned by 'amazon' -----"
+	ec2.describe_images(:owner_id => "amazon").imagesSet.item.each do |image|
+	  # OpenStruct objects have members!
+	  image.members.each do |member|
+	    puts "#{member} => #{image[member]}" 
+	  end
+	end
 
 === Ruby on Rails usage example:
 
 <b>config/environment.rb</b>
 
-  require 'EC2'
+	# Require the amazon-ec2 gem and make its methods available in your Rails app
+	# Put this at the bottom of your environment.rb
+	require 'EC2'
 
 <b>app/controllers/my_controller.rb</b>
 
-  class MyController < ApplicationController
-    def index
-      # Setup connection to Amazon EC2
-      ec2 = EC2::Base.new("YOUR AWS ACCESS KEY ID", "YOUR AWS SECRET ACCESS KEY")
-      @ec2_images = ec2.describe_images()
-    end
-  end
+	[some controller code ...]
+	
+	ec2 = EC2::Base.new(:access_key_id => "YOUR_AWS_ACCESS_KEY_ID", :secret_access_key => "YOUR_AWS_SECRET_ACCESS_KEY")
+	
+	# get ALL public images
+	@ec2_images = ec2.describe_images().imagesSet.item
+	
+	# Get info on all public EC2 images created by the Amazon EC2 team.
+	@ec2_images_amazon = ec2.describe_images(:owner_id => "amazon").imagesSet.item
+	
+	[some more controller code ...]
 
+	
 <b>app/views/my/index.rhtml</b>
 
-  <% for image in @ec2_images %>
-    <% for member in image.members %>
-      <%= "#{member} => #{image[member]}" %><br />
-    <% end %>
-    <br />
-  <% end %>
-
+	<h1>EC2 Test#index</h1>
+	
+	<h1>Sample 1 - debug() view</h1>
+	
+	<%= debug(@ec2_images_amazon) %>
+	
+	<h1>Sample 2 - Build a table</h1>
+	
+	<table border='1'>
+	  <tr>
+	    <th>image.imageId</th>
+	    <th>image.imageLocation</th>
+	    <th>image.imageOwnerId</th>
+	    <th>image.imageState</th>
+	    <th>image.isPublic</th>
+	  </tr>
+	
+	  <% for image in @ec2_images_amazon %>
+	    <tr>
+	      <td><%=h image.imageId %></td>
+	      <td><%=h image.imageLocation %></td>
+	      <td><%=h image.imageOwnerId %></td>
+	      <td><%=h image.imageState %></td>
+	      <td><%=h image.isPublic %></td>
+	    </tr>
+	  <% end %>
+	</table>
+	
+	<h1>Sample 3 - Iterate</h1>
+	
+	<% @ec2_images_amazon.each do |image| %>
+		<% image.each_pair do |key, value| %>
+			<% unless key == 'parent' %>
+				<%= "#{key} => #{value}" %><br />
+			<% end %>
+		<% end %>
+		<br />
+	<% end %>
+	
 
 == Additional Resources
 
