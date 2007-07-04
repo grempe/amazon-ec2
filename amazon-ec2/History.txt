@@ -1,4 +1,8 @@
-=== 0.2.0 2007-06-01
+
+=== 0.2.1 2007-07-03
+ * Some minor changes to the RDocs and README.txt
+
+=== 0.2.0 2007-07-03
 
  * MAJOR library changes : THESE CHANGES ARE NOT BACKWARD COMPATIBLE!!  You will need to update 
  the way in which you make calls, handle responses, and rescue exceptions from this library.  
