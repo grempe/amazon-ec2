@@ -15,7 +15,7 @@ context "The Response classes " do
   
   setup do
     @http_xml = <<-RESPONSE
-    <RebootInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
+    <RebootInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
       <return>true</return>
     </RebootInstancesResponse>
     RESPONSE

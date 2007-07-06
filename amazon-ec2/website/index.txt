@@ -22,6 +22,10 @@ h2. What's new?
 
 This release (>= 0.2.0) represents a major re-write of this gem and contains contributions from several people who make use of this gem for their own applications.  Trust us, its worth the pain of upgrading if you have been using an older version.  Some of the major enhancements you will find are:
 
+* Updated API version in the query API request to 2007-03-01, and added all known method calls
+in this version of the API to the gem (including paid AMI support with product codes, reboot, viewing console output, NAT addressing 
+and more!)
+
 * MAJOR library changes : THESE CHANGES ARE NOT BACKWARD COMPATIBLE!!  You will need to update 
 the way in which you make calls, handle responses, and rescue exceptions from this library.  
 If you prefer not to make these changes you can feel free to continue to use the older version 
@@ -58,10 +62,6 @@ or @ec2.describe_images to test it out.  You must first setup two shell environm
 which contain your ACCESS_KEY_ID and SECRET_ACCESS_KEY for this to work.  Otherwise an error
 will be thrown when you try to start it.  This is way cool and shamelessly borrowed from 
 Marcel Molina's fine AWS::S3 library.
-
-* Updated API version in the query API request to 2007-01-19, and added all known method calls
-in this version of the API to the gem (including reboot, viewing console output, NAT addressing 
-and more!)
 
 * Removed .parse method as it is no longer needed or wanted.
 

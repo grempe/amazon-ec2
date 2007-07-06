@@ -16,19 +16,19 @@ context "EC2 security groups " do
     @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
     
     @create_security_group_response_body = <<-RESPONSE
-    <CreateSecurityGroupResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19"> 
+    <CreateSecurityGroupResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01"> 
       <return>true</return> 
     </CreateSecurityGroupResponse>
     RESPONSE
     
     @delete_security_group_response_body = <<-RESPONSE
-    <DeleteSecurityGroupResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19"> 
+    <DeleteSecurityGroupResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01"> 
       <return>true</return> 
     </DeleteSecurityGroupResponse>
     RESPONSE
     
     @describe_security_groups_response_body = <<-RESPONSE
-    <DescribeSecurityGroupsResponse xm-lns="http://ec2.amazonaws.com/doc/2007-01-19">
+    <DescribeSecurityGroupsResponse xm-lns="http://ec2.amazonaws.com/doc/2007-03-01">
       <securityGroupInfo>
         <item>
           <ownerId>UYY3TLBUXIEON5NQVUUX6OMPWBZIQNFM</ownerId>
@@ -67,13 +67,13 @@ context "EC2 security groups " do
     RESPONSE
     
     @authorize_security_group_ingress_response_body = <<-RESPONSE
-    <AuthorizeSecurityGroupIngressResponse xm-lns="http://ec2.amazonaws.com/doc/2007-01-19">
+    <AuthorizeSecurityGroupIngressResponse xm-lns="http://ec2.amazonaws.com/doc/2007-03-01">
       <return>true</return>
     </AuthorizeSecurityGroupIngressResponse>
     RESPONSE
     
     @revoke_security_group_ingress_response_body = <<-RESPONSE
-    <RevokeSecurityGroupIngressResponse xm-lns="http://ec2.amazonaws.com/doc/2007-01-19">
+    <RevokeSecurityGroupIngressResponse xm-lns="http://ec2.amazonaws.com/doc/2007-03-01">
       <return>true</return>
     </RevokeSecurityGroupIngressResponse>
     RESPONSE

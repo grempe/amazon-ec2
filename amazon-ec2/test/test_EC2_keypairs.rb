@@ -16,7 +16,7 @@ context "EC2 keypairs " do
     @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
     
     @create_keypair_response_body = <<-RESPONSE
-      <CreateKeyPairResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19"> 
+      <CreateKeyPairResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01"> 
       <keyName>example-key-name</keyName> 
       <keyFingerprint>1f:51:ae:28:bf:89:e9:d8:1f:25:5d:37:2d:7d:b8:ca:9f:f5:f1:6f</keyFingerprint> 
       <keyMaterial>-----BEGIN RSA PRIVATE KEY-----
@@ -46,7 +46,7 @@ context "EC2 keypairs " do
     RESPONSE
     
     @describe_keypairs_response_body = <<-RESPONSE
-    <DescribeKeyPairsResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
+    <DescribeKeyPairsResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
       <keySet>
         <item>
           <keyName>example-key-name</keyName>
@@ -57,7 +57,7 @@ context "EC2 keypairs " do
     RESPONSE
     
     @delete_keypair_body = <<-RESPONSE
-    <DeleteKeyPair xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
+    <DeleteKeyPair xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
       <return>true</return>
     </DeleteKeyPair>
     RESPONSE

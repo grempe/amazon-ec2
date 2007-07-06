@@ -32,7 +32,13 @@ module EC2
   # mechanism for the whole library while making it more accurate and much less brittle to boot!
   #
   
-  require 'xmlsimple'
+  require 'rubygems'
+  begin
+    require 'xmlsimple'
+  rescue Exception => e
+    require 'xml-simple'
+  end
+  
   
   class Response < OpenStruct
     

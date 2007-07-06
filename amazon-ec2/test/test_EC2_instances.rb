@@ -16,7 +16,7 @@ context "EC2 instances " do
     @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
     
     @run_instances_response_body = <<-RESPONSE
-    <RunInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
+    <RunInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
       <reservationId>r-47a5402e</reservationId>
       <ownerId>495219933132</ownerId>
       <groupSet>
@@ -63,7 +63,7 @@ context "EC2 instances " do
     RESPONSE
     
     @describe_instances_response_body = <<-RESPONSE
-    <DescribeInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
+    <DescribeInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
       <reservationSet>
         <item>
           <reservationId>r-44a5402d</reservationId>
@@ -84,6 +84,11 @@ context "EC2 instances " do
               <privateDnsName>domU-12-31-35-00-1E-01.z-2.compute-1.internal</privateDnsName>
               <dnsName>ec2-72-44-33-4.z-2.compute-1.amazonaws.com</dnsName>
               <keyName>example-key-name</keyName>
+              <productCodesSet>
+                <item>
+                  <productCode>774F4FF8</productCode>
+                </item>
+              </productCodesSet>
             </item>
           </instancesSet>
         </item>
@@ -92,13 +97,13 @@ context "EC2 instances " do
     RESPONSE
     
     @reboot_instances_response_body = <<-RESPONSE
-    <RebootInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
+    <RebootInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
       <return>true</return>
     </RebootInstancesResponse>
     RESPONSE
     
     @terminate_instances_response_body = <<-RESPONSE
-    <TerminateInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19"> 
+    <TerminateInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01"> 
       <instancesSet> 
         <item> 
           <instanceId>i-28a64341</instanceId> 
@@ -238,6 +243,7 @@ context "EC2 instances " do
     response.reservationSet.item[0].instancesSet.item[0].privateDnsName.should.equal "domU-12-31-35-00-1E-01.z-2.compute-1.internal"
     response.reservationSet.item[0].instancesSet.item[0].dnsName.should.equal "ec2-72-44-33-4.z-2.compute-1.amazonaws.com"
     response.reservationSet.item[0].instancesSet.item[0].keyName.should.equal "example-key-name"
+    response.reservationSet.item[0].instancesSet.item[0].productCodesSet.item[0].productCode.should.equal "774F4FF8"
   end
   
   
@@ -256,6 +262,7 @@ context "EC2 instances " do
     response.reservationSet.item[0].instancesSet.item[0].privateDnsName.should.equal "domU-12-31-35-00-1E-01.z-2.compute-1.internal"
     response.reservationSet.item[0].instancesSet.item[0].dnsName.should.equal "ec2-72-44-33-4.z-2.compute-1.amazonaws.com"
     response.reservationSet.item[0].instancesSet.item[0].keyName.should.equal "example-key-name"
+    response.reservationSet.item[0].instancesSet.item[0].productCodesSet.item[0].productCode.should.equal "774F4FF8"
   end
   
   

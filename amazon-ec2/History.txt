@@ -1,3 +1,10 @@
+=== 0.2.3 2007-07-06
+ * Updated gem to work with new official release of AWS API version 2007-03-01 which occurred 
+ on July 6, 2007.
+  * Added support for primary new feature which supports Paid AMI's and the product codes 
+  associated with them.  Modified several methods to support this change, updated the test 
+  cases, and added a new method EC2#confirm_product_instance.
+
 === 0.2.2 2007-07-03
  * Minor change to test case.
 

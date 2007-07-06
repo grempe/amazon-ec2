@@ -10,6 +10,7 @@ lib/EC2/responses.rb
 lib/EC2/images.rb
 lib/EC2/instances.rb
 lib/EC2/keypairs.rb
+lib/EC2/products.rb
 lib/EC2/image_attributes.rb
 lib/EC2/security_groups.rb
 License.txt
@@ -24,6 +25,7 @@ test/test_EC2_image_attributes.rb
 test/test_EC2_images.rb
 test/test_EC2_instances.rb
 test/test_EC2_keypairs.rb
+test/test_EC2_products.rb
 test/test_EC2_responses.rb
 test/test_EC2_security_groups.rb
 test/test_EC2_version.rb

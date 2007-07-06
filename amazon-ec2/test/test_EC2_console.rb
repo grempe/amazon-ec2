@@ -16,7 +16,7 @@ context "The EC2 console " do
     @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
     
     @get_console_output_response_body = <<-RESPONSE
-    <GetConsoleOutputResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19">
+    <GetConsoleOutputResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
       <instanceId>i-28a64341</instanceId>
       <timestamp>2007-01-03 15:00:00</timestamp>
       <output>

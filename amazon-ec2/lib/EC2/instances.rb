@@ -39,6 +39,8 @@ module EC2
     # OpenSSH format). This can be done at boot time (as part of rclocal, for example) allowing for secure 
     # password-less access. As the need arises, other formats will also be considered.
     #
+    # If the AMI has a product code attached for which the user has not subscribed, the RunInstances call will fail.
+    #
     #Required Arguments:
     #
     # :image_id => String (Default : "")

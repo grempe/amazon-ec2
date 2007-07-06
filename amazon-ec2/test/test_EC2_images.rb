@@ -16,13 +16,13 @@ context "An EC2 image " do
     @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
     
     @register_image_response_body = <<-RESPONSE
-    <RegisterImageResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19"> 
+    <RegisterImageResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01"> 
       <imageId>ami-61a54008</imageId>
     </RegisterImageResponse>
     RESPONSE
     
     @describe_image_response_body = <<-RESPONSE
-    <DescribeImagesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19"> 
+    <DescribeImagesResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01"> 
       <imagesSet>
         <item>
           <imageId>ami-61a54008</imageId>
@@ -30,6 +30,11 @@ context "An EC2 image " do
           <imageState>available</imageState>
           <imageOwnerId>AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA</imageOwnerId>
           <isPublic>true</isPublic>
+          <productCodes>
+            <item>
+              <productCode>774F4FF8</productCode>
+            </item>
+          </productCodes>
         </item>
         <item>
           <imageId>ami-61a54009</imageId>
@@ -43,7 +48,7 @@ context "An EC2 image " do
     RESPONSE
     
     @deregister_image_response_body = <<-RESPONSE
-    <DeregisterImageResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19"> 
+    <DeregisterImageResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01"> 
       <return>true</return> 
     </DeregisterImageResponse>
     RESPONSE
@@ -93,6 +98,7 @@ context "An EC2 image " do
     response.imagesSet.item[0].imageState.should.equal "available"
     response.imagesSet.item[0].imageOwnerId.should.equal "AAAATLBUXIEON5NQVUUX6OMPWBZIAAAA"
     response.imagesSet.item[0].isPublic.should.equal "true"
+    response.imagesSet.item[0].productCodes.item[0].productCode.should.equal "774F4FF8"
     
     # test second 'Item' object returned
     response.imagesSet.item[1].imageId.should.equal "ami-61a54009"

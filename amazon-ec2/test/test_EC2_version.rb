@@ -16,7 +16,7 @@ context "The EC2 Gem " do
   setup do
     @major = 0
     @minor = 2
-    @tiny = 2
+    @tiny = 3
     @string = [@major, @minor, @tiny].join('.')
   end
   

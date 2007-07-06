@@ -33,7 +33,7 @@
     <h1>Amazon Web Services EC2 Ruby Gem</h1>
     <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/amazon-ec2"; return false'>
       Get Version
-      <a href="http://rubyforge.org/projects/amazon-ec2" class="numbers">0.2.1</a>
+      <a href="http://rubyforge.org/projects/amazon-ec2" class="numbers">0.2.3</a>
     </div>
     <h2>&#x2192; &#8216;amazon-ec2&#8217;</h2>
 
@@ -63,6 +63,13 @@
 
 
 	<p>This release (&gt;= 0.2.0) represents a major re-write of this gem and contains contributions from several people who make use of this gem for their own applications.  Trust us, its worth the pain of upgrading if you have been using an older version.  Some of the major enhancements you will find are:</p>
+
+
+	<ul>
+	<li>Updated <span class="caps">API</span> version in the query <span class="caps">API</span> request to 2007-03-01, and added all known method calls
+in this version of the <span class="caps">API</span> to the gem (including paid <span class="caps">AMI</span> support with product codes, reboot, viewing console output, <span class="caps">NAT</span> addressing 
+and more!)</li>
+	</ul>
 
 
 	<ul>
@@ -117,13 +124,6 @@ or @ec2.describe_images to test it out.  You must first setup two shell environm
 which contain your <span class="caps">ACCESS</span>_KEY_ID and <span class="caps">SECRET</span>_ACCESS_KEY for this to work.  Otherwise an error
 will be thrown when you try to start it.  This is way cool and shamelessly borrowed from 
 Marcel Molina&#8217;s fine <span class="caps">AWS</span>::S3 library.</li>
-	</ul>
-
-
-	<ul>
-	<li>Updated <span class="caps">API</span> version in the query <span class="caps">API</span> request to 2007-01-19, and added all known method calls
-in this version of the <span class="caps">API</span> to the gem (including reboot, viewing console output, <span class="caps">NAT</span> addressing 
-and more!)</li>
 	</ul>
 
 
@@ -543,7 +543,7 @@ ami-23b6534a
 
 	<p>Comments, patches, and bug reports are welcome. Send an email to the address below or use the RubyForge forum for this project.</p>
     <p class="coda">
-      <a href="mailto:grempe-at-rubyforge-dot-org">Glenn Rempe</a>, 3rd July 2007<br>
+      <a href="mailto:grempe-at-rubyforge-dot-org">Glenn Rempe</a>, 6th July 2007<br>
     </p>
 </div>
 
