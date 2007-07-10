@@ -1,3 +1,7 @@
+=== 0.2.4 2007-07-09
+ * Changed how require statement for xmlsimple is called so we don't get warnings when running in rails.
+ Now it looks like: require 'xmlsimple' unless defined? XmlSimple
+
 === 0.2.3 2007-07-06
  * Updated gem to work with new official release of AWS API version 2007-03-01 which occurred 
  on July 6, 2007.

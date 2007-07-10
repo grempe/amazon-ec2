@@ -34,9 +34,9 @@ module EC2
   
   require 'rubygems'
   begin
-    require 'xmlsimple'
+    require 'xmlsimple' unless defined? XmlSimple
   rescue Exception => e
-    require 'xml-simple'
+    require 'xml-simple' unless defined? XmlSimple
   end
   
   
