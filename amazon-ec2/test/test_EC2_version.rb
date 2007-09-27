@@ -2,7 +2,7 @@
 # Amazon Web Services EC2 Query API Ruby library
 #
 # Ruby Gem Name::  amazon-ec2
-# Author::    Glenn Rempe  (mailto:glenn@elasticworkbench.com)
+# Author::    Glenn Rempe  (mailto:grempe@rubyforge.org)
 # Copyright:: Copyright (c) 2007 Glenn Rempe
 # License::   Distributes under the same terms as Ruby
 # Home::      http://amazon-ec2.rubyforge.org
@@ -16,7 +16,7 @@ context "The EC2 Gem " do
   setup do
     @major = 0
     @minor = 2
-    @tiny = 4
+    @tiny = 5
     @string = [@major, @minor, @tiny].join('.')
   end
   

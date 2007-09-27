@@ -1,6 +1,13 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
+begin
+  require 'newgem'
+rescue LoadError
+  puts "\n\nGenerating the website requires the newgem RubyGem"
+  puts "Install: gem install newgem\n\n"
+  exit(1)
+end
 require 'redcloth'
 require 'syntax/convertors/html'
 require 'erb'
@@ -35,7 +42,7 @@ end
 
 if ARGV.length >= 1
   src, template = ARGV
-  template ||= File.dirname(__FILE__) + '/../website/template.rhtml'
+  template ||= File.join(File.dirname(__FILE__), '/../website/template.rhtml')
   
 else
   puts("Usage: #{File.split($0).last} source.txt [template.rhtml] > output.html")
@@ -50,7 +57,7 @@ File.open(src) do |fsrc|
   title_text = fsrc.readline
   body_text = fsrc.read
   syntax_items = []
-  body_text.gsub!(%r!<(pre|code)[^>]*?syntax=['"]([^'"]+)[^>]*>(.*?)</>!m){
+  body_text.gsub!(%r!<(pre|code)[^>]*?syntax=['"]([^'"]+)[^>]*>(.*?)</\1>!m){
     ident = syntax_items.length
     element, syntax, source = $1, $2, $3
     syntax_items << "<#{element} class='syntax'>#{convert_syntax(syntax, source)}</#{element}>"
@@ -58,7 +65,7 @@ File.open(src) do |fsrc|
   }
   title = RedCloth.new(title_text).to_html.gsub(%r!<.*?>!,'').strip
   body = RedCloth.new(body_text).to_html
-  body.gsub!(%r!(?:<pre><code>)?syntax-temp-(d+)(?:</code></pre>)?!){ syntax_items[$1.to_i] }
+  body.gsub!(%r!(?:<pre><code>)?syntax-temp-(\d+)(?:</code></pre>)?!){ syntax_items[$1.to_i] }
 end
 stat = File.stat(src)
 created = stat.ctime

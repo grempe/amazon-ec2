@@ -1,3 +1,8 @@
+=== 0.2.5 2007-09-26
+ * Updated using Dr. Nic's newgem v. 0.13.5
+ * Updated email address.
+ * No functional changes in the gem.
+
 === 0.2.4 2007-07-09
  * Changed how require statement for xmlsimple is called so we don't get warnings when running in rails.
  Now it looks like: require 'xmlsimple' unless defined? XmlSimple
@@ -201,4 +206,3 @@
    Amazon Web Services as example code.  No changes or enhancements to that code were made other than 
    packaging it as a Ruby Gem.
  * RubyForge project created.  http://amazon-ec2.rubyforge.org
- 
