@@ -8,7 +8,7 @@
 # Home::      http://amazon-ec2.rubyforge.org
 #++
 
-%w[ test/unit rubygems test/spec mocha stubba ].each { |f| 
+%w[ test/unit rubygems test/spec mocha stubba ].each { |f|
   begin
     require f
   rescue LoadError

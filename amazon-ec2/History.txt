@@ -1,3 +1,12 @@
+=== 0.2.6 2007-10-16
+ * Updated to support EC2 API version 2007-08-29 released on 2007-10-16
+ * Supports new instances type feature.  Specify an instance type to launch
+   (m1.small, m1.large, m1.xlarge) when you call the 'run_instances' method.
+
+   e.g. add to the params hash ':instance_type => "m1.small"'
+  * RunInstances and DescribeInstances now return the time when the Amazon EC2 instance was launched.
+  * Code Tidyup : Removed trailing spaces in code docs.
+
 === 0.2.5 2007-09-26
  * Updated using Dr. Nic's newgem v. 0.13.5
  * Updated email address.

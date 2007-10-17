@@ -11,22 +11,22 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
 context "EC2 security groups " do
-  
+
   setup do
     @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
-    
+
     @create_security_group_response_body = <<-RESPONSE
-    <CreateSecurityGroupResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01"> 
-      <return>true</return> 
+    <CreateSecurityGroupResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
+      <return>true</return>
     </CreateSecurityGroupResponse>
     RESPONSE
-    
+
     @delete_security_group_response_body = <<-RESPONSE
-    <DeleteSecurityGroupResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01"> 
-      <return>true</return> 
+    <DeleteSecurityGroupResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
+      <return>true</return>
     </DeleteSecurityGroupResponse>
     RESPONSE
-    
+
     @describe_security_groups_response_body = <<-RESPONSE
     <DescribeSecurityGroupsResponse xm-lns="http://ec2.amazonaws.com/doc/2007-03-01">
       <securityGroupInfo>
@@ -65,73 +65,73 @@ context "EC2 security groups " do
       </securityGroupInfo>
     </DescribeSecurityGroupsResponse>
     RESPONSE
-    
+
     @authorize_security_group_ingress_response_body = <<-RESPONSE
     <AuthorizeSecurityGroupIngressResponse xm-lns="http://ec2.amazonaws.com/doc/2007-03-01">
       <return>true</return>
     </AuthorizeSecurityGroupIngressResponse>
     RESPONSE
-    
+
     @revoke_security_group_ingress_response_body = <<-RESPONSE
     <RevokeSecurityGroupIngressResponse xm-lns="http://ec2.amazonaws.com/doc/2007-03-01">
       <return>true</return>
     </RevokeSecurityGroupIngressResponse>
     RESPONSE
-    
+
   end
-  
-  
+
+
   specify "should be able to be created" do
     @ec2.stubs(:make_request).with('CreateSecurityGroup', {"GroupName"=>"WebServers", "GroupDescription"=>"Web"}).
       returns stub(:body => @create_security_group_response_body, :is_a? => true)
     @ec2.create_security_group( :group_name => "WebServers", :group_description => "Web" ).should.be.an.instance_of EC2::Response
   end
-  
-  
+
+
   specify "method create_security_group should reject bad arguments" do
     @ec2.stubs(:make_request).with('CreateSecurityGroup', {"GroupName"=>"WebServers", "GroupDescription"=>"Web"}).
       returns stub(:body => @create_security_group_response_body, :is_a? => true)
-    
+
     lambda { @ec2.create_security_group( :group_name => "WebServers", :group_description => "Web" ) }.should.not.raise(EC2::ArgumentError)
     lambda { @ec2.create_security_group() }.should.raise(EC2::ArgumentError)
-    
+
     # :group_name can't be nil or empty
     lambda { @ec2.create_security_group( :group_name => "", :group_description => "Web" ) }.should.raise(EC2::ArgumentError)
     lambda { @ec2.create_security_group( :group_name => nil, :group_description => "Web" ) }.should.raise(EC2::ArgumentError)
-    
+
     # :group_description can't be nil or empty
     lambda { @ec2.create_security_group( :group_name => "WebServers", :group_description => "" ) }.should.raise(EC2::ArgumentError)
     lambda { @ec2.create_security_group( :group_name => "WebServers", :group_description => nil ) }.should.raise(EC2::ArgumentError)
   end
-  
-  
+
+
   specify "should be able to be deleted" do
     @ec2.stubs(:make_request).with('DeleteSecurityGroup', {"GroupName"=>"WebServers"}).
       returns stub(:body => @delete_security_group_response_body, :is_a? => true)
     @ec2.delete_security_group( :group_name => "WebServers" ).should.be.an.instance_of EC2::Response
   end
-  
-  
+
+
   specify "method delete_security_group should reject bad arguments" do
     @ec2.stubs(:make_request).with('DeleteSecurityGroup', {"GroupName"=>"WebServers"}).
       returns stub(:body => @delete_security_group_response_body, :is_a? => true)
-    
+
     lambda { @ec2.delete_security_group( :group_name => "WebServers" ) }.should.not.raise(EC2::ArgumentError)
     lambda { @ec2.delete_security_group() }.should.raise(EC2::ArgumentError)
-    
+
     # :group_name can't be nil or empty
     lambda { @ec2.delete_security_group( :group_name => "" ) }.should.raise(EC2::ArgumentError)
     lambda { @ec2.delete_security_group( :group_name => nil ) }.should.raise(EC2::ArgumentError)
   end
-  
-  
+
+
   specify "should be able to be described with describe_security_groups" do
     @ec2.stubs(:make_request).with('DescribeSecurityGroups', { "GroupName.1" => "WebServers", "GroupName.2" => "RangedPortsBySource" }).
       returns stub(:body => @describe_security_groups_response_body, :is_a? => true)
     @ec2.describe_security_groups( :group_name => ["WebServers", "RangedPortsBySource"] ).should.be.an.instance_of EC2::Response
-    
+
     response = @ec2.describe_security_groups( :group_name => ["WebServers", "RangedPortsBySource"] )
-    
+
     response.securityGroupInfo.item[0].ownerId.should.equal "UYY3TLBUXIEON5NQVUUX6OMPWBZIQNFM"
     response.securityGroupInfo.item[0].groupName.should.equal "WebServers"
     response.securityGroupInfo.item[0].groupDescription.should.equal "Web"
@@ -140,7 +140,7 @@ context "EC2 security groups " do
     response.securityGroupInfo.item[0].ipPermissions.item[0].toPort.should.equal "80"
     response.securityGroupInfo.item[0].ipPermissions.item[0].groups.should.be.nil
     response.securityGroupInfo.item[0].ipPermissions.item[0].ipRanges.item[0].cidrIp.should.equal "0.0.0.0/0"
-    
+
     response.securityGroupInfo.item[1].ownerId.should.equal "UYY3TLBUXIEON5NQVUUX6OMPWBZIQNFM"
     response.securityGroupInfo.item[1].groupName.should.equal "RangedPortsBySource"
     response.securityGroupInfo.item[1].groupDescription.should.equal "A"
@@ -150,17 +150,17 @@ context "EC2 security groups " do
     response.securityGroupInfo.item[1].ipPermissions.item[0].groups.should.be.nil
     response.securityGroupInfo.item[1].ipPermissions.item[0].ipRanges.should.be.nil
   end
-  
-  
+
+
   specify "method describe_security_groups should reject bad arguments" do
     @ec2.stubs(:make_request).with('DescribeSecurityGroups', {"GroupName.1"=>"WebServers"}).
       returns stub(:body => @describe_security_groups_response_body, :is_a? => true)
-      
+
       lambda { @ec2.describe_security_groups( :group_name => "WebServers" ) }.should.not.raise(EC2::ArgumentError)
-      
+
   end
-  
-  
+
+
   specify "permissions should be able to be added to a security group with authorize_security_group_ingress." do
     @ec2.stubs(:make_request).with('AuthorizeSecurityGroupIngress', { "GroupName"=>"WebServers",
                                                                       "IpProtocol"=>"tcp",
@@ -170,18 +170,18 @@ context "EC2 security groups " do
                                                                       "SourceSecurityGroupName"=>"Source SG Name",
                                                                       "SourceSecurityGroupOwnerId"=>"123"}).
       returns stub(:body => @authorize_security_group_ingress_response_body, :is_a? => true)
-    
-    @ec2.authorize_security_group_ingress( :group_name => "WebServers", 
-                                           :ip_protocol => "tcp", 
-                                           :from_port => "8000", 
-                                           :to_port => "80", 
-                                           :cidr_ip => "0.0.0.0/24", 
+
+    @ec2.authorize_security_group_ingress( :group_name => "WebServers",
+                                           :ip_protocol => "tcp",
+                                           :from_port => "8000",
+                                           :to_port => "80",
+                                           :cidr_ip => "0.0.0.0/24",
                                            :source_security_group_name => "Source SG Name",
                                            :source_security_group_owner_id => "123"
                                            ).should.be.an.instance_of EC2::Response
   end
-  
-  
+
+
   specify "permissions should be able to be revoked from a security group with revoke_security_group_ingress." do
     @ec2.stubs(:make_request).with('RevokeSecurityGroupIngress', { "GroupName"=>"WebServers",
                                                                    "IpProtocol"=>"tcp",
@@ -191,15 +191,15 @@ context "EC2 security groups " do
                                                                    "SourceSecurityGroupName"=>"Source SG Name",
                                                                    "SourceSecurityGroupOwnerId"=>"123"}).
       returns stub(:body => @revoke_security_group_ingress_response_body, :is_a? => true)
-    
-    @ec2.revoke_security_group_ingress( :group_name => "WebServers", 
-                                        :ip_protocol => "tcp", 
-                                        :from_port => "8000", 
-                                        :to_port => "80", 
-                                        :cidr_ip => "0.0.0.0/24", 
+
+    @ec2.revoke_security_group_ingress( :group_name => "WebServers",
+                                        :ip_protocol => "tcp",
+                                        :from_port => "8000",
+                                        :to_port => "80",
+                                        :cidr_ip => "0.0.0.0/24",
                                         :source_security_group_name => "Source SG Name",
                                         :source_security_group_owner_id => "123"
                                         ).should.be.an.instance_of EC2::Response
   end
-  
+
 end

@@ -11,14 +11,14 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
 context "EC2 keypairs " do
-  
+
   setup do
     @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
-    
+
     @create_keypair_response_body = <<-RESPONSE
-      <CreateKeyPairResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01"> 
-      <keyName>example-key-name</keyName> 
-      <keyFingerprint>1f:51:ae:28:bf:89:e9:d8:1f:25:5d:37:2d:7d:b8:ca:9f:f5:f1:6f</keyFingerprint> 
+      <CreateKeyPairResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
+      <keyName>example-key-name</keyName>
+      <keyFingerprint>1f:51:ae:28:bf:89:e9:d8:1f:25:5d:37:2d:7d:b8:ca:9f:f5:f1:6f</keyFingerprint>
       <keyMaterial>-----BEGIN RSA PRIVATE KEY-----
       MIIEoQIBAAKCAQBuLFg5ujHrtm1jnutSuoO8Xe56LlT+HM8v/xkaa39EstM3/aFxTHgElQiJLChp
       HungXQ29VTc8rc1bW0lkdi23OH5eqkMHGhvEwqa0HWASUMll4o3o/IX+0f2UcPoKCOVUR+jx71Sg
@@ -44,7 +44,7 @@ context "EC2 keypairs " do
       -----END RSA PRIVATE KEY-----</keyMaterial>
       </CreateKeyPairResponse>
     RESPONSE
-    
+
     @describe_keypairs_response_body = <<-RESPONSE
     <DescribeKeyPairsResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
       <keySet>
@@ -55,41 +55,41 @@ context "EC2 keypairs " do
       </keySet>
     </DescribeKeyPairsResponse>
     RESPONSE
-    
+
     @delete_keypair_body = <<-RESPONSE
     <DeleteKeyPair xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
       <return>true</return>
     </DeleteKeyPair>
     RESPONSE
-    
+
   end
-  
-  
+
+
   specify "should be able to be created" do
     @ec2.stubs(:make_request).with('CreateKeyPair', {"KeyName"=>"example-key-name"}).
       returns stub(:body => @create_keypair_response_body, :is_a? => true)
-    
+
     @ec2.create_keypair( :key_name => "example-key-name" ).should.be.an.instance_of EC2::Response
-    
+
     response = @ec2.create_keypair( :key_name => "example-key-name" )
     response.keyName.should.equal "example-key-name"
     response.keyFingerprint.should.equal "1f:51:ae:28:bf:89:e9:d8:1f:25:5d:37:2d:7d:b8:ca:9f:f5:f1:6f"
     response.keyMaterial.should.not.equal ""
     response.keyMaterial.should.not.be.nil
   end
-  
-  
+
+
   specify "method create_keypair should reject bad arguments" do
     @ec2.stubs(:make_request).with('CreateKeyPair', {"KeyName"=>"example-key-name"}).
       returns stub(:body => @create_keypair_response_body, :is_a? => true)
-    
+
     lambda { @ec2.create_keypair( :key_name => "example-key-name" ) }.should.not.raise(EC2::ArgumentError)
     lambda { @ec2.create_keypair() }.should.raise(EC2::ArgumentError)
     lambda { @ec2.create_keypair( :key_name => nil ) }.should.raise(EC2::ArgumentError)
     lambda { @ec2.create_keypair( :key_name => "" ) }.should.raise(EC2::ArgumentError)
   end
-  
-  
+
+
   specify "should be able to be described with describe_keypairs" do
     @ec2.stubs(:make_request).with('DescribeKeyPairs', {"KeyName.1"=>"example-key-name"}).
       returns stub(:body => @describe_keypairs_response_body, :is_a? => true)
@@ -98,8 +98,8 @@ context "EC2 keypairs " do
     response.keySet.item[0].keyName.should.equal "example-key-name"
     response.keySet.item[0].keyFingerprint.should.equal "1f:51:ae:28:bf:89:e9:d8:1f:25:5d:37:2d:7d:b8:ca:9f:f5:f1:6f"
   end
-  
-  
+
+
   specify "should be able to be deleted with delete_keypairs" do
     @ec2.stubs(:make_request).with('DeleteKeyPair', {"KeyName"=>"example-key-name"}).
       returns stub(:body => @delete_keypair_body, :is_a? => true)
@@ -107,17 +107,17 @@ context "EC2 keypairs " do
     response = @ec2.delete_keypair( :key_name => "example-key-name" )
     response.return.should.equal "true"
   end
-  
-  
+
+
   specify "method delete_keypair should reject bad argument" do
     @ec2.stubs(:make_request).with('DeleteKeyPair', {"KeyName"=>"example-key-name"}).
       returns stub(:body => @delete_keypair_body, :is_a? => true)
-    
+
     lambda { @ec2.delete_keypair( :key_name => "example-key-name" ) }.should.not.raise(EC2::ArgumentError)
     lambda { @ec2.delete_keypair() }.should.raise(EC2::ArgumentError)
     lambda { @ec2.delete_keypair( :key_name => nil ) }.should.raise(EC2::ArgumentError)
     lambda { @ec2.delete_keypair( :key_name => "" ) }.should.raise(EC2::ArgumentError)
   end
-  
-  
+
+
 end

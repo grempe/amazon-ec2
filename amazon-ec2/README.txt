@@ -137,7 +137,7 @@ Try out the following bit of code.  This should walk through each image returned
 
 === Related Projects
 
-* Capazon : http://capazon.rubyforge.org
+* Capsize : http://capsize.rubyforge.org
 
 == Credits
 
