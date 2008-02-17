@@ -77,20 +77,23 @@ module EC2
   #
   # :use_ssl => Boolean (default : true)
   # :server => String (default : 'ec2.amazonaws.com')
+  # :proxy_server => String (default : nil)
   #
   class Base
 
-    attr_reader :use_ssl, :server, :port
+    attr_reader :use_ssl, :server, :proxy_server, :port
 
     def initialize( options = {} )
 
       options = { :access_key_id => "",
                   :secret_access_key => "",
                   :use_ssl => true,
-                  :server => DEFAULT_HOST
+                  :server => DEFAULT_HOST,
+                  :proxy_server => nil
                   }.merge(options)
 
       @server = options[:server]
+      @proxy_server = options[:proxy_server]
       @use_ssl = options[:use_ssl]
 
       raise ArgumentError, "No :access_key_id provided" if options[:access_key_id].nil? || options[:access_key_id].empty?
@@ -112,7 +115,15 @@ module EC2
 
       @access_key_id = options[:access_key_id]
       @secret_access_key = options[:secret_access_key]
-      @http = Net::HTTP.new(options[:server], @port)
+
+      # Use proxy server if defined
+      # Based on patch by Mathias Dalheimer.  20070217
+      proxy = @proxy_server ? URI.parse(@proxy_server) : OpenStruct.new
+      @http = Net::HTTP::Proxy( proxy.host,
+                                proxy.port,
+                                proxy.user,
+                                proxy.password).new(options[:server], @port)
+
       @http.use_ssl = @use_ssl
 
       # Don't verify the SSL certificates.  Avoids SSL Cert warning in log on every GET.

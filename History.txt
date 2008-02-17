@@ -1,3 +1,6 @@
+=== 0.2.7 2008-02-17
+ * Add support for HTTP Proxy when :proxy_server argument is passed.  Based on patch from Mathias Dalheimer.
+
 === 0.2.6 2007-10-16
  * Updated to support EC2 API version 2007-08-29 released on 2007-10-16
  * Supports new instances type feature.  Specify an instance type to launch
