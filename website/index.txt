@@ -400,7 +400,7 @@ h3. Websites
 "Amazon Web Services Home":http://aws.amazon.com/
 "Project Home":http://rubyforge.org/projects/amazon-ec2/
 "Downloads":http://rubyforge.org/frs/?group_id=2753
-"Browse Code":http://rubyforge.org/scm/?group_id=2753
+"Browse Code":http://github.com/grempe/amazon-ec2
 "Report Bugs":http://rubyforge.org/tracker/?group_id=2753
 "Request Features":http://rubyforge.org/tracker/?group_id=2753
 "Submit Patches":http://rubyforge.org/tracker/?group_id=2753
