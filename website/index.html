@@ -47,35 +47,27 @@
 	<p>This &#8216;amazon-ec2&#8217; Ruby Gem is an interface library that can be used to interact with the Amazon <span class="caps">EC2</span> system and control server resources on demand from your Ruby scripts, or from Ruby on Rails applications.</p>
 
 
-	<h2>Important! : Are you upgrading from an earlier release?</h2>
-
-
-	<p>This latest release of the gem has undergone a pretty massive re-write.  It is no longer compatible with code you may have written that made use of an older version of &#8216;amazon-ec2&#8217; (&lt; 0.2.0).</p>
-
-
-	<p>Any other gems which depended on &#8216;amazon-ec2&#8217; &lt; 0.2.0 will also no longer work with the new release.  The only project I am aware of that depended on the earlier version of &#8216;amazon-ec2&#8217; was &#8216;Capazon&#8217;.  This project, which allows you to control <span class="caps">EC2</span> from your Capistrano recipies, has now been deprecated and is being reborn as &#8216;Capsize&#8217;.  I rewrote the code for Capsize with the assistance of the original creator of Capazon; Jesse Newland.  Feel free to check out <a href="http://capsize.rubyforge.org/">Capsize</a> to learn more about this exciting new release!</p>
-
-
-	<p>While we apologize for not being able to maintain backward compatibility with the original &#8216;amazon-ec2&#8217; gem, there were just too many major enhancements that needed to be made and it just was&#8217;nt possible.  I hope that the new robustness and new features in this new release make any transitional pain worthwhile!  Of course the old versions are still out there on RubyForge, and you can still install them if you pass the version string into the gem install command.  I just don&#8217;t recommend it unless you really have to.</p>
-
-
 	<h2>What&#8217;s new?</h2>
 
 
-	<p>This release (&gt;= 0.2.0) represents a major re-write of this gem and contains contributions from several people who make use of this gem for their own applications.  Trust us, its worth the pain of upgrading if you have been using an older version.  Some of the major enhancements you will find are:</p>
+	<p>20070217 &#8211; This project&#8217;s source code now only available from our master Git repository at GitHub.  The Subversion repository at Rubyforge will be cleared but we&#8217;ll still publish any new gem versions to Rubyforge so you can still easily install them.  Unless you plan to work on the source code this should have no effect on you.  Now you can browse, clone or fork from our Git repository at <a href="http://github.com/grempe/amazon-ec2">http://github.com/grempe/amazon-ec2</a>.  Please let us know if you have patches you would like us to pull from your git repository.</p>
+
+
+	<p>This 0.2.0 + series represents a major re-write of this gem and contains contributions from several people who make use of this gem for their own applications.  Trust us, its worth the pain of upgrading if you have been using an older version.  Some of the major enhancements you will find are:</p>
 
 
 	<ul>
-	<li>Updated <span class="caps">API</span> version in the query <span class="caps">API</span> request to 2007-03-01, and added all known method calls
-in this version of the <span class="caps">API</span> to the gem (including paid <span class="caps">AMI</span> support with product codes, reboot, viewing console output, <span class="caps">NAT</span> addressing 
-and more!)</li>
+	<li>Updated <span class="caps">API</span> version in the query <span class="caps">API</span> request to 2007-08-29, and added all known method calls
+in this version of the <span class="caps">API</span> to the gem (including the new instance types(small, medium, large)).
+Previous releases have kept pace with changes such as the addition of paid <span class="caps">AMI</span> support with
+product codes, instance reboot, viewing of console output, <span class="caps">NAT</span> addressing and more!</li>
 	</ul>
 
 
 	<ul>
-	<li><span class="caps">MAJOR</span> library changes : <span class="caps">THESE CHANGES ARE NOT BACKWARD COMPATIBLE</span>!!  You will need to update 
-the way in which you make calls, handle responses, and rescue exceptions from this library.  
-If you prefer not to make these changes you can feel free to continue to use the older version 
+	<li><span class="caps">MAJOR</span> library changes : <span class="caps">THESE CHANGES ARE NOT BACKWARD COMPATIBLE</span>!!  You will need to update
+the way in which you make calls, handle responses, and rescue exceptions from this library.
+If you prefer not to make these changes you can feel free to continue to use the older version
 of the gem.  These older versions however will no longer be maintained.</li>
 	</ul>
 
@@ -87,14 +79,14 @@ of arguments and none of them are positional.  This feels much more &#8220;Ruby&
 
 
 	<ul>
-	<li><span class="caps">MAJOR</span> refactoring of how responses are returned to users.  No longer do you have to call the 
-.parse method, and no longer are you getting back simple arrays of information.  Responses 
-now come in the form of OpenStruct objects that contain all of the data for an object in 
+	<li><span class="caps">MAJOR</span> refactoring of how responses are returned to users.  No longer do you have to call the
+.parse method, and no longer are you getting back simple arrays of information.  Responses
+now come in the form of OpenStruct objects that contain all of the data for an object in
 Enumerable form so you can use iterators (.each, .each_pair, etc).  All methods return an <span class="caps">EC2</span>::Response object
 which inherits from OpenStruct.  The return data from <span class="caps">EC2</span>, which is in <span class="caps">XML</span> form, is parsed
 with XmlSimple and is used to directly construct the return data structure.  This allows us
 to know with some confidence that the data structure returned from <span class="caps">AWS</span> will always be consistent
-with this library&#8217;s responses.  There is also an .xml attribute for each response object that lets you 
+with this library&#8217;s responses.  There is also an .xml attribute for each response object that lets you
 see the full and complete <span class="caps">XML</span> response from <span class="caps">AWS</span> if that is useful to you.</li>
 	</ul>
 
@@ -102,27 +94,27 @@ see the full and complete <span class="caps">XML</span> response from <span clas
 	<ul>
 	<li>Added an exception framework which will now throw appropriate Ruby exceptions
 that match those handed to us by Amazon <span class="caps">EC2</span>.  ArgumentError exceptions will also
-be thrown if you are making calls we know to be illegal or malformed.  You should rescue 
-these exceptions in your application instead of parsing text responses.  All exceptions 
+be thrown if you are making calls we know to be illegal or malformed.  You should rescue
+these exceptions in your application instead of parsing text responses.  All exceptions
 descend from <span class="caps">EC2</span>::Error.  You can see them all in exceptions.rb in the gem install.</li>
 	</ul>
 
 
 	<ul>
 	<li>Added a full suite of test/spec unit tests which currently cover 100% of the public methods
-in this library.  We have abot 92% code coverage according to rcov.  This has greatly enhanced 
-the reliability of the library as well as our confidence in the code.  
+in this library.  We have abot 92% code coverage according to rcov.  This has greatly enhanced
+the reliability of the library as well as our confidence in the code.
 We used to have 0% test coverage. :-/</li>
 	</ul>
 
 
 	<ul>
 	<li>Added an <span class="caps">EC2</span> command shell : &#8216;ec2sh&#8217; which can be called from anywhere and gives you
-an interactive irb session with an <span class="caps">EC2</span> connection pre-made for you as @ec2.  You can use this 
-to interactively execute any command on <span class="caps">EC2</span> that this library supports.  Try @ec2.methods.sort 
+an interactive irb session with an <span class="caps">EC2</span> connection pre-made for you as @ec2.  You can use this
+to interactively execute any command on <span class="caps">EC2</span> that this library supports.  Try @ec2.methods.sort
 or @ec2.describe_images to test it out.  You must first setup two shell environment variables
 which contain your <span class="caps">ACCESS</span>_KEY_ID and <span class="caps">SECRET</span>_ACCESS_KEY for this to work.  Otherwise an error
-will be thrown when you try to start it.  This is way cool and shamelessly borrowed from 
+will be thrown when you try to start it.  This is way cool and shamelessly borrowed from
 Marcel Molina&#8217;s fine <span class="caps">AWS</span>::S3 library.</li>
 	</ul>
 
@@ -186,11 +178,11 @@ Marcel Molina&#8217;s fine <span class="caps">AWS</span>::S3 library.</li>
 	<h3>Setting up&#8230;</h3>
 
 
-	<p>The &#8216;ec2sh&#8217; and &#8216;ec2-gem-example.rb&#8217; scripts which will be introduced to you shortly expect your <span class="caps">AWS EC2</span> credentials to 
-be stored as shell environment variables which are accessible to those scripts.  This makes them convenient to use whenever 
-you need to do a quick query to see what images you have available to you, whats running now,  or to start or stop an 
-instance on <span class="caps">EC2</span>.  You&#8217;ll find &#8216;ec2sh&#8217; to be a very handy tool.  I&#8217;ll describe only the <span class="caps">OS X</span> route for setting up (of course 
-the setup steps will vary depending on your particular system and preferred shell).  If you don&#8217;t want to 
+	<p>The &#8216;ec2sh&#8217; and &#8216;ec2-gem-example.rb&#8217; scripts which will be introduced to you shortly expect your <span class="caps">AWS EC2</span> credentials to
+be stored as shell environment variables which are accessible to those scripts.  This makes them convenient to use whenever
+you need to do a quick query to see what images you have available to you, whats running now,  or to start or stop an
+instance on <span class="caps">EC2</span>.  You&#8217;ll find &#8216;ec2sh&#8217; to be a very handy tool.  I&#8217;ll describe only the <span class="caps">OS X</span> route for setting up (of course
+the setup steps will vary depending on your particular system and preferred shell).  If you don&#8217;t want to
 do it this way, feel free to copy these scripts from the gem dir to any location where you can run them from and modify them directly to include your credentials.</p>
 
 
@@ -223,7 +215,7 @@ do it this way, feel free to copy these scripts from the gem dir to any location
 	<p>The library exposes one main interface module <pre class='syntax'><span class="constant">EC2</span><span class="punct">::</span><span class="constant">Base</span></pre></p>
 
 
-	<p>This method requires arguments which include your <span class="caps">AWS</span> credentials and it will return an object that you can use to make 
+	<p>This method requires arguments which include your <span class="caps">AWS</span> credentials and it will return an object that you can use to make
 method calls directly against <span class="caps">EC2</span>.  All the operations for using the <span class="caps">EC2</span> service, including query string header signing,
 are handled automatically for you.  The connection string will look something like this:</p>
 
@@ -233,9 +225,9 @@ are handled automatically for you.  The connection string will look something li
 </pre></p>
 
 
-	<p>We have tried to keep the public methods on &#8216;amazon-ec2&#8217; as close as possible to the <span class="caps">AWS EC2</span> Query <span class="caps">API</span>.  
-This similarity allows you to reference the Query <span class="caps">API</span> Reference in the <a href="http://developer.amazonwebservices.com/connect/kbcategory.jspa?categoryID=84"><span class="caps">EC2</span> Developer Guide</a> and be able to get started right away. 
-In most cases the methods names only differ in how they are presented.  e.g. &#8216;DescribeImages&#8217; becomes &#8217;#describe_images() in Ruby.  
+	<p>We have tried to keep the public methods on &#8216;amazon-ec2&#8217; as close as possible to the <span class="caps">AWS EC2</span> Query <span class="caps">API</span>.
+This similarity allows you to reference the Query <span class="caps">API</span> Reference in the <a href="http://developer.amazonwebservices.com/connect/kbcategory.jspa?categoryID=84"><span class="caps">EC2</span> Developer Guide</a> and be able to get started right away.
+In most cases the methods names only differ in how they are presented.  e.g. &#8216;DescribeImages&#8217; becomes &#8217;#describe_images() in Ruby.
 Feel free to browse the full <a href="http://amazon-ec2.rubyforge.org/rdoc/">RDoc documentation</a> for all classes and methods of &#8216;amazon-ec2&#8217; if you want more details.</p>
 
 
@@ -269,42 +261,42 @@ Feel free to browse the full <a href="http://amazon-ec2.rubyforge.org/rdoc/">RDo
 	<p><pre class='syntax'>
 
 <span class="ident">hostname</span><span class="punct">:/</span><span class="regex">tmp</span><span class="punct">/</span><span class="ident">rails</span><span class="punct">/</span><span class="ident">amazon_test</span> <span class="ident">glenn</span><span class="global">$ </span><span class="ident">ec2sh</span>
-  
+
   <span class="punct">'</span><span class="string">ec2sh</span><span class="punct">'</span> <span class="ident">usage</span> <span class="punct">:</span>
-  <span class="constant">This</span> <span class="ident">is</span> <span class="ident">an</span> <span class="ident">interactive</span> <span class="punct">'</span><span class="string">irb</span><span class="punct">'</span> <span class="ident">command</span> <span class="ident">shell</span> <span class="ident">that</span> <span class="ident">allows</span> <span class="ident">you</span> <span class="ident">to</span> <span class="ident">use</span> <span class="ident">all</span> 
+  <span class="constant">This</span> <span class="ident">is</span> <span class="ident">an</span> <span class="ident">interactive</span> <span class="punct">'</span><span class="string">irb</span><span class="punct">'</span> <span class="ident">command</span> <span class="ident">shell</span> <span class="ident">that</span> <span class="ident">allows</span> <span class="ident">you</span> <span class="ident">to</span> <span class="ident">use</span> <span class="ident">all</span>
   <span class="ident">commands</span> <span class="ident">available</span> <span class="ident">to</span> <span class="ident">the</span> <span class="ident">amazon</span><span class="punct">-</span><span class="ident">ec2</span> <span class="ident">gem</span><span class="punct">.</span>  <span class="ident">You</span><span class="punct">'</span><span class="string">ll find this to be a
   great tool to help you debug issues and practice running commands
   against the live EC2 servers prior to putting them in your code.
-  
-  The EC2 connection is wired to the class instance </span><span class="punct">'</span><span class="attribute">@ec2</span><span class="punct">'</span><span class="string">.  Make method calls 
-  on this to execute commands on EC2.  Adding a #to_s 
+
+  The EC2 connection is wired to the class instance </span><span class="punct">'</span><span class="attribute">@ec2</span><span class="punct">'</span><span class="string">.  Make method calls
+  on this to execute commands on EC2.  Adding a #to_s
   at the end of any command should give you a full String representation of the
   response.  The #xml data is available for each response
   which allows you to view the full and complete XML response returned by
-  EC2 without any parsing applied.  This is useful for viewing the 
+  EC2 without any parsing applied.  This is useful for viewing the
   hierarchy of an entire response in a friendly way (if XML is friendly
   to you!).  Understanding the hierarchy of the XML response is critical
   to making effective use of this library.
-    
+
     Examples to try:
-      
+
       returns : all ec2 public methods
       &gt;&gt; @ec2.methods.sort
-      
+
       returns : a string representation of ALL images
       &gt;&gt; @ec2.describe_images.to_s
-      
+
       returns : an Array of EC2::Response objects, each an EC2 image and its data
       &gt;&gt; @ec2.describe_images.imagesSet.item
       &gt;&gt; @ec2.describe_images.imagesSet.item[0] (an OpenStruct of a single item in that array)
       &gt;&gt; @ec2.describe_images.imagesSet.item[0].to_s (a String representation of that OpenStruct item)
-      
+
       returns : an XML representation of all images
       &gt;&gt; puts @ec2.describe_images.xml
-      
+
       returns : an XML representation of all images owned by Amazon
       &gt;&gt; puts @ec2.describe_images(:owner_id =&gt; </span><span class="punct">'</span><span class="ident">amazon</span><span class="punct">'</span><span class="string">).xml
-    
+
 &gt;&gt; @ec2.describe_images.imagesSet.item[0].to_s
 =&gt; &quot;#&lt;EC2::Response:0x100A465B4 imageId=\&quot;ami-018e6b68\&quot; imageLocation=\&quot;rbuilder-online/phonehome-1.5.6-x86_10132.img.manifest.xml\&quot; imageOwnerId=\&quot;099034111737\&quot; imageState=\&quot;available\&quot; isPublic=\&quot;true\&quot; parent=#&lt;EC2::Response:0x100A469A6 ...&gt;&gt;&quot;
 <span class="normal">
@@ -325,14 +317,14 @@ Feel free to browse the full <a href="http://amazon-ec2.rubyforge.org/rdoc/">RDo
 
 <span class="constant">ACCESS_KEY_ID</span> <span class="punct">=</span> <span class="punct">'</span><span class="string">--YOUR AWS ACCESS KEY ID--</span><span class="punct">'</span>
 <span class="constant">SECRET_ACCESS_KEY</span> <span class="punct">=</span> <span class="punct">'</span><span class="string">--YOUR AWS SECRET ACCESS KEY--</span><span class="punct">'</span>
-  
+
 <span class="ident">ec2</span> <span class="punct">=</span> <span class="constant">EC2</span><span class="punct">::</span><span class="constant">Base</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="symbol">:access_key_id</span> <span class="punct">=&gt;</span> <span class="constant">ACCESS_KEY_ID</span><span class="punct">,</span> <span class="symbol">:secret_access_key</span> <span class="punct">=&gt;</span> <span class="constant">SECRET_ACCESS_KEY</span><span class="punct">)</span>
- 
+
 <span class="ident">puts</span> <span class="punct">&quot;</span><span class="string">----- listing images owned by 'amazon' -----</span><span class="punct">&quot;</span>
 <span class="ident">ec2</span><span class="punct">.</span><span class="ident">describe_images</span><span class="punct">(</span><span class="symbol">:owner_id</span> <span class="punct">=&gt;</span> <span class="punct">&quot;</span><span class="string">amazon</span><span class="punct">&quot;).</span><span class="ident">imagesSet</span><span class="punct">.</span><span class="ident">item</span><span class="punct">.</span><span class="ident">each</span> <span class="keyword">do</span> <span class="punct">|</span><span class="ident">image</span><span class="punct">|</span>
   <span class="comment"># OpenStruct objects have members!</span>
   <span class="ident">image</span><span class="punct">.</span><span class="ident">members</span><span class="punct">.</span><span class="ident">each</span> <span class="keyword">do</span> <span class="punct">|</span><span class="ident">member</span><span class="punct">|</span>
-    <span class="ident">puts</span> <span class="punct">&quot;</span><span class="string"><span class="expr">#{member}</span> =&gt; <span class="expr">#{image[member]}</span></span><span class="punct">&quot;</span> 
+    <span class="ident">puts</span> <span class="punct">&quot;</span><span class="string"><span class="expr">#{member}</span> =&gt; <span class="expr">#{image[member]}</span></span><span class="punct">&quot;</span>
   <span class="keyword">end</span>
 <span class="keyword">end</span>
 </pre></p>
@@ -390,7 +382,7 @@ Feel free to browse the full <a href="http://amazon-ec2.rubyforge.org/rdoc/">RDo
     &lt;th&gt;image.imageState&lt;</span><span class="punct">/</span><span class="ident">th</span><span class="punct">&gt;</span>
     <span class="punct">&lt;</span><span class="ident">th</span><span class="punct">&gt;</span><span class="ident">image</span><span class="punct">.</span><span class="ident">isPublic</span><span class="punct">&lt;/</span><span class="regex">th&gt;
   &lt;</span><span class="punct">/</span><span class="ident">tr</span><span class="punct">&gt;</span>
-  
+
   <span class="punct">&lt;%</span> <span class="keyword">for</span> <span class="ident">image</span> <span class="keyword">in</span> <span class="attribute">@ec2_images_amazon</span> <span class="punct">%&gt;</span><span class="string">
     &lt;tr</span><span class="punct">&gt;</span>
       <span class="punct">&lt;</span><span class="ident">td</span><span class="punct">&gt;&lt;%=</span><span class="string">h image.imageId %&gt;&lt;/td&gt;
@@ -419,11 +411,11 @@ Feel free to browse the full <a href="http://amazon-ec2.rubyforge.org/rdoc/">RDo
 	<h4>Important notes regarding the structure of <span class="caps">EC2</span>::Response Objects</h4>
 
 
-	<p>One of the key benefits of this new version of the library is that all responses from <span class="caps">EC2</span> are bundled up in 
-a real data structure and no longer require parsing of text.  We use an OpenStruct as the parent for the <span class="caps">EC2</span>::Response 
-object and we populate it directly from the <span class="caps">XML</span> given to us by <span class="caps">EC2</span> in response to any command we issue.  This means that 
-future changes to the <span class="caps">API</span> and what is returned by <span class="caps">EC2</span> will largely be handled transparently by the gem.  This is a huge 
-benefit.  What this means though, is that you may have to do a little homework on what actually gets returned by <span class="caps">EC2</span> as <span class="caps">XML</span>.  
+	<p>One of the key benefits of this new version of the library is that all responses from <span class="caps">EC2</span> are bundled up in
+a real data structure and no longer require parsing of text.  We use an OpenStruct as the parent for the <span class="caps">EC2</span>::Response
+object and we populate it directly from the <span class="caps">XML</span> given to us by <span class="caps">EC2</span> in response to any command we issue.  This means that
+future changes to the <span class="caps">API</span> and what is returned by <span class="caps">EC2</span> will largely be handled transparently by the gem.  This is a huge
+benefit.  What this means though, is that you may have to do a little homework on what actually gets returned by <span class="caps">EC2</span> as <span class="caps">XML</span>.
 For example, when you make a #describe_images call in ec2sh to <span class="caps">EC2</span> what you will get back will look like:</p>
 
 
@@ -506,7 +498,7 @@ For example, when you make a #describe_images call in ec2sh to <span class="caps
 	<h2>Project Info</h2>
 
 
-	<p>This project is managed as a RubyForge project which you can find at <a href="http://amazon-ec2.rubyforge.org/">http://amazon-ec2.rubyforge.org/</a> and this is always the best place to find the latest news, report any bugs, submit feature requests, or provide patches.</p>
+	<p>This project is managed as a RubyForge project which you can find at <a href="http://amazon-ec2.rubyforge.org/">http://amazon-ec2.rubyforge.org/</a> and this is always the best place to find the latest news, report any bugs, or submit feature requests.  If you are interesting in viewing or working with the source code you can find everything you need at : <a href="http://github.com/grempe/amazon-ec2">http://github.com/grempe/amazon-ec2</a>.</p>
 
 
 	<h2>Learning More</h2>
@@ -553,7 +545,7 @@ For example, when you make a #describe_images call in ec2sh to <span class="caps
 
 	<p>Comments, patches, and bug reports are welcome. Send an email to the address below or use the RubyForge forum for this project.</p>
     <p class="coda">
-      <a href="mailto:grempe-at-rubyforge-dot-org">Glenn Rempe</a>, 26th September 2007<br>
+      <a href="mailto:grempe-at-rubyforge-dot-org">Glenn Rempe</a>, 17th February 2008<br>
     </p>
 </div>
 

@@ -9,16 +9,9 @@ Amazon Web Services offers a compute power on demand capability known as the Ela
 This 'amazon-ec2' Ruby Gem is an interface library that can be used to interact with the Amazon EC2 system and control server resources on demand from your Ruby scripts, or from Ruby on Rails applications.
 
 
-h2. Important! : Are you upgrading from an earlier release (< 0.2.0)?
-
-This 0.2.0+ versions of the gem have undergone a pretty massive re-write.  It is no longer compatible with code you may have written that made use of an older version of 'amazon-ec2' (< 0.2.0).
-
-Any other gems which depended on 'amazon-ec2' < 0.2.0 will also no longer work with the new release.  The only project I am aware of that depended on the earlier version of 'amazon-ec2' was 'Capazon'.  This project, which allows you to control EC2 from your Capistrano recipies, has now been deprecated and is being reborn as 'Capsize'.  I rewrote the code for Capsize with the assistance of the original creator of Capazon; Jesse Newland.  Feel free to check out "Capsize":http://capsize.rubyforge.org/ to learn more about this exciting new release!
-
-While we apologize for not being able to maintain backward compatibility with the original 'amazon-ec2' gem, there were just too many major enhancements that needed to be made and it just wasn't possible.  I hope that the new robustness and new features in this new release make any transitional pain worthwhile!  Of course the old versions are still out there on RubyForge, and you can still install them if you pass the version string into the gem install command.  I just don't recommend it unless you really have to.
-
-
 h2. What's new?
+
+20070217 - This project's source code now only available from our master Git repository at GitHub.  The Subversion repository at Rubyforge will be cleared but we'll still publish any new gem versions to Rubyforge so you can still easily install them.  Unless you plan to work on the source code this should have no effect on you.  Now you can browse, clone or fork from our Git repository at "http://github.com/grempe/amazon-ec2":http://github.com/grempe/amazon-ec2.  Please let us know if you have patches you would like us to pull from your git repository.
 
 This 0.2.0 + series represents a major re-write of this gem and contains contributions from several people who make use of this gem for their own applications.  Trust us, its worth the pain of upgrading if you have been using an older version.  Some of the major enhancements you will find are:
 
@@ -394,7 +387,7 @@ We can always use your help!  Do you have Ruby skills?  Do you see a bug or enha
 
 h2. Project Info
 
-This project is managed as a RubyForge project which you can find at "http://amazon-ec2.rubyforge.org/":http://amazon-ec2.rubyforge.org/ and this is always the best place to find the latest news, report any bugs, submit feature requests, or provide patches.
+This project is managed as a RubyForge project which you can find at "http://amazon-ec2.rubyforge.org/":http://amazon-ec2.rubyforge.org/ and this is always the best place to find the latest news, report any bugs, or submit feature requests.  If you are interesting in viewing or working with the source code you can find everything you need at : "http://github.com/grempe/amazon-ec2":http://github.com/grempe/amazon-ec2.
 
 h2. Learning More
 
