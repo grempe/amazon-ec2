@@ -1,3 +1,6 @@
+=== 0.2.8 2008-02-25
+ * Change HTTP API requests to use POST instead of GET.  Based on patch #18380 from 'anonymous'.
+
 === 0.2.7 2008-02-17
  * Add support for HTTP Proxy when :proxy_server argument is passed.  Based on patch from Mathias Dalheimer.
 

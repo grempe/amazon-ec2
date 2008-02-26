@@ -164,25 +164,19 @@ module EC2
                           "Version" => API_VERSION,
                           "Timestamp"=>Time.now.getutc.iso8601} )
 
-          sigpath = "?" + params.sort_by { |param| param[0].downcase }.collect { |param| param.join("=") }.join("&")
+          sigquery = params.sort_by { |param| param[0].downcase }.collect { |param| param.join("=") }.join("&")
 
-          sig = get_aws_auth_param(sigpath, @secret_access_key)
+          sig = get_aws_auth_param(sigquery, @secret_access_key)
 
-          path = "?" + params.sort.collect do |param|
+          query = params.sort.collect do |param|
             CGI::escape(param[0]) + "=" + CGI::escape(param[1])
           end.join("&") + "&Signature=" + sig
 
-          req = Net::HTTP::Get.new("/#{path}")
-
-          # Ruby will automatically add a random content-type on some verbs, so
-          # here we add a dummy one to 'supress' it.  Change this logic if having
-          # an empty content-type header becomes semantically meaningful for any
-          # other verb.
-          req['Content-Type'] ||= ''
+          req = Net::HTTP::Post.new("/")
+          req.content_type = 'application/x-www-form-urlencoded'
           req['User-Agent'] = "rubyforge-amazon-ec2-ruby-gem-query-api v-#{RELEASE_VERSION}"
 
-          #data = nil unless req.request_body_permitted?
-          response = @http.request(req, nil)
+          response = @http.request(req, query)
 
           # Make a call to see if we need to throw an error based on the response given by EC2
           # All error classes are defined in EC2/exceptions.rb
