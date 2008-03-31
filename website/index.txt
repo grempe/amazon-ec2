@@ -11,7 +11,9 @@ This 'amazon-ec2' Ruby Gem is an interface library that can be used to interact 
 
 h2. What's new?
 
-20070217 - This project's source code now only available from our master Git repository at GitHub.  The Subversion repository at Rubyforge will be cleared but we'll still publish any new gem versions to Rubyforge so you can still easily install them.  Unless you plan to work on the source code this should have no effect on you.  Now you can browse, clone or fork from our Git repository at "http://github.com/grempe/amazon-ec2":http://github.com/grempe/amazon-ec2.  Please let us know if you have patches you would like us to pull from your git repository.
+20080331 - Gem version 0.2.9 Updated with initial support of the new Amazon Web Services 2008-02-01 public API.  So far support has been added for the new 'Elastic IP' functionality.
+
+20080217 - This project's source code now only available from our master Git repository at GitHub.  The Subversion repository at Rubyforge will be cleared but we'll still publish any new gem versions to Rubyforge so you can still easily install them.  Unless you plan to work on the source code this should have no effect on you.  Now you can browse, clone or fork from our Git repository at "http://github.com/grempe/amazon-ec2":http://github.com/grempe/amazon-ec2.  Please let us know if you have patches you would like us to pull from your git repository.
 
 This 0.2.0 + series represents a major re-write of this gem and contains contributions from several people who make use of this gem for their own applications.  Trust us, its worth the pain of upgrading if you have been using an older version.  Some of the major enhancements you will find are:
 

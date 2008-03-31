@@ -10,6 +10,7 @@ config/hoe.rb
 config/requirements.rb
 lib/EC2.rb
 lib/EC2/console.rb
+lib/EC2/elastic_ips.rb
 lib/EC2/exceptions.rb
 lib/EC2/image_attributes.rb
 lib/EC2/images.rb
@@ -28,6 +29,7 @@ tasks/environment.rake
 tasks/website.rake
 test/test_EC2.rb
 test/test_EC2_console.rb
+test/test_EC2_elastic_ips.rb
 test/test_EC2_image_attributes.rb
 test/test_EC2_images.rb
 test/test_EC2_instances.rb

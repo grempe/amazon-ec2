@@ -1,3 +1,6 @@
+=== 0.2.9 2008-03-31
+ * Added initial support for API version 2008-02-01.  Support for new 'Elastic IP' functionality added.
+
 === 0.2.8 2008-02-25
  * Change HTTP API requests to use POST instead of GET.  Based on patch #18380 from 'anonymous'.
 
