@@ -4,7 +4,7 @@
 #
 # Ruby Gem Name::  amazon-ec2
 # Author::    Glenn Rempe  (mailto:grempe@rubyforge.org)
-# Copyright:: Copyright (c) 2007 Glenn Rempe
+# Copyright:: Copyright (c) 2007-2008 Glenn Rempe
 # License::   Distributes under the same terms as Ruby
 # Home::      http://amazon-ec2.rubyforge.org
 #++
