@@ -22,7 +22,7 @@ module EC2
   DEFAULT_HOST = 'ec2.amazonaws.com'
 
   # This is the version of the API as defined by Amazon Web Services
-  API_VERSION = '2007-08-29'
+  API_VERSION = '2008-02-01'
 
   # This release version is passed in with each request as part
   # of the HTTP 'User-Agent' header.  Set this be the same value
