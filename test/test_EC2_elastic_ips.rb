@@ -121,7 +121,7 @@ context "EC2 elastic IP addresses " do
 
 
   specify "should be able to be disassociated with an instance with disassociate_address" do
-    @ec2.stubs(:make_request).with('DisassociateAddress', "67.202.55.255").
+    @ec2.stubs(:make_request).with('DisassociateAddress', {'PublicIp' => '67.202.55.255'}).
       returns stub(:body => @disassociate_address_response_body, :is_a? => true)
 
     @ec2.disassociate_address( :public_ip => "67.202.55.255" ).should.be.an.instance_of EC2::Response
@@ -132,7 +132,7 @@ context "EC2 elastic IP addresses " do
 
 
   specify "method disassociate_address should reject bad arguments" do
-    @ec2.stubs(:make_request).with('DisassociateAddress', "67.202.55.255").
+    @ec2.stubs(:make_request).with('DisassociateAddress', {'PublicIp' => '67.202.55.255'}).
       returns stub(:body => @disassociate_address_response_body, :is_a? => true)
 
     lambda { @ec2.disassociate_address( :public_ip => "67.202.55.255" ) }.should.not.raise(EC2::ArgumentError)
