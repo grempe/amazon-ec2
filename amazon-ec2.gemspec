@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = %q{amazon-ec2}
-  s.version = "0.2.9"
+  s.version = "0.2.10"
   s.summary = %q{An interface library that allows Ruby or Ruby on Rails applications to easily connect to the HTTP 'Query API' for the Amazon Web Services Elastic Compute Cloud (EC2) and manipulate server instances.}
   s.email = %q{glenn.rempe@gmail.com}
   s.homepage = %q{http://github.com/grempe/amazon-ec2/}
