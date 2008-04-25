@@ -35,7 +35,7 @@ VERS = EC2::VERSION::STRING + (REV ? ".#{REV}" : "")
 RDOC_OPTS = ['--quiet', '--title', 'amazon-ec2 documentation',
     "--opname", "index.html",
     "--line-numbers", 
-    "--main", "README.txt",
+    "--main", "README.rdoc",
     "--inline-source"]
 
 class Hoe
@@ -64,7 +64,7 @@ hoe = Hoe.new(GEM_NAME, VERS) do |p|
   
   #p.spec_extras = {}    # A hash of extra values to set in the gemspec.
   p.spec_extras = {
-    :extra_rdoc_files => ["README.txt", "History.txt", "License.txt"],
+    :extra_rdoc_files => ["README.rdoc", "History.txt", "License.txt"],
     :rdoc_options => RDOC_OPTS,
     :autorequire => "EC2"
   }
