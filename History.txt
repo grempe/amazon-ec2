@@ -1,3 +1,7 @@
+=== 0.2.10 2008-04-13
+ * Fix bug where ec2#disassociate_address would return 'undefined method 'reject!' for "xxx.xxx.xxx.xxx":String'.
+   Thanks to Brian Thomas for reporting.
+
 === 0.2.9 2008-03-31
  * Added initial support for API version 2008-02-01.  Support for new 'Elastic IP' functionality added.
 

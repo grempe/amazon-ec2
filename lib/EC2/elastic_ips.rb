@@ -142,7 +142,7 @@ module EC2
 
       raise ArgumentError, "No ':public_ip' provided" if options[:public_ip].nil? || options[:public_ip].empty?
 
-      params = options[:public_ip]
+      params = { "PublicIp" => options[:public_ip] }
 
       return response_generator(:action => "DisassociateAddress", :params => params)
 
