@@ -1,3 +1,6 @@
+=== 0.2.12 2008-04-25
+ * A few adjustments to work with GitHub.
+
 === 0.2.11 2008-04-25
  * Moved gem completely to GitHub.
  * Removed a LOT of RubyForge related cruft that's no longer needed.
