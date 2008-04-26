@@ -29,8 +29,6 @@ The following gems should be installed automatically as part of your install of 
   Mocha (optional for testing)
   Rcov (optional for testing)
   Test-Spec (optional for testing)
-  Syntax (optional for building your own copy of the gem and its docs)
-  RedCloth (optional for building your own copy of the gem and its docs)
 
 === Install the amazon-ec2 gem
 

@@ -24,13 +24,6 @@ module EC2
   # This is the version of the API as defined by Amazon Web Services
   API_VERSION = '2008-02-01'
 
-  # This release version is passed in with each request as part
-  # of the HTTP 'User-Agent' header.  Set this be the same value
-  # as what is stored in the lib/EC2/version.rb module constant instead.
-  # This way we keep it nice and DRY and only have to define the
-  # version number in a single place.
-  RELEASE_VERSION = EC2::VERSION::STRING
-
   # Builds the canonical string for signing. This strips out all '&', '?', and '='
   # from the query string to be signed.
   #   Note:  The parameters in the path passed in must already be sorted in
@@ -174,7 +167,7 @@ module EC2
 
           req = Net::HTTP::Post.new("/")
           req.content_type = 'application/x-www-form-urlencoded'
-          req['User-Agent'] = "rubyforge-amazon-ec2-ruby-gem-query-api v-#{RELEASE_VERSION}"
+          req['User-Agent'] = "github-amazon-ec2-ruby-gem"
 
           response = @http.request(req, query)
 

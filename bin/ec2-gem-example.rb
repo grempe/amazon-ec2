@@ -31,9 +31,6 @@ end
 
 ec2 = EC2::Base.new( :access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY )
 
-puts "----- GEM Version -----"
-puts EC2::VERSION::STRING
-
 puts "----- ec2.methods.sort -----"
 p ec2.methods.sort
 

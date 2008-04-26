@@ -1,3 +1,7 @@
+=== 0.2.11 2008-04-25
+ * Moved gem completely to GitHub.
+ * Removed a LOT of RubyForge related cruft that's no longer needed.
+
 === 0.2.10 2008-04-13
  * Fix bug where ec2#disassociate_address would return 'undefined method 'reject!' for "xxx.xxx.xxx.xxx":String'.
    Thanks to Brian Thomas for reporting.
