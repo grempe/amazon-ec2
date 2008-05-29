@@ -28,7 +28,8 @@ module EC2
     # launch, the instances start in the default security group.
     #
     # An optional instance type can be specified.  Currently supported types are 'm1.small', 'm1.large',
-    # and 'm1.xlarge'.  'm1.small' is the default if no instance_type is specified.
+    # 'm1.xlarge' and the high CPU types 'c1.medium' and 'c1.xlarge'.  'm1.small' is the default
+    # if no instance_type is specified.
     #
     # You can provide an optional key pair ID for each image in the launch request. All instances
     # that are created from images that use this key pair will have access to the associated public
@@ -82,7 +83,7 @@ module EC2
       raise ArgumentError, ":min_count is not valid" unless options[:min_count].to_i > 0
       raise ArgumentError, ":max_count is not valid" unless options[:max_count].to_i > 0
       raise ArgumentError, ":addressing_type must be 'direct' or 'public'" unless options[:addressing_type] == "public" || options[:addressing_type] == "direct"
-      raise ArgumentError, ":instance_type must be 'm1.small', 'm1.large' or 'm1.xlarge'" unless options[:instance_type] == "m1.small" || options[:instance_type] == "m1.large" || options[:instance_type] == "m1.xlarge"
+      raise ArgumentError, ":instance_type must be 'm1.small', 'm1.large', 'm1.xlarge', 'c1.medium', or 'c1.xlarge'" unless options[:instance_type] == "m1.small" || options[:instance_type] == "m1.large" || options[:instance_type] == "m1.xlarge" || options[:instance_type] == "c1.medium" || options[:instance_type] == "c1.xlarge"
       raise ArgumentError, ":base64_encoded must be 'true' or 'false'" unless options[:base64_encoded] == true || options[:base64_encoded] == false
 
       # If :user_data is passed in then URL escape and Base64 encode it
