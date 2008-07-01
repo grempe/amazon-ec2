@@ -64,6 +64,7 @@ module EC2
     # :user_data => String (default : nil)
     # :addressing_type => String (default : "public")
     # :instance_type => String (default : "m1.small")
+    # :availability_zone => String (default : nil)
     # :base64_encoded => Boolean (default : false)
     #
     def run_instances( options = {} )
@@ -76,6 +77,7 @@ module EC2
                   :user_data => nil,
                   :addressing_type => "public",
                   :instance_type => "m1.small",
+                  :availability_zone => nil,
                   :base64_encoded => false }.merge(options)
 
       # Do some validation on the arguments provided
@@ -109,6 +111,7 @@ module EC2
       params["UserData"] = user_data unless user_data.nil?
       params["AddressingType"] = options[:addressing_type]
       params["InstanceType"] = options[:instance_type]
+      params["Placement.AvailabilityZone"] = options[:availability_zone] unless options[:availability_zone].nil?
 
       return response_generator(:action => "RunInstances", :params => params)
 
