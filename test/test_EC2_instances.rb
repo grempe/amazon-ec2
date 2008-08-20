@@ -146,7 +146,7 @@ context "EC2 instances " do
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "AddressingType" => 'public', 'InstanceType' => 'm1.small').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
 
-    @ec2.run_instances( :image_id => "ami-60a54009" ).should.be.an.instance_of EC2::Response
+    @ec2.run_instances( :image_id => "ami-60a54009" ).should.be.an.instance_of Hash
 
     response = @ec2.run_instances( :image_id => "ami-60a54009" )
 
@@ -223,27 +223,27 @@ context "EC2 instances " do
   specify "should be able specify an availability_zone" do
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "Placement.AvailabilityZone" => "zone123", "UserData" => "foo", "AddressingType" => 'public', 'InstanceType' => 'm1.small').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :availability_zone => "zone123", :group_id => [], :user_data => "foo", :base64_encoded => true ).should.be.an.instance_of EC2::Response
+    @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :availability_zone => "zone123", :group_id => [], :user_data => "foo", :base64_encoded => true ).should.be.an.instance_of Hash
   end
 
   specify "should be able to call run_instances with :user_data and :base64_encoded => true (default is false)" do
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "foo", "AddressingType" => 'public', 'InstanceType' => 'm1.small').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :group_id => [], :user_data => "foo", :base64_encoded => true ).should.be.an.instance_of EC2::Response
+    @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :group_id => [], :user_data => "foo", :base64_encoded => true ).should.be.an.instance_of Hash
   end
 
 
   specify "should be able to call run_instances with :user_data and :base64_encoded => false" do
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "Zm9v", "AddressingType" => 'public', 'InstanceType' => 'm1.small').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :group_id => [], :user_data => "foo", :base64_encoded => false ).should.be.an.instance_of EC2::Response
+    @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :group_id => [], :user_data => "foo", :base64_encoded => false ).should.be.an.instance_of Hash
   end
 
 
   specify "should be able to be described and return the correct Ruby response class" do
     @ec2.stubs(:make_request).with('DescribeInstances', {}).
       returns stub(:body => @describe_instances_response_body, :is_a? => true)
-    @ec2.describe_instances.should.be.an.instance_of EC2::Response
+    @ec2.describe_instances.should.be.an.instance_of Hash
     response = @ec2.describe_instances
     response.reservationSet.item[0].reservationId.should.equal "r-44a5402d"
   end
@@ -297,7 +297,7 @@ context "EC2 instances " do
   specify "should be able to be rebooted when provided with an :instance_id" do
     @ec2.expects(:make_request).with('RebootInstances', {"InstanceId.1"=>"i-2ea64347", "InstanceId.2"=>"i-21a64348"}).
       returns stub(:body => @reboot_instances_response_body, :is_a? => true)
-    @ec2.reboot_instances( :instance_id => ["i-2ea64347", "i-21a64348"] ).class.should.equal EC2::Response
+    @ec2.reboot_instances( :instance_id => ["i-2ea64347", "i-21a64348"] ).class.should.equal Hash
   end
 
 
@@ -311,7 +311,7 @@ context "EC2 instances " do
   specify "should be able to be terminated when provided with an :instance_id" do
     @ec2.stubs(:make_request).with('TerminateInstances', {"InstanceId.1"=>"i-28a64341", "InstanceId.2"=>"i-21a64348"}).
       returns stub(:body => @terminate_instances_response_body, :is_a? => true)
-    @ec2.terminate_instances( :instance_id => ["i-28a64341", "i-21a64348"] ).class.should.equal EC2::Response
+    @ec2.terminate_instances( :instance_id => ["i-28a64341", "i-21a64348"] ).class.should.equal Hash
 
     @response = @ec2.terminate_instances( :instance_id => ["i-28a64341", "i-21a64348"] )
 

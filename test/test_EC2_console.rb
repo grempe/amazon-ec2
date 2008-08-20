@@ -37,7 +37,7 @@ context "The EC2 console " do
   specify "should return info written to a specific instances console" do
     @ec2.stubs(:make_request).with('GetConsoleOutput', {"InstanceId"=>"i-2ea64347"}).
        returns stub(:body => @get_console_output_response_body, :is_a? => true)
-    @ec2.get_console_output( :instance_id => "i-2ea64347" ).should.be.an.instance_of EC2::Response
+    @ec2.get_console_output( :instance_id => "i-2ea64347" ).should.be.an.instance_of Hash
     response = @ec2.get_console_output( :instance_id => "i-2ea64347" )
     response.instanceId.should.equal "i-28a64341"
     response.timestamp.should.equal "2007-01-03 15:00:00"

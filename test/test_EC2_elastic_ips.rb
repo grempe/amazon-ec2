@@ -57,7 +57,7 @@ context "EC2 elastic IP addresses " do
     @ec2.stubs(:make_request).with('AllocateAddress', {}).
       returns stub(:body => @allocate_address_body, :is_a? => true)
 
-    @ec2.allocate_address.should.be.an.instance_of EC2::Response
+    @ec2.allocate_address.should.be.an.instance_of Hash
 
     response = @ec2.allocate_address
     response.publicIp.should.equal "67.202.55.255"
@@ -79,7 +79,7 @@ context "EC2 elastic IP addresses " do
     @ec2.stubs(:make_request).with('DescribeAddresses', {"PublicIp.1"=>"67.202.55.255"}).
       returns stub(:body => @describe_addresses_response_body, :is_a? => true)
 
-    @ec2.describe_addresses( :public_ip => "67.202.55.255" ).should.be.an.instance_of EC2::Response
+    @ec2.describe_addresses( :public_ip => "67.202.55.255" ).should.be.an.instance_of Hash
 
     response = @ec2.describe_addresses( :public_ip => "67.202.55.255" )
     response.addressesSet.item[0].instanceId.should.equal "i-28a64341"
@@ -91,7 +91,7 @@ context "EC2 elastic IP addresses " do
     @ec2.stubs(:make_request).with('ReleaseAddress', {"PublicIp" => "67.202.55.255"}).
       returns stub(:body => @release_address_response_body, :is_a? => true)
 
-    @ec2.release_address( :public_ip => "67.202.55.255" ).should.be.an.instance_of EC2::Response
+    @ec2.release_address( :public_ip => "67.202.55.255" ).should.be.an.instance_of Hash
 
     response = @ec2.release_address( :public_ip => "67.202.55.255" )
     response.return.should.equal "true"
@@ -102,7 +102,7 @@ context "EC2 elastic IP addresses " do
     @ec2.stubs(:make_request).with('AssociateAddress', {"InstanceId" => "i-2ea64347", "PublicIp"=>"67.202.55.255"}).
       returns stub(:body => @associate_address_response_body, :is_a? => true)
 
-    @ec2.associate_address( :instance_id => "i-2ea64347", :public_ip => "67.202.55.255" ).should.be.an.instance_of EC2::Response
+    @ec2.associate_address( :instance_id => "i-2ea64347", :public_ip => "67.202.55.255" ).should.be.an.instance_of Hash
 
     response = @ec2.associate_address( :instance_id => "i-2ea64347", :public_ip => "67.202.55.255" )
     response.return.should.equal "true"
@@ -124,7 +124,7 @@ context "EC2 elastic IP addresses " do
     @ec2.stubs(:make_request).with('DisassociateAddress', {'PublicIp' => '67.202.55.255'}).
       returns stub(:body => @disassociate_address_response_body, :is_a? => true)
 
-    @ec2.disassociate_address( :public_ip => "67.202.55.255" ).should.be.an.instance_of EC2::Response
+    @ec2.disassociate_address( :public_ip => "67.202.55.255" ).should.be.an.instance_of Hash
 
     response = @ec2.disassociate_address( :public_ip => "67.202.55.255" )
     response.return.should.equal "true"
