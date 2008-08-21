@@ -28,8 +28,10 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--quiet", "--title", "amazon-ec2 documentation", "--opname", "index.html", "--line-numbers", "--main", "README.rdoc", "--inline-source"]
   s.extra_rdoc_files = ["README.rdoc", "CHANGELOG", "LICENSE"]
 
-  s.add_dependency 'xml-simple'
-  s.add_dependency 'mocha'
-  s.add_dependency 'test-spec'
-  s.add_dependency 'rcov'
+  s.add_runtime_dependency('xml-simple', '>= 1.0.11')
+
+  s.add_development_dependency('mocha', '>= 0.9.0')
+  s.add_development_dependency('test-spec', '>= 0.9.0')
+  s.add_development_dependency('rcov', '>= 0.8.1.2.0')
+
 end

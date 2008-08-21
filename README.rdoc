@@ -33,18 +33,27 @@ The following gems should be installed automatically as part of your install of 
 === Install the amazon-ec2 gem
 
   # ONE TIME ONLY
+  # It is highly recommended that you are running RubyGems version >= 1.2.0
+  # See : http://blog.segment7.net/articles/2008/06/21/rubygems-1-2-0
+  sudo gem update --system
+
+  # ONE TIME ONLY
   # Execute this on each machine where you install gems to add GitHub as a gem source
   # Do this only once or you'll end up with multiple entries in 'gem sources'
   gem sources -a http://gems.github.com/
 
-  # ONE TIME ONLY
-  # Only if you had a previous version of the gem installed from RubyForge before we moved to GitHub
-  # Say 'Y' to remove all previous versions and all binaries when prompted.  It won't hurt to do
-  # this in any case.
-  sudo gem uninstall amazon-ec2
+  # Install the stable release gem from RubyForge
+  sudo gem install amazon-ec2
 
-  # Finally install the gem
+  # OR
+
+  # Install the gem from the GitHub bleeding edge as a normal runtime install
   sudo gem install grempe-amazon-ec2
+
+  # OR
+
+  # Install the gem from the GitHub bleeding edge with all developer dependencies
+  sudo gem install grempe-amazon-ec2 --development
 
 == Using amazon-ec2
 
@@ -147,15 +156,15 @@ If you're not in front of a terminal shell now (perhaps you’re browsing this s
 Try out the following bit of code. This should walk through each image returned by a call to #describe_images and print out its key data. Note in the example below that you cannot walk through the results of the #describe_images call with the '.each' iterator (You’ll get errors if you try). You need to instead walk through the Array of items which are in the 'imagesSet' embedded in the response. This reflects exactly the XML hierarchy of data returned from EC2 which we parse to Ruby OpenStruct objects (EC2::Response).
 
   #!/usr/bin/env ruby
-  
+
   require 'rubygems'
   require 'ec2'
-  
+
   ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
   SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
-  
+
   ec2 = EC2::Base.new(:access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY)
-  
+
   puts "----- listing images owned by 'amazon' -----"
   ec2.describe_images(:owner_id => "amazon").imagesSet.item.each do |image|
     # OpenStruct objects have members!
@@ -235,7 +244,7 @@ One of the key benefits of this new version of the library is that all responses
 
   $ ec2sh
   >> puts @ec2.describe_images(:owner_id => 'amazon').xml
-  
+
   <?xml version="1.0"?>
   <DescribeImagesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19/">
       <imagesSet>
