@@ -28,7 +28,11 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--quiet", "--title", "amazon-ec2 documentation", "--opname", "index.html", "--line-numbers", "--main", "README.rdoc", "--inline-source"]
   s.extra_rdoc_files = ["README.rdoc", "CHANGELOG", "LICENSE"]
 
-  s.add_runtime_dependency('xml-simple', '>= 1.0.11')
+  # Commenting out since GitHub bug prevents building when specifying
+  # 'add_runtime_dependency'.  See bug:
+  # http://bit.ly/2WaAgV
+  #s.add_runtime_dependency('xml-simple', '>= 1.0.11')
+  s.add_dependency('xml-simple', '>= 1.0.11')
 
   s.add_development_dependency('mocha', '>= 0.9.0')
   s.add_development_dependency('test-spec', '>= 0.9.0')
