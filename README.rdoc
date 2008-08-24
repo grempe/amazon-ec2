@@ -324,7 +324,7 @@ The original code for this library was provided by Amazon Web Services, LLC as s
 
 == Contact
 
-Comments, patches, Git pull requests and bug reports are welcome. Send an email to mailto:glenn.rempe@nospam@gmail.com or use the Google Groups forum for this project.
+Comments, patches, Git pull requests and bug reports are welcome. Send an email to mailto:glenn@nospam@rempe.us or use the Google Groups forum for this project.
 
 Enjoy!
 
