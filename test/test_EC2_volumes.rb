@@ -5,7 +5,7 @@
 # Author::    Yann Klis  (mailto:yann.klis@novelys.com)
 # Copyright:: Copyright (c) 2008 Yann Klis
 # License::   Distributes under the same terms as Ruby
-# Home::      http://amazon-ec2.rubyforge.org
+# Home::      http://github.com/grempe/amazon-ec2/tree/master
 #++
 
 require File.dirname(__FILE__) + '/test_helper.rb'

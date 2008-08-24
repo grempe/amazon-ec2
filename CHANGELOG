@@ -247,4 +247,4 @@
  * Initial release of the Ruby Gem.  This includes the version of the library exactly as provided by
    Amazon Web Services as example code.  No changes or enhancements to that code were made other than
    packaging it as a Ruby Gem.
- * RubyForge project created.  http://amazon-ec2.rubyforge.org
+ * RubyForge project created.  http://github.com/grempe/amazon-ec2/tree/master
