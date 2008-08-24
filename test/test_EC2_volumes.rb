@@ -85,8 +85,7 @@ context "EC2 volumes " do
 
     response = @ec2.describe_volumes( :volume_id => ["vol-4282672b"] )
     response.volumeSet.item[0].volumeId.should.equal "vol-4282672b"
-# FIXME
-#    response.volumeSet.item[0].size.should.equal "800"
+    response.volumeSet.item[0].attachmentSet.item[0]['size'].should.equal "800"
     response.volumeSet.item[0].attachmentSet.item[0].volumeId.should.equal "vol-4282672b"
     response.volumeSet.item[0].attachmentSet.item[0].instanceId.should.equal "i-6058a509"
   end
@@ -99,8 +98,7 @@ context "EC2 volumes " do
 
     response = @ec2.create_volume( :availability_zone => "us-east-1a", :size => "800" )
     response.volumeId.should.equal "vol-4d826724"
-# FIXME
-#    response.size.should.equal "800"
+    response['size'].should.equal "800"
     response.status.should.equal "creating"
     response.zone.should.equal "us-east-1a"
   end
