@@ -10,10 +10,10 @@
 #++
 
 if ENV['AMAZON_ACCESS_KEY_ID'] && ENV['AMAZON_SECRET_ACCESS_KEY']
-  @ec2 = EC2::Base.new( 
+  @ec2 = EC2::Base.new(
     :access_key_id => ENV['AMAZON_ACCESS_KEY_ID'],
-    :secret_access_key => ENV['AMAZON_SECRET_ACCESS_KEY'] 
+    :secret_access_key => ENV['AMAZON_SECRET_ACCESS_KEY']
   )
 end
 
-include EC2 
+include EC2

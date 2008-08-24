@@ -15,9 +15,9 @@ require 'pp'
 
 # pull these from the local shell environment variables set in ~/.bash_login
 # or using appropriate methods specific to your login shell.
-# 
+#
 # e.g. in ~/.bash_login
-# 
+#
 #  # For amazon-ec2 and amazon s3 ruby gems
 #  export AMAZON_ACCESS_KEY_ID="FOO"
 #  export AMAZON_SECRET_ACCESS_KEY="BAR"
@@ -38,7 +38,7 @@ p ec2.methods.sort
 puts "----- listing images owned by 'amazon' -----"
 ec2.describe_images(:owner_id => "amazon").imagesSet.item.each do |image|
   image.keys.each do |key|
-    puts "#{key} => #{image[key]}" 
+    puts "#{key} => #{image[key]}"
   end
 end
 
@@ -56,4 +56,3 @@ pp ec2.delete_security_group(:group_name => "ec2-example-rb-test-group")
 
 puts "----- listing my keypairs (verbose mode) -----"
 pp ec2.describe_keypairs()
-

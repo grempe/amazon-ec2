@@ -30,7 +30,7 @@ context "EC2 instances " do
           <imageId>ami-60a54009</imageId>
           <instanceState>
             <code>0</code>
-    	<name>pending</name>
+            <name>pending</name>
           </instanceState>
           <privateDnsName></privateDnsName>
           <dnsName></dnsName>
@@ -44,7 +44,7 @@ context "EC2 instances " do
           <imageId>ami-60a54009</imageId>
           <instanceState>
             <code>0</code>
-    	<name>pending</name>
+            <name>pending</name>
           </instanceState>
           <privateDnsName></privateDnsName>
           <dnsName></dnsName>
@@ -58,7 +58,7 @@ context "EC2 instances " do
           <imageId>ami-60a54009</imageId>
           <instanceState>
             <code>0</code>
-    	<name>pending</name>
+     <name>pending</name>
           </instanceState>
           <privateDnsName></privateDnsName>
           <dnsName></dnsName>

@@ -17,4 +17,3 @@
 }
 
 require File.dirname(__FILE__) + '/../lib/EC2'
-

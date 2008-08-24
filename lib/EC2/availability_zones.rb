@@ -14,8 +14,8 @@ module EC2
 
     #Amazon Developer Guide Docs:
     #
-    # The DescribeAvailabilityZones operation describes availability zones that are currently 
-    # available to the account and their states. 
+    # The DescribeAvailabilityZones operation describes availability zones that are currently
+    # available to the account and their states.
     #
     # An optional list of zone names can be passed.
     #
@@ -39,4 +39,3 @@ module EC2
     end
   end
 end
-

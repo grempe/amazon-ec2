@@ -28,7 +28,7 @@ context "EC2 availability zones" do
         </item>
       </availabilityZoneInfo>
     </DescribeAvailabilityZonesResponse>
-	 RESPONSE
+    RESPONSE
 
  end
 

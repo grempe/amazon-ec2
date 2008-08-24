@@ -27,4 +27,3 @@ Rake::RDocTask.new do |rd|
   rd.rdoc_dir = 'doc'
   rd.options = spec.rdoc_options
 end
-
