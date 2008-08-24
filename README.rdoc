@@ -312,12 +312,6 @@ EC2 will typically return sets of things (imagesSet, reservationSet, etc.) which
 * Report Bugs / Request Features : http://grempe.lighthouseapp.com/projects/10644-amazon-ec2/overview
 * Amazon Web Services : http://aws.amazon.com
 
-=== Related Projects
-
-Jesse Newland and I created the Capsize project which can help when using Capistrano and EC2 together.  You can check out the latest code at:
-
-  http://github.com/jnewland/capsize/tree/master
-
 == Credits
 
 The original code for this library was provided by Amazon Web Services, LLC as sample code.  Thanks to them for providing all of us with something to get us started.
