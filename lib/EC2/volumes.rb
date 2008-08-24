@@ -41,7 +41,7 @@ module EC2
     #
     #Required Arguments:
     #
-    # :zone => String (default : '')
+    # :availability_zone => String (default : '')
     #
     #Optional Arguments:
     #
@@ -52,15 +52,15 @@ module EC2
     def create_volume( options = {} )
 
       # defaults
-      options = { :zone => '' }.merge(options)
+      options = { :availability_zone => '' }.merge(options)
       
-      raise ArgumentError, "No :zone provided" if options[:zone].nil? || options[:zone].empty?
+      raise ArgumentError, "No :availability_zone provided" if options[:availability_zone].nil? || options[:availability_zone].empty?
       
       options = { :size => '' }.merge(options)
       options = { :snapshot_id => '' }.merge(options)
 
       params = {
-        "Zone" => options[:zone],
+        "AvailabilityZone" => options[:availability_zone],
         "Size" => options[:size],
         "SnapshotId" => options[:snapshot_id]
       }

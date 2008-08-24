@@ -91,12 +91,12 @@ context "EC2 volumes " do
   end
   
   specify "should be able to be created with an availability_zone with size" do
-    @ec2.stubs(:make_request).with('CreateVolume', {"Zone" => "us-east-1a", "Size"=>"800", "SnapshotId"=>""}).
+    @ec2.stubs(:make_request).with('CreateVolume', {"AvailabilityZone" => "us-east-1a", "Size"=>"800", "SnapshotId"=>""}).
       returns stub(:body => @create_volume_response_body, :is_a? => true)
 
-    @ec2.create_volume( :zone => "us-east-1a", :size => "800" ).should.be.an.instance_of EC2::Response
+    @ec2.create_volume( :availability_zone => "us-east-1a", :size => "800" ).should.be.an.instance_of EC2::Response
 
-    response = @ec2.create_volume( :zone => "us-east-1a", :size => "800" )
+    response = @ec2.create_volume( :availability_zone => "us-east-1a", :size => "800" )
     response.volumeId.should.equal "vol-4d826724"
     response.size.should.equal "800"
     response.status.should.equal "creating"
