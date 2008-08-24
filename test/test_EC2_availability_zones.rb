@@ -35,7 +35,7 @@ context "EC2 availability zones" do
   specify "should be able to be described with describe_availability_zones" do
     @ec2.stubs(:make_request).with('DescribeAvailabilityZones', { "ZoneName.1" => "us-east-1a", "ZoneName.2" => "us-east-1b" }).
       returns stub(:body => @describe_availability_zones_response_body, :is_a? => true)
-    @ec2.describe_availability_zones( :zone_name => ["us-east-1a", "us-east-1b"] ).should.be.an.instance_of EC2::Response
+    @ec2.describe_availability_zones( :zone_name => ["us-east-1a", "us-east-1b"] ).should.be.an.instance_of Hash
 
     response = @ec2.describe_availability_zones( :zone_name => ["us-east-1a", "us-east-1b"] )
 

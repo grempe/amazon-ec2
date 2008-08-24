@@ -84,7 +84,7 @@ context "EC2 security groups " do
   specify "should be able to be created" do
     @ec2.stubs(:make_request).with('CreateSecurityGroup', {"GroupName"=>"WebServers", "GroupDescription"=>"Web"}).
       returns stub(:body => @create_security_group_response_body, :is_a? => true)
-    @ec2.create_security_group( :group_name => "WebServers", :group_description => "Web" ).should.be.an.instance_of EC2::Response
+    @ec2.create_security_group( :group_name => "WebServers", :group_description => "Web" ).should.be.an.instance_of Hash
   end
 
 
@@ -108,7 +108,7 @@ context "EC2 security groups " do
   specify "should be able to be deleted" do
     @ec2.stubs(:make_request).with('DeleteSecurityGroup', {"GroupName"=>"WebServers"}).
       returns stub(:body => @delete_security_group_response_body, :is_a? => true)
-    @ec2.delete_security_group( :group_name => "WebServers" ).should.be.an.instance_of EC2::Response
+    @ec2.delete_security_group( :group_name => "WebServers" ).should.be.an.instance_of Hash
   end
 
 
@@ -128,7 +128,7 @@ context "EC2 security groups " do
   specify "should be able to be described with describe_security_groups" do
     @ec2.stubs(:make_request).with('DescribeSecurityGroups', { "GroupName.1" => "WebServers", "GroupName.2" => "RangedPortsBySource" }).
       returns stub(:body => @describe_security_groups_response_body, :is_a? => true)
-    @ec2.describe_security_groups( :group_name => ["WebServers", "RangedPortsBySource"] ).should.be.an.instance_of EC2::Response
+    @ec2.describe_security_groups( :group_name => ["WebServers", "RangedPortsBySource"] ).should.be.an.instance_of Hash
 
     response = @ec2.describe_security_groups( :group_name => ["WebServers", "RangedPortsBySource"] )
 
@@ -178,7 +178,7 @@ context "EC2 security groups " do
                                            :cidr_ip => "0.0.0.0/24",
                                            :source_security_group_name => "Source SG Name",
                                            :source_security_group_owner_id => "123"
-                                           ).should.be.an.instance_of EC2::Response
+                                           ).should.be.an.instance_of Hash
   end
 
 
@@ -199,7 +199,7 @@ context "EC2 security groups " do
                                         :cidr_ip => "0.0.0.0/24",
                                         :source_security_group_name => "Source SG Name",
                                         :source_security_group_owner_id => "123"
-                                        ).should.be.an.instance_of EC2::Response
+                                        ).should.be.an.instance_of Hash
   end
 
 end

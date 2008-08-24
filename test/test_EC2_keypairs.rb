@@ -69,7 +69,7 @@ context "EC2 keypairs " do
     @ec2.stubs(:make_request).with('CreateKeyPair', {"KeyName"=>"example-key-name"}).
       returns stub(:body => @create_keypair_response_body, :is_a? => true)
 
-    @ec2.create_keypair( :key_name => "example-key-name" ).should.be.an.instance_of EC2::Response
+    @ec2.create_keypair( :key_name => "example-key-name" ).should.be.an.instance_of Hash
 
     response = @ec2.create_keypair( :key_name => "example-key-name" )
     response.keyName.should.equal "example-key-name"
@@ -93,7 +93,7 @@ context "EC2 keypairs " do
   specify "should be able to be described with describe_keypairs" do
     @ec2.stubs(:make_request).with('DescribeKeyPairs', {"KeyName.1"=>"example-key-name"}).
       returns stub(:body => @describe_keypairs_response_body, :is_a? => true)
-    @ec2.describe_keypairs( :key_name => "example-key-name" ).should.be.an.instance_of EC2::Response
+    @ec2.describe_keypairs( :key_name => "example-key-name" ).should.be.an.instance_of Hash
     response = @ec2.describe_keypairs( :key_name => "example-key-name" )
     response.keySet.item[0].keyName.should.equal "example-key-name"
     response.keySet.item[0].keyFingerprint.should.equal "1f:51:ae:28:bf:89:e9:d8:1f:25:5d:37:2d:7d:b8:ca:9f:f5:f1:6f"
@@ -103,7 +103,7 @@ context "EC2 keypairs " do
   specify "should be able to be deleted with delete_keypairs" do
     @ec2.stubs(:make_request).with('DeleteKeyPair', {"KeyName"=>"example-key-name"}).
       returns stub(:body => @delete_keypair_body, :is_a? => true)
-    @ec2.delete_keypair( :key_name => "example-key-name" ).should.be.an.instance_of EC2::Response
+    @ec2.delete_keypair( :key_name => "example-key-name" ).should.be.an.instance_of Hash
     response = @ec2.delete_keypair( :key_name => "example-key-name" )
     response.return.should.equal "true"
   end

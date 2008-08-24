@@ -60,7 +60,7 @@ context "An EC2 image " do
     @ec2.stubs(:make_request).with('RegisterImage', {"ImageLocation"=>"mybucket-myimage.manifest.xml"}).
       returns stub(:body => @register_image_response_body, :is_a? => true)
     @ec2.register_image(:image_location => "mybucket-myimage.manifest.xml").imageId.should.equal "ami-61a54008"
-    @ec2.register_image(:image_location => "mybucket-myimage.manifest.xml").should.be.an.instance_of EC2::Response
+    @ec2.register_image(:image_location => "mybucket-myimage.manifest.xml").should.be.an.instance_of Hash
   end
 
 
@@ -73,9 +73,9 @@ context "An EC2 image " do
   specify "should be able to be described and return the correct Ruby response class for parent and members" do
     @ec2.stubs(:make_request).with('DescribeImages', {}).
       returns stub(:body => @describe_image_response_body, :is_a? => true)
-    @ec2.describe_images.should.be.an.instance_of EC2::Response
+    @ec2.describe_images.should.be.an.instance_of Hash
     response = @ec2.describe_images
-    response.should.be.an.instance_of EC2::Response
+    response.should.be.an.instance_of Hash
   end
 
 
@@ -182,7 +182,7 @@ context "An EC2 image " do
   specify "should be able to be de-registered" do
     @ec2.stubs(:make_request).with('DeregisterImage', {"ImageId"=>"ami-61a54008"}).
       returns stub(:body => @deregister_image_response_body, :is_a? => true)
-    @ec2.deregister_image(:image_id => "ami-61a54008" ).should.be.an.instance_of EC2::Response
+    @ec2.deregister_image(:image_id => "ami-61a54008" ).should.be.an.instance_of Hash
     @ec2.deregister_image(:image_id => "ami-61a54008" ).return.should.equal "true"
   end
 

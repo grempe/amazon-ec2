@@ -62,7 +62,7 @@ context "EC2 image_attributes " do
                                                             "UserId.1"=>"123",
                                                             "Group.1"=>"all"}).
        returns stub(:body => @modify_image_attribute_response_body, :is_a? => true)
-    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :user_id=>["123"], :group=>["all"]).should.be.an.instance_of EC2::Response
+    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :user_id=>["123"], :group=>["all"]).should.be.an.instance_of Hash
   end
 
 
@@ -72,7 +72,7 @@ context "EC2 image_attributes " do
                                                             "OperationType"=>"add",
                                                             "Group.1"=>"all"}).
        returns stub(:body => @modify_image_attribute_response_body, :is_a? => true)
-    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :group=>["all"]).should.be.an.instance_of EC2::Response
+    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :group=>["all"]).should.be.an.instance_of Hash
   end
 
 
@@ -82,7 +82,7 @@ context "EC2 image_attributes " do
                                                             "OperationType"=>"remove",
                                                             "Group.1"=>"all"}).
        returns stub(:body => @modify_image_attribute_response_body, :is_a? => true)
-    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"remove", :group=>["all"]).should.be.an.instance_of EC2::Response
+    @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"remove", :group=>["all"]).should.be.an.instance_of Hash
   end
 
 
@@ -95,7 +95,7 @@ context "EC2 image_attributes " do
     @ec2.modify_image_attribute(:image_id=>"ami-61a54008",
                                 :attribute=>"launchPermission",
                                 :operation_type=>"add",
-                                :user_id=>["123"]).should.be.an.instance_of EC2::Response
+                                :user_id=>["123"]).should.be.an.instance_of Hash
   end
 
 
@@ -107,7 +107,7 @@ context "EC2 image_attributes " do
 
     @ec2.modify_image_attribute(:image_id=>"ami-61a54008",
                                 :attribute=>"productCodes",
-                                :product_code=>["774F4FF8"]).should.be.an.instance_of EC2::Response
+                                :product_code=>["774F4FF8"]).should.be.an.instance_of Hash
   end
 
 
@@ -124,7 +124,7 @@ context "EC2 image_attributes " do
                                 :attribute=>"launchPermission",
                                 :operation_type=>"add",
                                 :user_id=>["123", "345"],
-                                :group=>["123", "all"]).should.be.an.instance_of EC2::Response
+                                :group=>["123", "all"]).should.be.an.instance_of Hash
   end
 
 
@@ -166,7 +166,7 @@ context "EC2 image_attributes " do
       returns stub(:body => @describe_image_attribute_response_body_launch_permissions, :is_a? => true)
 
     @ec2.describe_image_attribute(:image_id => "ami-61a54008", :attribute => "launchPermission").
-      should.be.an.instance_of EC2::Response
+      should.be.an.instance_of Hash
 
     response = @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission")
     response.imageId.should.equal "ami-61a54008"
@@ -181,7 +181,7 @@ context "EC2 image_attributes " do
       returns stub(:body => @describe_image_attribute_response_body_product_codes, :is_a? => true)
 
     @ec2.describe_image_attribute(:image_id => "ami-61a54008", :attribute => "productCodes").
-      should.be.an.instance_of EC2::Response
+      should.be.an.instance_of Hash
 
     response = @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>"productCodes")
     response.imageId.should.equal "ami-61a54008"
@@ -214,7 +214,7 @@ context "EC2 image_attributes " do
     @ec2.stubs(:make_request).with('ResetImageAttribute', {"ImageId"=>"ami-61a54008",
                                                             "Attribute"=>"launchPermission"}).
        returns stub(:body => @reset_image_attribute_response_body, :is_a? => true)
-    @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission").should.be.an.instance_of EC2::Response
+    @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission").should.be.an.instance_of Hash
     @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission").return.should.equal "true"
   end
 
