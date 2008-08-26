@@ -119,7 +119,7 @@ module EC2
 
       raise ArgumentError, "No :volume_id provided" if options[:volume_id].nil? || options[:volume_id].empty?
       raise ArgumentError, "No :instance_id provided" if options[:instance_id].nil? || options[:instance_id].empty?
-      raise ArgumentError, "No :volume_id provided" if options[:device].nil? || options[:device].empty?
+      raise ArgumentError, "No :device provided" if options[:device].nil? || options[:device].empty?
 
       params = {
         "VolumeId" => options[:volume_id],
