@@ -1,3 +1,6 @@
+=== 0.3.1 2008-09-18
+ * Added basic custom kernel id support to run_instances.  Thanks to Keith Hudgins for the patch.
+
 === 0.3.0 2008-08-24
  * Changed response object from AmazonEC2::Response to Hash (patch from Yan Pritzker 'skwp') Thanks!
  * Added support for Elastic Block Storage (patch from Yann Klis 'yannski') Thanks!

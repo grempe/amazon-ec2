@@ -232,6 +232,11 @@ context "EC2 instances " do
     @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :group_id => [], :user_data => "foo", :base64_encoded => true ).should.be.an.instance_of Hash
   end
 
+  specify "should be able specify an kernel_id" do
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "Placement.AvailabilityZone" => "zone123", "UserData" => "foo", "AddressingType" => 'public', 'InstanceType' => 'm1.small', 'KernelId' => 'kernfoo').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :availability_zone => "zone123", :group_id => [], :user_data => "foo", :base64_encoded => true, :kernel_id => 'kernfoo' ).should.be.an.instance_of Hash
+  end
 
   specify "should be able to call run_instances with :user_data and :base64_encoded => false" do
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "Zm9v", "AddressingType" => 'public', 'InstanceType' => 'm1.small').
