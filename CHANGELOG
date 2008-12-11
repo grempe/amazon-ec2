@@ -1,3 +1,7 @@
+=== 0.3.2 2008-12-11
+ * Updated API version to 2008-12-01
+ * Note : The new European EC2 zone should just work if you specify ':server => "eu-west-1.ec2.amazonaws.com"' when initializing EC2::Base.new().  Please report any issues you have with using this new service.
+
 === 0.3.1 2008-09-18
  * Added basic custom kernel id support to run_instances.  Thanks to Keith Hudgins for the patch.
 

@@ -22,7 +22,7 @@ module EC2
   DEFAULT_HOST = 'ec2.amazonaws.com'
 
   # This is the version of the API as defined by Amazon Web Services
-  API_VERSION = '2008-05-05'
+  API_VERSION = '2008-12-01'
 
   # Builds the canonical string for signing. This strips out all '&', '?', and '='
   # from the query string to be signed.
