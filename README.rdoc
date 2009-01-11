@@ -141,12 +141,6 @@ If you're not in front of a terminal shell now (perhaps you’re browsing this s
         >> @ec2.describe_images.imagesSet.item[0] (an OpenStruct of a single item in that array)
         >> @ec2.describe_images.imagesSet.item[0].to_s (a String representation of that OpenStruct item)
 
-        returns : an XML representation of all images
-        >> puts @ec2.describe_images.xml
-
-        returns : an XML representation of all images owned by Amazon
-        >> puts @ec2.describe_images(:owner_id => 'amazon').xml
-
   >> @ec2.describe_images.imagesSet.item[0].to_s
   => "#<EC2::Response:0x100A465B4 imageId=\"ami-018e6b68\" imageLocation=\"rbuilder-online/phonehome-1.5.6-x86_10132.img.manifest.xml\" imageOwnerId=\"099034111737\" imageState=\"available\" isPublic=\"true\" parent=#<EC2::Response:0x100A469A6 ...>>"
 
@@ -240,10 +234,7 @@ Try out the following bit of code. This should walk through each image returned 
 
 === Important notes regarding the structure of EC2::Response Objects
 
-One of the key benefits of this new version of the library is that all responses from EC2 are bundled up in a real data structure and no longer require parsing of text. EC2::Response inherits from the OpenStruct class and we populate it directly from the XML given to us by EC2 in response to any command we issue. This means that future changes to the API and what is returned by EC2 will largely be handled transparently by the gem. This is a huge benefit. What this means though, is that you may have to do a little homework on what actually gets returned by EC2 as XML. For example, when you make a #describe_images call in 'ec2sh' what you will get back will look like:
-
-  $ ec2sh
-  >> puts @ec2.describe_images(:owner_id => 'amazon').xml
+One of the key benefits of this new version of the library is that all responses from EC2 are bundled up in a real data structure and no longer require parsing of text. The hash returned is populated directly from the XML given to us by EC2 in response to any command we issue. This means that future changes to the API and what is returned by EC2 will largely be handled transparently by the gem. This is a huge benefit. What this means though, is that you may have to do a little homework on what actually gets returned by EC2 as XML. For example, when you make a #describe_images call in 'ec2sh' what AWS returns behind the scenes looks like:
 
   <?xml version="1.0"?>
   <DescribeImagesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19/">
@@ -293,14 +284,14 @@ One of the key benefits of this new version of the library is that all responses
       </imagesSet>
   </DescribeImagesResponse>
 
-You can see in the XML the structure that you will need to follow when constructing queries for information and parsing responses from EC2.
+You can see here the XML the structure that you will need to follow when constructing queries for information and parsing responses from EC2.
 
 So, for example, if you wanted to get the image ID of the third image listed in the response above you would need to do:
 
   >> puts @ec2.describe_images(:owner_id => 'amazon').imagesSet.item[2].imageId
   ami-23b6534a
 
-EC2 will typically return sets of things (imagesSet, reservationSet, etc.) which we map to ruby Arrays (.imagesSet.item in the example above). If you want to iterate over a response set you will need to iterate over this array. The Arrays will typically contain additional EC2::Response objects that represent each individual item. You’ll find that you can use the 'ec2sh' to help you understand the structure more completely if you try issuing commands there as a way to practice seeing what will be returned and making sure you get exactly what you want. You can always call the EC2::Response#xml method like I did above to see the exact XML returned which allows you to easily derive the structure for the Ruby OpenStruct object.
+EC2 will typically return sets of things (imagesSet, reservationSet, etc.) which we map to ruby Arrays (.imagesSet.item in the example above). If you want to iterate over a response set you will need to iterate over this array. The Arrays will typically contain additional EC2::Response objects that represent each individual item. You’ll find that you can use the 'ec2sh' to help you understand the structure more completely if you try issuing commands there as a way to practice seeing what will be returned and making sure you get exactly what you want.
 
 
 == Additional Resources
