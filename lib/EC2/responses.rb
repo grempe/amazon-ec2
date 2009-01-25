@@ -47,7 +47,7 @@ module EC2
     def self.parse(options = {})
       options = {
         :xml => "",
-        :parse_options => { 'forcearray' => ['item'], 'suppressempty' => nil }
+        :parse_options => { 'forcearray' => ['item'], 'suppressempty' => nil, 'keeproot' => false }
       }.merge(options)
 
       # NOTE: Parsing the response as a nested set of Response objects was extremely
