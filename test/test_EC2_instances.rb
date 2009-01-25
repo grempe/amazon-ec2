@@ -91,13 +91,13 @@ context "EC2 instances " do
                 <name>running</name>
               </instanceState>
               <privateDnsName>domU-12-31-35-00-1E-01.z-2.compute-1.internal</privateDnsName>
-        <dnsName>ec2-72-44-33-4.z-2.compute-1.amazonaws.com</dnsName>
+              <dnsName>ec2-72-44-33-4.z-2.compute-1.amazonaws.com</dnsName>
               <keyName>example-key-name</keyName>
               <productCodesSet>
                 <item><productCode>774F4FF8</productCode></item>
               </productCodesSet>
               <instanceType>m1.small</instanceType>
-        <launchTime>2007-08-07T11:54:42.000Z</launchTime>
+              <launchTime>2007-08-07T11:54:42.000Z</launchTime>
             </item>
           </instancesSet>
         </item>
