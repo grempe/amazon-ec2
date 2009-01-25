@@ -14,7 +14,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 # which was demonstrating some breaking behavior.  The fix was to
 # add the XmlSimple option "'keeproot' => false" in responses.rb
 
-context "EC2 availability zones" do
+context "EC2 aws-s3 compat test" do
 
   setup do
     @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
