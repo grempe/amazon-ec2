@@ -28,12 +28,24 @@ module EC2
   # from the query string to be signed.
   #   Note:  The parameters in the path passed in must already be sorted in
   #   case-insensitive alphabetical order and must not be url encoded.
-  def EC2.canonical_string(path)
-    buf = ""
-    path.split('&').each { |field|
-      buf << field.gsub(/\&|\?/,"").sub(/=/,"")
-    }
-    return buf
+  def EC2.canonical_string(params, host = DEFAULT_HOST, method="POST", base="/")
+    # Sort, and encode parameters into a canonical string.
+    sorted_params = params.sort {|x,y| x[0] <=> y[0]}
+    encoded_params = sorted_params.collect do |p|
+      encoded = (CGI::escape(p[0].to_s) + 
+                 "=" + CGI::escape(p[1].to_s))
+      # Ensure spaces are encoded as '%20', not '+'
+      encoded.gsub('+', '%20')
+    end
+    sigquery = encoded_params.join("&")
+
+    # Generate the request description string
+    req_desc = 
+      method + "\n" + 
+      host + "\n" + 
+      base + "\n" + 
+      sigquery
+
   end
 
   # Encodes the given string with the secret_access_key, by taking the
@@ -44,7 +56,7 @@ module EC2
     digest = OpenSSL::Digest::Digest.new('sha1')
     b64_hmac =
       Base64.encode64(
-        OpenSSL::HMAC.digest(digest, secret_access_key, str)).strip
+        OpenSSL::HMAC.digest(digest, secret_access_key, str)).gsub("\n","")
 
     if urlencode
       return CGI::escape(b64_hmac)
@@ -152,14 +164,13 @@ module EC2
           params.reject! { |key, value| value.nil? or value.empty?}
 
           params.merge!( {"Action" => action,
-                          "SignatureVersion" => "1",
+                          "SignatureVersion" => "2",
+                          "SignatureMethod" => 'HmacSHA1',
                           "AWSAccessKeyId" => @access_key_id,
                           "Version" => API_VERSION,
                           "Timestamp"=>Time.now.getutc.iso8601} )
 
-          sigquery = params.sort_by { |param| param[0].downcase }.collect { |param| param.join("=") }.join("&")
-
-          sig = get_aws_auth_param(sigquery, @secret_access_key)
+          sig = get_aws_auth_param(params, @secret_access_key)
 
           query = params.sort.collect do |param|
             CGI::escape(param[0]) + "=" + CGI::escape(param[1])
@@ -182,8 +193,8 @@ module EC2
       end
 
       # Set the Authorization header using AWS signed header authentication
-      def get_aws_auth_param(path, secret_access_key)
-        canonical_string =  EC2.canonical_string(path)
+      def get_aws_auth_param(params, secret_access_key)
+        canonical_string =  EC2.canonical_string(params)
         encoded_canonical = EC2.encode(secret_access_key, canonical_string)
       end
 
