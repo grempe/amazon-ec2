@@ -39,9 +39,9 @@ context "The EC2 method " do
   end
 
 
-  specify "EC2.canonical_string(path) should data that is stripped of ?,&,= " do
-    path = "?name1=value1&name2=value2&name3=value3"
-    EC2.canonical_string(path).should.equal "name1value1name2value2name3value3"
+  specify "EC2.canonical_string(path) should conform to Amazon's requirements " do
+    path = {"name1" => "value1", "name2" => "value2", "name3" => "value3"}
+    EC2.canonical_string(path).should.equal "POST\nec2.amazonaws.com\n/\nname1=value1&name2=value2&name3=value3"
   end
 
   specify "EC2.encode should return the expected string" do
