@@ -74,6 +74,12 @@ Edit the file ~/.bash_login and add the following to the existing contents:
   export AMAZON_ACCESS_KEY_ID="YOUR_ACCESS_KEY_ID"
   export AMAZON_SECRET_ACCESS_KEY="YOUR_SECRET_ACCESS_KEY_ID"
 
+If you are using EC2 in the EU region, make sure you also set:
+
+  export EC2_URL="https://eu-west-1.ec2.amazonaws.com"
+
+(which you have already if you configured standard EC2 commandline tools to work with this region).
+
 Once you save the file you should close and re-open your terminal so the new variables are made available. You’ll need to do this close/re-open step for each terminal window you have open (or issue the ‘source ~/.bash_login’ command in each). Make sure that this file is only readable by your user so you don’t inadvertently expose your credentials to other users on your system.
 
 You can verify that this setup is complete by running the ‘set’ in a command window and seeing that your credentials are in the list of shell variables.

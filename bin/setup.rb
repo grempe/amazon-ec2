@@ -10,10 +10,14 @@
 #++
 
 if ENV['AMAZON_ACCESS_KEY_ID'] && ENV['AMAZON_SECRET_ACCESS_KEY']
-  @ec2 = EC2::Base.new(
+  opts = { 
     :access_key_id => ENV['AMAZON_ACCESS_KEY_ID'],
     :secret_access_key => ENV['AMAZON_SECRET_ACCESS_KEY']
-  )
+  }
+  if not (url = ENV['EC2_URL']).nil?
+    opts[:server] = url.sub(/^https:\/\//,'')
+  end
+  @ec2 = EC2::Base.new(opts)
 end
 
 include EC2
