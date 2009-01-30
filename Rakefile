@@ -12,7 +12,7 @@ Rake::GemPackageTask.new(spec) do |pkg|
 end
 
 task :install => [:package] do
-  sh %{sudo gem install pkg/#{GEM}-#{VERSION}}
+  sh %{sudo gem install pkg/#{GEM}-#{VER}}
 end
 
 Rake::TestTask.new do |t|
