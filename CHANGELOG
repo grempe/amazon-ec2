@@ -1,5 +1,6 @@
 === 0.3.4 2009-01-31
  * Added support in the helper binaries for EC2_URL server url for Euro servers
+ * AWS Signature v2 support
 
 === 0.3.3 2009-01-24
   * Removed docs related to the ability to get Response#xml which is deprecated
