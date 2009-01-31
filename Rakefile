@@ -11,6 +11,7 @@ Rake::GemPackageTask.new(spec) do |pkg|
   pkg.gem_spec = spec
 end
 
+desc "Package and then install the gem locally"
 task :install => [:package] do
   sh %{sudo gem install pkg/#{GEM}-#{VER}}
 end
