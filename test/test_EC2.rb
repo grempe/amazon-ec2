@@ -26,7 +26,6 @@ context "The EC2 method " do
     @ec2.server.should.equal "foo.example.com"
   end
 
-
   specify "EC2::Base should work with insecure connections as well" do
     @ec2 = EC2::Base.new( :access_key_id => "not a key",
                           :secret_access_key => "not a secret",
@@ -38,7 +37,6 @@ context "The EC2 method " do
     @ec2.server.should.equal "foo.example.com"
   end
 
-
   specify "EC2.canonical_string(path) should conform to Amazon's requirements " do
     path = {"name1" => "value1", "name2" => "value2", "name3" => "value3"}
     if ENV['EC2_URL'].nil? || ENV['EC2_URL'] == 'https://ec2.amazonaws.com'
@@ -47,8 +45,6 @@ context "The EC2 method " do
       EC2.canonical_string(path).should.equal "POST\nus-east-1.ec2.amazonaws.com\n/\nname1=value1&name2=value2&name3=value3"
     elsif ENV['EC2_URL'] == 'https://eu-west-1.ec2.amazonaws.com'
       EC2.canonical_string(path).should.equal "POST\neu-west-1.ec2.amazonaws.com\n/\nname1=value1&name2=value2&name3=value3"
-    else
-      return false
     end
   end
 
