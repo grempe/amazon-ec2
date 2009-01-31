@@ -1,3 +1,10 @@
+=== 0.3.4 2009-01-31
+ * Added support in the helper binaries for EC2_URL server url for Euro servers
+
+=== 0.3.3 2009-01-24
+  * Removed docs related to the ability to get Response#xml which is deprecated
+  * Fixed conflict when aws/s3 gem was included in user code
+
 === 0.3.2 2008-12-11
  * Updated API version to 2008-12-01
  * Note : The new European EC2 zone should just work if you specify ':server => "eu-west-1.ec2.amazonaws.com"' when initializing EC2::Base.new().  Please report any issues you have with using this new service.
