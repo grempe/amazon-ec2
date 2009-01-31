@@ -19,7 +19,16 @@ Dir[File.join(File.dirname(__FILE__), 'EC2/**/*.rb')].sort.each { |lib| require 
 module EC2
 
   # Which host FQDN will we connect to for all API calls to AWS?
-  DEFAULT_HOST = 'ec2.amazonaws.com'
+  # If EC2_URL is defined in the users ENV we can use that. It is
+  # expected that this var is set with something like:
+  #   export EC2_URL='https://ec2.amazonaws.com'
+  #
+  if ENV['EC2_URL']
+    DEFAULT_HOST = URI.parse(ENV['EC2_URL']).host
+  else
+    # default US host
+    DEFAULT_HOST = 'ec2.amazonaws.com'
+  end
 
   # This is the version of the API as defined by Amazon Web Services
   API_VERSION = '2008-12-01'
@@ -32,7 +41,7 @@ module EC2
     # Sort, and encode parameters into a canonical string.
     sorted_params = params.sort {|x,y| x[0] <=> y[0]}
     encoded_params = sorted_params.collect do |p|
-      encoded = (CGI::escape(p[0].to_s) + 
+      encoded = (CGI::escape(p[0].to_s) +
                  "=" + CGI::escape(p[1].to_s))
       # Ensure spaces are encoded as '%20', not '+'
       encoded.gsub('+', '%20')
@@ -40,10 +49,10 @@ module EC2
     sigquery = encoded_params.join("&")
 
     # Generate the request description string
-    req_desc = 
-      method + "\n" + 
-      host + "\n" + 
-      base + "\n" + 
+    req_desc =
+      method + "\n" +
+      host + "\n" +
+      base + "\n" +
       sigquery
 
   end

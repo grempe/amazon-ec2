@@ -17,9 +17,9 @@ context "The EC2 method " do
 
   specify "EC2::Base attribute readers should be available" do
     @ec2 = EC2::Base.new( :access_key_id => "not a key",
-                                       :secret_access_key => "not a secret",
-                                       :use_ssl => true,
-                                       :server => "foo.example.com" )
+                          :secret_access_key => "not a secret",
+                          :use_ssl => true,
+                          :server => "foo.example.com" )
 
     @ec2.use_ssl.should.equal true
     @ec2.port.should.equal 443
@@ -29,9 +29,9 @@ context "The EC2 method " do
 
   specify "EC2::Base should work with insecure connections as well" do
     @ec2 = EC2::Base.new( :access_key_id => "not a key",
-                                       :secret_access_key => "not a secret",
-                                       :use_ssl => false,
-                                       :server => "foo.example.com" )
+                          :secret_access_key => "not a secret",
+                          :use_ssl => false,
+                          :server => "foo.example.com" )
 
     @ec2.use_ssl.should.equal false
     @ec2.port.should.equal 80
@@ -41,7 +41,15 @@ context "The EC2 method " do
 
   specify "EC2.canonical_string(path) should conform to Amazon's requirements " do
     path = {"name1" => "value1", "name2" => "value2", "name3" => "value3"}
-    EC2.canonical_string(path).should.equal "POST\nec2.amazonaws.com\n/\nname1=value1&name2=value2&name3=value3"
+    if ENV['EC2_URL'].nil? || ENV['EC2_URL'] == 'https://ec2.amazonaws.com'
+      EC2.canonical_string(path).should.equal "POST\nec2.amazonaws.com\n/\nname1=value1&name2=value2&name3=value3"
+    elsif ENV['EC2_URL'] == 'https://us-east-1.ec2.amazonaws.com'
+      EC2.canonical_string(path).should.equal "POST\nus-east-1.ec2.amazonaws.com\n/\nname1=value1&name2=value2&name3=value3"
+    elsif ENV['EC2_URL'] == 'https://eu-west-1.ec2.amazonaws.com'
+      EC2.canonical_string(path).should.equal "POST\neu-west-1.ec2.amazonaws.com\n/\nname1=value1&name2=value2&name3=value3"
+    else
+      return false
+    end
   end
 
   specify "EC2.encode should return the expected string" do
