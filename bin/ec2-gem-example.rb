@@ -30,7 +30,16 @@ if ACCESS_KEY_ID.nil? || ACCESS_KEY_ID.empty?
   exit
 end
 
-ec2 = EC2::Base.new( :access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY )
+# us-east-1.ec2.amazonaws.com == ec2.amazonaws.com
+# eu-west-1.ec2.amazonaws.com for the european region
+# test different servers by running something like:
+# export EC2_URL='https://ec2.amazonaws.com';./bin/ec2-gem-example.rb
+if ENV['EC2_URL']
+  ec2 = EC2::Base.new( :access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY, :server => URI.parse(ENV['EC2_URL']).host )
+else
+  # default server is US ec2.amazonaws.com
+  ec2 = EC2::Base.new( :access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY )
+end
 
 puts "----- ec2.methods.sort -----"
 p ec2.methods.sort
