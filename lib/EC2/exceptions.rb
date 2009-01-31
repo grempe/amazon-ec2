@@ -133,4 +133,7 @@ module EC2
   class Unavailable < Error #:nodoc:
   end
 
+  class SignatureDoesNotMatch < Error #:nodoc:
+  end
+
 end
