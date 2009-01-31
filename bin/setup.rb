@@ -14,10 +14,13 @@ if ENV['AMAZON_ACCESS_KEY_ID'] && ENV['AMAZON_SECRET_ACCESS_KEY']
     :access_key_id => ENV['AMAZON_ACCESS_KEY_ID'],
     :secret_access_key => ENV['AMAZON_SECRET_ACCESS_KEY']
   }
-  if not (url = ENV['EC2_URL']).nil?
-    opts[:server] = url.sub(/^https:\/\//,'')
+  if ENV['EC2_URL']
+    opts[:server] = URI.parse(ENV['EC2_URL']).host
   end
   @ec2 = EC2::Base.new(opts)
 end
+
+puts "Current Options:"
+pp opts
 
 include EC2
