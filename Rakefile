@@ -16,6 +16,11 @@ task :install => [:package] do
   sh %{sudo gem install pkg/#{GEM}-#{VER}}
 end
 
+desc "Package and then install the gem locally omitting documentation"
+task :install_nodoc => [:package] do
+  sh %{sudo gem install --no-ri --no-rdoc pkg/#{GEM}-#{VER}}
+end
+
 Rake::TestTask.new do |t|
   t.libs << "test"
   t.test_files = FileList['test/test*.rb']
