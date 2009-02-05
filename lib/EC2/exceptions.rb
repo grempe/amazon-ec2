@@ -32,6 +32,10 @@ module EC2
   class AuthFailure < Error #:nodoc:
   end
 
+  # Invalid AWS Account
+  class InvalidClientTokenId < Error #:nodoc:
+  end
+
   # Specified AMI has an unparsable manifest.
   class InvalidManifest < Error #:nodoc:
   end
