@@ -36,6 +36,10 @@ module EC2
   class InvalidClientTokenId < Error #:nodoc:
   end
 
+  # Invalid Parameters for Value
+  class InvalidParameterValue < Error #:nodoc:
+  end
+
   # Specified AMI has an unparsable manifest.
   class InvalidManifest < Error #:nodoc:
   end
