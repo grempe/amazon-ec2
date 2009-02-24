@@ -260,7 +260,7 @@ module EC2
         if EC2.const_defined?(error_code)
           raise EC2.const_get(error_code), error_message
         else
-          raise Error, "This is an undefined error code which needs to be added to exceptions.rb : error_code => #{error_code} : error_message => #{error_message}"
+          raise EC2::Error, error_message
         end
 
       end
