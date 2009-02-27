@@ -1,5 +1,5 @@
 GEM       = "amazon-ec2"
-VER       = "0.3.4"
+VER       = "0.3.5"
 AUTHOR    = "Glenn Rempe"
 EMAIL     = "glenn.rempe@gmail.com"
 HOMEPAGE  = "http://github.com/grempe/amazon-ec2/"
