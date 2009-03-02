@@ -1,7 +1,7 @@
 GEM       = "amazon-ec2"
-VER       = "0.3.5"
+VER       = "0.3.6"
 AUTHOR    = "Glenn Rempe"
-EMAIL     = "glenn.rempe@gmail.com"
+EMAIL     = "glenn@rempe.us"
 HOMEPAGE  = "http://github.com/grempe/amazon-ec2/"
 SUMMARY   = "An interface library that allows Ruby applications to easily connect to the HTTP 'Query API' for the Amazon Web Services Elastic Compute Cloud (EC2) and manipulate cloud servers."
 

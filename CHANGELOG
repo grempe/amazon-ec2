@@ -1,3 +1,11 @@
+=== 0.3.6 2009-03-02
+ * You can now specify any arbitrary SSL tcp port to connect to (kerryb)
+ * Added rake target to quickly install the gem without docs
+
+=== 0.3.5 2009-02-26
+ * Honor the EC2_URL env var if provided in the main lib
+ * Some minor modifications to the exceptions raised when unknown
+
 === 0.3.4 2009-01-31
  * Added support in the helper binaries for EC2_URL server url for Euro servers
  * AWS Signature v2 support
