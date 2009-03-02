@@ -118,14 +118,14 @@ module EC2
       raise ArgumentError, "No :use_ssl value provided" if options[:use_ssl].nil?
       raise ArgumentError, "Invalid :use_ssl value provided, only 'true' or 'false' allowed" unless options[:use_ssl] == true || options[:use_ssl] == false
       raise ArgumentError, "No :server provided" if options[:server].nil? || options[:server].empty?
-
-
-      # based on the :use_ssl boolean, determine which port we should connect to
-      case @use_ssl
-      when true
+      
+      if options[:port]
+        # user-specified port
+        @port = options[:port]
+      elsif @use_ssl
         # https
         @port = 443
-      when false
+      else
         # http
         @port = 80
       end

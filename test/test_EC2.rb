@@ -37,6 +37,18 @@ context "The EC2 method " do
     @ec2.server.should.equal "foo.example.com"
   end
 
+  specify "EC2::Base should allow specification of port" do
+    @ec2 = EC2::Base.new( :access_key_id => "not a key",
+                          :secret_access_key => "not a secret",
+                          :use_ssl => true,
+                          :server => "foo.example.com",
+                          :port => 8443 )
+
+    @ec2.use_ssl.should.equal true
+    @ec2.port.should.equal 8443
+    @ec2.server.should.equal "foo.example.com"
+  end
+
   specify "EC2.canonical_string(path) should conform to Amazon's requirements " do
     path = {"name1" => "value1", "name2" => "value2", "name3" => "value3"}
     if ENV['EC2_URL'].nil? || ENV['EC2_URL'] == 'https://ec2.amazonaws.com'
