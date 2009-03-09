@@ -221,25 +221,25 @@ context "EC2 instances " do
 
 
   specify "should be able specify an availability_zone" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "Placement.AvailabilityZone" => "zone123", "UserData" => "foo", "AddressingType" => 'public', 'InstanceType' => 'm1.small').
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "Placement.AvailabilityZone" => "zone123", "UserData" => "Zm9v", "AddressingType" => 'public', 'InstanceType' => 'm1.small').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
     @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :availability_zone => "zone123", :group_id => [], :user_data => "foo", :base64_encoded => true ).should.be.an.instance_of Hash
   end
 
   specify "should be able to call run_instances with :user_data and :base64_encoded => true (default is false)" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "foo", "AddressingType" => 'public', 'InstanceType' => 'm1.small').
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "Zm9v", "AddressingType" => 'public', 'InstanceType' => 'm1.small').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
     @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :group_id => [], :user_data => "foo", :base64_encoded => true ).should.be.an.instance_of Hash
   end
 
   specify "should be able specify an kernel_id" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "Placement.AvailabilityZone" => "zone123", "UserData" => "foo", "AddressingType" => 'public', 'InstanceType' => 'm1.small', 'KernelId' => 'kernfoo').
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "Placement.AvailabilityZone" => "zone123", "UserData" => "Zm9v", "AddressingType" => 'public', 'InstanceType' => 'm1.small', 'KernelId' => 'kernfoo').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
     @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :availability_zone => "zone123", :group_id => [], :user_data => "foo", :base64_encoded => true, :kernel_id => 'kernfoo' ).should.be.an.instance_of Hash
   end
 
   specify "should be able to call run_instances with :user_data and :base64_encoded => false" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "Zm9v", "AddressingType" => 'public', 'InstanceType' => 'm1.small').
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "foo", "AddressingType" => 'public', 'InstanceType' => 'm1.small').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
     @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :group_id => [], :user_data => "foo", :base64_encoded => false ).should.be.an.instance_of Hash
   end
@@ -250,6 +250,10 @@ context "EC2 instances " do
   
   specify "should get plain string user data when options has user_data and no base64 key" do
     @ec2.extract_user_data({:user_data => "foo\nbar"}).should == "foo\nbar"
+  end
+  
+  specify "should strip new lines and base64 encode when options has both user_data and base64" do
+    @ec2.extract_user_data({:user_data => "binary\ndata\nhere\n", :base64_encoded => true}).should == "YmluYXJ5CmRhdGEKaGVyZQo="
   end
 
 

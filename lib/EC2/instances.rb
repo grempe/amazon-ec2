@@ -90,9 +90,6 @@ module EC2
       raise ArgumentError, ":instance_type must be 'm1.small', 'm1.large', 'm1.xlarge', 'c1.medium', or 'c1.xlarge'" unless options[:instance_type] == "m1.small" || options[:instance_type] == "m1.large" || options[:instance_type] == "m1.xlarge" || options[:instance_type] == "c1.medium" || options[:instance_type] == "c1.xlarge"
       raise ArgumentError, ":base64_encoded must be 'true' or 'false'" unless options[:base64_encoded] == true || options[:base64_encoded] == false
 
-      # If :user_data is passed in then URL escape and Base64 encode it
-      # as needed.  Need for URL Escape + Base64 encoding is determined
-      # by :base64_encoded param.
       user_data = extract_user_data(options)
 
       params = {
@@ -112,13 +109,16 @@ module EC2
 
     end
     
+    # If :user_data is passed in then URL escape and Base64 encode it
+    # as needed.  Need for URL Escape + Base64 encoding is determined
+    # by :base64_encoded param.
     def extract_user_data(options)
       return unless options[:user_data]
       if options[:user_data]
         if options[:base64_encoded]
-          options[:user_data]
-        else
           Base64.encode64(options[:user_data]).gsub(/\n/,"").strip()
+        else
+          options[:user_data]
         end
       end
     end
