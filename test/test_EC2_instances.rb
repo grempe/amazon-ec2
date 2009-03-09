@@ -243,6 +243,14 @@ context "EC2 instances " do
       returns stub(:body => @run_instances_response_body, :is_a? => true)
     @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :group_id => [], :user_data => "foo", :base64_encoded => false ).should.be.an.instance_of Hash
   end
+  
+  specify "should get no user data for when options has no user_data key" do
+    @ec2.extract_user_data({}).should == nil
+  end
+  
+  specify "should get plain string user data when options has user_data and no base64 key" do
+    @ec2.extract_user_data({:user_data => "foo\nbar"}).should == "foo\nbar"
+  end
 
 
   specify "should be able to be described and return the correct Ruby response class" do

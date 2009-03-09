@@ -93,15 +93,7 @@ module EC2
       # If :user_data is passed in then URL escape and Base64 encode it
       # as needed.  Need for URL Escape + Base64 encoding is determined
       # by :base64_encoded param.
-      if options[:user_data]
-        if options[:base64_encoded]
-          user_data = options[:user_data]
-        else
-          user_data = Base64.encode64(options[:user_data]).gsub(/\n/,"").strip()
-        end
-      else
-        user_data = nil
-      end
+      user_data = extract_user_data(options)
 
       params = {
         "ImageId"  => options[:image_id],
@@ -118,6 +110,17 @@ module EC2
 
       return response_generator(:action => "RunInstances", :params => params)
 
+    end
+    
+    def extract_user_data(options)
+      return unless options[:user_data]
+      if options[:user_data]
+        if options[:base64_encoded]
+          options[:user_data]
+        else
+          Base64.encode64(options[:user_data]).gsub(/\n/,"").strip()
+        end
+      end
     end
 
 
