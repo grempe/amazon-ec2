@@ -1,5 +1,6 @@
-=== 0.3.7 2009-03-09
+=== 0.3.8 2009-04-16
  * Applied patch, with updated tests to fix issue with base64 encoded user data (rsanheim).
+ * Applied patch, fixing an issue with EU Signature version 2 creation (delano).
 
 === 0.3.6 2009-03-02
  * You can now specify any arbitrary SSL tcp port to connect to (kerryb)
