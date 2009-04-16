@@ -182,7 +182,7 @@ module EC2
                           "Version" => API_VERSION,
                           "Timestamp"=>Time.now.getutc.iso8601} )
 
-          sig = get_aws_auth_param(params, @secret_access_key)
+          sig = get_aws_auth_param(params, @secret_access_key, @server)
 
           query = params.sort.collect do |param|
             CGI::escape(param[0]) + "=" + CGI::escape(param[1])
@@ -205,8 +205,8 @@ module EC2
       end
 
       # Set the Authorization header using AWS signed header authentication
-      def get_aws_auth_param(params, secret_access_key)
-        canonical_string =  EC2.canonical_string(params)
+      def get_aws_auth_param(params, secret_access_key, server)
+        canonical_string =  EC2.canonical_string(params, server)
         encoded_canonical = EC2.encode(secret_access_key, canonical_string)
       end
 
