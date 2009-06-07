@@ -50,8 +50,8 @@ if ( ENV['AMAZON_ACCESS_KEY_ID'] && ENV['AMAZON_SECRET_ACCESS_KEY'] )
 
       returns : an Array of EC2::Response objects, each an EC2 image and its data
       >> @ec2.describe_images.imagesSet.item
-      >> @ec2.describe_images.imagesSet.item[0] (an OpenStruct of a single item in that array)
-      >> @ec2.describe_images.imagesSet.item[0].to_s (a String representation of that OpenStruct item)
+      >> @ec2.describe_images.imagesSet.item[0] (a hash representing a single item in that array)
+      >> @ec2.describe_images.imagesSet.item[0].to_s (a String representation of that item)
 
   MESSAGE
 

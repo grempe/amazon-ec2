@@ -1,3 +1,6 @@
+=== 0.4.0 2009-06-06
+ * Using technicalpickles/jeweler to manage gem now.  See : http://github.com/technicalpickles/jeweler/tree/master
+
 === 0.3.8 2009-04-16
  * Applied patch, with updated tests to fix issue with base64 encoded user data (rsanheim).
  * Applied patch, fixing an issue with EU Signature version 2 creation (delano).
