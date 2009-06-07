@@ -158,7 +158,7 @@ Try out the following bit of code. This should walk through each image returned 
   #!/usr/bin/env ruby
 
   require 'rubygems'
-  require 'ec2'
+  require 'EC2'
 
   ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
   SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
