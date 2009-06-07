@@ -306,7 +306,7 @@ EC2 will typically return sets of things (imagesSet, reservationSet, etc.) which
 
 * Project Home : http://github.com/grempe/amazon-ec2/tree/master
 * Discussion Group : http://groups.google.com/group/amazon-ec2
-* Report Bugs / Request Features : http://grempe.lighthouseapp.com/projects/10644-amazon-ec2/overview
+* Report Bugs / Request Features : http://github.com/grempe/amazon-ec2/issues
 * Amazon Web Services : http://aws.amazon.com
 
 == Credits
