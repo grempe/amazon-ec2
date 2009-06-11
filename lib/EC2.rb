@@ -8,7 +8,7 @@
 # Home::      http://github.com/grempe/amazon-ec2/tree/master
 #++
 
-%w[ base64 cgi openssl digest/sha1 net/https rexml/document time ostruct ].each { |f| require f }
+%w[ base64 cgi openssl digest/sha1 net/https rexml/document time ostruct nokogiri ].each { |f| require f }
 
 # Require any lib files that we have bundled with this Ruby Gem in the lib/EC2 directory.
 # Parts of the EC2 module and Base class are broken out into separate
@@ -118,7 +118,7 @@ module EC2
       raise ArgumentError, "No :use_ssl value provided" if options[:use_ssl].nil?
       raise ArgumentError, "Invalid :use_ssl value provided, only 'true' or 'false' allowed" unless options[:use_ssl] == true || options[:use_ssl] == false
       raise ArgumentError, "No :server provided" if options[:server].nil? || options[:server].empty?
-      
+
       if options[:port]
         # user-specified port
         @port = options[:port]
@@ -222,8 +222,9 @@ module EC2
         raise ArgumentError, ":action must be provided to response_generator" if options[:action].nil? || options[:action].empty?
 
         http_response = make_request(options[:action], options[:params])
-        http_xml = http_response.body
-        return Response.parse(:xml => http_xml)
+        doc = Response.parse(:xml => http_response.body)
+puts doc.to_hash.inspect
+        return doc.to_hash
 
       end
 

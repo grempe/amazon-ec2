@@ -34,31 +34,70 @@ module EC2
   # may be raised by this library in YOUR code with a 'rescue' clauses.  It is up to you
   # how gracefully you want to handle these exceptions that are raised.
 
-
-  require 'rubygems'
-  begin
-    require 'xmlsimple' unless defined? XmlSimple
-  rescue Exception => e
-    require 'xml-simple' unless defined? XmlSimple
-  end
-
   class Response
 
     def self.parse(options = {})
-      options = {
-        :xml => "",
-        :parse_options => { 'forcearray' => ['item'], 'suppressempty' => nil, 'keeproot' => false }
-      }.merge(options)
-
-      # NOTE: Parsing the response as a nested set of Response objects was extremely
-      # memory intensive and appeared to leak (the memory was not freed on subsequent requests).
-      # It was changed to return the raw XmlSimple response.
-
-      response = XmlSimple.xml_in(options[:xml], options[:parse_options])
-
-      return response
+      options = { :xml => "" }.merge(options)
+      response = Nokogiri::XML(options[:xml])
     end
 
   end  # class Response
+
+  # monkey patch NokoGiri to provide #to_hash
+  module Conversions #:nodoc:
+    module Document #:nodoc:
+      def to_hash
+        root.to_hash
+      end
+    end
+
+    module Node #:nodoc:
+      CONTENT_ROOT = ''
+
+      # Convert XML document to hash
+      #
+      # hash::
+      #   Hash to merge the converted element into.
+      def to_hash(hash = {})
+        hash[name] ||= attributes_as_hash
+
+        walker = lambda { |memo, parent, child, callback|
+          next if child.blank? && 'file' != parent['type']
+
+          if child.text?
+            (memo[CONTENT_ROOT] ||= '') << child.content
+            next
+          end
+
+          name = child.name
+
+          child_hash = child.attributes_as_hash
+          if memo[name]
+            memo[name] = [memo[name]].flatten
+            memo[name] << child_hash
+          else
+            memo[name] = child_hash
+          end
+
+          # Recusively walk children
+          child.children.each { |c|
+            callback.call(child_hash, child, c, callback)
+          }
+        }
+
+        children.each { |c| walker.call(hash[name], self, c, walker) }
+        hash
+      end
+
+      def attributes_as_hash
+        Hash[*(attribute_nodes.map { |node|
+          [node.node_name, node.value]
+        }.flatten)]
+      end
+    end
+  end
+
+  Nokogiri::XML::Document.send(:include, Conversions::Document)
+  Nokogiri::XML::Node.send(:include, Conversions::Node)
 
 end  # module EC2
