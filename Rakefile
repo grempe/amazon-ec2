@@ -17,9 +17,9 @@ begin
 
     gem.rubyforge_project = 'amazon-ec2'
 
-    gem.add_dependency('xml-simple', '>= 1.0.11')
-    gem.add_development_dependency('mocha', '>= 0.9.0')
-    gem.add_development_dependency('test-spec', '>= 0.9.0')
+    gem.add_dependency('xml-simple', '>= 1.0.12')
+    gem.add_development_dependency('mocha', '>= 0.9.5')
+    gem.add_development_dependency('test-spec', '>= 0.10.0')
     gem.add_development_dependency('rcov', '>= 0.8.1.2.0')
 
   end

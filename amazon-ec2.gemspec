@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Glenn Rempe"]
-  s.date = %q{2009-06-07}
+  s.date = %q{2009-06-11}
   s.description = %q{An interface library that allows Ruby applications to easily connect to the HTTP 'Query API' for the Amazon Web Services Elastic Compute Cloud (EC2) and manipulate cloud servers.}
   s.email = %q{glenn@rempe.us}
   s.executables = ["ec2-gem-example.rb", "ec2sh", "setup.rb"]
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
      "bin/ec2-gem-example.rb",
      "bin/ec2sh",
      "bin/setup.rb",
+     "deps.rip",
      "lib/EC2.rb",
      "lib/EC2/availability_zones.rb",
      "lib/EC2/console.rb",
@@ -89,20 +90,20 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<xml-simple>, [">= 1.0.11"])
-      s.add_development_dependency(%q<mocha>, [">= 0.9.0"])
-      s.add_development_dependency(%q<test-spec>, [">= 0.9.0"])
+      s.add_runtime_dependency(%q<xml-simple>, [">= 1.0.12"])
+      s.add_development_dependency(%q<mocha>, [">= 0.9.5"])
+      s.add_development_dependency(%q<test-spec>, [">= 0.10.0"])
       s.add_development_dependency(%q<rcov>, [">= 0.8.1.2.0"])
     else
-      s.add_dependency(%q<xml-simple>, [">= 1.0.11"])
-      s.add_dependency(%q<mocha>, [">= 0.9.0"])
-      s.add_dependency(%q<test-spec>, [">= 0.9.0"])
+      s.add_dependency(%q<xml-simple>, [">= 1.0.12"])
+      s.add_dependency(%q<mocha>, [">= 0.9.5"])
+      s.add_dependency(%q<test-spec>, [">= 0.10.0"])
       s.add_dependency(%q<rcov>, [">= 0.8.1.2.0"])
     end
   else
-    s.add_dependency(%q<xml-simple>, [">= 1.0.11"])
-    s.add_dependency(%q<mocha>, [">= 0.9.0"])
-    s.add_dependency(%q<test-spec>, [">= 0.9.0"])
+    s.add_dependency(%q<xml-simple>, [">= 1.0.12"])
+    s.add_dependency(%q<mocha>, [">= 0.9.5"])
+    s.add_dependency(%q<test-spec>, [">= 0.10.0"])
     s.add_dependency(%q<rcov>, [">= 0.8.1.2.0"])
   end
 end
