@@ -33,11 +33,6 @@ The following gems should be installed automatically as part of your install of 
 === Install the amazon-ec2 gem
 
   # ONE TIME ONLY
-  # It is highly recommended that you are running RubyGems version >= 1.2.0
-  # See : http://blog.segment7.net/articles/2008/06/21/rubygems-1-2-0
-  sudo gem update --system
-
-  # ONE TIME ONLY
   # Execute this on each machine where you install gems to add GitHub as a gem source
   # Do this only once or you'll end up with multiple entries in 'gem sources'
   gem sources -a http://gems.github.com/
@@ -55,6 +50,11 @@ The following gems should be installed automatically as part of your install of 
   # Install the gem from the GitHub bleeding edge with all developer dependencies
   sudo gem install grempe-amazon-ec2 --development
 
+  # OR
+
+  # Install using Rip (hellorip.com) instead of RubyGems
+  rip install git://github.com/grempe/amazon-ec2.git
+
 == Using amazon-ec2
 
 The library exposes one main interface class EC2::Base.  It is through an instance of this class that you will perform all the operations for using the EC2 service including query string header signing.
@@ -69,6 +69,8 @@ The 'ec2sh' and 'ec2-gem-example.rb' scripts which will be introduced to you sho
 Edit the file ~/.bash_login and add the following to the existing contents:
 
   export RUBYOPT="rubygems"
+
+  Why 'export RUBYOPT'? Because we leave loading libs up to you... See : http://gist.github.com/54177
 
   # For amazon-ec2 and amazon s3 ruby gems
   export AMAZON_ACCESS_KEY_ID="YOUR_ACCESS_KEY_ID"
@@ -144,8 +146,8 @@ If you're not in front of a terminal shell now (perhaps you’re browsing this s
 
         returns : an Array of EC2::Response objects, each an EC2 image and its data
         >> @ec2.describe_images.imagesSet.item
-        >> @ec2.describe_images.imagesSet.item[0] (an OpenStruct of a single item in that array)
-        >> @ec2.describe_images.imagesSet.item[0].to_s (a String representation of that OpenStruct item)
+        >> @ec2.describe_images.imagesSet.item[0] (a hash representing a single item in that array)
+        >> @ec2.describe_images.imagesSet.item[0].to_s (a String representation of that item)
 
   >> @ec2.describe_images.imagesSet.item[0].to_s
   => "#<EC2::Response:0x100A465B4 imageId=\"ami-018e6b68\" imageLocation=\"rbuilder-online/phonehome-1.5.6-x86_10132.img.manifest.xml\" imageOwnerId=\"099034111737\" imageState=\"available\" isPublic=\"true\" parent=#<EC2::Response:0x100A469A6 ...>>"
@@ -177,70 +179,74 @@ Try out the following bit of code. This should walk through each image returned 
 
 <b>config/environment.rb</b>
 
-	# Require the amazon-ec2 gem and make its methods available in your Rails app
-	# Put this at the bottom of your environment.rb
-	require 'EC2'
+  Rails::Initializer.run do |config|
+   ...
+   # INSERT THIS LINE IN YOUR CONFIG
+   config.gem "amazon-ec2", :lib => "EC2"
+   ...
+  end
+
 
 <b>app/controllers/my_controller.rb</b>
 
-	[some controller code ...]
+  [some controller code ...]
 
-	ec2 = EC2::Base.new(:access_key_id => "YOUR_AWS_ACCESS_KEY_ID", :secret_access_key => "YOUR_AWS_SECRET_ACCESS_KEY")
+  ec2 = EC2::Base.new(:access_key_id => "YOUR_AWS_ACCESS_KEY_ID", :secret_access_key => "YOUR_AWS_SECRET_ACCESS_KEY")
 
-	# get ALL public images
-	@ec2_images = ec2.describe_images().imagesSet.item
+  # get ALL public images
+  @ec2_images = ec2.describe_images().imagesSet.item
 
-	# Get info on all public EC2 images created by the Amazon EC2 team.
-	@ec2_images_amazon = ec2.describe_images(:owner_id => "amazon").imagesSet.item
+  # Get info on all public EC2 images created by the Amazon EC2 team.
+  @ec2_images_amazon = ec2.describe_images(:owner_id => "amazon").imagesSet.item
 
-	[some more controller code ...]
+  [some more controller code ...]
 
 
 <b>app/views/my/index.rhtml</b>
 
-	<h1>EC2 Test#index</h1>
+  <h1>EC2 Test#index</h1>
 
-	<h1>Sample 1 - debug() view</h1>
+  <h1>Sample 1 - debug() view</h1>
 
-	<%= debug(@ec2_images_amazon) %>
+  <%= debug(@ec2_images_amazon) %>
 
-	<h1>Sample 2 - Build a table</h1>
+  <h1>Sample 2 - Build a table</h1>
 
-	<table border='1'>
-	  <tr>
-	    <th>image.imageId</th>
-	    <th>image.imageLocation</th>
-	    <th>image.imageOwnerId</th>
-	    <th>image.imageState</th>
-	    <th>image.isPublic</th>
-	  </tr>
+  <table border='1'>
+    <tr>
+      <th>image.imageId</th>
+      <th>image.imageLocation</th>
+      <th>image.imageOwnerId</th>
+      <th>image.imageState</th>
+      <th>image.isPublic</th>
+    </tr>
 
-	  <% for image in @ec2_images_amazon %>
-	    <tr>
-	      <td><%=h image.imageId %></td>
-	      <td><%=h image.imageLocation %></td>
-	      <td><%=h image.imageOwnerId %></td>
-	      <td><%=h image.imageState %></td>
-	      <td><%=h image.isPublic %></td>
-	    </tr>
-	  <% end %>
-	</table>
+    <% for image in @ec2_images_amazon %>
+      <tr>
+        <td><%=h image.imageId %></td>
+        <td><%=h image.imageLocation %></td>
+        <td><%=h image.imageOwnerId %></td>
+        <td><%=h image.imageState %></td>
+        <td><%=h image.isPublic %></td>
+      </tr>
+    <% end %>
+  </table>
 
-	<h1>Sample 3 - Iterate</h1>
+  <h1>Sample 3 - Iterate</h1>
 
-	<% @ec2_images_amazon.each do |image| %>
-		<% image.each_pair do |key, value| %>
-			<% unless key == 'parent' %>
-				<%= "#{key} => #{value}" %><br />
-			<% end %>
-		<% end %>
-		<br />
-	<% end %>
+  <% @ec2_images_amazon.each do |image| %>
+    <% image.each_pair do |key, value| %>
+      <% unless key == 'parent' %>
+        <%= "#{key} => #{value}" %><br />
+      <% end %>
+    <% end %>
+    <br />
+  <% end %>
 
 
 === Important notes regarding the structure of EC2::Response Objects
 
-One of the key benefits of this new version of the library is that all responses from EC2 are bundled up in a real data structure and no longer require parsing of text. The hash returned is populated directly from the XML given to us by EC2 in response to any command we issue. This means that future changes to the API and what is returned by EC2 will largely be handled transparently by the gem. This is a huge benefit. What this means though, is that you may have to do a little homework on what actually gets returned by EC2 as XML. For example, when you make a #describe_images call in 'ec2sh' what AWS returns behind the scenes looks like:
+One of the key benefits of this new version of the library is that all responses from EC2 are bundled up in a real data structure and no longer require parsing of text. The hash returned is populated directly from the XML given to us by EC2 in response to any command we issue. This means that future changes to the API and what is returned by EC2 will be handled transparently by the gem. This is a huge benefit. What this means though, is that you may have to do a little homework on what actually gets returned by EC2 as XML. For example, when you make a #describe_images call in 'ec2sh' what AWS returns behind the scenes looks like:
 
   <?xml version="1.0"?>
   <DescribeImagesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19/">
@@ -315,8 +321,9 @@ The original code for this library was provided by Amazon Web Services, LLC as s
 
 == Contact
 
-Comments, patches, Git pull requests and bug reports are welcome. Send an email to mailto:glenn@nospam@rempe.us or use the Google Groups forum for this project.
+Comments, patches, Git pull requests and bug reports are welcome. Send an email to mailto:glenn@rempe.us or use the Google Groups forum for this project.
 
 Enjoy!
 
 Glenn Rempe
+

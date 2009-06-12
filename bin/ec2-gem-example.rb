@@ -9,7 +9,6 @@
 # Home::      http://github.com/grempe/amazon-ec2/tree/master
 #++
 
-require 'rubygems'
 require File.dirname(__FILE__) + '/../lib/EC2'
 require 'pp'
 

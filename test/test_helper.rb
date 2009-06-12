@@ -8,7 +8,7 @@
 # Home::      http://github.com/grempe/amazon-ec2/tree/master
 #++
 
-%w[ test/unit rubygems test/spec mocha ].each { |f|
+%w[ test/unit test/spec mocha ].each { |f|
   begin
     require f
   rescue LoadError

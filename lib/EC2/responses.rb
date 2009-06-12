@@ -34,8 +34,6 @@ module EC2
   # may be raised by this library in YOUR code with a 'rescue' clauses.  It is up to you
   # how gracefully you want to handle these exceptions that are raised.
 
-
-  require 'rubygems'
   begin
     require 'xmlsimple' unless defined? XmlSimple
   rescue Exception => e
