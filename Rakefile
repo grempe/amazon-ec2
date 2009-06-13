@@ -21,6 +21,7 @@ begin
     gem.add_development_dependency('mocha', '>= 0.9.5')
     gem.add_development_dependency('test-spec', '>= 0.10.0')
     gem.add_development_dependency('rcov', '>= 0.8.1.2.0')
+    gem.add_development_dependency('perftools.rb', '= 0.1.6')
 
   end
 
@@ -90,4 +91,11 @@ begin
   end
 rescue LoadError
   puts "Rake SshDirPublisher is unavailable or your rubyforge environment is not configured."
+end
+
+desc "Generate a perftools.rb profile"
+task :profile do
+  system("CPUPROFILE=perftools/ec2prof RUBYOPT='-r/usr/local/lib/ruby/gems/1.8/gems/perftools.rb-0.1.6/lib/perftools.bundle' ruby -r'rubygems' bin/ec2-gem-profile.rb")
+  system("pprof.rb --text --ignore=Gem perftools/ec2prof > perftools/ec2prof-results.txt")
+  system("pprof.rb --dot --ignore=Gem perftools/ec2prof > perftools/ec2prof-results.dot")
 end
