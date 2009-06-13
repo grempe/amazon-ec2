@@ -6,10 +6,10 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Glenn Rempe"]
-  s.date = %q{2009-06-11}
+  s.date = %q{2009-06-13}
   s.description = %q{An interface library that allows Ruby applications to easily connect to the HTTP 'Query API' for the Amazon Web Services Elastic Compute Cloud (EC2) and manipulate cloud servers.}
   s.email = %q{glenn@rempe.us}
-  s.executables = ["ec2-gem-example.rb", "ec2sh", "setup.rb"]
+  s.executables = ["ec2-gem-example.rb", "ec2-gem-profile.rb", "ec2sh", "setup.rb"]
   s.extra_rdoc_files = [
     "ChangeLog",
      "LICENSE",
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
      "VERSION",
      "amazon-ec2.gemspec",
      "bin/ec2-gem-example.rb",
+     "bin/ec2-gem-profile.rb",
      "bin/ec2sh",
      "bin/setup.rb",
      "deps.rip",
@@ -41,6 +42,10 @@ Gem::Specification.new do |s|
      "lib/EC2/security_groups.rb",
      "lib/EC2/snapshots.rb",
      "lib/EC2/volumes.rb",
+     "perftools/ec2prof",
+     "perftools/ec2prof-results.dot",
+     "perftools/ec2prof-results.txt",
+     "perftools/ec2prof.symbols",
      "test/test_EC2.rb",
      "test/test_EC2_availability_zones.rb",
      "test/test_EC2_console.rb",
@@ -94,16 +99,19 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<mocha>, [">= 0.9.5"])
       s.add_development_dependency(%q<test-spec>, [">= 0.10.0"])
       s.add_development_dependency(%q<rcov>, [">= 0.8.1.2.0"])
+      s.add_development_dependency(%q<perftools.rb>, ["= 0.1.6"])
     else
       s.add_dependency(%q<xml-simple>, [">= 1.0.12"])
       s.add_dependency(%q<mocha>, [">= 0.9.5"])
       s.add_dependency(%q<test-spec>, [">= 0.10.0"])
       s.add_dependency(%q<rcov>, [">= 0.8.1.2.0"])
+      s.add_dependency(%q<perftools.rb>, ["= 0.1.6"])
     end
   else
     s.add_dependency(%q<xml-simple>, [">= 1.0.12"])
     s.add_dependency(%q<mocha>, [">= 0.9.5"])
     s.add_dependency(%q<test-spec>, [">= 0.10.0"])
     s.add_dependency(%q<rcov>, [">= 0.8.1.2.0"])
+    s.add_dependency(%q<perftools.rb>, ["= 0.1.6"])
   end
 end
