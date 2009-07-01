@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "The Response classes " do
 
 
-  setup do
+  before do
     @http_xml = <<-RESPONSE
     <RebootInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
       <return>true</return>

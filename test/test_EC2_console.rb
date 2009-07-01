@@ -12,7 +12,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 
 context "The EC2 console " do
 
-  setup do
+  before do
     @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @get_console_output_response_body = <<-RESPONSE

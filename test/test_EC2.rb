@@ -12,7 +12,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 
 context "The EC2 method " do
 
-  setup do
+  before do
   end
 
   specify "EC2::Base attribute readers should be available" do

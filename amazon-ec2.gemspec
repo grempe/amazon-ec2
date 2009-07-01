@@ -40,6 +40,7 @@ Gem::Specification.new do |s|
      "lib/EC2/images.rb",
      "lib/EC2/instances.rb",
      "lib/EC2/keypairs.rb",
+     "lib/EC2/load_balancers.rb",
      "lib/EC2/products.rb",
      "lib/EC2/responses.rb",
      "lib/EC2/security_groups.rb",

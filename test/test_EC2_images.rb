@@ -12,7 +12,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 
 context "An EC2 image " do
 
-  setup do
+  before do
     @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @register_image_response_body = <<-RESPONSE
