@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
-context "EC2 load balancers " do
+context "ec2 load balancers " do
   before do
     @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
@@ -12,8 +12,51 @@ context "EC2 load balancers " do
     
     @create_load_balancer_response_body = <<-RESPONSE
     <CreateLoadBalancerResult>
-      <DNSName>TestLoadBalancer-380544827.us-east-1.elb.amazonaws.com</DNSName>
+      <DNSName>TestLoadBalancer-380544827.us-east-1.ec2.amazonaws.com</DNSName>
     </CreateLoadBalancerResult>
+    RESPONSE
+    
+    @valid_delete_load_balancer_params = {
+      :load_balancer_name => 'Test Name'
+    }
+    
+    @delete_load_balancer_response_body = <<-RESPONSE
+    <DeleteLoadBalancerResult>
+      <return>true</return>
+    </DeleteLoadBalancerResult>
+    RESPONSE
+    
+    @valid_describe_load_balancer_params = {
+    }
+    
+    @describe_load_balancer_response_body = <<-RESPONSE
+    <DescribeLoadBalancersResult>
+    	  <LoadBalancersDescriptions>
+    	  <member>
+    		    <Listeners>		      
+    		     <member>
+    		      	<Protocol>HTTP</Protocol>
+    		      	<LoadBalancerPort>80</LoadBalancerPort>
+    		      	<InstancePort>80</InstancePort>
+    		      </member>
+    		     </Listeners>
+    		     </LoadBalancerName>TestLoadBalancer</LoadBalancerName>
+    			 </Instances/>
+    			 </CreatedTime>2009-04-03T18:22:30Z</CreatedTime>
+    			 <HealthCheck>
+    				<Interval>30</Interval>
+    				<Target>TCP:80</Target>
+    				<HealthyThreshold>10</HealthyThreshold>
+    				<Timeout>5</Timeout>
+    				<UnhealthyThreshold>2</UnhealthyThreshold>
+    			 </HealthCheck>
+    			 <DNSName>TestLoadBalancer-400948911.us-east-1.ec2.amazonaws.com</DNSName>      
+    			 <AvailabilityZones>
+    			  <member>us-east-1b</member>
+    			 </AvailabilityZones>
+          </member>
+    	   </LoadBalancersDescriptions>
+    </DescribeLoadBalancersResult>
     RESPONSE
   end
   
@@ -28,7 +71,7 @@ context "EC2 load balancers " do
 
     response = @ec2.create_load_balancer(@valid_create_load_balancer_params)
     response.should.be.an.instance_of Hash
-    response.DNSName.should.equal "TestLoadBalancer-380544827.us-east-1.elb.amazonaws.com"
+    response.DNSName.should.equal "TestLoadBalancer-380544827.us-east-1.ec2.amazonaws.com"
   end
   
   specify "method create_load_balancer should reject bad arguments" do
@@ -40,12 +83,29 @@ context "EC2 load balancers " do
       'Listeners.member.1.InstancePort' => '80'
     }).returns stub(:body => @create_load_balancer_response_body, :is_a? => true)
     
-    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:load_balancer_name=>nil)) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:load_balancer_name=>'')) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:availability_zones=>'')) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:availability_zones=>[])) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:listeners=>[])) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:listeners=>nil)) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params) }.should.not.raise(ec2::ArgumentError)
+    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:load_balancer_name=>nil)) }.should.raise(ec2::ArgumentError)
+    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:load_balancer_name=>'')) }.should.raise(ec2::ArgumentError)
+    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:availability_zones=>'')) }.should.raise(ec2::ArgumentError)
+    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:availability_zones=>[])) }.should.raise(ec2::ArgumentError)
+    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:listeners=>[])) }.should.raise(ec2::ArgumentError)
+    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:listeners=>nil)) }.should.raise(ec2::ArgumentError)
+  end
+  
+  specify "should be able to be deleted with delete_load_balancer" do
+    @ec2.stubs(:make_request).with('DeleteLoadBalancer', {'LoadBalancerName' => 'Test Name'}).
+      returns stub(:body => @delete_load_balancer_response_body, :is_a? => true)
+      
+    response = @ec2.delete_load_balancer( :load_balancer_name => "Test Name" )
+    response.should.be.an.instance_of Hash
+    response.return.should.equal "true"
+  end
+  
+  specify "should be able to be described with describe_load_balancer" do
+    @ec2.stubs(:make_request).with('DescribeLoadBalancers', {}).
+      returns stub(:body => @describe_load_balancer_response_body, :is_a? => true)
+
+    response = @ec2.describe_load_balancers()
+    response.should.be.an.instance_of Hash
   end
 end
