@@ -119,6 +119,36 @@ module AWS
         return response_generator(:action => "RegisterInstancesWithLoadBalancer", :params => params)
       end
       
+      # Amazon Developer Guide Docs:
+      #  
+      # This API deregisters instances from the LoadBalancer. Trying to
+      # deregister an instance that is not registered with the LoadBalancer
+      # does nothing.
+      #
+      # In order to successfully call this API, you must provide the same
+      # account credentials as those that were used to create the
+      # LoadBalancer.
+      #  
+      # Once the instance is deregistered, it will stop receiving traffic from
+      # the LoadBalancer.
+      #
+      # Required Arguments:
+      # 
+      #  :instances => Array of Strings
+      #  :load_balancer_name => String
+      #
+      def deregister_instances_from_load_balancer( options = {} )
+        raise ArgumentError, "No :instances provided" if options[:instances].nil? || options[:instances].empty?
+        raise ArgumentError, "No :load_balancer_name provided" if options[:load_balancer_name].nil? || options[:load_balancer_name].empty?
+        
+        params = {}
+        
+        params.merge!(pathlist('Instances.member', [options[:instances]].flatten))
+        params['LoadBalancerName'] = options[:load_balancer_name]
+
+        return response_generator(:action => "DeregisterInstancesFromLoadBalancer", :params => params)
+      end
+      
       
     end
   end
