@@ -181,6 +181,18 @@ module AWS
         
         return response_generator(:action => "ConfigureHealthCheck", :params => params)
       end
+      
+      def describe_intance_health( options = {} )
+        raise "Not yet implemented"
+      end
+      
+      def disable_availability_zones_for_load_balancer( options = {} )
+        raise "Not yet implemented"
+      end
+      
+      def enable_availability_zones_for_load_balancer( options = {} )
+        raise "Not yet implemented"
+      end
     end
   end
 end
