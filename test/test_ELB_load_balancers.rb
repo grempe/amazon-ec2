@@ -30,33 +30,38 @@ context "elb load balancers " do
     }
     
     @describe_load_balancer_response_body = <<-RESPONSE
-    <DescribeLoadBalancersResult>
-    	  <LoadBalancersDescriptions>
-    	  <member>
-    		    <Listeners>		      
-    		     <member>
-    		      	<Protocol>HTTP</Protocol>
-    		      	<LoadBalancerPort>80</LoadBalancerPort>
-    		      	<InstancePort>80</InstancePort>
-    		      </member>
-    		     </Listeners>
-    		     </LoadBalancerName>TestLoadBalancer</LoadBalancerName>
-    			 </Instances/>
-    			 </CreatedTime>2009-04-03T18:22:30Z</CreatedTime>
-    			 <HealthCheck>
-    				<Interval>30</Interval>
-    				<Target>TCP:80</Target>
-    				<HealthyThreshold>10</HealthyThreshold>
-    				<Timeout>5</Timeout>
-    				<UnhealthyThreshold>2</UnhealthyThreshold>
-    			 </HealthCheck>
-    			 <DNSName>TestLoadBalancer-400948911.us-east-1.ec2.amazonaws.com</DNSName>      
-    			 <AvailabilityZones>
-    			  <member>us-east-1b</member>
-    			 </AvailabilityZones>
+    <DescribeLoadBalancersResponse xmlns="http://elasticloadbalancing.amazonaws.com/doc/2009-05-15/">
+      <DescribeLoadBalancersResult>
+        <LoadBalancerDescriptions>
+          <member>
+            <Listeners>
+              <member>
+                <Protocol>HTTP</Protocol>
+                <LoadBalancerPort>80</LoadBalancerPort>
+                <InstancePort>80</InstancePort>
+              </member>
+            </Listeners>
+            <CreatedTime>2009-07-02T01:07:55.080Z</CreatedTime>
+            <LoadBalancerName>TestLB</LoadBalancerName>
+            <DNSName>TestLB-1459724896.us-east-1.elb.amazonaws.com</DNSName>
+            <HealthCheck>
+              <Interval>30</Interval>
+              <Target>TCP:80</Target>
+              <HealthyThreshold>10</HealthyThreshold>
+              <Timeout>5</Timeout>
+              <UnhealthyThreshold>2</UnhealthyThreshold>
+            </HealthCheck>
+            <Instances/>
+            <AvailabilityZones>
+              <member>us-east-1a</member>
+            </AvailabilityZones>
           </member>
-    	   </LoadBalancersDescriptions>
-    </DescribeLoadBalancersResult>
+        </LoadBalancerDescriptions>
+      </DescribeLoadBalancersResult>
+      <ResponseMetadata>
+        <RequestId>67dd800e-66a5-11de-b844-07deabfcc881</RequestId>
+      </ResponseMetadata>
+    </DescribeLoadBalancersResponse>
     RESPONSE
   end
   
@@ -107,5 +112,7 @@ context "elb load balancers " do
 
     response = @elb.describe_load_balancers()
     response.should.be.an.instance_of Hash
+    
+    response.DescribeLoadBalancersResult.LoadBalancerDescriptions.member.length.should == 1
   end
 end
