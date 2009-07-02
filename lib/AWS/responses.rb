@@ -19,9 +19,9 @@ class Hash
   end
 end
 
-module EC2
+module AWS
 
-  # The make_request() and ec2_error? methods, which are shared by all, will raise any
+  # The make_request() and aws_error? methods, which are shared by all, will raise any
   # exceptions encountered along the way as it converses with EC2.
   #
   # Exception Handling: If for some reason an error occurrs when executing a method
@@ -59,4 +59,4 @@ module EC2
 
   end  # class Response
 
-end  # module EC2
+end  # module AWS

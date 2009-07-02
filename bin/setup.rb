@@ -17,7 +17,8 @@ if ENV['AMAZON_ACCESS_KEY_ID'] && ENV['AMAZON_SECRET_ACCESS_KEY']
   if ENV['EC2_URL']
     opts[:server] = URI.parse(ENV['EC2_URL']).host
   end
-  @ec2 = EC2::Base.new(opts)
+  @ec2 = AWS::EC2::Base.new(opts)
+  @elb = AWS::ELB::Base.new(opts)
 end
 
 puts "EC2 Server: #{opts[:server]}"

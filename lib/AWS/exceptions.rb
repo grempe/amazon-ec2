@@ -8,8 +8,7 @@
 # Home::      http://github.com/grempe/amazon-ec2/tree/master
 #++
 
-module EC2
-
+module AWS
   # OUR CUSTOM ERROR CODES
 
   # All of our errors are superclassed by Error < RuntimeError

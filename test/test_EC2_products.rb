@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "An EC2 instance " do
 
   before do
-    @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @confirm_product_instance_response_body = <<-RESPONSE
     <ConfirmProductInstanceResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
@@ -37,11 +37,11 @@ context "An EC2 instance " do
 
 
   specify "method get_console_output should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.confirm_product_instance() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.confirm_product_instance(:product_code => "774F4FF8", :instance_id => nil) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.confirm_product_instance(:product_code => "774F4FF8", :instance_id => "") }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.confirm_product_instance(:product_code => nil, :instance_id => "i-10a64379") }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.confirm_product_instance(:product_code => "", :instance_id => "i-10a64379") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.confirm_product_instance() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.confirm_product_instance(:product_code => "774F4FF8", :instance_id => nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.confirm_product_instance(:product_code => "774F4FF8", :instance_id => "") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.confirm_product_instance(:product_code => nil, :instance_id => "i-10a64379") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.confirm_product_instance(:product_code => "", :instance_id => "i-10a64379") }.should.raise(AWS::ArgumentError)
   end
 
 

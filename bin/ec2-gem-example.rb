@@ -9,7 +9,7 @@
 # Home::      http://github.com/grempe/amazon-ec2/tree/master
 #++
 
-require File.dirname(__FILE__) + '/../lib/EC2'
+require File.dirname(__FILE__) + '/../lib/AWS'
 require 'pp'
 
 # pull these from the local shell environment variables set in ~/.bash_login
@@ -34,10 +34,10 @@ end
 # test different servers by running something like:
 # export EC2_URL='https://ec2.amazonaws.com';./bin/ec2-gem-example.rb
 if ENV['EC2_URL']
-  ec2 = EC2::Base.new( :access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY, :server => URI.parse(ENV['EC2_URL']).host )
+  ec2 = AWS::EC2::Base.new( :access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY, :server => URI.parse(ENV['EC2_URL']).host )
 else
   # default server is US ec2.amazonaws.com
-  ec2 = EC2::Base.new( :access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY )
+  ec2 = AWS::EC2::Base.new( :access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY )
 end
 
 puts "----- ec2.methods.sort -----"

@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "EC2 image_attributes " do
 
   before do
-    @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @modify_image_attribute_response_body = <<-RESPONSE
     <ModifyImageAttributeResponse xm-lns="http://ec2.amazonaws.com/doc/2007-03-01">
@@ -130,33 +130,33 @@ context "EC2 image_attributes " do
 
   specify "should raise an exception when modify_image_attribute is called with incorrect arguments" do
     # method args can't be nil or empty
-    lambda { @ec2.modify_image_attribute() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.modify_image_attribute() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"") }.should.raise(AWS::ArgumentError)
 
     # :image_id option must be not be empty or nil
-    lambda { @ec2.modify_image_attribute(:image_id=>nil, :attribute=>"launchPermission", :operation_type=>"add", :group=>["all"]) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"", :attribute=>"launchPermission", :operation_type=>"add", :group=>["all"]) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>nil, :attribute=>"launchPermission", :operation_type=>"add", :group=>["all"]) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"", :attribute=>"launchPermission", :operation_type=>"add", :group=>["all"]) }.should.raise(AWS::ArgumentError)
 
     # :attribute currently has two options which are 'launchPermission' and 'productCodes, it should fail with any other value, nil, or empty
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>nil, :operation_type=>"add", :group=>["all"]) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"", :operation_type=>"add", :group=>["all"]) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"foo", :operation_type=>"add", :group=>["all"]) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>nil, :operation_type=>"add", :group=>["all"]) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"", :operation_type=>"add", :group=>["all"]) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"foo", :operation_type=>"add", :group=>["all"]) }.should.raise(AWS::ArgumentError)
 
     # :attribute => 'launchPermission' option should fail if neither :group nor :user_id are also provided
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add") }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :group => nil) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :group => "") }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :user_id => nil) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :user_id => "") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :group => nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :group => "") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :user_id => nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"add", :user_id => "") }.should.raise(AWS::ArgumentError)
 
     # :attribute => 'productCodes' option should fail if :product_code isn't also provided
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"productCodes", :product_code=>nil) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"productCodes", :product_code=>"") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"productCodes", :product_code=>nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"productCodes", :product_code=>"") }.should.raise(AWS::ArgumentError)
 
     # :operation_type currently has two options which are 'add' and 'remove', and it should fail with any other, nil or empty
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>nil, :group=>["all"]) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"", :group=>["all"]) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"foo", :group=>["all"]) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>nil, :group=>["all"]) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"", :group=>["all"]) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_image_attribute(:image_id=>"ami-61a54008", :attribute=>"launchPermission", :operation_type=>"foo", :group=>["all"]) }.should.raise(AWS::ArgumentError)
   end
 
 
@@ -191,22 +191,22 @@ context "EC2 image_attributes " do
 
   specify "should raise an exception when describe_image_attribute is called with incorrect arguments" do
     # method args can't be nil or empty
-    lambda { @ec2.describe_image_attribute() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.describe_image_attribute(:image_id=>"") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.describe_image_attribute() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.describe_image_attribute(:image_id=>"") }.should.raise(AWS::ArgumentError)
 
     # :image_id option must be not be empty or nil w/ launchPermission
-    lambda { @ec2.describe_image_attribute(:image_id=>nil, :attribute=>"launchPermission") }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.describe_image_attribute(:image_id=>"", :attribute=>"launchPermission") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.describe_image_attribute(:image_id=>nil, :attribute=>"launchPermission") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.describe_image_attribute(:image_id=>"", :attribute=>"launchPermission") }.should.raise(AWS::ArgumentError)
 
     # :image_id option must be not be empty or nil w/ productCodes
-    lambda { @ec2.describe_image_attribute(:image_id=>nil, :attribute=>"productCodes") }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.describe_image_attribute(:image_id=>"", :attribute=>"productCodes") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.describe_image_attribute(:image_id=>nil, :attribute=>"productCodes") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.describe_image_attribute(:image_id=>"", :attribute=>"productCodes") }.should.raise(AWS::ArgumentError)
 
     # :attribute currently has two options which are 'launchPermission' and 'productCodes', it should fail with any other values,
     # nil, or empty
-    lambda { @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>nil) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>"") }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>"foo") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>"") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.describe_image_attribute(:image_id=>"ami-61a54008", :attribute=>"foo") }.should.raise(AWS::ArgumentError)
   end
 
 
@@ -221,17 +221,17 @@ context "EC2 image_attributes " do
 
   specify "should raise an exception when reset_image_attribute is called with incorrect arguments" do
     # method args can't be nil or empty
-    lambda { @ec2.reset_image_attribute() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.reset_image_attribute(:image_id=>"") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.reset_image_attribute() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.reset_image_attribute(:image_id=>"") }.should.raise(AWS::ArgumentError)
 
     # :image_id option must be not be empty or nil
-    lambda { @ec2.reset_image_attribute(:image_id=>nil, :attribute=>"launchPermission") }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.reset_image_attribute(:image_id=>"", :attribute=>"launchPermission") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.reset_image_attribute(:image_id=>nil, :attribute=>"launchPermission") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.reset_image_attribute(:image_id=>"", :attribute=>"launchPermission") }.should.raise(AWS::ArgumentError)
 
     # :attribute currently has one option which is 'launchPermission', it should fail with any other value, nil, or empty
-    lambda { @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>nil) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>"") }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>"foo") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>"") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.reset_image_attribute(:image_id=>"ami-61a54008", :attribute=>"foo") }.should.raise(AWS::ArgumentError)
   end
 
 

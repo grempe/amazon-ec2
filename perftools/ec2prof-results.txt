@@ -99,7 +99,7 @@ Total: 2178 samples
        0   0.0%  99.6%       32   1.5% Net::HTTPResponse#read_chunked
        0   0.0%  99.6%       12   0.6% REXML::Parsers::XPathParser#LocationPath
        0   0.0%  99.6%      152   7.0% Array#map
-       0   0.0%  99.6%      945  43.4% EC2::Base#response_generator
+       0   0.0%  99.6%      945  43.4% AWS::EC2::Base#response_generator
        0   0.0%  99.6%        1   0.0% Net::HTTPResponse.read_status_line
        0   0.0%  99.6%       34   1.6% Net::HTTP#request
        0   0.0%  99.6%      275  12.6% Array#each
@@ -109,7 +109,7 @@ Total: 2178 samples
        0   0.0%  99.6%       32   1.5% Net::HTTPResponse#reading_body
        0   0.0%  99.6%        1   0.0% Net::HTTPResponse.each_response_header
        0   0.0%  99.6%      801  36.8% REXML::Document#build
-       0   0.0%  99.6%       34   1.6% EC2::Base#make_request
+       0   0.0%  99.6%       34   1.6% AWS::EC2::Base#make_request
        0   0.0%  99.6%       32   1.5% Net::HTTPResponse#body
        0   0.0%  99.6%       32   1.5% Array#delete_if
        0   0.0%  99.6%        1   0.0% REXML::XPathParser#namespaces=
@@ -117,8 +117,8 @@ Total: 2178 samples
        0   0.0%  99.6%     1113  51.1% XmlSimple#xml_in
        0   0.0%  99.6%       27   1.2% Object#timeout
        0   0.0%  99.6%      801  36.8% XmlSimple#parse
-       0   0.0%  99.6%      918  42.1% EC2::Base#describe_images
-       0   0.0%  99.6%      934  42.9% EC2::Response.parse
+       0   0.0%  99.6%      918  42.1% AWS::EC2::Base#describe_images
+       0   0.0%  99.6%      934  42.9% AWS::Response.parse
        0   0.0%  99.6%      801  36.8% REXML::Document#initialize
        0   0.0%  99.6%       22   1.0% Array#join
        0   0.0%  99.6%        1   0.0% Net::BufferedIO#readline

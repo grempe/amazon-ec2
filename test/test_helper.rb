@@ -16,4 +16,4 @@
   end
 }
 
-require File.dirname(__FILE__) + '/../lib/EC2'
+require File.dirname(__FILE__) + '/../lib/AWS'

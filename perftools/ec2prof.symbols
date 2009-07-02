@@ -7,9 +7,9 @@
 01222665: REXML::Element#each_element
 011249a9: XmlSimple#xml_in
 0223eb95: XmlSimple.xml_in
-022884f1: EC2::Response.parse
-011ba34d: EC2::Base#response_generator
-011ba17d: EC2::Base#describe_images
+022884f1: AWS::Response.parse
+011ba34d: AWS::EC2::Base#response_generator
+011ba17d: AWS::EC2::Base#describe_images
 01124af1: XmlSimple#get_attributes
 012219b1: REXML::Attributes#each_attribute
 01219c51: REXML::Attributes#each
@@ -48,7 +48,7 @@
 025a912d: Net::HTTPResponse.each_response_header
 025a8bfd: Net::HTTPResponse.read_new
 012d8c71: Net::HTTP#request
-011ba2e5: EC2::Base#make_request
+011ba2e5: AWS::EC2::Base#make_request
 012d4611: Net::HTTP#start
 005067ad: Net::BufferedIO#read
 012d87bd: Net::HTTPResponse#read_chunked

@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
-context "ec2 load balancers " do
+context "elb load balancers " do
   before do
-    @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @elb = AWS::ELB::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @valid_create_load_balancer_params = {
       :load_balancer_name => 'Test Name',
@@ -61,7 +61,7 @@ context "ec2 load balancers " do
   end
   
   specify "should be able to be created" do
-    @ec2.stubs(:make_request).with('CreateLoadBalancer', {
+    @elb.stubs(:make_request).with('CreateLoadBalancer', {
       'LoadBalancerName' => 'Test Name',
       'AvailabilityZones.member.1' => 'east-1a',
       'Listeners.member.1.Protocol' => 'HTTP',
@@ -69,13 +69,13 @@ context "ec2 load balancers " do
       'Listeners.member.1.InstancePort' => '80'
     }).returns stub(:body => @create_load_balancer_response_body, :is_a? => true)
 
-    response = @ec2.create_load_balancer(@valid_create_load_balancer_params)
+    response = @elb.create_load_balancer(@valid_create_load_balancer_params)
     response.should.be.an.instance_of Hash
     response.DNSName.should.equal "TestLoadBalancer-380544827.us-east-1.ec2.amazonaws.com"
   end
   
   specify "method create_load_balancer should reject bad arguments" do
-    @ec2.stubs(:make_request).with('CreateLoadBalancer', {
+    @elb.stubs(:make_request).with('CreateLoadBalancer', {
       'LoadBalancerName' => 'Test Name',
       'AvailabilityZones.member.1' => 'east-1a',
       'Listeners.member.1.Protocol' => 'HTTP',
@@ -83,29 +83,29 @@ context "ec2 load balancers " do
       'Listeners.member.1.InstancePort' => '80'
     }).returns stub(:body => @create_load_balancer_response_body, :is_a? => true)
     
-    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params) }.should.not.raise(ec2::ArgumentError)
-    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:load_balancer_name=>nil)) }.should.raise(ec2::ArgumentError)
-    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:load_balancer_name=>'')) }.should.raise(ec2::ArgumentError)
-    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:availability_zones=>'')) }.should.raise(ec2::ArgumentError)
-    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:availability_zones=>[])) }.should.raise(ec2::ArgumentError)
-    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:listeners=>[])) }.should.raise(ec2::ArgumentError)
-    lambda { @ec2.create_load_balancer(@valid_create_load_balancer_params.merge(:listeners=>nil)) }.should.raise(ec2::ArgumentError)
+    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params) }.should.not.raise(AWS::ArgumentError)
+    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:load_balancer_name=>nil)) }.should.raise(AWS::ArgumentError)
+    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:load_balancer_name=>'')) }.should.raise(AWS::ArgumentError)
+    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:availability_zones=>'')) }.should.raise(AWS::ArgumentError)
+    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:availability_zones=>[])) }.should.raise(AWS::ArgumentError)
+    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:listeners=>[])) }.should.raise(AWS::ArgumentError)
+    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:listeners=>nil)) }.should.raise(AWS::ArgumentError)
   end
   
   specify "should be able to be deleted with delete_load_balancer" do
-    @ec2.stubs(:make_request).with('DeleteLoadBalancer', {'LoadBalancerName' => 'Test Name'}).
+    @elb.stubs(:make_request).with('DeleteLoadBalancer', {'LoadBalancerName' => 'Test Name'}).
       returns stub(:body => @delete_load_balancer_response_body, :is_a? => true)
       
-    response = @ec2.delete_load_balancer( :load_balancer_name => "Test Name" )
+    response = @elb.delete_load_balancer( :load_balancer_name => "Test Name" )
     response.should.be.an.instance_of Hash
     response.return.should.equal "true"
   end
   
   specify "should be able to be described with describe_load_balancer" do
-    @ec2.stubs(:make_request).with('DescribeLoadBalancers', {}).
+    @elb.stubs(:make_request).with('DescribeLoadBalancers', {}).
       returns stub(:body => @describe_load_balancer_response_body, :is_a? => true)
 
-    response = @ec2.describe_load_balancers()
+    response = @elb.describe_load_balancers()
     response.should.be.an.instance_of Hash
   end
 end

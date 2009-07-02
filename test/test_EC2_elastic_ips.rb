@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "EC2 elastic IP addresses " do
 
   before do
-    @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @allocate_address_body = <<-RESPONSE
     <AllocateAddressResponse xmlns="http://ec2.amazonaws.com/doc/2008-02-01">
@@ -68,10 +68,10 @@ context "EC2 elastic IP addresses " do
   #  @ec2.stubs(:make_request).with('CreateKeyPair', {"KeyName"=>"example-key-name"}).
   #    returns stub(:body => @create_keypair_response_body, :is_a? => true)
   #
-  #  lambda { @ec2.create_keypair( :key_name => "example-key-name" ) }.should.not.raise(EC2::ArgumentError)
-  #  lambda { @ec2.create_keypair() }.should.raise(EC2::ArgumentError)
-  #  lambda { @ec2.create_keypair( :key_name => nil ) }.should.raise(EC2::ArgumentError)
-  #  lambda { @ec2.create_keypair( :key_name => "" ) }.should.raise(EC2::ArgumentError)
+  #  lambda { @ec2.create_keypair( :key_name => "example-key-name" ) }.should.not.raise(AWS::ArgumentError)
+  #  lambda { @ec2.create_keypair() }.should.raise(AWS::ArgumentError)
+  #  lambda { @ec2.create_keypair( :key_name => nil ) }.should.raise(AWS::ArgumentError)
+  #  lambda { @ec2.create_keypair( :key_name => "" ) }.should.raise(AWS::ArgumentError)
   #end
 
 
@@ -113,10 +113,10 @@ context "EC2 elastic IP addresses " do
     @ec2.stubs(:make_request).with('AssociateAddress', {"InstanceId" => "i-2ea64347", "PublicIp"=>"67.202.55.255"}).
       returns stub(:body => @associate_address_response_body, :is_a? => true)
 
-    lambda { @ec2.associate_address( :instance_id => "i-2ea64347", :public_ip => "67.202.55.255" ) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.associate_address() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.associate_address( :instance_id => nil ) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.associate_address( :public_ip => "" ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.associate_address( :instance_id => "i-2ea64347", :public_ip => "67.202.55.255" ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.associate_address() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.associate_address( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.associate_address( :public_ip => "" ) }.should.raise(AWS::ArgumentError)
   end
 
 
@@ -135,9 +135,9 @@ context "EC2 elastic IP addresses " do
     @ec2.stubs(:make_request).with('DisassociateAddress', {'PublicIp' => '67.202.55.255'}).
       returns stub(:body => @disassociate_address_response_body, :is_a? => true)
 
-    lambda { @ec2.disassociate_address( :public_ip => "67.202.55.255" ) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.disassociate_address() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.disassociate_address( :public_ip => "" ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.disassociate_address( :public_ip => "67.202.55.255" ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.disassociate_address() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.disassociate_address( :public_ip => "" ) }.should.raise(AWS::ArgumentError)
   end
 
 

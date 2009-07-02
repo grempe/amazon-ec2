@@ -1,46 +1,17 @@
-#--
-# Amazon Web Services EC2 Query API Ruby library
-#
-# Ruby Gem Name::  amazon-ec2
-# Author::    Glenn Rempe  (mailto:glenn@rempe.us)
-# Copyright:: Copyright (c) 2007-2008 Glenn Rempe
-# License::   Distributes under the same terms as Ruby
-# Home::      http://github.com/grempe/amazon-ec2/tree/master
-#++
+# Require any lib files that we have bundled with this Ruby Gem in the lib/AWS directory.
+# Parts of the AWS module and Base class are broken out into separate
+# files for maintainability and are organized by the functional groupings defined
+# in the AWS API developers guide.
+
 
 %w[ base64 cgi openssl digest/sha1 net/https rexml/document time ostruct ].each { |f| require f }
 
-# Require any lib files that we have bundled with this Ruby Gem in the lib/EC2 directory.
-# Parts of the EC2 module and Base class are broken out into separate
-# files for maintainability and are organized by the functional groupings defined
-# in the EC2 API developers guide.
-Dir[File.join(File.dirname(__FILE__), 'EC2/**/*.rb')].sort.each { |lib| require lib }
-
-module EC2
-
-  # Which host FQDN will we connect to for all API calls to AWS?
-  # If EC2_URL is defined in the users ENV we can use that. It is
-  # expected that this var is set with something like:
-  #   export EC2_URL='https://ec2.amazonaws.com'
-  #
-  if ENV['EC2_URL']
-    EC2_URL = ENV['EC2_URL']
-    VALID_HOSTS = ['https://ec2.amazonaws.com', 'https://us-east-1.ec2.amazonaws.com', 'https://eu-west-1.ec2.amazonaws.com']
-    raise ArgumentError, "Invalid EC2_URL environment variable : #{EC2_URL}" unless VALID_HOSTS.include?(EC2_URL)
-    DEFAULT_HOST = URI.parse(EC2_URL).host
-  else
-    # default US host
-    DEFAULT_HOST = 'ec2.amazonaws.com'
-  end
-
-  # This is the version of the API as defined by Amazon Web Services
-  API_VERSION = '2008-12-01'
-
+module AWS
   # Builds the canonical string for signing. This strips out all '&', '?', and '='
   # from the query string to be signed.
   #   Note:  The parameters in the path passed in must already be sorted in
   #   case-insensitive alphabetical order and must not be url encoded.
-  def EC2.canonical_string(params, host = DEFAULT_HOST, method="POST", base="/")
+  def AWS.canonical_string(params, host, method="POST", base="/")
     # Sort, and encode parameters into a canonical string.
     sorted_params = params.sort {|x,y| x[0] <=> y[0]}
     encoded_params = sorted_params.collect do |p|
@@ -64,7 +35,7 @@ module EC2
   # hmac-sha1 sum, and then base64 encoding it.  Optionally, it will also
   # url encode the result of that to protect the string if it's going to
   # be used as a query string parameter.
-  def EC2.encode(secret_access_key, str, urlencode=true)
+  def AWS.encode(secret_access_key, str, urlencode=true)
     digest = OpenSSL::Digest::Digest.new('sha1')
     b64_hmac =
       Base64.encode64(
@@ -76,26 +47,7 @@ module EC2
       return b64_hmac
     end
   end
-
-
-  #Introduction:
-  #
-  # The library exposes one main interface class, 'EC2::Base'.
-  # This class provides all the methods for using the EC2 service
-  # including the handling of header signing and other security issues .
-  # This class uses Net::HTTP to interface with the EC2 Query API interface.
-  #
-  #Required Arguments:
-  #
-  # :access_key_id => String (default : "")
-  # :secret_access_key => String (default : "")
-  #
-  #Optional Arguments:
-  #
-  # :use_ssl => Boolean (default : true)
-  # :server => String (default : 'ec2.amazonaws.com')
-  # :proxy_server => String (default : nil)
-  #
+  
   class Base
 
     attr_reader :use_ssl, :server, :proxy_server, :port
@@ -105,7 +57,7 @@ module EC2
       options = { :access_key_id => "",
                   :secret_access_key => "",
                   :use_ssl => true,
-                  :server => DEFAULT_HOST,
+                  :server => default_host,
                   :proxy_server => nil
                   }.merge(options)
 
@@ -149,7 +101,7 @@ module EC2
     end
 
 
-    private
+    protected
 
       # pathlist is a utility method which takes a key string and and array as input.
       # It converts the array into a Hash with the hash key being 'Key.n' where
@@ -172,7 +124,20 @@ module EC2
         end
         params
       end
-
+      
+      # Same as _pathlist_ except it deals with arrays of hashes.
+      # So if you pass in args
+      # ("People", [{:name=>'jon', :age=>'22'}, {:name=>'chris'}], {:name => 'Name', :age => 'Age'}) you should get
+      # {"People.1.Name"=>"jon", "People.1.Age"=>'22', 'People.2.Name'=>'chris'}
+      def pathhashlist(key, arr_of_hashes, mappings)
+        params ={}
+        arr_of_hashes.each_with_index do |hash, i|
+          hash.each do |attribute, value|
+            params["#{key}.#{i+1}.#{mappings[attribute]}"] = value
+          end
+        end
+        params
+      end
 
       # Make the connection to AWS EC2 passing in our request.  This is generally called from
       # within a 'Response' class object or one of its sub-classes so the response is interpreted
@@ -188,7 +153,7 @@ module EC2
                           "SignatureVersion" => "2",
                           "SignatureMethod" => 'HmacSHA1',
                           "AWSAccessKeyId" => @access_key_id,
-                          "Version" => API_VERSION,
+                          "Version" => api_version,
                           "Timestamp"=>Time.now.getutc.iso8601} )
 
           sig = get_aws_auth_param(params, @secret_access_key, @server)
@@ -205,7 +170,7 @@ module EC2
 
           # Make a call to see if we need to throw an error based on the response given by EC2
           # All error classes are defined in EC2/exceptions.rb
-          ec2_error?(response)
+          aws_error?(response)
 
           return response
 
@@ -215,8 +180,8 @@ module EC2
 
       # Set the Authorization header using AWS signed header authentication
       def get_aws_auth_param(params, secret_access_key, server)
-        canonical_string =  EC2.canonical_string(params, server)
-        encoded_canonical = EC2.encode(secret_access_key, canonical_string)
+        canonical_string =  AWS.canonical_string(params, server)
+        encoded_canonical = AWS.encode(secret_access_key, canonical_string)
       end
 
       # allow us to have a one line call in each method which will do all of the work
@@ -238,7 +203,7 @@ module EC2
 
       # Raises the appropriate error if the specified Net::HTTPResponse object
       # contains an Amazon EC2 error; returns +false+ otherwise.
-      def ec2_error?(response)
+      def aws_error?(response)
 
         # return false if we got a HTTP 200 code,
         # otherwise there is some type of error (40x,50x) and
@@ -266,14 +231,15 @@ module EC2
 
         # Raise one of our specific error classes if it exists.
         # otherwise, throw a generic EC2 Error with a few details.
-        if EC2.const_defined?(error_code)
-          raise EC2.const_get(error_code), error_message
+        if AWS.const_defined?(error_code)
+          raise AWS.const_get(error_code), error_message
         else
-          raise EC2::Error, error_message
+          raise AWS::Error, error_message
         end
 
       end
 
   end
-
 end
+
+Dir[File.join(File.dirname(__FILE__), 'AWS/*.rb')].sort.each { |lib| require lib }

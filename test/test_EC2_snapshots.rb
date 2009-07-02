@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "EC2 snaphots " do
 
   before do
-    @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @describe_snapshots_response_body = <<-RESPONSE
     <DescribeSnapshotsResponse xmlns="http://ec2.amazonaws.com/doc/2008-05-05">

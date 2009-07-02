@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "EC2 security groups " do
 
   before do
-    @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @create_security_group_response_body = <<-RESPONSE
     <CreateSecurityGroupResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
@@ -92,16 +92,16 @@ context "EC2 security groups " do
     @ec2.stubs(:make_request).with('CreateSecurityGroup', {"GroupName"=>"WebServers", "GroupDescription"=>"Web"}).
       returns stub(:body => @create_security_group_response_body, :is_a? => true)
 
-    lambda { @ec2.create_security_group( :group_name => "WebServers", :group_description => "Web" ) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.create_security_group() }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.create_security_group( :group_name => "WebServers", :group_description => "Web" ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.create_security_group() }.should.raise(AWS::ArgumentError)
 
     # :group_name can't be nil or empty
-    lambda { @ec2.create_security_group( :group_name => "", :group_description => "Web" ) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.create_security_group( :group_name => nil, :group_description => "Web" ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.create_security_group( :group_name => "", :group_description => "Web" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.create_security_group( :group_name => nil, :group_description => "Web" ) }.should.raise(AWS::ArgumentError)
 
     # :group_description can't be nil or empty
-    lambda { @ec2.create_security_group( :group_name => "WebServers", :group_description => "" ) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.create_security_group( :group_name => "WebServers", :group_description => nil ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.create_security_group( :group_name => "WebServers", :group_description => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.create_security_group( :group_name => "WebServers", :group_description => nil ) }.should.raise(AWS::ArgumentError)
   end
 
 
@@ -116,12 +116,12 @@ context "EC2 security groups " do
     @ec2.stubs(:make_request).with('DeleteSecurityGroup', {"GroupName"=>"WebServers"}).
       returns stub(:body => @delete_security_group_response_body, :is_a? => true)
 
-    lambda { @ec2.delete_security_group( :group_name => "WebServers" ) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.delete_security_group() }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.delete_security_group( :group_name => "WebServers" ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.delete_security_group() }.should.raise(AWS::ArgumentError)
 
     # :group_name can't be nil or empty
-    lambda { @ec2.delete_security_group( :group_name => "" ) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.delete_security_group( :group_name => nil ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.delete_security_group( :group_name => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.delete_security_group( :group_name => nil ) }.should.raise(AWS::ArgumentError)
   end
 
 
@@ -156,7 +156,7 @@ context "EC2 security groups " do
     @ec2.stubs(:make_request).with('DescribeSecurityGroups', {"GroupName.1"=>"WebServers"}).
       returns stub(:body => @describe_security_groups_response_body, :is_a? => true)
 
-      lambda { @ec2.describe_security_groups( :group_name => "WebServers" ) }.should.not.raise(EC2::ArgumentError)
+      lambda { @ec2.describe_security_groups( :group_name => "WebServers" ) }.should.not.raise(AWS::ArgumentError)
 
   end
 

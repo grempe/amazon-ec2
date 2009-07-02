@@ -23,13 +23,13 @@
 
 === 0.3.2 2008-12-11
  * Updated API version to 2008-12-01
- * Note : The new European EC2 zone should just work if you specify ':server => "eu-west-1.ec2.amazonaws.com"' when initializing EC2::Base.new().  Please report any issues you have with using this new service.
+ * Note : The new European EC2 zone should just work if you specify ':server => "eu-west-1.ec2.amazonaws.com"' when initializing AWS::EC2::Base.new().  Please report any issues you have with using this new service.
 
 === 0.3.1 2008-09-18
  * Added basic custom kernel id support to run_instances.  Thanks to Keith Hudgins for the patch.
 
 === 0.3.0 2008-08-24
- * Changed response object from AmazonEC2::Response to Hash (patch from Yan Pritzker 'skwp') Thanks!
+ * Changed response object from AmazonAWS::Response to Hash (patch from Yan Pritzker 'skwp') Thanks!
  * Added support for Elastic Block Storage (patch from Yann Klis 'yannski') Thanks!
  * Bumped AWS EC2 API version to 2008-05-05
  * Bumped gem version number
@@ -105,7 +105,7 @@
  * MAJOR refactoring of how responses are returned to users.  No longer do you have to call the
  .parse method, and no longer are you getting back simple arrays of information.  Responses
  now come in the form of OpenStruct objects that contain all of the data for an object in
- Enumerable form so you can use iterators (.each, .each_pair, etc).  All methods return an EC2::Response object
+ Enumerable form so you can use iterators (.each, .each_pair, etc).  All methods return an AWS::Response object
  which inherits from OpenStruct.  The return data from EC2, which is in XML form, is parsed
  with XmlSimple and is used to directly construct the return data structure.  This allows us
  to know with some confidence that the data structure returned from AWS will always be consistent
@@ -116,7 +116,7 @@
  that match those handed to us by Amazon EC2.  ArgumentError exceptions will also
  be thrown if you are making calls we know to be illegal or malformed.  You should rescue
  these exceptions in your application instead of parsing text responses.  All exceptions
- descend from EC2::Error.  You can see them all in exceptions.rb in the gem install.
+ descend from AWS::Error.  You can see them all in exceptions.rb in the gem install.
 
  * Added a full suite of test/spec unit tests which currently cover 100% of the public methods
  in this library.  We have abot 92% code coverage according to rcov.  This has greatly enhanced

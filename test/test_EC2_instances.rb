@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "EC2 instances " do
 
   before do
-    @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @run_instances_response_body = <<-RESPONSE
     <RunInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-08-29">
@@ -193,30 +193,30 @@ context "EC2 instances " do
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "AddressingType" => 'public', 'InstanceType' => 'm1.small').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
 
-    lambda { @ec2.run_instances() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "" ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "" ) }.should.raise(AWS::ArgumentError)
 
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1 ) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 0 ) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => nil ) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => "" ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1 ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 0 ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => nil ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => "" ) }.should.raise(AWS::ArgumentError)
 
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => 1 ) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => 0 ) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => nil ) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => "" ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => 1 ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => 0 ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => nil ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => "" ) }.should.raise(AWS::ArgumentError)
 
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "public" ) }.should.not.raise(EC2::ArgumentError)
-    #lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "direct" ) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => nil ) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "" ) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "foo" ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "public" ) }.should.not.raise(AWS::ArgumentError)
+    #lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "direct" ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => nil ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "foo" ) }.should.raise(AWS::ArgumentError)
 
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => true ) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => false ) }.should.not.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => nil ) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => "" ) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => "foo" ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => true ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => false ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => nil ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => "foo" ) }.should.raise(AWS::ArgumentError)
   end
 
 
@@ -305,9 +305,9 @@ context "EC2 instances " do
 
 
   specify "method reboot_instances should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.reboot_instances() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.reboot_instances( :instance_id => nil ) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.reboot_instances( :instance_id => "" ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.reboot_instances() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.reboot_instances( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.reboot_instances( :instance_id => "" ) }.should.raise(AWS::ArgumentError)
   end
 
 
@@ -319,9 +319,9 @@ context "EC2 instances " do
 
 
   specify "method terminate_instances should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.terminate_instances() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.terminate_instances( :instance_id => nil ) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.terminate_instances( :instance_id => "" ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.terminate_instances() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.terminate_instances( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.terminate_instances( :instance_id => "" ) }.should.raise(AWS::ArgumentError)
   end
 
 

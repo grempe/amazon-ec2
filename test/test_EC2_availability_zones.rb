@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "EC2 availability zones" do
 
   before do
-    @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @describe_availability_zones_response_body = <<-RESPONSE
     <DescribeAvailabilityZonesResponse xmlns="http://ec2.amazonaws.com/doc/2008-02-01/">

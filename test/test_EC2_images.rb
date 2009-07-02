@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "An EC2 image " do
 
   before do
-    @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @register_image_response_body = <<-RESPONSE
     <RegisterImageResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
@@ -65,8 +65,8 @@ context "An EC2 image " do
 
 
   specify "method register_image should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.register_image() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.register_image(:image_location => "") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.register_image() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.register_image(:image_location => "") }.should.raise(AWS::ArgumentError)
   end
 
 
@@ -188,9 +188,9 @@ context "An EC2 image " do
 
 
   specify "method deregister_image should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.deregister_image() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.deregister_image( :image_id => nil ) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.deregister_image( :image_id => "" ) }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.deregister_image() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.deregister_image( :image_id => nil ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.deregister_image( :image_id => "" ) }.should.raise(AWS::ArgumentError)
   end
 
 

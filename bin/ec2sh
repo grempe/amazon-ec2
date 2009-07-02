@@ -19,9 +19,9 @@
 
 #   macbook-pro:~ glenn$ ec2sh
 #   >> @ec2.describe_images
-#   => [#<EC2::Item image_location...
+#   => [#<AWS::EC2::Item image_location...
 
-ec2_lib   = File.dirname(__FILE__) + '/../lib/EC2'
+ec2_lib   = File.dirname(__FILE__) + '/../lib/AWS'
 setup = File.dirname(__FILE__) + '/setup'
 irb_name = RUBY_PLATFORM =~ /mswin32/ ? 'irb.bat' : 'irb'
 
@@ -48,7 +48,7 @@ if ( ENV['AMAZON_ACCESS_KEY_ID'] && ENV['AMAZON_SECRET_ACCESS_KEY'] )
       returns : a string representation of ALL images
       >> @ec2.describe_images.to_s
 
-      returns : an Array of EC2::Response objects, each an EC2 image and its data
+      returns : an Array of AWS::Response objects, each an EC2 image and its data
       >> @ec2.describe_images.imagesSet.item
       >> @ec2.describe_images.imagesSet.item[0] (a hash representing a single item in that array)
       >> @ec2.describe_images.imagesSet.item[0].to_s (a String representation of that item)
@@ -56,7 +56,7 @@ if ( ENV['AMAZON_ACCESS_KEY_ID'] && ENV['AMAZON_SECRET_ACCESS_KEY'] )
   MESSAGE
 
   puts welcome_message
-  exec "#{irb_name} -r #{ec2_lib} -r #{setup} --simple-prompt"
+  exec "#{irb_name} -r #{ec2_lib} -r #{elb_lib} -r #{setup} --simple-prompt"
 else
   puts "You must define AMAZON_ACCESS_KEY_ID and AMAZON_SECRET_ACCESS_KEY as shell environment variables before running #{$0}!"
 end

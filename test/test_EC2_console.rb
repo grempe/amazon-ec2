@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "The EC2 console " do
 
   before do
-    @ec2 = EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @get_console_output_response_body = <<-RESPONSE
     <GetConsoleOutputResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
@@ -45,9 +45,9 @@ context "The EC2 console " do
 
 
   specify "method get_console_output should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.get_console_output() }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.get_console_output(:instance_id => nil) }.should.raise(EC2::ArgumentError)
-    lambda { @ec2.get_console_output(:instance_id => "") }.should.raise(EC2::ArgumentError)
+    lambda { @ec2.get_console_output() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.get_console_output(:instance_id => nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.get_console_output(:instance_id => "") }.should.raise(AWS::ArgumentError)
   end
 
 
