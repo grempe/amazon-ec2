@@ -149,7 +149,38 @@ module AWS
         return response_generator(:action => "DeregisterInstancesFromLoadBalancer", :params => params)
       end
       
-      
+      # Amazon Developer Guide Docs:
+      #
+      # This API enables you to define an application healthcheck for the
+      # instances.
+      #
+      # Note: Completion of this API does not guarantee that operation has completed. Rather, it means that the request has been registered and the changes will happen shortly.
+      #
+      # Required Arguments
+      #
+      #  :health_check => Hash (:timeout, :interval, :unhealthy_threshold, :healthy_threshold)
+      #  :load_balancer_name => String
+      #
+      def configure_health_check( options = {} )
+        raise ArgumentError, "No :health_check provided" if options[:health_check].nil? || options[:health_check].empty?
+        raise ArgumentError, "No :health_check => :target provided" if options[:health_check][:target].nil? || options[:health_check][:target].empty?
+        raise ArgumentError, "No :health_check => :timeout provided" if options[:health_check][:timeout].nil? || options[:health_check][:timeout].empty?
+        raise ArgumentError, "No :health_check => :interval provided" if options[:health_check][:interval].nil? || options[:health_check][:interval].empty?
+        raise ArgumentError, "No :health_check => :unhealthy_threshold provided" if options[:health_check][:unhealthy_threshold].nil? || options[:health_check][:unhealthy_threshold].empty?
+        raise ArgumentError, "No :health_check => :healthy_threshold provided" if options[:health_check][:healthy_threshold].nil? || options[:health_check][:healthy_threshold].empty?
+        raise ArgumentError, "No :load_balancer_name provided" if options[:load_balancer_name].nil? || options[:load_balancer_name].empty?
+        
+        params = {}
+        
+        params['LoadBalancerName'] = options[:load_balancer_name]
+        params['HealthCheck.Target'] = options[:health_check][:target]
+        params['HealthCheck.Timeout'] = options[:health_check][:timeout]
+        params['HealthCheck.Interval'] = options[:health_check][:interval]
+        params['HealthCheck.UnhealthyThreshold'] = options[:health_check][:unhealthy_threshold]
+        params['HealthCheck.HealthyThreshold'] = options[:health_check][:healthy_threshold]
+        
+        return response_generator(:action => "ConfigureHealthCheck", :params => params)
+      end
     end
   end
 end

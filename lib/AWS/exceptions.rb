@@ -125,6 +125,26 @@ module AWS
   # The value of an item added to, or removed from, an image attribute is invalid.
   class InvalidAMIAttributeItemValue < Error #:nodoc:
   end
+  
+  # ELB ERRORS
+  
+  class LoadBalancerNotFound < Error #:nodoc:
+  end
+  
+  class ValidationError < Error #:nodoc:
+  end
+  
+  class DuplicateLoadBalancerName < Error #:nodoc:
+  end
+  
+  class TooManyLoadBalancers < Error #:nodoc:
+  end
+  
+  class InvalidInstance < Error #:nodoc:
+  end
+  
+  class InvalidConfigurationRequest < Error #:nodoc:
+  end
 
   # AWS EC2 SERVER ERROR CODES
 
