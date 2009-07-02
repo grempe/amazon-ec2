@@ -51,7 +51,6 @@ module AWS
       # NOTE: Parsing the response as a nested set of Response objects was extremely
       # memory intensive and appeared to leak (the memory was not freed on subsequent requests).
       # It was changed to return the raw XmlSimple response.
-
       response = XmlSimple.xml_in(options[:xml], options[:parse_options])
 
       return response

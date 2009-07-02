@@ -82,6 +82,44 @@ module AWS
 
         return response_generator(:action => "DescribeLoadBalancers", :params => params)
       end
+      
+      # Amazon Developer Guide Docs:
+      #
+      # This API adds new instances to the LoadBalancer.
+      #  
+      # Once the instance is registered, it starts receiving traffic and
+      # requests from the LoadBalancer. Any instance that is not in any of the
+      # Availability Zones registered for the LoadBalancer will be moved to
+      # the OutOfService state. It will move to the InService state when the
+      # Availability Zone is added to the LoadBalancer.
+      #  
+      # You must have been the one who created the LoadBalancer. In other
+      # words, in order to successfully call this API, you must provide the
+      # same account credentials as those that were used to create the
+      # LoadBalancer.
+      #  
+      # NOTE: Completion of this API does not guarantee that operation has
+      # completed. Rather, it means that the request has been registered and
+      # the changes will happen shortly.
+      #
+      # Required Arguments:
+      # 
+      #  :instances => Array of Strings
+      #  :load_balancer_name => String
+      #
+      def register_instances_with_load_balancer( options = {} )
+        raise ArgumentError, "No :instances provided" if options[:instances].nil? || options[:instances].empty?
+        raise ArgumentError, "No :load_balancer_name provided" if options[:load_balancer_name].nil? || options[:load_balancer_name].empty?
+
+        params = {}
+      
+        params.merge!(pathlist('Instances.member', [options[:instances]].flatten))
+        params['LoadBalancerName'] = options[:load_balancer_name]
+
+        return response_generator(:action => "RegisterInstancesWithLoadBalancer", :params => params)
+      end
+      
+      
     end
   end
 end

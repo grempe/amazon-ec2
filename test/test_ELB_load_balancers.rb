@@ -63,6 +63,21 @@ context "elb load balancers " do
       </ResponseMetadata>
     </DescribeLoadBalancersResponse>
     RESPONSE
+    
+    @valid_register_instances_with_load_balancer_params = {
+      :load_balancer_name => 'Test Name',
+      :instances => ['i-6055fa09']
+    }
+    
+    @register_instances_with_load_balancer_response_body = <<-RESPONSE
+    <RegisterInstancesWithLoadBalancerResult>
+    	    <Instances>
+    		      <member>
+    			        <InstanceId>i-6055fa09</InstanceId>
+    		      </member>
+    	    </Instances>
+    </RegisterInstancesWithLoadBalancerResult>
+    RESPONSE
   end
   
   specify "should be able to be created" do
@@ -115,4 +130,17 @@ context "elb load balancers " do
     
     response.DescribeLoadBalancersResult.LoadBalancerDescriptions.member.length.should == 1
   end
+  
+  specify "should be able to be register instances to load balancers with register_instances_with_load_balancer" do
+    @elb.stubs(:make_request).with('RegisterInstancesWithLoadBalancer', {
+      'LoadBalancerName' => 'Test Name',
+      'Instances.member.1' => 'i-6055fa09'
+    }).returns stub(:body => @register_instances_with_load_balancer_response_body, :is_a? => true)
+    
+    response = @elb.register_instances_with_load_balancer(@valid_register_instances_with_load_balancer_params)
+    response.should.be.an.instance_of Hash
+    
+    response.Instances.member.length.should == 1
+  end
+  
 end
