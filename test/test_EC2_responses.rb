@@ -25,7 +25,8 @@ context "The Response classes " do
 
 
   specify "should show the response as a formatted string when calling #inspect" do
-    @response.inspect.should.equal %{{"return"=>"true", "xmlns"=>"http://ec2.amazonaws.com/doc/2007-03-01"}}
+    # sorting the response hash first since ruby 1.8.6 and ruby 1.9.1 sort the hash differently before the inspect
+    @response.sort.inspect.should.equal %{[[\"return\", \"true\"], [\"xmlns\", \"http://ec2.amazonaws.com/doc/2007-03-01\"]]}
   end
 
 

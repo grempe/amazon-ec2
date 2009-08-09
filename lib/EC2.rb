@@ -118,7 +118,7 @@ module EC2
       raise ArgumentError, "No :use_ssl value provided" if options[:use_ssl].nil?
       raise ArgumentError, "Invalid :use_ssl value provided, only 'true' or 'false' allowed" unless options[:use_ssl] == true || options[:use_ssl] == false
       raise ArgumentError, "No :server provided" if options[:server].nil? || options[:server].empty?
-      
+
       if options[:port]
         # user-specified port
         @port = options[:port]
@@ -158,6 +158,15 @@ module EC2
       # {"ImageId.1"=>"123", "ImageId.2"=>"456"} returned.
       def pathlist(key, arr)
         params = {}
+
+        # ruby 1.9 will barf if we pass in a string instead of the array expected.
+        # it will fail on each_with_index below since string is not enumerable.
+        if arr.is_a? String
+          new_arr = []
+          new_arr << arr
+          arr = new_arr
+        end
+
         arr.each_with_index do |value, i|
           params["#{key}.#{i+1}"] = value
         end
