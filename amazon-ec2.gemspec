@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{amazon-ec2}
-  s.version = "0.4.6"
+  s.version = "0.4.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Glenn Rempe"]
@@ -69,12 +69,11 @@ Gem::Specification.new do |s|
      "wsdl/2008-05-05.ec2.wsdl",
      "wsdl/2008-12-01.ec2.wsdl"
   ]
-  s.has_rdoc = true
   s.homepage = %q{http://github.com/grempe/amazon-ec2}
   s.rdoc_options = ["--quiet", "--title", "amazon-ec2 documentation", "--opname", "index.html", "--line-numbers", "--main", "README.rdoc", "--inline-source"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{amazon-ec2}
-  s.rubygems_version = %q{1.3.1}
+  s.rubygems_version = %q{1.3.5}
   s.summary = %q{Amazon EC2 Ruby Gem}
   s.test_files = [
     "test/test_EC2.rb",
@@ -96,7 +95,7 @@ Gem::Specification.new do |s|
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    s.specification_version = 2
+    s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<xml-simple>, [">= 1.0.12"])
