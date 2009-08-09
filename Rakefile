@@ -1,32 +1,21 @@
 require 'rubygems'
 require 'rake'
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "amazon-ec2"
-    gem.summary = %Q{Amazon EC2 Ruby Gem}
-    gem.description = %Q{An interface library that allows Ruby applications to easily connect to the HTTP 'Query API' for the Amazon Web Services Elastic Compute Cloud (EC2) and manipulate cloud servers.}
-    gem.email = "glenn@rempe.us"
-    gem.homepage = "http://github.com/grempe/amazon-ec2"
-    gem.authors = ["Glenn Rempe"]
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-
-#    gem.autorequire = 'EC2'
-    gem.rdoc_options = ["--quiet", "--title", "amazon-ec2 documentation", "--opname", "index.html", "--line-numbers", "--main", "README.rdoc", "--inline-source"]
-
-    gem.rubyforge_project = 'amazon-ec2'
-
-    gem.add_dependency('xml-simple', '>= 1.0.12')
-    gem.add_development_dependency('mocha', '>= 0.9.5')
-    gem.add_development_dependency('test-spec', '>= 0.10.0')
-    gem.add_development_dependency('rcov', '>= 0.8.1.2.0')
-    gem.add_development_dependency('perftools.rb', '= 0.1.6')
-
-  end
-
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
+require 'jeweler'
+Jeweler::Tasks.new do |gem|
+  gem.name = "amazon-ec2"
+  gem.summary = %Q{Amazon EC2 Ruby Gem}
+  gem.description = %Q{An interface library that allows Ruby applications to easily connect to the HTTP 'Query API' for the Amazon Web Services Elastic Compute Cloud (EC2) and manipulate cloud servers.}
+  gem.email = "glenn@rempe.us"
+  gem.homepage = "http://github.com/grempe/amazon-ec2"
+  gem.authors = ["Glenn Rempe"]
+  gem.rdoc_options = ["--quiet", "--title", "amazon-ec2 documentation", "--opname", "index.html", "--line-numbers", "--main", "README.rdoc", "--inline-source"]
+  gem.rubyforge_project = 'amazon-ec2'
+  gem.add_dependency('xml-simple', '>= 1.0.12')
+  gem.add_development_dependency('mocha', '>= 0.9.7')
+  gem.add_development_dependency('test-spec', '>= 0.10.0')
+  gem.add_development_dependency('relevance-rcov', '>= 0.8.5.1')
+  gem.add_development_dependency('perftools.rb', '= 0.1.6')
 end
 
 require 'rake/testtask'
@@ -45,7 +34,7 @@ begin
   end
 rescue LoadError
   task :rcov do
-    abort "RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov"
+    abort "RCov is not available. In order to run rcov, you must: [sudo] gem install relevance-rcov"
   end
 end
 
