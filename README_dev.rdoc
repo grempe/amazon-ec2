@@ -1,0 +1,6 @@
+= Dev Docs
+
+Publishing the gem using Jeweler:
+
+  rake version:bump:patch release rubyforge:release rubyforge:release:docs
+
