@@ -18,6 +18,11 @@ Jeweler::Tasks.new do |gem|
   gem.add_development_dependency('perftools.rb', '= 0.1.6')
 end
 
+# make the jeweler rubyforge tasks available.
+Jeweler::RubyforgeTasks.new do |rubyforge|
+  rubyforge.doc_task = "rdoc"
+end
+
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
   test.libs << 'lib' << 'test'
