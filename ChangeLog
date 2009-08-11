@@ -1,3 +1,6 @@
+=== 0.5.0 2009-08-11
+ * Major re-factor by Kris Rasmussen (krisr) to add support for the AWS Elastic Load Balancer API. Kudos Kris!
+
 === 0.4.0 2009-06-06
  * Using technicalpickles/jeweler to manage gem now.  See : http://github.com/technicalpickles/jeweler/tree/master
 
