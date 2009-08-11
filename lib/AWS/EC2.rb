@@ -57,7 +57,7 @@ module AWS
       def api_version
         API_VERSION
       end
-    
+
       def default_host
         DEFAULT_HOST
       end

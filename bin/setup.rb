@@ -24,3 +24,4 @@ end
 puts "EC2 Server: #{opts[:server]}"
 
 include AWS
+

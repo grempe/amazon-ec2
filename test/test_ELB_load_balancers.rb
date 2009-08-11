@@ -9,26 +9,26 @@ context "elb load balancers " do
       :availability_zones => ['east-1a'],
       :listeners => [{:protocol => 'HTTP', :load_balancer_port => '80', :instance_port => '80'}]
     }
-    
+
     @create_load_balancer_response_body = <<-RESPONSE
     <CreateLoadBalancerResult>
       <DNSName>TestLoadBalancer-380544827.us-east-1.ec2.amazonaws.com</DNSName>
     </CreateLoadBalancerResult>
     RESPONSE
-    
+
     @valid_delete_load_balancer_params = {
       :load_balancer_name => 'Test Name'
     }
-    
+
     @delete_load_balancer_response_body = <<-RESPONSE
     <DeleteLoadBalancerResult>
       <return>true</return>
     </DeleteLoadBalancerResult>
     RESPONSE
-    
+
     @valid_describe_load_balancer_params = {
     }
-    
+
     @describe_load_balancer_response_body = <<-RESPONSE
     <DescribeLoadBalancersResponse xmlns="http://elasticloadbalancing.amazonaws.com/doc/2009-05-15/">
       <DescribeLoadBalancersResult>
@@ -63,12 +63,12 @@ context "elb load balancers " do
       </ResponseMetadata>
     </DescribeLoadBalancersResponse>
     RESPONSE
-    
+
     @valid_register_instances_with_load_balancer_params = {
       :load_balancer_name => 'Test Name',
       :instances => ['i-6055fa09']
     }
-    
+
     @register_instances_with_load_balancer_response_body = <<-RESPONSE
     <RegisterInstancesWithLoadBalancerResult>
     	    <Instances>
@@ -78,7 +78,7 @@ context "elb load balancers " do
     	    </Instances>
     </RegisterInstancesWithLoadBalancerResult>
     RESPONSE
-    
+
     @valid_deregister_instances_from_load_balancer_params = @valid_register_instances_with_load_balancer_params
     @deregister_instances_from_load_balancer_response_body = <<-RESPONSE
     <DeregisterInstancesFromLoadBalancerResult>
@@ -108,7 +108,7 @@ context "elb load balancers " do
     </ConfigureHealthCheckResult>
     RESPONSE
   end
-  
+
   specify "should be able to be created" do
     @elb.stubs(:make_request).with('CreateLoadBalancer', {
       'LoadBalancerName' => 'Test Name',
@@ -122,7 +122,7 @@ context "elb load balancers " do
     response.should.be.an.instance_of Hash
     response.DNSName.should.equal "TestLoadBalancer-380544827.us-east-1.ec2.amazonaws.com"
   end
-  
+
   specify "method create_load_balancer should reject bad arguments" do
     @elb.stubs(:make_request).with('CreateLoadBalancer', {
       'LoadBalancerName' => 'Test Name',
@@ -131,7 +131,7 @@ context "elb load balancers " do
       'Listeners.member.1.LoadBalancerPort' => '80',
       'Listeners.member.1.InstancePort' => '80'
     }).returns stub(:body => @create_load_balancer_response_body, :is_a? => true)
-    
+
     lambda { @elb.create_load_balancer(@valid_create_load_balancer_params) }.should.not.raise(AWS::ArgumentError)
     lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:load_balancer_name=>nil)) }.should.raise(AWS::ArgumentError)
     lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:load_balancer_name=>'')) }.should.raise(AWS::ArgumentError)
@@ -140,38 +140,38 @@ context "elb load balancers " do
     lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:listeners=>[])) }.should.raise(AWS::ArgumentError)
     lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:listeners=>nil)) }.should.raise(AWS::ArgumentError)
   end
-  
+
   specify "should be able to be deleted with delete_load_balancer" do
     @elb.stubs(:make_request).with('DeleteLoadBalancer', {'LoadBalancerName' => 'Test Name'}).
       returns stub(:body => @delete_load_balancer_response_body, :is_a? => true)
-      
+
     response = @elb.delete_load_balancer( :load_balancer_name => "Test Name" )
     response.should.be.an.instance_of Hash
     response.return.should.equal "true"
   end
-  
+
   specify "should be able to be described with describe_load_balancer" do
     @elb.stubs(:make_request).with('DescribeLoadBalancers', {}).
       returns stub(:body => @describe_load_balancer_response_body, :is_a? => true)
 
     response = @elb.describe_load_balancers()
     response.should.be.an.instance_of Hash
-    
+
     response.DescribeLoadBalancersResult.LoadBalancerDescriptions.member.length.should == 1
   end
-  
+
   specify "should be able to be register instances to load balancers with register_instances_with_load_balancer" do
     @elb.stubs(:make_request).with('RegisterInstancesWithLoadBalancer', {
       'LoadBalancerName' => 'Test Name',
       'Instances.member.1' => 'i-6055fa09'
     }).returns stub(:body => @register_instances_with_load_balancer_response_body, :is_a? => true)
-    
+
     response = @elb.register_instances_with_load_balancer(@valid_register_instances_with_load_balancer_params)
     response.should.be.an.instance_of Hash
-    
+
     response.Instances.member.length.should == 1
   end
-  
+
   specify "method register_instances_with_load_balancer should reject bad arguments" do
     @elb.stubs(:make_request).with('RegisterInstancesWithLoadBalancer', {
       'LoadBalancerName' => 'Test Name',
@@ -183,29 +183,29 @@ context "elb load balancers " do
     lambda { @elb.register_instances_with_load_balancer(@valid_register_instances_with_load_balancer_params.merge(:instances=>nil)) }.should.raise(AWS::ArgumentError)
     lambda { @elb.register_instances_with_load_balancer(@valid_register_instances_with_load_balancer_params.merge(:instances=>[])) }.should.raise(AWS::ArgumentError)
   end
-  
+
   specify "should be able to degresiter instances from load balancers with degregister_instances_from_load_balancer" do
     @elb.stubs(:make_request).with('DeregisterInstancesFromLoadBalancer', {
       'LoadBalancerName' => 'Test Name',
       'Instances.member.1' => 'i-6055fa09'
      }).returns stub(:body => @deregister_instances_from_load_balancer_response_body, :is_a? => true)
-     
+
      response = @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params)
      response.should.be.an.instance_of Hash
   end
-  
+
   specify "method deregister_instances_from_load_balancer should reject bad arguments" do
     @elb.stubs(:make_request).with('DeregisterInstancesFromLoadBalancer', {
       'LoadBalancerName' => 'Test Name',
       'Instances.member.1' => 'i-6055fa09'
     }).returns stub(:body => @deregister_instances_from_load_balancer_response_body, :is_a? => true)
-     
+
     lambda { @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params) }.should.not.raise(AWS::ArgumentError)
     lambda { @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params.merge(:load_balancer_name=>nil)) }.should.raise(AWS::ArgumentError)
     lambda { @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params.merge(:instances=>nil)) }.should.raise(AWS::ArgumentError)
     lambda { @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params.merge(:instances=>[])) }.should.raise(AWS::ArgumentError)
   end
-  
+
   specify "should be able to degresiter instances from load balancers with degregister_instances_from_load_balancer" do
     @elb.stubs(:make_request).with('ConfigureHealthCheck', {
       'LoadBalancerName' => 'Test Name',
@@ -215,11 +215,11 @@ context "elb load balancers " do
       'HealthCheck.Timeout' => '2',
       'HealthCheck.UnhealthyThreshold' => '2'
     }).returns stub(:body => @configure_health_check_response_body, :is_a? => true)
-    
+
     response = @elb.configure_health_check(@valid_configure_health_check_params)
     response.should.be.an.instance_of Hash
   end
-  
+
   specify "method degregister_instances_from_load_balancer should reject bad arguments" do
    @elb.stubs(:make_request).with('ConfigureHealthCheck', {
       'LoadBalancerName' => 'Test Name',
@@ -229,12 +229,11 @@ context "elb load balancers " do
       'HealthCheck.Timeout' => '2',
       'HealthCheck.UnhealthyThreshold' => '2'
     }).returns stub(:body => @configure_health_check_response_body, :is_a? => true)
-    
+
     lambda { @elb.configure_health_check(@valid_configure_health_check_params) }.should.not.raise(AWS::ArgumentError)
     lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:load_balancer_name=>nil)) }.should.raise(AWS::ArgumentError)
     lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:health_check=>nil)) }.should.raise(AWS::ArgumentError)
   end
-  
-  
-  
+
 end
+

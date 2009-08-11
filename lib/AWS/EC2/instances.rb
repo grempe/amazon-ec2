@@ -109,7 +109,7 @@ module AWS
         return response_generator(:action => "RunInstances", :params => params)
 
       end
-    
+
       # If :user_data is passed in then URL escape and Base64 encode it
       # as needed.  Need for URL Escape + Base64 encoding is determined
       # by :base64_encoded param.

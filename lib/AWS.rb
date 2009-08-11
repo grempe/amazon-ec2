@@ -47,7 +47,7 @@ module AWS
       return b64_hmac
     end
   end
-  
+
   class Base
 
     attr_reader :use_ssl, :server, :proxy_server, :port
@@ -124,7 +124,7 @@ module AWS
         end
         params
       end
-      
+
       # Same as _pathlist_ except it deals with arrays of hashes.
       # So if you pass in args
       # ("People", [{:name=>'jon', :age=>'22'}, {:name=>'chris'}], {:name => 'Name', :age => 'Age'}) you should get
