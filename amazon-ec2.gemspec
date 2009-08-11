@@ -5,24 +5,26 @@
 
 Gem::Specification.new do |s|
   s.name = %q{amazon-ec2}
-  s.version = "0.4.8"
+  s.version = "0.5.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Glenn Rempe"]
-  s.date = %q{2009-08-09}
-  s.description = %q{An interface library that allows Ruby applications to easily connect to the HTTP 'Query API' for the Amazon Web Services Elastic Compute Cloud (EC2) and manipulate cloud servers.}
+  s.date = %q{2009-08-11}
+  s.description = %q{A Ruby library for accessing the Amazon Web Services Elastic Compute Cloud (EC2) and Elastic Load Balancer (ELB) API's.}
   s.email = %q{glenn@rempe.us}
   s.executables = ["ec2-gem-example.rb", "ec2-gem-profile.rb", "ec2sh", "setup.rb"]
   s.extra_rdoc_files = [
     "ChangeLog",
      "LICENSE",
-     "README.rdoc"
+     "README.rdoc",
+     "README_dev.rdoc"
   ]
   s.files = [
     ".gitignore",
      "ChangeLog",
      "LICENSE",
      "README.rdoc",
+     "README_dev.rdoc",
      "Rakefile",
      "VERSION",
      "amazon-ec2.gemspec",
@@ -31,21 +33,23 @@ Gem::Specification.new do |s|
      "bin/ec2sh",
      "bin/setup.rb",
      "deps.rip",
-     "lib/EC2.rb",
-     "lib/EC2/availability_zones.rb",
-     "lib/EC2/console.rb",
-     "lib/EC2/elastic_ips.rb",
-     "lib/EC2/exceptions.rb",
-     "lib/EC2/image_attributes.rb",
-     "lib/EC2/images.rb",
-     "lib/EC2/instances.rb",
-     "lib/EC2/keypairs.rb",
-     "lib/EC2/load_balancers.rb",
-     "lib/EC2/products.rb",
-     "lib/EC2/responses.rb",
-     "lib/EC2/security_groups.rb",
-     "lib/EC2/snapshots.rb",
-     "lib/EC2/volumes.rb",
+     "lib/AWS.rb",
+     "lib/AWS/EC2.rb",
+     "lib/AWS/EC2/availability_zones.rb",
+     "lib/AWS/EC2/console.rb",
+     "lib/AWS/EC2/elastic_ips.rb",
+     "lib/AWS/EC2/image_attributes.rb",
+     "lib/AWS/EC2/images.rb",
+     "lib/AWS/EC2/instances.rb",
+     "lib/AWS/EC2/keypairs.rb",
+     "lib/AWS/EC2/products.rb",
+     "lib/AWS/EC2/security_groups.rb",
+     "lib/AWS/EC2/snapshots.rb",
+     "lib/AWS/EC2/volumes.rb",
+     "lib/AWS/ELB.rb",
+     "lib/AWS/ELB/load_balancers.rb",
+     "lib/AWS/exceptions.rb",
+     "lib/AWS/responses.rb",
      "perftools/ec2prof",
      "perftools/ec2prof-results.dot",
      "perftools/ec2prof-results.txt",
@@ -64,6 +68,7 @@ Gem::Specification.new do |s|
      "test/test_EC2_security_groups.rb",
      "test/test_EC2_snapshots.rb",
      "test/test_EC2_volumes.rb",
+     "test/test_ELB_load_balancers.rb",
      "test/test_helper.rb",
      "wsdl/2007-08-29.ec2.wsdl",
      "wsdl/2008-02-01.ec2.wsdl",
@@ -91,6 +96,7 @@ Gem::Specification.new do |s|
      "test/test_EC2_security_groups.rb",
      "test/test_EC2_snapshots.rb",
      "test/test_EC2_volumes.rb",
+     "test/test_ELB_load_balancers.rb",
      "test/test_helper.rb"
   ]
 
