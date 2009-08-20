@@ -9,7 +9,7 @@ Jeweler::Tasks.new do |gem|
   gem.email = "glenn@rempe.us"
   gem.homepage = "http://github.com/grempe/amazon-ec2"
   gem.authors = ["Glenn Rempe"]
-  gem.rdoc_options = ["--quiet", "--title", "amazon-ec2 documentation", "--opname", "index.html", "--line-numbers", "--main", "README.rdoc", "--inline-source"]
+  gem.rdoc_options = ["--title", "amazon-ec2 documentation", "--line-numbers", "--main", "README.rdoc"]
   gem.rubyforge_project = 'amazon-ec2'
   gem.add_dependency('xml-simple', '>= 1.0.12')
   gem.add_development_dependency('mocha', '>= 0.9.7')
