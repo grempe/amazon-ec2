@@ -1,8 +1,7 @@
 module AWS
   module ELB
     class Base < AWS::Base
-      # Amazon Developer Guide Docs:
-      #
+
       # This API creates a new LoadBalancer. Once the call has completed
       # successfully, a new LoadBalancer will be created, but it will not be
       # usable until at least one instance has been registered. When the
@@ -10,12 +9,10 @@ module AWS
       # by using the DescribeInstanceHealth API. The LoadBalancer is usable as
       # soon as any registered instance is InService.
       #
-      # Required Arguments:
-      #
-      #  :load_balancer_name => String
-      #  :availability_zones => Array
-      #  :listeners => Array of Hashes (:protocol, :load_balancer_port, :instance_port)
-      #  :availability_zones => Array of Strings
+      # @option options [String] :load_balancer_name (nil) the name of the load balancer
+      # @option options [Array] :availability_zones (nil)
+      # @option options [Array] :listeners (nil) An Array of Hashes (:protocol, :load_balancer_port, :instance_port)
+      # @option options [Array] :availability_zones (nil) An Array of Strings
       #
       def create_load_balancer( options = {} )
         raise ArgumentError, "No :availability_zones provided" if options[:availability_zones].nil? || options[:availability_zones].empty?
@@ -35,8 +32,6 @@ module AWS
         return response_generator(:action => "CreateLoadBalancer", :params => params)
       end
 
-      # Amazon Developer Guide Docs:
-      #
       # This API deletes the specified LoadBalancer. On deletion, all of the
       # configured properties of the LoadBalancer will be deleted. If you
       # attempt to recreate the LoadBalancer, you need to reconfigure all the
@@ -47,20 +42,14 @@ module AWS
       # get the same DNS name even if you create a new LoadBalancer with same
       # LoadBalancerName.
       #
-      # Required Arguments:
-      #
-      #  :load_balancer_name => String
+      # @option options [String] :load_balancer_name the name of the load balancer
       #
       def delete_load_balancer( options = {} )
         raise ArgumentError, "No :load_balancer_name provided" if options[:load_balancer_name].nil? || options[:load_balancer_name].empty?
-
         params = { 'LoadBalancerName' => options[:load_balancer_name] }
-
         return response_generator(:action => "DeleteLoadBalancer", :params => params)
       end
 
-      # Amazon Developer Guide Docs:
-      #
       # This API returns detailed configuration information for the specified
       # LoadBalancers, or if no LoadBalancers are specified, then the API
       # returns configuration information for all LoadBalancers created by the
@@ -71,20 +60,14 @@ module AWS
       # this API, you must provide the same account credentials as those that
       # were used to create the LoadBalancer.
       #
-      # Optional Arguments:
-      #
-      #  :load_balancer_names => String
+      # @option options [Array<String>] :load_balancer_names ([]) An Array of names of load balancers to describe.
       #
       def describe_load_balancers( options = {} )
         options = { :load_balancer_names => [] }.merge(options)
-
         params = pathlist("LoadBalancerName.member", options[:load_balancer_names])
-
         return response_generator(:action => "DescribeLoadBalancers", :params => params)
       end
 
-      # Amazon Developer Guide Docs:
-      #
       # This API adds new instances to the LoadBalancer.
       #
       # Once the instance is registered, it starts receiving traffic and
@@ -102,25 +85,18 @@ module AWS
       # completed. Rather, it means that the request has been registered and
       # the changes will happen shortly.
       #
-      # Required Arguments:
-      #
-      #  :instances => Array of Strings
-      #  :load_balancer_name => String
+      # @option options [Array<String>] :instances An Array of instance names to add to the load balancer.
+      # @option options [String] :load_balancer_name The name of the load balancer.
       #
       def register_instances_with_load_balancer( options = {} )
         raise ArgumentError, "No :instances provided" if options[:instances].nil? || options[:instances].empty?
         raise ArgumentError, "No :load_balancer_name provided" if options[:load_balancer_name].nil? || options[:load_balancer_name].empty?
-
         params = {}
-
         params.merge!(pathlist('Instances.member', [options[:instances]].flatten))
         params['LoadBalancerName'] = options[:load_balancer_name]
-
         return response_generator(:action => "RegisterInstancesWithLoadBalancer", :params => params)
       end
 
-      # Amazon Developer Guide Docs:
-      #
       # This API deregisters instances from the LoadBalancer. Trying to
       # deregister an instance that is not registered with the LoadBalancer
       # does nothing.
@@ -132,34 +108,25 @@ module AWS
       # Once the instance is deregistered, it will stop receiving traffic from
       # the LoadBalancer.
       #
-      # Required Arguments:
-      #
-      #  :instances => Array of Strings
-      #  :load_balancer_name => String
+      # @option options [Array<String>] :instances An Array of instance names to remove from the load balancer.
+      # @option options [String] :load_balancer_name The name of the load balancer.
       #
       def deregister_instances_from_load_balancer( options = {} )
         raise ArgumentError, "No :instances provided" if options[:instances].nil? || options[:instances].empty?
         raise ArgumentError, "No :load_balancer_name provided" if options[:load_balancer_name].nil? || options[:load_balancer_name].empty?
-
         params = {}
-
         params.merge!(pathlist('Instances.member', [options[:instances]].flatten))
         params['LoadBalancerName'] = options[:load_balancer_name]
-
         return response_generator(:action => "DeregisterInstancesFromLoadBalancer", :params => params)
       end
 
-      # Amazon Developer Guide Docs:
-      #
       # This API enables you to define an application healthcheck for the
       # instances.
       #
       # Note: Completion of this API does not guarantee that operation has completed. Rather, it means that the request has been registered and the changes will happen shortly.
       #
-      # Required Arguments
-      #
-      #  :health_check => Hash (:timeout, :interval, :unhealthy_threshold, :healthy_threshold)
-      #  :load_balancer_name => String
+      # @option options [Hash] :health_check A Hash with the keys (:timeout, :interval, :unhealthy_threshold, :healthy_threshold)
+      # @option options [String] :load_balancer_name The name of the load balancer.
       #
       def configure_health_check( options = {} )
         raise ArgumentError, "No :health_check provided" if options[:health_check].nil? || options[:health_check].empty?
@@ -182,17 +149,30 @@ module AWS
         return response_generator(:action => "ConfigureHealthCheck", :params => params)
       end
 
-      def describe_intance_health( options = {} )
+      # Not yet implemented
+      #
+      # @todo Implement this method
+      #
+      def describe_instance_health( options = {} )
         raise "Not yet implemented"
       end
 
+      # Not yet implemented
+      #
+      # @todo Implement this method
+      #
       def disable_availability_zones_for_load_balancer( options = {} )
         raise "Not yet implemented"
       end
 
+      # Not yet implemented
+      #
+      # @todo Implement this method
+      #
       def enable_availability_zones_for_load_balancer( options = {} )
         raise "Not yet implemented"
       end
+
     end
   end
 end

@@ -1,20 +1,8 @@
-#--
-# Amazon Web Services EC2 Query API Ruby library
-#
-# Ruby Gem Name::  amazon-ec2
-# Author::    Glenn Rempe  (mailto:glenn@rempe.us)
-# Copyright:: Copyright (c) 2007-2008 Glenn Rempe
-# License::   Distributes under the same terms as Ruby
-# Home::      http://github.com/grempe/amazon-ec2/tree/master
-#++
-
 module AWS
   module EC2
 
     class Base < AWS::Base
 
-      #Amazon Developer Guide Docs:
-      #
       # The RunInstances operation launches a specified number of instances.
       #
       # Note : The Query version of RunInstances only allows instances of a single AMI to be launched in
@@ -52,22 +40,17 @@ module AWS
       # If any of the AMIs have product codes attached for which the user has not subscribed,
       # the RunInstances call will fail.
       #
-      #Required Arguments:
-      #
-      # :image_id => String (Default : "")
-      # :min_count => Integer (default : 1 )
-      # :max_count => Integer (default : 1 )
-      #
-      #Optional Arguments:
-      #
-      # :key_name => String (default : nil)
-      # :group_id => Array (default : [])
-      # :user_data => String (default : nil)
-      # :addressing_type => String (default : "public")
-      # :instance_type => String (default : "m1.small")
-      # :kernel_id => String (default : nil)
-      # :availability_zone => String (default : nil)
-      # :base64_encoded => Boolean (default : false)
+      # @option options [String] :image_id ("")
+      # @option options [Integer] :min_count (1)
+      # @option options [Integer] :max_count (1)
+      # @option options [optional, String] :key_name (nil)
+      # @option options [optional, Array] :group_id ([])
+      # @option options [optional, String] :user_data (nil)
+      # @option options [optional, String] :addressing_type ("public")
+      # @option options [optional, String] :instance_type ("m1.small")
+      # @option options [optional, String] :kernel_id (nil)
+      # @option options [optional, String] :availability_zone (nil)
+      # @option options [optional, Boolean] :base64_encoded (false)
       #
       def run_instances( options = {} )
 
@@ -113,7 +96,7 @@ module AWS
       # If :user_data is passed in then URL escape and Base64 encode it
       # as needed.  Need for URL Escape + Base64 encoding is determined
       # by :base64_encoded param.
-      def extract_user_data(options)
+      def extract_user_data( options = {} )
         return unless options[:user_data]
         if options[:user_data]
           if options[:base64_encoded]
@@ -125,8 +108,6 @@ module AWS
       end
 
 
-      #Amazon Developer Guide Docs:
-      #
       # The DescribeInstances operation returns information about instances owned by the user
       # making the request.
       #
@@ -138,13 +119,7 @@ module AWS
       # Recently terminated instances will be included in the returned results for a small interval subsequent to
       # their termination. This interval is typically of the order of one hour
       #
-      #Required Arguments:
-      #
-      # none
-      #
-      #Optional Arguments:
-      #
-      # :instance_id => Array (default : [])
+      # @option options [Array] :instance_id ([])
       #
       def describe_instances( options = {} )
 
@@ -157,19 +132,11 @@ module AWS
       end
 
 
-      #Amazon Developer Guide Docs:
-      #
       # The RebootInstances operation requests a reboot of one or more instances. This operation is
       # asynchronous; it only queues a request to reboot the specified instance(s). The operation will succeed
       # provided the instances are valid and belong to the user. Terminated instances will be ignored.
       #
-      #Required Arguments:
-      #
-      # :instance_id => Array (default : [])
-      #
-      #Optional Arguments:
-      #
-      # none
+      # @option options [Array] :instance_id ([])
       #
       def reboot_instances( options = {} )
 
@@ -185,20 +152,12 @@ module AWS
       end
 
 
-      #Amazon Developer Guide Docs:
-      #
       # The TerminateInstances operation shuts down one or more instances. This operation is idempotent
       # and terminating an instance that is in the process of shutting down (or already terminated) will succeed.
       # Terminated instances remain visible for a short period of time (approximately one hour) after
       # termination, after which their instance ID is invalidated.
       #
-      #Required Arguments:
-      #
-      # :instance_id => Array (default : [])
-      #
-      #Optional Arguments:
-      #
-      # none
+      # @option options [Array] :instance_id ([])
       #
       def terminate_instances( options = {} )
 

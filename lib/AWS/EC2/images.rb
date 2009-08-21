@@ -1,20 +1,8 @@
-#--
-# Amazon Web Services EC2 Query API Ruby library
-#
-# Ruby Gem Name::  amazon-ec2
-# Author::    Glenn Rempe  (mailto:glenn@rempe.us)
-# Copyright:: Copyright (c) 2007-2008 Glenn Rempe
-# License::   Distributes under the same terms as Ruby
-# Home::      http://github.com/grempe/amazon-ec2/tree/master
-#++
-
 module AWS
   module EC2
 
     class Base < AWS::Base
 
-      #Amazon Developer Guide Docs:
-      #
       # The RegisterImage operation registers an AMI with Amazon EC2. Images must be registered before
       # they can be launched.  Each AMI is associated with an unique ID which is provided by the EC2
       # service via the Registerimage operation. As part of the registration process, Amazon EC2 will
@@ -24,13 +12,7 @@ module AWS
       # If you do have to make changes and upload a new image deregister the previous image and register
       # the new image.
       #
-      #Required Arguments:
-      #
-      # :image_location => String (default : "")
-      #
-      #Optional Arguments:
-      #
-      # none
+      # @option options [String] :image_location ("")
       #
       def register_image( options = {} )
 
@@ -44,8 +26,6 @@ module AWS
 
       end
 
-      #Amazon Developer Guide Docs:
-      #
       # The DescribeImages operation returns information about AMIs available for use by the user. This
       # includes both public AMIs (those available for any user to launch) and private AMIs (those owned by
       # the user making the request and those owned by other users that the user making the request has explicit
@@ -82,15 +62,9 @@ module AWS
       # Deregistered images will be included in the returned results for an unspecified interval subsequent to
       # deregistration.
       #
-      #Required Arguments:
-      #
-      # none
-      #
-      #Optional Arguments:
-      #
-      # :image_id => Array (default : [])
-      # :owner_id => Array (default : [])
-      # :executable_by => Array (default : [])
+      # @option options [Array] :image_id ([])
+      # @option options [Array] :owner_id ([])
+      # @option options [Array] :executable_by ([])
       #
       def describe_images( options = {} )
 
@@ -104,22 +78,13 @@ module AWS
 
       end
 
-      #Amazon Developer Guide Docs:
-      #
       # The DeregisterImage operation deregisters an AMI. Once deregistered, instances of the AMI may no
       # longer be launched.
       #
-      #Required Arguments:
-      #
-      # :image_id => String (default : "")
-      #
-      #Optional Arguments:
-      #
-      # none
+      # @option options [String] :image_id ("")
       #
       def deregister_image( options = {} )
 
-        # defaults
         options = { :image_id => "" }.merge(options)
 
         raise ArgumentError, "No :image_id provided" if options[:image_id].nil? || options[:image_id].empty?

@@ -1,3 +1,6 @@
+=== 0.5.2 2009-08-20
+ * Converted to YardDoc documentation format. See : http://yard.soen.ca/getting_started
+
 === 0.5.0 2009-08-11
  * Major re-factor by Kris Rasmussen (krisr) to add support for the AWS Elastic Load Balancer API. Kudos Kris!
 

@@ -8,6 +8,9 @@
 # Home::      http://github.com/grempe/amazon-ec2/tree/master
 #++
 
+require 'rubygems'
+gem 'test-unit'
+
 %w[ test/unit test/spec mocha ].each { |f|
   begin
     require f
@@ -17,3 +20,4 @@
 }
 
 require File.dirname(__FILE__) + '/../lib/AWS'
+

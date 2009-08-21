@@ -1,55 +1,23 @@
-#--
-# Amazon Web Services EC2 Query API Ruby library, EBS volumes support
-#
-# Ruby Gem Name::  amazon-ec2
-# Author::    Yann Klis  (mailto:yann.klis@novelys.com)
-# Copyright:: Copyright (c) 2008 Yann Klis
-# License::   Distributes under the same terms as Ruby
-# Home::      http://github.com/grempe/amazon-ec2/tree/master
-#++
-
 module AWS
   module EC2
-
     class Base < AWS::Base
 
-      #Amazon Developer Guide Docs:
-      #
       # The DescribeVolumes operation lists one or more Amazon EBS volumes that you own, If you do not specify any volumes, Amazon EBS returns all volumes that you own.
       #
-      #Required Arguments:
+      # @option options [optional, String] :volume_id ([])
       #
-      # none
-      #
-      #Optional Arguments:
-      #
-      # :volume_id => Array (default : [])
-      #
-
       def describe_volumes( options = {} )
-
         options = { :volume_id => [] }.merge(options)
-
         params = pathlist("VolumeId", options[:volume_id] )
-
         return response_generator(:action => "DescribeVolumes", :params => params)
-
       end
 
-      #Amazon Developer Guide Docs:
-      #
       # The CreateVolume operation creates a new Amazon EBS volume that you can mount from any Amazon EC2 instance.
       #
-      #Required Arguments:
+      # @option options [String] :availability_zone ('')
+      # @option options [optional, String] :size ('')
+      # @option options [optional, String] :snapshot_id ('')
       #
-      # :availability_zone => String (default : '')
-      #
-      #Optional Arguments:
-      #
-      # :size => String (default : '')
-      # :snapshot_id => String (default : '')
-      #
-
       def create_volume( options = {} )
 
         # defaults
@@ -70,19 +38,10 @@ module AWS
 
       end
 
-      #Amazon Developer Guide Docs:
-      #
       # The DeleteVolume operation deletes an Amazon EBS volume.
       #
-      #Required Arguments:
+      # @option options [String] :volume_id ('')
       #
-      # :volume_id => String (default : '')
-      #
-      #Optional Arguments:
-      #
-      # none
-      #
-
       def delete_volume( options = {} )
 
         options = { :volume_id => '' }.merge(options)
@@ -97,21 +56,12 @@ module AWS
 
       end
 
-      #Amazon Developer Guide Docs:
-      #
       # The AttachVolume operation attaches an Amazon EBS volume to an instance.
       #
-      #Required Arguments:
+      # @option options [String] :volume_id ('')
+      # @option options [String] :instance_id ('')
+      # @option options [String] :device ('')
       #
-      # :volume_id => String (default : '')
-      # :instance_id => String (default : '')
-      # :device => String (default : '')
-      #
-      #Optional Arguments:
-      #
-      # none
-      #
-
       def attach_volume( options = {} )
 
         options = { :volume_id => '' }.merge(options)
@@ -132,21 +82,13 @@ module AWS
 
       end
 
-      #Amazon Developer Guide Docs:
-      #
       # The DetachVolume operation detaches an Amazon EBS volume from an instance.
       #
-      #Required Arguments:
+      # @option options [String] :volume_id ('')
+      # @option options [optional, String] :instance_id ('')
+      # @option options [optional, String] :device ('')
+      # @option options [optional, Boolean] :force ('')
       #
-      # :volume_id => String (default : '')
-      #
-      #Optional Arguments:
-      #
-      # :instance_id => String (default : '')
-      # :device => String (default : '')
-      # :force => Boolean (default : '')
-      #
-
       def detach_volume( options = {} )
 
         options = { :volume_id => '' }.merge(options)
@@ -165,8 +107,9 @@ module AWS
         }
 
         return response_generator(:action => "DetachVolume", :params => params)
-
       end
+
     end
   end
 end
+

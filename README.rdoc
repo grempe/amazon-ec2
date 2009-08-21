@@ -305,12 +305,24 @@ So, for example, if you wanted to get the image ID of the third image listed in 
 
 EC2 will typically return sets of things (imagesSet, reservationSet, etc.) which we map to ruby Arrays (.imagesSet.item in the example above). If you want to iterate over a response set you will need to iterate over this array. The Arrays will typically contain additional AWS::Response objects that represent each individual item. You'll find that you can use the 'ec2sh' to help you understand the structure more completely if you try issuing commands there as a way to practice seeing what will be returned and making sure you get exactly what you want.
 
+=== Handling Exceptions
+If for some reason an error occurs when executing a method (e.g. its arguments were
+incorrect, or it simply failed) then an exception will be thrown.  The exceptions are
+defined in exceptions.rb as individual classes and should match the exceptions that
+AWS has defined in the API.  If the exception raised cannot be identified then a
+more generic exception class will be thrown.
+
+The implication of this is that you need to be prepared to handle any exceptions that
+may be raised by this library in YOUR code with a 'rescue' clause.  It is up to you
+to determine how you want to handle these exceptions in your code.
+
 
 == Additional Resources
 
 === Project Websites
 
 * Project Home : http://github.com/grempe/amazon-ec2/tree/master
+* API Documentation : http://rdoc.info/projects/grempe/amazon-ec2
 * Discussion Group : http://groups.google.com/group/amazon-ec2
 * Report Bugs / Request Features : http://github.com/grempe/amazon-ec2/issues
 * Amazon Web Services : http://aws.amazon.com
@@ -321,7 +333,7 @@ The original code for this library was provided by Amazon Web Services, LLC as s
 
 == Contact
 
-Comments, patches, Git pull requests and bug reports are welcome. Send an email to mailto:glenn@rempe.us or use the Google Groups forum for this project.
+Comments, patches, Git pull requests and bug reports are welcome. Send an email to mailto:glenn@rempe.us or join the Google Groups forum.
 
 Enjoy!
 

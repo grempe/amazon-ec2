@@ -1,16 +1,47 @@
-# Require any lib files that we have bundled with this Ruby Gem in the lib/AWS directory.
-# Parts of the AWS module and Base class are broken out into separate
-# files for maintainability and are organized by the functional groupings defined
-# in the AWS API developers guide.
-
+#--
+# Amazon Web Services EC2 + ELB API Ruby library
+#
+# Ruby Gem Name::  amazon-ec2
+# Author::    Glenn Rempe  (mailto:glenn@rempe.us)
+# Copyright:: Copyright (c) 2007-2009 Glenn Rempe
+# License::   Distributes under the same terms as Ruby
+# Home::      http://github.com/grempe/amazon-ec2/tree/master
+#++
 
 %w[ base64 cgi openssl digest/sha1 net/https rexml/document time ostruct ].each { |f| require f }
 
+begin
+  require 'xmlsimple' unless defined? XmlSimple
+rescue Exception => e
+  require 'xml-simple' unless defined? XmlSimple
+end
+
+
+# A custom implementation of Hash that allows us to access hash values using dot notation
+#
+# @example Access the hash keys in the standard way or using dot notation
+#   foo[:bar] => "baz"
+#   foo.bar => "baz"
+class Hash
+  def method_missing(meth, *args, &block)
+    if args.size == 0
+      self[meth.to_s] || self[meth.to_sym]
+    end
+  end
+end
+
+
 module AWS
-  # Builds the canonical string for signing. This strips out all '&', '?', and '='
-  # from the query string to be signed.
-  #   Note:  The parameters in the path passed in must already be sorted in
-  #   case-insensitive alphabetical order and must not be url encoded.
+
+  # Builds the canonical string for signing requests. This strips out all '&', '?', and '='
+  # from the query string to be signed.  The parameters in the path passed in must already
+  # be sorted in case-insensitive alphabetical order and must not be url encoded.
+  #
+  # @param [String] params the params that will be sorted and encoded as a canonical string.
+  # @param [String] host the hostname of the API endpoint.
+  # @param [String] method the HTTP method that will be used to submit the params.
+  # @param [String] base the URI path that this information will be submitted to.
+  # @return [String] the canonical request description string.
   def AWS.canonical_string(params, host, method="POST", base="/")
     # Sort, and encode parameters into a canonical string.
     sorted_params = params.sort {|x,y| x[0] <=> y[0]}
@@ -31,10 +62,15 @@ module AWS
 
   end
 
-  # Encodes the given string with the secret_access_key, by taking the
+  # Encodes the given string with the secret_access_key by taking the
   # hmac-sha1 sum, and then base64 encoding it.  Optionally, it will also
   # url encode the result of that to protect the string if it's going to
   # be used as a query string parameter.
+  #
+  # @param [String] secret_access_key the user's secret access key for signing.
+  # @param [String] str the string to be hashed and encoded.
+  # @param [Boolean] urlencode whether or not to url encode the result., true or false
+  # @return [String] the signed and encoded string.
   def AWS.encode(secret_access_key, str, urlencode=true)
     digest = OpenSSL::Digest::Digest.new('sha1')
     b64_hmac =
@@ -48,10 +84,21 @@ module AWS
     end
   end
 
+  # This class provides all the methods for using the EC2 or ELB service
+  # including the handling of header signing and other security concerns.
+  # This class uses the Net::HTTP library to interface with the AWS Query API
+  # interface. You should not instantiate this directly, instead
+  # you should setup an instance of 'AWS::EC2::Base' or 'AWS::ELB::Base'.
   class Base
 
     attr_reader :use_ssl, :server, :proxy_server, :port
 
+    # @option options [String] :access_key_id ("") The user's AWS Access Key ID
+    # @option options [String] :secret_access_key ("") The user's AWS Secret Access Key
+    # @option options [Boolean] :use_ssl (true) Connect using SSL?
+    # @option options [String] :server ("ec2.amazonaws.com") The server API endpoint host
+    # @option options [String] :proxy_server (nil) An HTTP proxy server FQDN
+    # @return [Object] the object.
     def initialize( options = {} )
 
       options = { :access_key_id => "",
@@ -242,4 +289,5 @@ module AWS
   end
 end
 
-Dir[File.join(File.dirname(__FILE__), 'AWS/*.rb')].sort.each { |lib| require lib }
+Dir[File.join(File.dirname(__FILE__), 'AWS/**/*.rb')].sort.each { |lib| require lib }
+

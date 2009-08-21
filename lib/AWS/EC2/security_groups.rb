@@ -1,21 +1,7 @@
-#--
-# Amazon Web Services EC2 Query API Ruby library
-#
-# Ruby Gem Name::  amazon-ec2
-# Author::    Glenn Rempe  (mailto:glenn@rempe.us)
-# Copyright:: Copyright (c) 2007-2008 Glenn Rempe
-# License::   Distributes under the same terms as Ruby
-# Home::      http://github.com/grempe/amazon-ec2/tree/master
-#++
-
 module AWS
   module EC2
-
     class Base < AWS::Base
 
-
-      #Amazon Developer Guide Docs:
-      #
       # The CreateSecurityGroup operation creates a new security group. Every instance is launched
       # in a security group. If none is specified as part of the launch request then instances
       # are launched in the default security group. Instances within the same security group have
@@ -23,14 +9,8 @@ module AWS
       # instances in a different security group. As the owner of instances you may grant or revoke specific
       # permissions using the AuthorizeSecurityGroupIngress and RevokeSecurityGroupIngress operations.
       #
-      #Required Arguments:
-      #
-      # :group_name => String (default : "")
-      # :group_description => String (default : "")
-      #
-      #Optional Arguments:
-      #
-      # none
+      # @option options [String] :group_name ("")
+      # @option options [String] :group_description ("")
       #
       def create_security_group( options = {} )
 
@@ -51,22 +31,14 @@ module AWS
       end
 
 
-      #Amazon Developer Guide Docs:
-      #
       # The DescribeSecurityGroups operation returns information about security groups owned by the
       # user making the request.
       #
       # An optional list of security group names may be provided to request information for those security
       # groups only. If no security group names are provided, information of all security groups will be
-      # returned. If a group is specified that does not exist a fault is returned.
+      # returned. If a group is specified that does not exist an exception is returned.
       #
-      #Required Arguments:
-      #
-      # none
-      #
-      #Optional Arguments:
-      #
-      # :group_name => Array (default : [])
+      # @option options [optional, Array] :group_name ([])
       #
       def describe_security_groups( options = {} )
 
@@ -79,20 +51,12 @@ module AWS
       end
 
 
-      #Amazon Developer Guide Docs:
-      #
       # The DeleteSecurityGroup operation deletes a security group.
       #
       # If an attempt is made to delete a security group and any instances exist that are members of that group a
       # fault is returned.
       #
-      #Required Arguments:
-      #
-      # :group_name => String (default : "")
-      #
-      #Optional Arguments:
-      #
-      # none
+      # @option options [String] :group_name ("")
       #
       def delete_security_group( options = {} )
 
@@ -107,8 +71,6 @@ module AWS
       end
 
 
-      #Amazon Developer Guide Docs:
-      #
       # The AuthorizeSecurityGroupIngress operation adds permissions to a security group.
       #
       # Permissions are specified in terms of the IP protocol (TCP, UDP or ICMP), the source of the request (by
@@ -125,18 +87,13 @@ module AWS
       # GroupName, IpProtocol, FromPort, ToPort and CidrIp must be specified. Mixing these two types
       # of parameters is not allowed.
       #
-      #Required Arguments:
-      #
-      # :group_name => String (default : "")
-      #
-      #Optional Arguments:
-      #
-      # :ip_protocol => String (default : nil) : Required when authorizing CIDR IP permission
-      # :from_port => Integer (default : nil) : Required when authorizing CIDR IP permission
-      # :to_port => Integer (default : nil) : Required when authorizing CIDR IP permission
-      # :cidr_ip => String (default : nil): Required when authorizing CIDR IP permission
-      # :source_security_group_name => String (default : nil) : Required when authorizing user group pair permissions
-      # :source_security_group_owner_id => String (default : nil) : Required when authorizing user group pair permissions
+      # @option options [String] :group_name ("")
+      # @option options [optional, String] :ip_protocol (nil) Required when authorizing CIDR IP permission
+      # @option options [optional, Integer] :from_port (nil) Required when authorizing CIDR IP permission
+      # @option options [optional, Integer] :to_port (nil) Required when authorizing CIDR IP permission
+      # @option options [optional, String] :cidr_ip (nil) Required when authorizing CIDR IP permission
+      # @option options [optional, String] :source_security_group_name (nil) Required when authorizing user group pair permissions
+      # @option options [optional, String] :source_security_group_owner_id (nil) Required when authorizing user group pair permissions
       #
       def authorize_security_group_ingress( options = {} )
 
@@ -167,8 +124,6 @@ module AWS
       end
 
 
-      #Amazon Developer Guide Docs:
-      #
       # The RevokeSecurityGroupIngress operation revokes existing permissions that were previously
       # granted to a security group. The permissions to revoke must be specified using the same values
       # originally used to grant the permission.
@@ -187,18 +142,13 @@ module AWS
       # GroupName, IpProtocol, FromPort, ToPort and CidrIp must be specified. Mixing these two types
       # of parameters is not allowed.
       #
-      #Required Arguments:
-      #
-      # :group_name => String (default : "")
-      #
-      #Optional Arguments:
-      #
-      # :ip_protocol => String (default : nil) : Required when revoking CIDR IP permission
-      # :from_port => Integer (default : nil) : Required when revoking CIDR IP permission
-      # :to_port => Integer (default : nil) : Required when revoking CIDR IP permission
-      # :cidr_ip => String (default : nil): Required when revoking CIDR IP permission
-      # :source_security_group_name => String (default : nil) : Required when revoking user group pair permissions
-      # :source_security_group_owner_id => String (default : nil) : Required when revoking user group pair permissions
+      # @option options [String] :group_name ("")
+      # @option options [optional, String] :ip_protocol (nil) Required when revoking CIDR IP permission
+      # @option options [optional, Integer] :from_port (nil) Required when revoking CIDR IP permission
+      # @option options [optional, Integer] :to_port (nil) Required when revoking CIDR IP permission
+      # @option options [optional, String] :cidr_ip (nil) Required when revoking CIDR IP permission
+      # @option options [optional, String] :source_security_group_name (nil) Required when revoking user group pair permissions
+      # @option options [optional, String] :source_security_group_owner_id (nil) Required when revoking user group pair permissions
       #
       def revoke_security_group_ingress( options = {} )
 
@@ -229,6 +179,5 @@ module AWS
       end
 
     end
-
   end
 end

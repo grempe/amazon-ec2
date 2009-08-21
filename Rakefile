@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rake'
+require 'yard'
 
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
@@ -47,19 +48,8 @@ end
 
 task :default => :test
 
-require 'rake/rdoctask'
-Rake::RDocTask.new do |rdoc|
-  if File.exist?('VERSION.yml')
-    config = YAML.load(File.read('VERSION.yml'))
-    version = "#{config[:major]}.#{config[:minor]}.#{config[:patch]}"
-  else
-    version = ""
-  end
-
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "amazon-ec2 #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+YARD::Rake::YardocTask.new do |t|
+  #t.files   = ['lib/**/*.rb']
 end
 
 begin
@@ -70,15 +60,15 @@ begin
     task :release => ["rubyforge:release:gem", "rubyforge:release:docs"]
 
     namespace :release do
-      desc "Publish RDoc to RubyForge."
-      task :docs => [:rdoc] do
+      desc "Publish YARD docs to RubyForge."
+      task :docs => [:doc] do
         config = YAML.load(
             File.read(File.expand_path('~/.rubyforge/user-config.yml'))
         )
 
         host = "#{config['username']}@rubyforge.org"
         remote_dir = "/var/www/gforge-projects/amazon-ec2/"
-        local_dir = 'rdoc'
+        local_dir = 'doc'
 
         Rake::SshDirPublisher.new(host, remote_dir, local_dir).upload
       end

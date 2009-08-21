@@ -1,20 +1,7 @@
-#--
-# Amazon Web Services EC2 Query API Ruby library
-#
-# Ruby Gem Name::  amazon-ec2
-# Author::    Glenn Rempe  (mailto:glenn@rempe.us)
-# Copyright:: Copyright (c) 2007-2008 Glenn Rempe
-# License::   Distributes under the same terms as Ruby
-# Home::      http://github.com/grempe/amazon-ec2/tree/master
-#++
-
 module AWS
   module EC2
-
     class Base < AWS::Base
 
-      #Amazon Developer Guide Docs:
-      #
       # The ModifyImageAttribute operation modifies an attribute of an AMI.  The following attributes may
       # currently be modified:
       #
@@ -25,17 +12,12 @@ module AWS
       # for using the AMIs. productCodes is a write once attribute - once it has been set it can not be
       # changed or removed.  Currently only one product code is supported per AMI.
       #
-      #Required Arguments:
-      #
-      # :image_id => String (default : "")
-      # :attribute => String ('launchPermission' or 'productCodes', default : "launchPermission")
-      # :operation_type => String (default : "")
-      #
-      #Optional Arguments:
-      #
-      # :user_id => Array (default : [])
-      # :group => Array (default : [])
-      # :product_code => Array (default : [])
+      # @option options [String] :image_id ("")
+      # @option options [String] :attribute ("launchPermission") An attribute to modify, "launchPermission" or "productCodes"
+      # @option options [String] :operation_type ("")
+      # @option options [optional, Array] :user_id ([])
+      # @option options [optional, Array] :group ([])
+      # @option options [optional, Array] :product_code ([])
       #
       def modify_image_attribute( options = {} )
 
@@ -87,18 +69,10 @@ module AWS
 
       end
 
-      #Amazon Developer Guide Docs:
-      #
       # The DescribeImageAttribute operation returns information about an attribute of an AMI.
       #
-      #Required Arguments:
-      #
-      # :image_id => String (default : "")
-      # :attribute => String ("launchPermission" or "productCodes", default : "launchPermission")
-      #
-      #Optional Arguments:
-      #
-      # none
+      # @option options [String] :image_id ("")
+      # @option options [String] :attribute ("launchPermission") An attribute to describe, "launchPermission" or "productCodes"
       #
       def describe_image_attribute( options = {} )
 
@@ -125,18 +99,10 @@ module AWS
       end
 
 
-      #Amazon Developer Guide Docs:
-      #
       # The ResetImageAttribute operation resets an attribute of an AMI to its default value.
       #
-      #Required Arguments:
-      #
-      # :image_id => String (default : "")
-      # :attribute => String (default : "launchPermission")
-      #
-      #Optional Arguments:
-      #
-      # none
+      # @option options [String] :image_id ("")
+      # @option options [String] :attribute ("launchPermission") An attribute to reset
       #
       def reset_image_attribute( options = {} )
 
@@ -163,6 +129,5 @@ module AWS
       end
 
     end
-
   end
 end
