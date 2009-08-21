@@ -21,7 +21,7 @@ end
 
 # make the jeweler rubyforge tasks available.
 Jeweler::RubyforgeTasks.new do |rubyforge|
-  rubyforge.doc_task = "rdoc"
+  rubyforge.doc_task = "doc"
 end
 
 require 'rake/testtask'
@@ -56,7 +56,7 @@ begin
   require 'rake/contrib/sshpublisher'
   namespace :rubyforge do
 
-    desc "Release gem and RDoc documentation to RubyForge"
+    desc "Release gem and YARD documentation to RubyForge"
     task :release => ["rubyforge:release:gem", "rubyforge:release:docs"]
 
     namespace :release do
