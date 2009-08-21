@@ -21,7 +21,7 @@ end
 
 # make the jeweler rubyforge tasks available.
 Jeweler::RubyforgeTasks.new do |rubyforge|
-  rubyforge.doc_task = "doc"
+  rubyforge.doc_task = "rdoc"
 end
 
 require 'rake/testtask'
