@@ -13,7 +13,7 @@ module AWS
       DEFAULT_HOST = URI.parse(AWS_CLOUDWATCH_URL).host
     else
       # Default US API endpoint
-      DEFAULT_HOST = 'elasticloadbalancing.amazonaws.com'
+      DEFAULT_HOST = 'monitoring.amazonaws.com'
     end
 
     API_VERSION = '2009-05-15'

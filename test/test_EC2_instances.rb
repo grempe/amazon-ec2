@@ -139,6 +139,47 @@ context "EC2 instances " do
       </instancesSet>
     </TerminateInstancesResponse>
     RESPONSE
+    
+    @monitor_instances_response_body = <<-RESPONSE
+    <MonitorInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2009-07-15/">
+        <requestId>fe62a64c-49fb-4a3c-8d9b-61aba146d390</requestId>
+        <instancesSet>
+            <item>
+                <instanceId>i-138fc47a</instanceId>
+                <monitoring>
+                    <state>pending</state>
+                </monitoring>
+            </item>
+            <item>
+                <instanceId>i-33457a5a</instanceId>
+                <monitoring>
+                    <state>pending</state>
+                </monitoring>
+            </item>
+        </instancesSet>
+    </MonitorInstancesResponse>
+    RESPONSE
+    
+    @unmonitor_instances_response_body = <<-RESPONSE
+    <UnmonitorInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2009-07-15/">
+        <requestId>7dbc5095-f3ae-46d8-a5b1-19df118ceb05</requestId>
+        <instancesSet>
+            <item>
+                <instanceId>i-138fc47a</instanceId>
+                <monitoring>
+                    <state>disabling</state>
+                </monitoring>
+            </item>
+            <item>
+                <instanceId>i-33457a5a</instanceId>
+                <monitoring>
+                    <state>disabling</state>
+                </monitoring>
+            </item>
+        </instancesSet>
+    </UnmonitorInstancesResponse>
+    
+    RESPONSE
   end
 
 
@@ -343,6 +384,46 @@ context "EC2 instances " do
     @response.instancesSet.item[1].shutdownState.name.should.equal "shutting-down"
     @response.instancesSet.item[1].previousState.code.should.equal "0"
     @response.instancesSet.item[1].previousState.name.should.equal "pending"
+  end
+  
+  specify "method monitor_instances should raise an exception when called without nil/empty string arguments" do
+    lambda { @ec2.monitor_instances() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.monitor_instances( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.monitor_instances( :instance_id => "" ) }.should.raise(AWS::ArgumentError)
+  end
+  
+  specify "should be able to be monitored when provided with an :instance_id" do
+    @ec2.stubs(:make_request).with('MonitorInstances', {"InstanceId.1"=>"i-138fc47a", "InstanceId.2"=>"i-33457a5a"}).
+      returns stub(:body => @monitor_instances_response_body, :is_a? => true)
+    @ec2.monitor_instances( :instance_id => ["i-138fc47a", "i-33457a5a"] ).class.should.equal Hash
+
+    @response = @ec2.monitor_instances( :instance_id => ["i-138fc47a", "i-33457a5a"] )
+
+    @response.instancesSet.item[0].instanceId.should.equal "i-138fc47a"
+    @response.instancesSet.item[0].monitoring.state.should.equal "pending"
+
+    @response.instancesSet.item[1].instanceId.should.equal "i-33457a5a"
+    @response.instancesSet.item[1].monitoring.state.should.equal "pending"
+  end
+
+  specify "method unmonitor_instances should raise an exception when called without nil/empty string arguments" do
+    lambda { @ec2.unmonitor_instances() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.unmonitor_instances( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.unmonitor_instances( :instance_id => "" ) }.should.raise(AWS::ArgumentError)
+  end
+  
+  specify "should be able to be unmonitored when provided with an :instance_id" do
+    @ec2.stubs(:make_request).with('UnmonitorInstances', {"InstanceId.1"=>"i-138fc47a", "InstanceId.2"=>"i-33457a5a"}).
+      returns stub(:body => @unmonitor_instances_response_body, :is_a? => true)
+    @ec2.unmonitor_instances( :instance_id => ["i-138fc47a", "i-33457a5a"] ).class.should.equal Hash
+
+    @response = @ec2.unmonitor_instances( :instance_id => ["i-138fc47a", "i-33457a5a"] )
+
+    @response.instancesSet.item[0].instanceId.should.equal "i-138fc47a"
+    @response.instancesSet.item[0].monitoring.state.should.equal "disabling"
+
+    @response.instancesSet.item[1].instanceId.should.equal "i-33457a5a"
+    @response.instancesSet.item[1].monitoring.state.should.equal "disabling"
   end
 
 end

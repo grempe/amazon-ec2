@@ -16,7 +16,7 @@ module AWS
       DEFAULT_HOST = 'ec2.amazonaws.com'
     end
 
-    API_VERSION = '2008-12-01'
+    API_VERSION = '2009-07-15'
 
     class Base < AWS::Base
       def api_version
