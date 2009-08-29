@@ -170,6 +170,41 @@ module AWS
         return response_generator(:action => "TerminateInstances", :params => params)
 
       end
+      
+         
+      # The MonitorInstances operation tells Cloudwatch to begin logging metrics from one or more EC2 instances
+      #
+      # @option options [Array] :instance_id ([])
+      #
+      def monitor_instances( options = {} )
+
+        options = { :instance_id => [] }.merge(options)
+
+        raise ArgumentError, "No :instance_id provided" if options[:instance_id].nil? || options[:instance_id].empty?
+
+        params = pathlist("InstanceId", options[:instance_id])
+
+        return response_generator(:action => "MonitorInstances", :params => params)
+
+      end
+      
+      
+      
+      # The UnmonitorInstances operation tells Cloudwatch to stop logging metrics from one or more EC2 instances
+      #
+      # @option options [Array] :instance_id ([])
+      #
+      def unmonitor_instances( options = {} )
+
+        options = { :instance_id => [] }.merge(options)
+
+        raise ArgumentError, "No :instance_id provided" if options[:instance_id].nil? || options[:instance_id].empty?
+
+        params = pathlist("InstanceId", options[:instance_id])
+
+        return response_generator(:action => "UnmonitorInstances", :params => params)
+
+      end
 
     end
 
