@@ -170,8 +170,8 @@ module AWS
         return response_generator(:action => "TerminateInstances", :params => params)
 
       end
-      
-         
+
+
       # The MonitorInstances operation tells Cloudwatch to begin logging metrics from one or more EC2 instances
       #
       # @option options [Array] :instance_id ([])
@@ -187,9 +187,9 @@ module AWS
         return response_generator(:action => "MonitorInstances", :params => params)
 
       end
-      
-      
-      
+
+
+
       # The UnmonitorInstances operation tells Cloudwatch to stop logging metrics from one or more EC2 instances
       #
       # @option options [Array] :instance_id ([])

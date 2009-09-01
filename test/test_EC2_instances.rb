@@ -139,7 +139,7 @@ context "EC2 instances " do
       </instancesSet>
     </TerminateInstancesResponse>
     RESPONSE
-    
+
     @monitor_instances_response_body = <<-RESPONSE
     <MonitorInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2009-07-15/">
         <requestId>fe62a64c-49fb-4a3c-8d9b-61aba146d390</requestId>
@@ -159,7 +159,7 @@ context "EC2 instances " do
         </instancesSet>
     </MonitorInstancesResponse>
     RESPONSE
-    
+
     @unmonitor_instances_response_body = <<-RESPONSE
     <UnmonitorInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2009-07-15/">
         <requestId>7dbc5095-f3ae-46d8-a5b1-19df118ceb05</requestId>
@@ -178,7 +178,7 @@ context "EC2 instances " do
             </item>
         </instancesSet>
     </UnmonitorInstancesResponse>
-    
+
     RESPONSE
   end
 
@@ -385,13 +385,13 @@ context "EC2 instances " do
     @response.instancesSet.item[1].previousState.code.should.equal "0"
     @response.instancesSet.item[1].previousState.name.should.equal "pending"
   end
-  
+
   specify "method monitor_instances should raise an exception when called without nil/empty string arguments" do
     lambda { @ec2.monitor_instances() }.should.raise(AWS::ArgumentError)
     lambda { @ec2.monitor_instances( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
     lambda { @ec2.monitor_instances( :instance_id => "" ) }.should.raise(AWS::ArgumentError)
   end
-  
+
   specify "should be able to be monitored when provided with an :instance_id" do
     @ec2.stubs(:make_request).with('MonitorInstances', {"InstanceId.1"=>"i-138fc47a", "InstanceId.2"=>"i-33457a5a"}).
       returns stub(:body => @monitor_instances_response_body, :is_a? => true)
@@ -411,7 +411,7 @@ context "EC2 instances " do
     lambda { @ec2.unmonitor_instances( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
     lambda { @ec2.unmonitor_instances( :instance_id => "" ) }.should.raise(AWS::ArgumentError)
   end
-  
+
   specify "should be able to be unmonitored when provided with an :instance_id" do
     @ec2.stubs(:make_request).with('UnmonitorInstances', {"InstanceId.1"=>"i-138fc47a", "InstanceId.2"=>"i-33457a5a"}).
       returns stub(:body => @unmonitor_instances_response_body, :is_a? => true)
