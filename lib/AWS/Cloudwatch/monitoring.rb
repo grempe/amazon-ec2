@@ -8,13 +8,9 @@ module AWS
       #
       # there are no options available to this method.
 
-      def list_metrics( options ={} )
-        options = {
-
-        }
+      def list_metrics
         raise ArgumentError, "Server must be monitoring.amazonaws.com" if server != 'monitoring.amazonaws.com'
-        params = {}
-        return response_generator(:action => 'ListMetrics', :params => params)
+        return response_generator(:action => 'ListMetrics', :params => {})
       end
 
       # get_metric_statistics pulls a hashed array from Cloudwatch with the stats
@@ -24,7 +20,7 @@ module AWS
       #     :statistics => 'Average', :namespace => 'AWS/ELB')
       #
       # This call gets the average request count against your ELB at each sampling period
-      # for the last 24 hours. You can then attach a block to the followint iterator
+      # for the last 24 hours. You can then attach a block to the following iterator
       # to do whatever you need to:
       # res['GetMetricStatisticsResult']['Datapoints']['member'].each
       #
@@ -37,8 +33,7 @@ module AWS
       # @option options [Integer] :period (60) Granularity in seconds of the returned datapoints. Multiples of 60 only
       # @option options [String] :statistics (nil) The statistics to be returned for your metric. See the developer guide for valid options. Required.
       # @option options [Time] :start_time (Time.now() - 86400) Inner bound of the date range you want to view. Defaults to 24 hours ago
-        # @option options [String] :unit (nil) Standard unit for a given Measure. See the developer guide for valid options.
-
+      # @option options [String] :unit (nil) Standard unit for a given Measure. See the developer guide for valid options.
 
 
       def get_metric_statistics ( options ={} )
@@ -61,8 +56,6 @@ module AWS
         raise ArgumentError, ":measure_name must be provided" if options[:measure_name].nil? || options[:measure_name].empty?
         raise ArgumentError, ":statistics must be provided" if options[:statistics].nil? || options[:statistics].empty?
 
-
-        #params {"Statistics"}
         params = {
                     "CustomUnit" => options[:custom_unit],
                     "Dimensions" => options[:dimensions],
@@ -73,19 +66,15 @@ module AWS
                     "Statistics.member.1" => options[:statistics],
                     "StartTime" => options[:start_time].iso8601,
                     "Unit" => options[:unit]
-
         }
-
-
-        #http_response = make_request('GetMetricStatistics', params)
-        #http_xml = http_response.body
-        #return Response.parse(:xml => http_xml)
 
         return response_generator(:action => 'GetMetricStatistics', :params => params)
 
       end
 
     end
+
   end
 
 end
+
