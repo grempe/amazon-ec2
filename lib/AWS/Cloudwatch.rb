@@ -2,12 +2,12 @@ module AWS
   module Cloudwatch
 
     # Which host FQDN will we connect to for all API calls to AWS?
-    # If ELB_URL is defined in the users ENV we can override the default with that.
+    # If AWS_CLOUDWATCH_URL is defined in the users ENV we can override the default with that.
     #
     # @example
-    #   export ELB_URL='https://montoring.amazonaws.com'
+    #   export AWS_CLOUDWATCH_URL='https://montoring.amazonaws.com'
     if ENV['AWS_CLOUDWATCH_URL']
-      ELB_URL = ENV['AWS_CLOUDWATCH_URL']
+      AWS_CLOUDWATCH_URL = ENV['AWS_CLOUDWATCH_URL']
       VALID_HOSTS = ['monitoring.amazonaws.com']
       raise ArgumentError, "Invalid AWS_CLOUDWATCH_URL environment variable : #{AWS_CLOUDWATCH_URL}" unless VALID_HOSTS.include?(AWS_CLOUDWATCH_URL)
       DEFAULT_HOST = URI.parse(AWS_CLOUDWATCH_URL).host
