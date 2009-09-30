@@ -47,17 +47,19 @@ module AWS
       
       # Create or update scaling trigger
       def create_or_updated_scaling_trigger( options = {} )
+        if options[:dimensions].nil? || options[:dimensions].empty?
+          raise ArgumentError, "No :dimensions provided"
+        end
         raise ArgumentError, "No :autoscaling_group_name provided" if options[:autoscaling_group_name].nil? || options[:autoscaling_group_name].empty?
-        raise ArgumentError, "No :dimensions provided" if options[:dimensions].nil? || options[:dimensions].empty?
         raise ArgumentError, "No :measure_name provided" if options[:measure_name].nil? || options[:measure_name].empty?
         raise ArgumentError, "No :statistic provided" if options[:statistic].nil? || options[:statistic].empty?
-        raise ArgumentError, "No :period provided" if options[:period].nil? || options[:period].empty?
+        raise ArgumentError, "No :period provided" if options[:period].nil?
         raise ArgumentError, "No :trigger_name provided" if options[:trigger_name].nil? || options[:trigger_name].empty?
-        raise ArgumentError, "No :lower_threshold provided" if options[:lower_threshold].nil? || options[:lower_threshold].empty?
-        raise ArgumentError, "No :lower_breach_scale_increment provided" if options[:lower_breach_scale_increment].nil? || options[:lower_breach_scale_increment].empty?
-        raise ArgumentError, "No :upper_threshold provided" if options[:upper_threshold].nil? || options[:upper_threshold].empty?
-        raise ArgumentError, "No :upper_breach_scale_increment provided" if options[:upper_breach_scale_increment].nil? || options[:upper_breach_scale_increment].empty?
-        raise ArgumentError, "No :breach_duration provided" if options[:breach_duration].nil? || options[:breach_duration].empty?
+        raise ArgumentError, "No :lower_threshold provided" if options[:lower_threshold].nil?
+        raise ArgumentError, "No :lower_breach_scale_increment provided" if options[:lower_breach_scale_increment].nil?
+        raise ArgumentError, "No :upper_threshold provided" if options[:upper_threshold].nil?
+        raise ArgumentError, "No :upper_breach_scale_increment provided" if options[:upper_breach_scale_increment].nil?
+        raise ArgumentError, "No :breach_duration provided" if options[:breach_duration].nil?
         
         statistic_option_list = %w(Minimum Maximum Average Sum)
         unless statistic_option_list.include?(options[:statistic])
@@ -70,13 +72,13 @@ module AWS
         params.merge!(pathlist('Dimensions.member', [options[:dimensions]].flatten))
         params['MeasureName'] = options[:measure_name]
         params['Statistic'] = options[:statistic]
-        params['Period'] = options[:period]
-        params['TriggerName'] = options[:trigger_name]
-        params['LowerThreshold'] = options[:lower_threshold]
-        params['LowerBreachScaleIncrement'] = options[:lower_breach_scale_increment]
-        params['UpperThreshold'] = options[:upper_threshold]
-        params['UpperBreachScaleIncrement'] = options[:upper_breach_scale_increment]
-        params['BreachDuration'] = options[:breach_duration]
+        params['Period'] = options[:period].to_s
+        params['TriggerName'] = options[:trigger_name].to_s
+        params['LowerThreshold'] = options[:lower_threshold].to_s
+        params['LowerBreachScaleIncrement'] = options[:lower_breach_scale_increment].to_s
+        params['UpperThreshold'] = options[:upper_threshold].to_s
+        params['UpperBreachScaleIncrement'] = options[:upper_breach_scale_increment].to_s
+        params['BreachDuration'] = options[:breach_duration].to_s
         
         return response_generator(:action => "CreateOrUpdateScalingTrigger", :params => params)
       end
