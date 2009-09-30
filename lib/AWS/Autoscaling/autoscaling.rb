@@ -69,7 +69,16 @@ module AWS
         params = {}
         params['Unit'] = options[:unit] || "Seconds"
         params['AutoScalingGroupName'] = options[:autoscaling_group_name]
-        params.merge!(pathlist('Dimensions.member', [options[:dimensions]].flatten))
+        case options[:dimensions]
+        when Array
+          params["Dimensions.member.1.Name"] = options[:dimensions][0]
+          params["Dimensions.member.1.Value"] = options[:dimensions][1]
+        when Hash
+          params["Dimensions.member.1.Name"] = options[:dimensions][:name]
+          params["Dimensions.member.1.Value"] = options[:dimensions][:value]
+        else
+          raise ArgumentError, "Dimensionss must be either an array or a hash"
+        end
         params['MeasureName'] = options[:measure_name]
         params['Statistic'] = options[:statistic]
         params['Period'] = options[:period].to_s
