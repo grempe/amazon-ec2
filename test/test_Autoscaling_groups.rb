@@ -35,6 +35,11 @@ context "autoscaling " do
     
     @delete_autoscaling_group = "<DeleteAutoScalingGroupResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
 <ResponseMetadata><RequestId>e64fc4c3-e10b-11dd-a73e-2d774d6aee71</RequestId></ResponseMetadata></DeleteAutoScalingGroupResponse>"
+    @create_or_update_trigger_response = "<CreateOrUpdateScalingTriggerResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
+      <ResponseMetadata>
+        <RequestId>503d309d-e10b-11dd-a73e-2d774d6aee71</RequestId>
+      </ResponseMetadata>
+    </CreateOrUpdateScalingTriggerResponse>"
   end
   
   specify "AWS::Autoscaling::Base should give back a nice response if there is an error" do
@@ -89,5 +94,34 @@ context "autoscaling " do
     response = @as.delete_autoscaling_group( :autoscaling_group_name => "TestAutoscalingGroupName1" )
     response.should.be.an.instance_of Hash
   end
+  
+  specify "AWS::Autoscaling::Base should be able to create a new scaling trigger" do
+    @as.stubs(:make_request).with("CreateOrUpdateScalingTrigger", {
+      'AutoScalingGroupName' => 'AutoScalingGroupName',
+      'Unit' => "Seconds",
+      'Dimensions.member.1.Name' => "AutoScalingGroupName",
+      'Dimensions.member.1.Value' => "Bob",
+      'MeasureName' => "CPUUtilization",
+      'Statistic' => 'Average',
+      'Period' => '120',
+      'TriggerName' => "AFunNameForATrigger",
+      'LowerThreshold' => "0.2",
+      'LowerBreachScaleIncrement' => "-1",
+      'UpperThreshold' => "1.5",
+      'UpperBreachScaleIncrement' => "1",
+      'BreachDuration' => "120"
+    }).returns stub(:body => @create_or_update_trigger_response, :is_a? => true)
+    
+    valid_create_or_update_scaling_trigger_params = {:autoscaling_group_name => "AutoScalingGroupName", :dimensions => {:name => "AutoScalingGroupName", :value => "Bob"}, :unit => "Seconds", :measure_name => "CPUUtilization", :statistic => "Average", :period => 120, :trigger_name => "AFunNameForATrigger", :lower_threshold => 0.2, :lower_breach_scale_increment => "-1", :upper_threshold => 1.5, :upper_breach_scale_increment => 1, :breach_duration => 120}
+    
+    %w(dimensions autoscaling_group_name measure_name statistic period trigger_name lower_threshold lower_breach_scale_increment upper_threshold upper_breach_scale_increment breach_duration).each do |meth_str|
+      lambda { @as.create_or_updated_scaling_trigger(valid_create_or_update_scaling_trigger_params.merge(meth_str.to_sym=>nil)) }.should.raise(AWS::ArgumentError)
+    end
+    
+    response = @as.create_or_updated_scaling_trigger(valid_create_or_update_scaling_trigger_params)
+    response.should.be.an.instance_of Hash
+  end
+  
+  
   
 end

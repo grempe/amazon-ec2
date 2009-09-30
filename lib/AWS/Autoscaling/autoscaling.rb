@@ -73,14 +73,14 @@ module AWS
       #   When called as a hash, the values must look like: {:name => "name", :value => "value"}
       #   In the array format, the first value is assumed to be the name and the second is assumed to be the value
       # @option options [String] :measure_name (nil) the measure name associated with the metric used by the trigger
-      # @option options [String] :period (nil) the period associated with the metric in seconds
+      # @option options [String|Integer] :period (nil) the period associated with the metric in seconds
       # @option options [String] :statistic (nil) The particular statistic used by the trigger when fetching metric statistics to examine. Must be one of the following: Minimum, Maximum, Sum, Average
       # @option options [String] :trigger_name (nil) the name for this trigger
       # @option options [String] :unit (nil) the standard unit of measurement for a given measure
-      # @option options [String] :lower_threshold (nil) the lower limit for the metric. If all datapoints in the last :breach_duration seconds fall below the lower threshold, the trigger will activate
-      # @option options [String] :lower_breach_scale_increment (nil) the incremental amount to use when performing scaling activities when the lower threshold has been breached
-      # @option options [String] :upper_threshold (nil) the upper limit for the metric. If all datapoints in the last :breach_duration seconds exceed the upper threshold, the trigger will activate
-      # @option options [String] :upper_breach_scale_increment (nil) the incremental amount to use when performing scaling activities when the upper threshold has been breached
+      # @option options [String|Integer] :lower_threshold (nil) the lower limit for the metric. If all datapoints in the last :breach_duration seconds fall below the lower threshold, the trigger will activate
+      # @option options [String|Integer] :lower_breach_scale_increment (nil) the incremental amount to use when performing scaling activities when the lower threshold has been breached
+      # @option options [String|Integer] :upper_threshold (nil) the upper limit for the metric. If all datapoints in the last :breach_duration seconds exceed the upper threshold, the trigger will activate
+      # @option options [String|Integer] :upper_breach_scale_increment (nil) the incremental amount to use when performing scaling activities when the upper threshold has been breached
       def create_or_updated_scaling_trigger( options = {} )
         if options[:dimensions].nil? || options[:dimensions].empty?
           raise ArgumentError, "No :dimensions provided"
@@ -112,12 +112,12 @@ module AWS
           params["Dimensions.member.1.Name"] = options[:dimensions][:name]
           params["Dimensions.member.1.Value"] = options[:dimensions][:value]
         else
-          raise ArgumentError, "Dimensionss must be either an array or a hashsa"
+          raise ArgumentError, "Dimensionss must be either an array or a hash"
         end
         params['MeasureName'] = options[:measure_name]
         params['Statistic'] = options[:statistic]
         params['Period'] = options[:period].to_s
-        params['TriggerName'] = options[:trigger_name].to_s
+        params['TriggerName'] = options[:trigger_name]
         params['LowerThreshold'] = options[:lower_threshold].to_s
         params['LowerBreachScaleIncrement'] = options[:lower_breach_scale_increment].to_s
         params['UpperThreshold'] = options[:upper_threshold].to_s
@@ -175,7 +175,7 @@ module AWS
       def describe_launch_configurations( options = {} )
         options = { :launch_configuration_names => [] }.merge(options)
         params = pathlist("AutoScalingGroupNames.member", options[:launch_configuration_names])
-        params['MaxRecords'] = options[:max_records] || 100
+        params['MaxRecords'] = options[:max_records] || "100"
         return response_generator(:action => "DescribeLaunchConfigurations", :params => params)
       end
       
@@ -190,7 +190,7 @@ module AWS
         
         params = {}
         params['AutoScalingGroupName'] = options[:autoscaling_group_name]
-        params['MaxRecords'] = options[:max_records] || 100
+        params['MaxRecords'] = options[:max_records] || "100"
         params['ActivityIds'] = options[:activity_ids] if options.has_key?(:activity_ids)
         return response_generator(:action => "DescribeScalingActivities", :params => params)
       end
