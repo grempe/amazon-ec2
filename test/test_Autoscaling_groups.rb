@@ -122,6 +122,215 @@ context "autoscaling " do
     response.should.be.an.instance_of Hash
   end
   
+  specify "AWS::Autoscaling::Base should destroy a launch configuration group" do
+    @as.stubs(:make_request).with('DeleteLaunchConfiguration', {
+      'LaunchConfigurationName' => 'LaunchConfiguration'
+    }).returns stub(:body => " <DeleteLaunchConfigurationResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
+<ResponseMetadata><RequestId>e64fc4c3-e10b-11dd-a73e-2d774d6aee71</RequestId></ResponseMetadata>
+</DeleteLaunchConfigurationResponse>", :is_a? => true)
+    
+    response = @as.delete_launch_configuration( :launch_configuration_name => "LaunchConfiguration" )
+    response.should.be.an.instance_of Hash
+  end
+  
+    specify "AWS::Autoscaling::Base should destroy a scaling trigger" do
+      @as.stubs(:make_request).with('DeleteTrigger', {
+        'TriggerName' => 'DeletingTrigger', 'AutoScalingGroupName' => "Name"
+      }).returns stub(:body => "  <DeleteTriggerResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
+          <ResponseMetadata>
+            <RequestId>cca38097-e10b-11dd-a73e-2d774d6aee71</RequestId>
+          </ResponseMetadata>
+        </DeleteTriggerResponse>", :is_a? => true)
+
+      response = @as.delete_trigger( :trigger_name => "DeletingTrigger", :autoscaling_group_name => "Name" )
+      response.should.be.an.instance_of Hash
+    end
+    
+    specify "AWS::Autoscaling::Base should describe the autoscaling groups" do
+      @as.stubs(:make_request).with('DescribeAutoScalingGroups', {
+        'AutoScalingGroupNames.member.1' => "webtier"
+      }).returns stub(:body => "<DescribeAutoScalingGroupsResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
+          <DescribeAutoScalingGroupsResult>
+            <AutoScalingGroups>
+              <member>
+                <MinSize>0</MinSize>
+                <CreatedTime>2009-01-13T00:38:54Z</CreatedTime>
+                <AvailabilityZones>
+        	         <member>us-east-1c</member>
+                </AvailabilityZones>
+                <Cooldown>0</Cooldown>
+                <LaunchConfigurationName>wt20080929</LaunchConfigurationName>
+                <AutoScalingGroupName>webtier</AutoScalingGroupName>
+                <DesiredCapacity>1</DesiredCapacity>
+                <Instances>
+                  <member>
+                    <InstanceId>i-8fa224e6</InstanceId>
+                    <LifecycleState>InService</LifecycleState>
+                    <AvailabilityZone>us-east-1c</AvailabilityZone> 
+                    </member>
+                </Instances>
+                <MaxSize>1</MaxSize>
+              </member>
+            </AutoScalingGroups>
+          </DescribeAutoScalingGroupsResult>
+          <ResponseMetadata>
+            <RequestId>70f2e8af-e10b-11dd-a73e-2d774d6aee71</RequestId>
+          </ResponseMetadata>
+        </DescribeAutoScalingGroupsResponse>", :is_a? => true)
+
+      response = @as.describe_autoscaling_groups( :autoscaling_group_names => ["webtier"] )
+      response.should.be.an.instance_of Hash
+    end
+    
+    specify "AWS::Autoscaling::Base should describe the launch configurations" do
+      @as.stubs(:make_request).with('DescribeLaunchConfigurations', {
+        'AutoScalingGroupNames.member.1' => "webtier"
+      }).returns stub(:body => "<DescribeLaunchConfigurationsResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
+          <DescribeLaunchConfigurationsResult>
+            <LaunchConfigurations>
+              <member>
+                <InstanceType>m1.small</InstanceType>
+                <BlockDeviceMappings/>
+                <KeyName/>
+                <SecurityGroups/>
+                <ImageId>ami-f7c5219e</ImageId>
+                <RamdiskId/>
+                <CreatedTime>2009-01-13T00:35:31Z</CreatedTime>
+                <KernelId/>
+                <LaunchConfigurationName>wt20080929</LaunchConfigurationName>
+                <UserData/>
+              </member>
+            </LaunchConfigurations>
+          </DescribeLaunchConfigurationsResult>
+          <ResponseMetadata>
+            <RequestId>2e14cb6c-e10a-11dd-a73e-2d774d6aee71</RequestId>
+          </ResponseMetadata>
+        </DescribeLaunchConfigurationsResponse>", :is_a? => true)
+
+      response = @as.describe_launch_configurations( :launch_configuration_names => ["webtier"] )
+      response.should.be.an.instance_of Hash
+    end
+    
+  
+    specify "AWS::Autoscaling::Base should describe the launch configurations" do
+      @as.stubs(:make_request).with('DescribeScalingActivities', {
+        'AutoScalingGroupName' => "webtier"
+      }).returns stub(:body => "<DescribeScalingActivitiesResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
+          <DescribeScalingActivitiesResult>
+            <Activities>
+              <member>
+                <ActivityId>885b2900-0f2e-497a-8ec6-b1b90a9ddee0</ActivityId>
+                <StartTime>2009-03-29T04:07:07Z</StartTime>
+                <Progress>0</Progress>
+                <StatusCode>InProgress</StatusCode>
+                <Cause>Automated Capacity Adjustment</Cause>
+                <Description>Launching a new EC2 instance</Description>
+              </member>
+            </Activities>
+          </DescribeScalingActivitiesResult>
+          <ResponseMetadata>
+            <RequestId>f0321780-e10a-11dd-a73e-2d774d6aee71</RequestId>
+          </ResponseMetadata>
+        </DescribeScalingActivitiesResponse>", :is_a? => true)
+
+      response = @as.describe_scaling_activities( :autoscaling_group_name => "webtier" )
+      response.should.be.an.instance_of Hash
+    end
+  
+    specify "AWS::Autoscaling::Base should describe triggers" do
+      @as.stubs(:make_request).with('DescribeTriggers', {
+        'AutoScalingGroupName' => "webtier"
+      }).returns stub(:body => "  <DescribeTriggersResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
+          <DescribeTriggersResult>
+            <Triggers>
+              <member>
+                <BreachDuration>300</BreachDuration>
+                 <UpperBreachScaleIncrement>1</UpperBreachScaleIncrement>
+                <CreatedTime>2009-01-13T00:44:19Z</CreatedTime>
+                <UpperThreshold>60.0</UpperThreshold>
+                <Status>NoData</Status>
+                <LowerThreshold>0.0</LowerThreshold>
+                <Period>60</Period>
+                <LowerBreachScaleIncrement>-1</LowerBreachScaleIncrement>
+                <TriggerName>tenpct</TriggerName>
+                <Statistic>Average</Statistic>
+                <Unit>None</Unit>
+                <Namespace>AWS/EC2</Namespace>
+                <Dimensions>
+
+                  <member>
+                    <Name>AutoScalingGroupName</Name>
+                    <Value>webtier</Value>
+                  </member>
+                </Dimensions>
+                <AutoScalingGroupName>webtier</AutoScalingGroupName>
+                <MeasureName>CPUUtilization</MeasureName>
+              </member>
+            </Triggers>
+          </DescribeTriggersResult>
+          <ResponseMetadata>
+            <RequestId>5c33c82a-e10b-11dd-a73e-2d774d6aee71</RequestId>
+          </ResponseMetadata>
+        </DescribeTriggersResponse>", :is_a? => true)
+
+      response = @as.describe_triggers( :autoscaling_group_name => "webtier" )
+      response.should.be.an.instance_of Hash
+    end
+    
+    specify "AWS::Autoscaling::Base should describe triggers" do
+      @as.stubs(:make_request).with('SetDesiredCapacity', {
+        'AutoScalingGroupName' => "name", 'DesiredCapacity' => '10'
+      }).returns stub(:body => "  <SetDesiredCapacityResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
+          <ResponseMetadata>
+            <RequestId>d3f2091c-e10a-11dd-a73e- 2d774d6aee71</RequestId>
+          </ResponseMetadata>
+        </SetDesiredCapacityResponse>
+      ", :is_a? => true)
+
+      response = @as.set_desired_capacity( :autoscaling_group_name => "name", :desired_capacity => "10" )
+      response.should.be.an.instance_of Hash
+    end
+    
+  
+    specify "AWS::Autoscaling::Base should terminate an instance in an autoscaling group" do
+      @as.stubs(:make_request).with('TerminateInstanceInAutoScalingGroup', {
+        'InstanceId' => "i-instance1"
+      }).returns stub(:body => "  <DescribeTriggersResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
+          <DescribeTriggersResult>
+            <Triggers>
+              <member>
+                <BreachDuration>300</BreachDuration>
+                 <UpperBreachScaleIncrement>1</UpperBreachScaleIncrement>
+                <CreatedTime>2009-01-13T00:44:19Z</CreatedTime>
+                <UpperThreshold>60.0</UpperThreshold>
+                <Status>NoData</Status>
+                <LowerThreshold>0.0</LowerThreshold>
+                <Period>60</Period>
+                <LowerBreachScaleIncrement>-1</LowerBreachScaleIncrement>
+                <TriggerName>tenpct</TriggerName>
+                <Statistic>Average</Statistic>
+                <Unit>None</Unit>
+                <Namespace>AWS/EC2</Namespace>
+                <Dimensions>
+
+                  <member>
+                    <Name>AutoScalingGroupName</Name>
+                    <Value>webtier</Value>
+                  </member>
+                </Dimensions>
+                <AutoScalingGroupName>webtier</AutoScalingGroupName>
+                <MeasureName>CPUUtilization</MeasureName>
+              </member>
+            </Triggers>
+          </DescribeTriggersResult>
+          <ResponseMetadata>
+            <RequestId>5c33c82a-e10b-11dd-a73e-2d774d6aee71</RequestId>
+          </ResponseMetadata>
+        </DescribeTriggersResponse>", :is_a? => true)
+
+      response = @as.terminate_instance_in_autoscaling_group( :instance_id => "i-instance1" )
+      response.should.be.an.instance_of Hash
+    end
   
   
 end

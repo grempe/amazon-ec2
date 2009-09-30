@@ -175,7 +175,7 @@ module AWS
       def describe_launch_configurations( options = {} )
         options = { :launch_configuration_names => [] }.merge(options)
         params = pathlist("AutoScalingGroupNames.member", options[:launch_configuration_names])
-        params['MaxRecords'] = options[:max_records] || "100"
+        params['MaxRecords'] = options[:max_records].to_s if options.has_key?(:max_records)
         return response_generator(:action => "DescribeLaunchConfigurations", :params => params)
       end
       
@@ -190,7 +190,7 @@ module AWS
         
         params = {}
         params['AutoScalingGroupName'] = options[:autoscaling_group_name]
-        params['MaxRecords'] = options[:max_records] || "100"
+        params['MaxRecords'] = options[:max_records] if options.has_key?(:max_records)
         params['ActivityIds'] = options[:activity_ids] if options.has_key?(:activity_ids)
         return response_generator(:action => "DescribeScalingActivities", :params => params)
       end
@@ -219,7 +219,7 @@ module AWS
         
         params = {}
         params['AutoScalingGroupName'] = options[:autoscaling_group_name]
-        params['DesiredCapacity'] = options[:desired_capacity]
+        params['DesiredCapacity'] = options[:desired_capacity].to_s
         
         return response_generator(:action => "SetDesiredCapacity", :params => params)
       end
@@ -236,7 +236,7 @@ module AWS
         
         params = {}
         params['InstanceId'] = options[:instance_id]
-        params['ShouldDecrementDesiredCapacity'] = options[:decrement_desired_capacity] || true
+        params['ShouldDecrementDesiredCapacity'] = options[:decrement_desired_capacity].to_s if options.has_key?(:decrement_desired_capacity)
         
         return response_generator(:action => "TerminateInstanceInAutoScalingGroup", :params => params)
       end
