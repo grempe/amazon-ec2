@@ -1,5 +1,5 @@
 module AWS
-  module AutoScaling
+  module Autoscaling
     class Base < AWS::Base
       
       # Create a launch configuration
@@ -13,7 +13,7 @@ module AWS
         params["ImageId"] = options[:image_id]
         params["KeyName"] = options[:key_name] if options[:key_name]
         params["LaunchConfigurationName"] = options[:launch_configuration_name]
-        params.merge!(pathlist('SecurityGroups.member', [options[:security_groups]].flatten))
+        params.merge!(pathlist('SecurityGroups.member', [options[:security_groups]].flatten)) if options[:security_groups]
         params["UserData"] = options[:user_data] if options[:user_data]
         params["InstanceType"] = options[:instance_type] if options[:instance_type]
         params["KernelId"] = options[:kernel_id] if options[:kernel_id]
@@ -28,19 +28,19 @@ module AWS
       def create_autoscaling_group( options = {} )
         raise ArgumentError, "No :autoscaling_group_name provided" if options[:autoscaling_group_name].nil? || options[:autoscaling_group_name].empty?
         raise ArgumentError, "No :availability_zones provided" if options[:availability_zones].nil? || options[:availability_zones].empty?
-        raise ArgumentError, "No :load_balancer_names provided" if options[:load_balancer_names].nil? || options[:load_balancer_names].empty?
         raise ArgumentError, "No :launch_configuration_name provided" if options[:launch_configuration_name].nil? || options[:launch_configuration_name].empty?
-        raise ArgumentError, "No :min_size provided" if options[:min_size].nil? || options[:min_size].empty?
-        raise ArgumentError, "No :max_size provided" if options[:max_size].nil? || options[:max_size].empty?
+        raise ArgumentError, "No :min_size provided" if options[:min_size].nil?
+        raise ArgumentError, "No :max_size provided" if options[:max_size].nil?
 
         params = {}
 
         params.merge!(pathlist('AvailabilityZones.member', [options[:availability_zones]].flatten))
         params['LaunchConfigurationName'] = options[:launch_configuration_name]
         params['AutoScalingGroupName'] = options[:autoscaling_group_name]
-        params['MinSize'] = options[:min_size]
-        params['MaxSize'] = options[:max_size]
-        params['CoolDown'] = options[:cooldown] || 0
+        params['MinSize'] = options[:min_size].to_s
+        params['MaxSize'] = options[:max_size].to_s
+        params['LoadBalancerNames'] = options[:load_balancer_names] if options[:load_balancer_names]
+        params['CoolDown'] = options[:cooldown] if options[:cooldown]
         
         return response_generator(:action => "CreateAutoScalingGroup", :params => params)
       end
