@@ -3,6 +3,7 @@ module AWS
     class Base < AWS::Base
       
       # Create a launch configuration
+      # TODO: Docs
       def create_launch_configuration( options = {})
         raise ArgumentError, "No :image_id provided" if options[:image_id].nil? || options[:image_id].empty?
         raise ArgumentError, "No :launch_configuration_name provided" if options[:launch_configuration_name].nil? || options[:launch_configuration_name].empty?
@@ -24,8 +25,8 @@ module AWS
       
       # Create an autoscaling group
       # TODO: Add docs
-      def create_auto_scaling_group( options = {} )
-        raise ArgumentError, "No :auto_scaling_group_name provided" if options[:auto_scaling_group_name].nil? || options[:auto_scaling_group_name].empty?
+      def create_autoscaling_group( options = {} )
+        raise ArgumentError, "No :autoscaling_group_name provided" if options[:autoscaling_group_name].nil? || options[:autoscaling_group_name].empty?
         raise ArgumentError, "No :availability_zones provided" if options[:availability_zones].nil? || options[:availability_zones].empty?
         raise ArgumentError, "No :load_balancer_names provided" if options[:load_balancer_names].nil? || options[:load_balancer_names].empty?
         raise ArgumentError, "No :launch_configuration_name provided" if options[:launch_configuration_name].nil? || options[:launch_configuration_name].empty?
@@ -36,153 +37,145 @@ module AWS
 
         params.merge!(pathlist('AvailabilityZones.member', [options[:availability_zones]].flatten))
         params['LaunchConfigurationName'] = options[:launch_configuration_name]
-        params['AutoScalingGroupName'] = options[:auto_scaling_group_name]
+        params['AutoScalingGroupName'] = options[:autoscaling_group_name]
         params['MinSize'] = options[:min_size]
         params['MaxSize'] = options[:max_size]
         params['CoolDown'] = options[:cooldown] || 0
         
         return response_generator(:action => "CreateAutoScalingGroup", :params => params)
       end
-
-      # This API deletes the specified LoadBalancer. On deletion, all of the
-      # configured properties of the LoadBalancer will be deleted. If you
-      # attempt to recreate the LoadBalancer, you need to reconfigure all the
-      # settings. The DNS name associated with a deleted LoadBalancer is no
-      # longer be usable. Once deleted, the name and associated DNS record of
-      # the LoadBalancer no longer exist and traffic sent to any of its IP
-      # addresses will no longer be delivered to your instances. You will not
-      # get the same DNS name even if you create a new LoadBalancer with same
-      # LoadBalancerName.
-      #
-      # @option options [String] :load_balancer_name the name of the load balancer
-      #
-      def delete_load_balancer( options = {} )
-        raise ArgumentError, "No :load_balancer_name provided" if options[:load_balancer_name].nil? || options[:load_balancer_name].empty?
-        params = { 'LoadBalancerName' => options[:load_balancer_name] }
-        return response_generator(:action => "DeleteLoadBalancer", :params => params)
-      end
-
-      # This API returns detailed configuration information for the specified
-      # LoadBalancers, or if no LoadBalancers are specified, then the API
-      # returns configuration information for all LoadBalancers created by the
-      # caller. For more information, please see LoadBalancer.
-      #
-      # You must have created the specified input LoadBalancers in order to
-      # retrieve this information. In other words, in order to successfully call
-      # this API, you must provide the same account credentials as those that
-      # were used to create the LoadBalancer.
-      #
-      # @option options [Array<String>] :load_balancer_names ([]) An Array of names of load balancers to describe.
-      #
-      def describe_load_balancers( options = {} )
-        options = { :load_balancer_names => [] }.merge(options)
-        params = pathlist("LoadBalancerName.member", options[:load_balancer_names])
-        return response_generator(:action => "DescribeLoadBalancers", :params => params)
-      end
-
-      # This API adds new instances to the LoadBalancer.
-      #
-      # Once the instance is registered, it starts receiving traffic and
-      # requests from the LoadBalancer. Any instance that is not in any of the
-      # Availability Zones registered for the LoadBalancer will be moved to
-      # the OutOfService state. It will move to the InService state when the
-      # Availability Zone is added to the LoadBalancer.
-      #
-      # You must have been the one who created the LoadBalancer. In other
-      # words, in order to successfully call this API, you must provide the
-      # same account credentials as those that were used to create the
-      # LoadBalancer.
-      #
-      # NOTE: Completion of this API does not guarantee that operation has
-      # completed. Rather, it means that the request has been registered and
-      # the changes will happen shortly.
-      #
-      # @option options [Array<String>] :instances An Array of instance names to add to the load balancer.
-      # @option options [String] :load_balancer_name The name of the load balancer.
-      #
-      def register_instances_with_load_balancer( options = {} )
-        raise ArgumentError, "No :instances provided" if options[:instances].nil? || options[:instances].empty?
-        raise ArgumentError, "No :load_balancer_name provided" if options[:load_balancer_name].nil? || options[:load_balancer_name].empty?
+      
+      # Create or update scaling trigger
+      def create_or_updated_scaling_trigger( options = {} )
+        raise ArgumentError, "No :autoscaling_group_name provided" if options[:autoscaling_group_name].nil? || options[:autoscaling_group_name].empty?
+        raise ArgumentError, "No :dimensions provided" if options[:dimensions].nil? || options[:dimensions].empty?
+        raise ArgumentError, "No :measure_name provided" if options[:measure_name].nil? || options[:measure_name].empty?
+        raise ArgumentError, "No :statistic provided" if options[:statistic].nil? || options[:statistic].empty?
+        raise ArgumentError, "No :period provided" if options[:period].nil? || options[:period].empty?
+        raise ArgumentError, "No :trigger_name provided" if options[:trigger_name].nil? || options[:trigger_name].empty?
+        raise ArgumentError, "No :lower_threshold provided" if options[:lower_threshold].nil? || options[:lower_threshold].empty?
+        raise ArgumentError, "No :lower_breach_scale_increment provided" if options[:lower_breach_scale_increment].nil? || options[:lower_breach_scale_increment].empty?
+        raise ArgumentError, "No :upper_threshold provided" if options[:upper_threshold].nil? || options[:upper_threshold].empty?
+        raise ArgumentError, "No :upper_breach_scale_increment provided" if options[:upper_breach_scale_increment].nil? || options[:upper_breach_scale_increment].empty?
+        raise ArgumentError, "No :breach_duration provided" if options[:breach_duration].nil? || options[:breach_duration].empty?
+        
+        statistic_option_list = %w(Minimum Maximum Average Sum)
+        unless statistic_option_list.include?(options[:statistic])
+          raise ArgumentError, "The statistic option must be one of the following: #{statistic_option_list.join(", ")}"
+        end
+        
         params = {}
-        params.merge!(pathlist('Instances.member', [options[:instances]].flatten))
-        params['LoadBalancerName'] = options[:load_balancer_name]
-        return response_generator(:action => "RegisterInstancesWithLoadBalancer", :params => params)
+        params['Unit'] = options[:unit] || "Seconds"
+        params['AutoScalingGroupName'] = options[:autoscaling_group_name]
+        params.merge!(pathlist('Dimensions.member', [options[:dimensions]].flatten))
+        params['MeasureName'] = options[:measure_name]
+        params['Statistic'] = options[:statistic]
+        params['Period'] = options[:period]
+        params['TriggerName'] = options[:trigger_name]
+        params['LowerThreshold'] = options[:lower_threshold]
+        params['LowerBreachScaleIncrement'] = options[:lower_breach_scale_increment]
+        params['UpperThreshold'] = options[:upper_threshold]
+        params['UpperBreachScaleIncrement'] = options[:upper_breach_scale_increment]
+        params['BreachDuration'] = options[:breach_duration]
+        
+        return response_generator(:action => "CreateOrUpdateScalingTrigger", :params => params)
+      end
+      
+      # Delete autoscaling group
+      def delete_autoscaling_group( options = {} )
+        raise ArgumentError, "No :autoscaling_group_name provided" if options[:autoscaling_group_name].nil? || options[:autoscaling_group_name].empty?
+        params = { 'AutoScalingGroupName' => options[:autoscaling_group_name] }
+        return response_generator(:action => "DeleteAutoScalingGroup", :params => params)
+      end
+      
+      # Delete launch configuration
+      def delete_launch_configuration( options = {} )
+        raise ArgumentError, "No :launch_configuration_name provided" if options[:launch_configuration_name].nil? || options[:launch_configuration_name].empty?
+        params = { 'LaunchConfigurationName' => options[:launch_configuration_name] }
+        return response_generator(:action => "DeleteLaunchConfiguration", :params => params)
+      end
+      
+      # Delete launch trigger
+      def delete_trigger( options = {} )
+        raise ArgumentError, "No :trigger_name provided" if options[:trigger_name].nil? || options[:trigger_name].empty?
+        raise ArgumentError, "No :autoscaling_group_name provided" if options[:autoscaling_group_name].nil? || options[:autoscaling_group_name].empty?
+        params = { 'TriggerName' => options[:trigger_name], 'AutoScalingGroupName' => options[:autoscaling_group_name] }
+        return response_generator(:action => "DeleteTrigger", :params => params)
       end
 
-      # This API deregisters instances from the LoadBalancer. Trying to
-      # deregister an instance that is not registered with the LoadBalancer
-      # does nothing.
-      #
-      # In order to successfully call this API, you must provide the same
-      # account credentials as those that were used to create the
-      # LoadBalancer.
-      #
-      # Once the instance is deregistered, it will stop receiving traffic from
-      # the LoadBalancer.
-      #
-      # @option options [Array<String>] :instances An Array of instance names to remove from the load balancer.
-      # @option options [String] :load_balancer_name The name of the load balancer.
-      #
-      def deregister_instances_from_load_balancer( options = {} )
-        raise ArgumentError, "No :instances provided" if options[:instances].nil? || options[:instances].empty?
-        raise ArgumentError, "No :load_balancer_name provided" if options[:load_balancer_name].nil? || options[:load_balancer_name].empty?
+      # Describe autoscaling group
+      def describe_autoscaling_groups( options = {} )
+        options = { :autoscaling_group_names => [] }.merge(options)
+        params = pathlist("AutoScalingGroupNames.member", options[:autoscaling_group_names])
+        return response_generator(:action => "DescribeAutoScalingGroups", :params => params)
+      end
+      
+      # Describe launch configurations
+      def describe_launch_configurations( options = {} )
+        options = { :launch_configuration_names => [] }.merge(options)
+        params = pathlist("AutoScalingGroupNames.member", options[:launch_configuration_names])
+        params['MaxRecords'] = options[:max_records] || 100
+        return response_generator(:action => "DescribeLaunchConfigurations", :params => params)
+      end
+      
+      # Describe autoscaling activities
+      def describe_scaling_activities( options = {} )
+        raise ArgumentError, "No :autoscaling_group_name provided" if options[:autoscaling_group_name].nil? || options[:autoscaling_group_name].empty?
+        
         params = {}
-        params.merge!(pathlist('Instances.member', [options[:instances]].flatten))
-        params['LoadBalancerName'] = options[:load_balancer_name]
-        return response_generator(:action => "DeregisterInstancesFromLoadBalancer", :params => params)
+        params['AutoScalingGroupName'] = options[:autoscaling_group_name]
+        params['MaxRecords'] = options[:max_records] || 100
+        params['MaxRecords'] = options[:activity_ids] if options.has_key?(:activity_ids)
+        return response_generator(:action => "DescribeScalingActivities", :params => params)
+      end
+      
+      # Describe triggers
+      def describe_triggers( options = {} )
+        raise ArgumentError, "No :autoscaling_group_name provided" if options[:autoscaling_group_name].nil? || options[:autoscaling_group_name].empty?
+        params = {}
+        params['AutoScalingGroupName'] = options[:autoscaling_group_name]
+        
+        return response_generator(:action => "DescribeTriggers", :params => params)
+      end
+      
+      # Set desired capacity
+      def set_desired_capacity( options = {} )
+        raise ArgumentError, "No :autoscaling_group_name provided" if options[:autoscaling_group_name].nil? || options[:autoscaling_group_name].empty?
+        raise ArgumentError, "No :desired_capacity provided" if options[:desired_capacity].nil? || options[:desired_capacity].empty?
+        
+        params = {}
+        params['AutoScalingGroupName'] = options[:autoscaling_group_name]
+        params['DesiredCapacity'] = options[:desired_capacity]
+        
+        return response_generator(:action => "SetDesiredCapacity", :params => params)
       end
 
-      # This API enables you to define an application healthcheck for the
-      # instances.
-      #
-      # Note: Completion of this API does not guarantee that operation has completed. Rather, it means that the request has been registered and the changes will happen shortly.
-      #
-      # @option options [Hash] :health_check A Hash with the keys (:timeout, :interval, :unhealthy_threshold, :healthy_threshold)
-      # @option options [String] :load_balancer_name The name of the load balancer.
-      #
-      def configure_health_check( options = {} )
-        raise ArgumentError, "No :health_check provided" if options[:health_check].nil? || options[:health_check].empty?
-        raise ArgumentError, "No :health_check => :target provided" if options[:health_check][:target].nil? || options[:health_check][:target].empty?
-        raise ArgumentError, "No :health_check => :timeout provided" if options[:health_check][:timeout].nil? || options[:health_check][:timeout].empty?
-        raise ArgumentError, "No :health_check => :interval provided" if options[:health_check][:interval].nil? || options[:health_check][:interval].empty?
-        raise ArgumentError, "No :health_check => :unhealthy_threshold provided" if options[:health_check][:unhealthy_threshold].nil? || options[:health_check][:unhealthy_threshold].empty?
-        raise ArgumentError, "No :health_check => :healthy_threshold provided" if options[:health_check][:healthy_threshold].nil? || options[:health_check][:healthy_threshold].empty?
-        raise ArgumentError, "No :load_balancer_name provided" if options[:load_balancer_name].nil? || options[:load_balancer_name].empty?
+
+      # Terminate instance in an autoscaling group
+      def terminate_instance_in_autoscaling_group( options = {} )
+        raise ArgumentError, "No :instance_id provided" if options[:instance_id].nil? || options[:instance_id].empty?
+        
+        params = {}
+        params['InstanceId'] = options[:instance_id]
+        params['ShouldDecrementDesiredCapacity'] = options[:decrement_desired_capacity] || true
+        
+        return response_generator(:action => "TerminateInstanceInAutoScalingGroup", :params => params)
+      end
+      
+      def update_autoscaling_group( options = {})
+        raise ArgumentError, "No :autoscaling_group_name provided" if options[:autoscaling_group_name].nil? || options[:autoscaling_group_name].empty?
 
         params = {}
 
-        params['LoadBalancerName'] = options[:load_balancer_name]
-        params['HealthCheck.Target'] = options[:health_check][:target]
-        params['HealthCheck.Timeout'] = options[:health_check][:timeout]
-        params['HealthCheck.Interval'] = options[:health_check][:interval]
-        params['HealthCheck.UnhealthyThreshold'] = options[:health_check][:unhealthy_threshold]
-        params['HealthCheck.HealthyThreshold'] = options[:health_check][:healthy_threshold]
-
-        return response_generator(:action => "ConfigureHealthCheck", :params => params)
-      end
-
-      # Not yet implemented
-      #
-      # @todo Implement this method
-      #
-      def describe_instance_health( options = {} )
-        raise "Not yet implemented"
-      end
-
-      # Not yet implemented
-      #
-      # @todo Implement this method
-      #
-      def disable_availability_zones_for_load_balancer( options = {} )
-        raise "Not yet implemented"
-      end
-
-      # Not yet implemented
-      #
-      # @todo Implement this method
-      #
-      def enable_availability_zones_for_load_balancer( options = {} )
-        raise "Not yet implemented"
+        params.merge!(pathlist('AvailabilityZones.member', [options[:availability_zones]].flatten)) if options.has_key?(:availability_zones)
+        params['LaunchConfigurationName'] = options[:launch_configuration_name] if options.has_key?(:launch_configuration_name)
+        params['AutoScalingGroupName'] = options[:autoscaling_group_name]
+        params['MinSize'] = options[:min_size] if options.has_key?(:min_size)
+        params['MaxSize'] = options[:max_size] if options.has_key?(:max_size)
+        params['CoolDown'] = options[:cooldown]  if options.has_key?(:cooldown)
+        
+        return response_generator(:action => "UpdateAutoScalingGroup", :params => params)
+        
       end
 
     end
