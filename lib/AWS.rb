@@ -215,7 +215,6 @@ module AWS
 
           response = @http.request(req, query)
           
-          p response.body
           # Make a call to see if we need to throw an error based on the response given by EC2
           # All error classes are defined in EC2/exceptions.rb
           aws_error?(response)
