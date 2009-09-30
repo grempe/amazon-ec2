@@ -1,3 +1,6 @@
+=== 0.6.0 2009-09-30
+ * Added support for AWS AutoScaling for EC2.  Thanks to Ari Lerner (auser)!
+
 === 0.5.2 2009-08-20
  * Converted to YardDoc documentation format. See : http://yard.soen.ca/getting_started
 
