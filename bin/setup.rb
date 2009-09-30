@@ -19,6 +19,7 @@ if ENV['AMAZON_ACCESS_KEY_ID'] && ENV['AMAZON_SECRET_ACCESS_KEY']
   end
   @ec2 = AWS::EC2::Base.new(opts)
   @elb = AWS::ELB::Base.new(opts)
+  @as = AWS::Autoscaling::Base.new(opts)
 end
 
 puts "EC2 Server: #{opts[:server]}"
