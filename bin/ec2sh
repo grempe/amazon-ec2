@@ -56,7 +56,7 @@ if ( ENV['AMAZON_ACCESS_KEY_ID'] && ENV['AMAZON_SECRET_ACCESS_KEY'] )
   MESSAGE
 
   puts welcome_message
-  exec "#{irb_name} -r #{aws_lib} -r #{setup} --simple-prompt"
+  exec "#{irb_name} -rubygems -r #{aws_lib} -r #{setup} --simple-prompt"
 else
   puts "You must define AMAZON_ACCESS_KEY_ID and AMAZON_SECRET_ACCESS_KEY as shell environment variables before running #{$0}!"
 end

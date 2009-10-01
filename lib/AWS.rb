@@ -11,6 +11,7 @@
 %w[ base64 cgi openssl digest/sha1 net/https rexml/document time ostruct ].each { |f| require f }
 
 begin
+  require "rubygems"
   require 'xmlsimple' unless defined? XmlSimple
 rescue Exception => e
   require 'xml-simple' unless defined? XmlSimple

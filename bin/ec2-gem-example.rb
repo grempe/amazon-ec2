@@ -64,3 +64,74 @@ pp ec2.delete_security_group(:group_name => "ec2-example-rb-test-group")
 
 puts "----- listing my keypairs (verbose mode) -----"
 pp ec2.describe_keypairs()
+
+# ELB examples
+# Autoscaling examples
+if ENV['ELB_URL']
+  elb = AWS::ELB::Base.new( :access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY, :server => URI.parse(ENV['ELB_URL']).host )
+else
+  elb = AWS::ELB::Base.new( :access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY)
+end
+
+puts "----- creating an elastic load balancer -----"
+pp elb.create_load_balancer(  
+                            :availability_zones => ["us-east-1a"],
+                            :load_balancer_name => "elb-test-load-balancer",
+                            :listeners => [{:protocol => "tcp", :load_balancer_port => "80", :instance_port => "8080"}]
+                           )
+
+puts "----- listing elastic load balancers -----"
+pp elb.describe_load_balancers(:load_balancer_names => ["elb-test-load-balancer"])
+
+puts "----- deleting load balancer -----"
+pp elb.delete_load_balancer(:load_balancer_name => "elb-test-load-balancer")
+
+# Autoscaling examples
+if ENV['AS_URL']
+  as = AWS::Autoscaling::Base.new( :access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY, :server => URI.parse(ENV['AS_URL']).host )
+else
+  as = AWS::Autoscaling::Base.new( :access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY)
+end
+
+puts "---- creating a launch configuration group -----"
+pp as.create_launch_configuration( 
+                                :image_id => "ami-ed46a784", 
+                                :instance_type => "m1.small",
+                                :availability_zones => ["us-east-1a"],
+                                :launch_configuration_name => "ec2-example-test-launch-configuration"
+                              )
+                              
+puts "---- creating an autoscaling group -----"
+pp as.create_autoscaling_group( :autoscaling_group_name => "ec2-example-test-autoscaling-group", 
+                                :availability_zones => ["us-east-1a"],
+                                :min_size => 0,
+                                :max_size => 0,
+                                :launch_configuration_name => "ec2-example-test-launch-configuration"
+                              )
+                              
+puts "---- listing autoscaling groups -----"
+pp as.describe_autoscaling_groups(:autoscaling_group_names => [])
+
+puts "---- creating a new autoscaling trigger ----"
+pp as.create_or_updated_scaling_trigger(
+                                        :autoscaling_group_name => "ec2-example-test-autoscaling-group",
+                                        :measure_name => "CPUUtilization",
+                                        :statistic => "Average",
+                                        :period => 300,
+                                        :trigger_name => "test-auto-scaling-trigger-name",
+                                        :lower_threshold => 0.2,
+                                        :lower_breach_scale_increment => 0,
+                                        :upper_threshold => 1.5,
+                                        :upper_breach_scale_increment => 0,
+                                        :breach_duration => 1200,
+                                        :dimensions => ["AutoScalingGroupName", "ec2-example-test-autoscaling-group"]
+                                       )
+
+puts "---- deleting scaling trigger -----"
+pp as.delete_trigger(:trigger_name => "test-auto-scaling-trigger-name", :autoscaling_group_name => "ec2-example-test-autoscaling-group")
+
+puts "---- deleting autoscaling group -----"
+pp as.delete_autoscaling_group(:autoscaling_group_name => "ec2-example-test-autoscaling-group")
+
+puts "---- deleting launch configuration group -----"
+pp as.delete_launch_configuration(:launch_configuration_name => "ec2-example-test-launch-configuration")

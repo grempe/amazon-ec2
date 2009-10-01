@@ -96,8 +96,8 @@ module AWS
         raise ArgumentError, "No :upper_breach_scale_increment provided" if options[:upper_breach_scale_increment].nil?
         raise ArgumentError, "No :breach_duration provided" if options[:breach_duration].nil?
         
-        statistic_option_list = %w(Minimum Maximum Average Sum)
-        unless statistic_option_list.include?(options[:statistic])
+        statistic_option_list = %w(minimum maximum average sum)
+        unless statistic_option_list.include?(options[:statistic].downcase)
           raise ArgumentError, "The statistic option must be one of the following: #{statistic_option_list.join(", ")}"
         end
         
