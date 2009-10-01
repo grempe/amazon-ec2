@@ -2,5 +2,11 @@
 
 Publishing the gem using Jeweler:
 
-  rake version:bump:patch release rubyforge:release rubyforge:release:docs
+  rake version:bump:patch release
+
+  rake rubyforge:release rubyforge:release:docs
+
+Push the gem to gemcutter:
+
+  gem push pkg/amazon-ec2-X.Y.Z.gem
 
