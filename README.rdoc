@@ -32,15 +32,29 @@ The following gems should be installed automatically as part of your install of 
 
 === Install the amazon-ec2 gem
 
+  # Install the stable release gem from Gemcutter ( learn more here : http://gemcutter.org/pages/faq )
+
+  sudo gem install gemcutter (one time only)
+
+  # Set Gemcutter to be your canonical gems source
+  sudo gem tumble
+
+  # Install the gem
+  sudo gem install amazon-ec2
+
+  # OR skip the Gemcutter setup
+
+  sudo gem install amazon-ec2 -s http://gemcutter.org
+
+
+=== Install the amazon-ec2 gem (for more bleeding edge versions)
+
+For those who intend to do development on the gem, or want the bleeding edge.
+
   # ONE TIME ONLY
   # Execute this on each machine where you install gems to add GitHub as a gem source
   # Do this only once or you'll end up with multiple entries in 'gem sources'
   gem sources -a http://gems.github.com/
-
-  # Install the stable release gem from RubyForge
-  sudo gem install amazon-ec2
-
-  # OR
 
   # Install the gem from the GitHub bleeding edge as a normal runtime install
   sudo gem install grempe-amazon-ec2
@@ -52,8 +66,9 @@ The following gems should be installed automatically as part of your install of 
 
   # OR
 
-  # Install using Rip (hellorip.com) instead of RubyGems
+  # (Experimental) Install using Rip (hellorip.com) instead of RubyGems
   rip install git://github.com/grempe/amazon-ec2.git
+
 
 == Using amazon-ec2
 

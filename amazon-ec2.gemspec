@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{amazon-ec2}
-  s.version = "0.5.5"
+  s.version = "0.6.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Glenn Rempe"]
-  s.date = %q{2009-08-20}
-  s.description = %q{A Ruby library for accessing the Amazon Web Services Elastic Compute Cloud (EC2) and Elastic Load Balancer (ELB) API's.}
+  s.date = %q{2009-09-30}
+  s.description = %q{A Ruby library for accessing the Amazon Web Services Elastic Compute Cloud (EC2), Elastic Load Balancer (ELB), Cloudwatch, and Autoscaling API's.}
   s.email = %q{glenn@rempe.us}
   s.executables = ["ec2-gem-example.rb", "ec2-gem-profile.rb", "ec2sh", "setup.rb"]
   s.extra_rdoc_files = [
@@ -35,6 +35,10 @@ Gem::Specification.new do |s|
      "bin/setup.rb",
      "deps.rip",
      "lib/AWS.rb",
+     "lib/AWS/Autoscaling.rb",
+     "lib/AWS/Autoscaling/autoscaling.rb",
+     "lib/AWS/Cloudwatch.rb",
+     "lib/AWS/Cloudwatch/monitoring.rb",
      "lib/AWS/EC2.rb",
      "lib/AWS/EC2/availability_zones.rb",
      "lib/AWS/EC2/console.rb",
@@ -55,6 +59,7 @@ Gem::Specification.new do |s|
      "perftools/ec2prof-results.dot",
      "perftools/ec2prof-results.txt",
      "perftools/ec2prof.symbols",
+     "test/test_Autoscaling_groups.rb",
      "test/test_EC2.rb",
      "test/test_EC2_availability_zones.rb",
      "test/test_EC2_console.rb",
@@ -83,7 +88,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.5}
   s.summary = %q{Amazon EC2 Ruby Gem}
   s.test_files = [
-    "test/test_EC2.rb",
+    "test/test_Autoscaling_groups.rb",
+     "test/test_EC2.rb",
      "test/test_EC2_availability_zones.rb",
      "test/test_EC2_console.rb",
      "test/test_EC2_elastic_ips.rb",
