@@ -10,7 +10,7 @@ For the most complete and up-to date README information please visit the project
 
 http://github.com/grempe/amazon-ec2/tree/master
 
-or the EC2 website at http://aws.amazon.com/ec2
+or the official EC2 website at http://aws.amazon.com/ec2
 
 
 == Installation
@@ -30,41 +30,39 @@ The following gems should be installed automatically as part of your install of 
   Rcov (optional for testing)
   Test-Spec (optional for testing)
 
-=== Install the amazon-ec2 gem
 
-  # Install the stable release gem from Gemcutter ( learn more here : http://gemcutter.org/pages/faq )
+=== Install the amazon-ec2 gem (Canonical Release)
 
-  sudo gem install gemcutter (one time only)
+This is the standard install for stable releases from Gemcutter.
 
-  # Set Gemcutter to be your canonical gems source
+  # Install the stable release gem from Gemcutter (one time only) ( learn more here : http://gemcutter.org/pages/faq )
+  sudo gem install gemcutter
+
+  # Set Gemcutter to be your canonical gems source (one time only)
   sudo gem tumble
 
   # Install the gem
   sudo gem install amazon-ec2
 
-  # OR skip the Gemcutter setup
-
+  # OR if you want to skip the Gemcutter setup
   sudo gem install amazon-ec2 -s http://gemcutter.org
 
 
-=== Install the amazon-ec2 gem (for more bleeding edge versions)
+=== Install from local Git clone (for amazon-ec2 developers)
 
-For those who intend to do development on the gem, or want the bleeding edge.
+GitHub has unfortunately given up on the feature they had where they would build gems
+when pushed to git.  Too bad.  So to install from git, you'll need to clone and build.
 
-  # ONE TIME ONLY
-  # Execute this on each machine where you install gems to add GitHub as a gem source
-  # Do this only once or you'll end up with multiple entries in 'gem sources'
-  gem sources -a http://gems.github.com/
+  git clone git://github.com/grempe/amazon-ec2.git
+  cd amazon-ec2
+  rake gemspec
+  rake build
+  rake install
 
-  # Install the gem from the GitHub bleeding edge as a normal runtime install
-  sudo gem install grempe-amazon-ec2
 
-  # OR
+=== EXPERIMENTAL : Install the amazon-ec2 gem using Rip (for more bleeding edge versions)
 
-  # Install the gem from the GitHub bleeding edge with all developer dependencies
-  sudo gem install grempe-amazon-ec2 --development
-
-  # OR
+For those who intend to do development on the gem, or want the bleeding edge.  Install Rip as described at hellorip.com.
 
   # (Experimental) Install using Rip (hellorip.com) instead of RubyGems
   rip install git://github.com/grempe/amazon-ec2.git
