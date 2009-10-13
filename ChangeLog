@@ -1,3 +1,7 @@
+=== 0.6.1 2009-10-13
+ * Additional commits for AutoScaling.  Thanks to Ari (auser)!
+ * Updated README.rdoc installation instructions.  Reflects removal of deprecated GitHub gem building.
+
 === 0.6.0 2009-09-30
  * Added support for AWS AutoScaling for EC2.  Thanks to Ari Lerner (auser)!
 
