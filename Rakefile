@@ -95,7 +95,7 @@ end
 
 desc "Generate a perftools.rb profile"
 task :profile do
-  system("CPUPROFILE=perftools/ec2prof RUBYOPT='-r/usr/local/lib/ruby/gems/1.8/gems/perftools.rb-0.1.6/lib/perftools.bundle' ruby -r'rubygems' bin/ec2-gem-profile.rb")
+  system("CPUPROFILE=perftools/ec2prof RUBYOPT='-r/Library/Ruby/Gems/1.8/gems/perftools.rb-0.3.2/lib/perftools.bundle' ruby -r'rubygems' bin/ec2-gem-profile.rb")
   system("pprof.rb --text --ignore=Gem perftools/ec2prof > perftools/ec2prof-results.txt")
   system("pprof.rb --dot --ignore=Gem perftools/ec2prof > perftools/ec2prof-results.dot")
 end
