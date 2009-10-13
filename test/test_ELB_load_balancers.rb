@@ -163,7 +163,7 @@ context "elb load balancers " do
   specify "should be able to be register instances to load balancers with register_instances_with_load_balancer" do
     @elb.stubs(:make_request).with('RegisterInstancesWithLoadBalancer', {
       'LoadBalancerName' => 'Test Name',
-      'Instances.member.1' => 'i-6055fa09'
+      'Instances.member.1.InstanceId' => 'i-6055fa09'
     }).returns stub(:body => @register_instances_with_load_balancer_response_body, :is_a? => true)
 
     response = @elb.register_instances_with_load_balancer(@valid_register_instances_with_load_balancer_params)
@@ -175,7 +175,7 @@ context "elb load balancers " do
   specify "method register_instances_with_load_balancer should reject bad arguments" do
     @elb.stubs(:make_request).with('RegisterInstancesWithLoadBalancer', {
       'LoadBalancerName' => 'Test Name',
-      'Instances.member.1' => 'i-6055fa09'
+      'Instances.member.1.InstanceId' => 'i-6055fa09'
     }).returns stub(:body => @register_instances_with_load_balancer_response_body, :is_a? => true)
 
     lambda { @elb.register_instances_with_load_balancer(@valid_register_instances_with_load_balancer_params) }.should.not.raise(AWS::ArgumentError)
