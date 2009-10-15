@@ -6,6 +6,12 @@ Amazon Web Services offers a compute power on demand capability known as the Ela
 
 This 'amazon-ec2' Ruby Gem is an interface library that can be used to interact with the Amazon EC2 system and control server resources on demand from your Ruby scripts, or from applications written in your Ruby framework of choice (Ruby on Rails, Merb, etc.).
 
+More recently, support has been added for the following EC2 related AWS API's as well:
+
+* Autoscaling
+* Cloudwatch
+* Elastic Load Balancing
+
 For the most complete and up-to date README information please visit the project homepage at:
 
 http://github.com/grempe/amazon-ec2/tree/master
