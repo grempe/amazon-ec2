@@ -48,7 +48,7 @@ context "elb load balancers " do
     RESPONSE
   end
   
-  specify "should be able to be create a db_isntance" do
+  specify "should be able to be create a db_instance" do
     @rds.stubs(:make_request).with('CreateDBInstance', {'Engine' => 'MySQL5.1', 
         'MasterUsername' => 'master', 
         'DBInstanceClass' => 'db.m1.large', 
@@ -82,5 +82,35 @@ context "elb load balancers " do
 
     assert_equal response.CreateDBSecurityGroupResult.DBSecurityGroup.DBSecurityGroupName, "mydbsecuritygroup4"
   end
+  
+  specify "should be able to create_db_parameter_group" do
+    body =<<-EOE
+    <CreateDBParameterGroupResponse xmlns="http://rds.amazonaws.com/admin/2009-10-16/">
+      <CreateDBParameterGroupResult>
+        <DBParameterGroup>
+          <Engine>mysql5.1</Engine>
+          <Description>My new DBParameterGroup</Description>
+          <DBParameterGroupName>mydbparametergroup3</DBParameterGroupName>
+        </DBParameterGroup>
+      </CreateDBParameterGroupResult>
+      <ResponseMetadata>
+        <RequestId>0b447b66-bf36-11de-a88b-7b5b3d23b3a7</RequestId>
+      </ResponseMetadata>
+    </CreateDBParameterGroupResponse>
+    EOE
+    @rds.stubs(:make_request).with('CreateDBParameterGroup', {'Engine' => 'MySQL5.1', 
+                                                  'DBParameterGroupName' => 'mydbsecuritygroup', 
+                                                  'Description' => 'My test DBSecurity group'}).
+      returns stub(:body => body, :is_a? => true)
+    response = @rds.create_db_parameter_group(
+        :db_parameter_group_name => "mydbsecuritygroup",
+        :description => "My test DBSecurity group",
+        :engine => "MySQL5.1"
+      )
+    response.should.be.an.instance_of Hash
+
+    assert_equal response.CreateDBParameterGroupResult.DBParameterGroup.DBParameterGroupName, "mydbparametergroup3"
+  end
+  
   
 end

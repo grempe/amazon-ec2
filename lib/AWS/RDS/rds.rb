@@ -66,6 +66,26 @@ module AWS
         
         return response_generator(:action => "DeleteDBInstance", :params => params)
       end
+
+      # This API method creates a db parameter group
+      #
+      # @option options [String] :db_parameter_group_name is the name of the parameter group (nil)
+      # @option options [String] :engine is the engine the db parameter group can be used with (nil)
+      # @option options [String] :description is the description of the paramter group
+      #
+      def create_db_parameter_group( options = {} )
+        raise ArgumentError, "No :db_parameter_group_name provided" if options.does_not_have?(:db_parameter_group_name)
+        raise ArgumentError, "No :engine provided" if options.does_not_have?(:engine)
+        raise ArgumentError, "No :description provided" if options.does_not_have?(:description)
+        
+        params = {}
+        params['DBParameterGroupName'] = options[:db_parameter_group_name]
+        params['Engine'] = options[:engine]
+        params['Description'] = options[:description]
+                
+        return response_generator(:action => "CreateDBParameterGroup", :params => params)
+      end
+
       
       # This API method creates a db security group
       #
