@@ -144,5 +144,86 @@ context "elb load balancers " do
     assert_equal response.CreateDBSnapshotResult.DBSnapshot.DBSnapshotIdentifier, "mynewdbsnapshot3"
   end
   
+  specify "should be able to authorize_db_security_group" do
+    body =<<-EOE
+    <AuthorizeDBSecurityGroupIngressResponse xmlns="http://rds.amazonaws.com/admin/2009-10-16/">
+      <AuthorizeDBSecurityGroupIngressResult>
+        <DBSecurityGroup>
+          <EC2SecurityGroups/>
+          <DBSecurityGroupDescription>My new DBSecurityGroup</DBSecurityGroupDescription>
+          <IPRanges>
+            <IPRange>
+              <CIDRIP>192.168.1.1/24</CIDRIP>
+              <Status>authorizing</Status>
+            </IPRange>
+          </IPRanges>
+          <OwnerId>621567473609</OwnerId>
+          <DBSecurityGroupName>mydbsecuritygroup</DBSecurityGroupName>
+        </DBSecurityGroup>
+      </AuthorizeDBSecurityGroupIngressResult>
+      <ResponseMetadata>
+        <RequestId>d9799197-bf2d-11de-b88d-993294bf1c81</RequestId>
+      </ResponseMetadata>
+    </AuthorizeDBSecurityGroupIngressResponse>
+    EOE
+    @rds.stubs(:make_request).with('AuthorizeDBSecurityGroupIngress', {'CIDRIP' => '192.168.1.1/24', 'DBSecurityGroupName' => 'mydbsecuritygroup'}).
+      returns stub(:body => body, :is_a? => true)
+    response = @rds.authorize_db_security_group(
+        :db_security_group_name => "mydbsecuritygroup",
+        :cidrip => "192.168.1.1/24"
+      )
+    response.should.be.an.instance_of Hash
+
+    assert_equal response.AuthorizeDBSecurityGroupIngressResult.DBSecurityGroup.IPRanges.IPRange.CIDRIP, "192.168.1.1/24"
+  end
+  
+  specify "should be able to delete_db_parameter_group" do
+    body =<<-EOE
+    <DeleteDBParameterGroupResponse xmlns="http://rds.amazonaws.com/admin/2009-10-16/">
+      <ResponseMetadata>
+        <RequestId>4dc38be9-bf3b-11de-a88b-7b5b3d23b3a7</RequestId>
+      </ResponseMetadata>
+    </DeleteDBParameterGroupResponse>
+    EOE
+    @rds.stubs(:make_request).with('DeleteDBParameterGroup', {'DBParameterGroupName' => 'mydbsecuritygroup'}).
+      returns stub(:body => body, :is_a? => true)
+    response = @rds.delete_db_parameter_group(
+        :db_parameter_group_name => "mydbsecuritygroup"
+      )
+    response.should.be.an.instance_of Hash
+  end
+  
+  specify "should be able to delete_db_security_group" do
+    body =<<-EOE
+    <DeleteDBParameterGroupResponse xmlns="http://rds.amazonaws.com/admin/2009-10-16/">
+      <ResponseMetadata>
+        <RequestId>4dc38be9-bf3b-11de-a88b-7b5b3d23b3a7</RequestId>
+      </ResponseMetadata>
+    </DeleteDBParameterGroupResponse>
+    EOE
+    @rds.stubs(:make_request).with('DeleteDBSecurityGroup', {'DBSecurityGroupName' => 'mydbsecuritygroup'}).
+      returns stub(:body => body, :is_a? => true)
+    response = @rds.delete_db_security_group(
+        :db_security_group_name => "mydbsecuritygroup"
+      )
+    response.should.be.an.instance_of Hash
+  end
+
+  specify "should be able to delete_db_snapshot" do
+    body =<<-EOE
+    <DeleteDBParameterGroupResponse xmlns="http://rds.amazonaws.com/admin/2009-10-16/">
+      <ResponseMetadata>
+        <RequestId>4dc38be9-bf3b-11de-a88b-7b5b3d23b3a7</RequestId>
+      </ResponseMetadata>
+    </DeleteDBParameterGroupResponse>
+    EOE
+    @rds.stubs(:make_request).with('DeleteDBSnapshot', {'DBSnapshotIdentifier' => 'snapshotname'}).
+      returns stub(:body => body, :is_a? => true)
+    response = @rds.delete_db_snapshot(
+        :db_snapshot_identifier => "snapshotname"
+      )
+    response.should.be.an.instance_of Hash
+  end
+
   
 end

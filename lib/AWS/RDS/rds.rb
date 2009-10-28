@@ -118,6 +118,70 @@ module AWS
         return response_generator(:action => "CreateDBSnapshot", :params => params)
       end
       
+      # This API method authorizes network ingress for an amazon ec2 group
+      #
+      # @option options [String] :db_security_group_name is the name of the db security group
+      # @option options [String] :cidrip is the network ip to authorize
+      # @option options [String] :ec2_security_group_name is the name of the ec2 security group to authorize
+      # @option options [String] :ec2_security_group_owner_id is the owner id of the security group
+      #
+      def authorize_db_security_group( options = {} )
+        raise ArgumentError, "No :db_security_group_name provided" if options.does_not_have?(:db_security_group_name)
+        
+        params = {}
+        params['DBSecurityGroupName'] = options[:db_security_group_name]
+        
+        if options.has?(:cidrip)
+          params['CIDRIP'] = options[:cidrip]
+        elsif options.has?(:ec2_security_group_name) && options.has?(:ec2_security_group_owner_id)
+          params['EC2SecurityGroupName'] = options[:ec2_security_group_name]
+          params['EC2SecurityGroupOwnerId'] = options[:ec2_security_group_owner_id]
+        else
+          raise ArgumentError, "No :cidrip or :ec2_security_group_name and :ec2_security_group_owner_id provided"
+        end
+                
+        return response_generator(:action => "AuthorizeDBSecurityGroupIngress", :params => params)
+      end
+      
+      # This API method deletes a db paramter group
+      #
+      # @option options [String] :db_parameter_group_name is the name of the db paramter group to be deleted (nil)
+      #
+      def delete_db_parameter_group( options = {} )
+        raise ArgumentError, "No :db_parameter_group_name provided" if options.does_not_have?(:db_parameter_group_name)
+        
+        params = {}
+        params['DBParameterGroupName'] = options[:db_parameter_group_name]
+                
+        return response_generator(:action => "DeleteDBParameterGroup", :params => params)
+      end
+
+      # This API method deletes a db security group
+      #
+      # @option options [String] :db_parameter_group_name is the name of the db security group to be deleted (nil)
+      #
+      def delete_db_security_group( options = {} )
+        raise ArgumentError, "No :db_security_group_name provided" if options.does_not_have?(:db_security_group_name)
+        
+        params = {}
+        params['DBSecurityGroupName'] = options[:db_security_group_name]
+                
+        return response_generator(:action => "DeleteDBSecurityGroup", :params => params)
+      end
+
+      # This API method deletes a db snapshot
+      #
+      # @option options [String] :db_snapshot_identifier is the name of the db snapshot to be deleted (nil)
+      #
+      def delete_db_snapshot( options = {} )
+        raise ArgumentError, "No :db_snapshot_identifier provided" if options.does_not_have?(:db_snapshot_identifier)
+        
+        params = {}
+        params['DBSnapshotIdentifier'] = options[:db_snapshot_identifier]
+                
+        return response_generator(:action => "DeleteDBSnapshot", :params => params)
+      end
+      
       
     end
   end
