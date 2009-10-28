@@ -33,9 +33,24 @@ context "elb load balancers " do
   end
   
   specify "should be able to be create a db_isntance" do
-    @rds.stubs(:make_request).with('DeleteLoadBalancer', {'LoadBalancerName' => 'Test Name'}).
-      returns stub(:body => @delete_load_balancer_response_body, :is_a? => true)
+    @rds.stubs(:make_request).with('CreateDBInstance', {'Engine' => 'MySQL5.1', 
+        'MasterUsername' => 'master', 
+        'DBInstanceClass' => 'db.m1.large', 
+        'DBInstanceIdentifier' => 'testdb', 
+        'AllocatedStorage' => '10', 
+        'MasterUserPassword' => 'SecretPassword01'}).
+      returns stub(:body => @create_db_instance_body, :is_a? => true)
+    response = @rds.create_db_instance(
+      :db_instance_class => "db.m1.large", 
+      :db_instance_identifier=>"testdb",
+      :allocated_storage => 10,
+      :engine => "MySQL5.1",
+      :master_user_password => "SecretPassword01",
+      :master_username => "master"
+      )
+    response.should.be.an.instance_of Hash
 
+    assert_equal response.CreateDBInstanceResult.DBInstance.AllocatedStorage, "10"
   end
   
 end
