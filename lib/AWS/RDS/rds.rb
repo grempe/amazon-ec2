@@ -494,7 +494,7 @@ module AWS
       # This API method authorizes network ingress for an amazon ec2 group
       #
       # @option options [String] :db_security_group_name is the name of the db security group
-      # @option options [String] :cidrip is the network ip to authorize
+      # @option options [String] :cidrip is the network ip to revoke
       # @option options [String] :ec2_security_group_name is the name of the ec2 security group to authorize
       # @option options [String] :ec2_security_group_owner_id is the owner id of the security group
       #
