@@ -431,6 +431,91 @@ module AWS
         return response_generator(:action => "ResetDBParameterGroup", :params => params)
       end
 
+      # This API method restores a db instance to a snapshot of the instance
+      #
+      # @option options [String] :db_snapshot_identifier is the db identifier of the snapshot to restore from
+      # @option options [String] :db_instance_identifier is the identifier of the db instance
+      # @option options [String] :db_instance_class is the class of db compute and memory instance for the db instance
+      # @option options [String] :port is the port which the db can accept connections on
+      # @option options [String] :availability_zone is the EC2 zone which the db instance will be created
+      #
+      def restore_db_instance_from_snapshot( options = {} )        
+        raise ArgumentError, "No :db_snapshot_identifier provided" if options.does_not_have?(:db_snapshot_identifier)
+        raise ArgumentError, "No :db_instance_identifier provided" if options.does_not_have?(:db_instance_identifier)
+        raise ArgumentError, "No :db_instance_class provided" if options.does_not_have?(:db_instance_class)
+        
+        params = {}
+        params['DBSnapshotIdentifier'] = options[:db_snapshot_identifier]
+        params['DBInstanceIdentifier'] = options[:db_instance_identifier]
+        params['DBInstanceClass'] = options[:db_instance_class]
+        
+        params['Port'] = options[:port].to_s if options.has?(:port)
+        params['AvailabilityZone'] = options[:availability_zone] if options.has?(:availability_zone)
+                
+        return response_generator(:action => "RestoreDBInstanceFromDBSnapshot", :params => params)
+      end
+
+      # This API method restores a DB Instance to a specified time, creating a new DB Instance.
+      # 
+      # Some characteristics of the new DB Instance can be modified using optional parameters. 
+      # If these options are omitted, the new DB Instance defaults to the characteristics of the DB Instance from which the 
+      # DB Snapshot was created.
+      #
+      # @option options [String] :source_db_instance_identifier the identifier of the source DB Instance from which to restore.
+      # @option options [String] :target_db_instance_identifier is the name of the new database instance to be created.
+      # @option options [String] :use_latest_restorable_time specifies that the db be restored to the latest restored time
+      # @option options [String] :restore_time specifies the date and time to restore from
+      # @option options [String] :db_instance_class specifies the class of the compute and memory of the EC2 instance
+      # @option options [String] :port is the port which the db can accept connections on
+      # @option options [String] :availability_zone is the EC2 zone which the db instance will be created
+      #
+      def restore_db_instance_to_point_in_time( options = {} )        
+        raise ArgumentError, "No :db_snapshot_identifier provided" if options.does_not_have?(:db_snapshot_identifier)
+        raise ArgumentError, "No :db_instance_identifier provided" if options.does_not_have?(:db_instance_identifier)
+        raise ArgumentError, "No :db_instance_class provided" if options.does_not_have?(:db_instance_class)
+        
+        params = {}
+        params['SourceDBInstanceIdentifier'] = options[:source_db_instance_identifier]
+        params['TargetDBInstanceIdentifier'] = options[:target_db_instance_identifier]
+        
+        if options[:use_latest_restorable_time]
+          params['UseLatestRestorableTime'] = options[:use_latest_restorable_time]
+        elsif options[:restore_time]
+          params['RestoreTime'] = options[:restore_time]
+        end
+        
+        params['DBInstanceClass'] = options[:db_instance_class] if options.has?(:db_instance_class)
+        params['Port'] = options[:port].to_s if options.has?(:port)
+        params['AvailabilityZone'] = options[:availability_zone] if options.has?(:availability_zone)
+        
+        return response_generator(:action => "RestoreDBInstanceToPointInTime", :params => params)
+      end
+
+      # This API method authorizes network ingress for an amazon ec2 group
+      #
+      # @option options [String] :db_security_group_name is the name of the db security group
+      # @option options [String] :cidrip is the network ip to authorize
+      # @option options [String] :ec2_security_group_name is the name of the ec2 security group to authorize
+      # @option options [String] :ec2_security_group_owner_id is the owner id of the security group
+      #
+      def revoke_db_security_group( options = {} )
+        raise ArgumentError, "No :db_security_group_name provided" if options.does_not_have?(:db_security_group_name)
+        
+        params = {}
+        params['DBSecurityGroupName'] = options[:db_security_group_name]
+        
+        if options.has?(:cidrip)
+          params['CIDRIP'] = options[:cidrip]
+        elsif options.has?(:ec2_security_group_name) && options.has?(:ec2_security_group_owner_id)
+          params['EC2SecurityGroupName'] = options[:ec2_security_group_name]
+          params['EC2SecurityGroupOwnerId'] = options[:ec2_security_group_owner_id]
+        else
+          raise ArgumentError, "No :cidrip or :ec2_security_group_name and :ec2_security_group_owner_id provided"
+        end
+                
+        return response_generator(:action => "RevokeDBSecurityGroupIngress", :params => params)
+      end
+      
       
     end
   end
