@@ -28,6 +28,13 @@ class Hash
       self[meth.to_s] || self[meth.to_sym]
     end
   end
+  
+  def has?(key)
+    self[key] && !self[key].to_s.empty?
+  end
+  def does_not_have?(key)
+    self[key].nil? || self[key].to_s.empty?
+  end
 end
 
 
