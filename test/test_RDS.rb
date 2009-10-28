@@ -111,6 +111,38 @@ context "elb load balancers " do
 
     assert_equal response.CreateDBParameterGroupResult.DBParameterGroup.DBParameterGroupName, "mydbparametergroup3"
   end
+
+  specify "should be able to create_db_snapshot" do
+    body =<<-EOE
+    <CreateDBSnapshotResponse xmlns="http://rds.amazonaws.com/admin/2009-10-16/">
+      <CreateDBSnapshotResult>
+        <DBSnapshot>
+          <Port>3306</Port>
+          <Status>creating</Status>
+          <Engine>mysql5.1</Engine>
+          <AvailabilityZone>us-east-1d</AvailabilityZone>
+          <InstanceCreateTime>2009-10-21T04:05:43.609Z</InstanceCreateTime>
+          <AllocatedStorage>50</AllocatedStorage>
+          <DBInstanceIdentifier>mynewdbinstance</DBInstanceIdentifier>
+          <MasterUsername>sa</MasterUsername>
+          <DBSnapshotIdentifier>mynewdbsnapshot3</DBSnapshotIdentifier>
+        </DBSnapshot>
+      </CreateDBSnapshotResult>
+      <ResponseMetadata>
+        <RequestId>48e870fd-bf38-11de-a88b-7b5b3d23b3a7</RequestId>
+      </ResponseMetadata>
+    </CreateDBSnapshotResponse>
+    EOE
+    @rds.stubs(:make_request).with('CreateDBSnapshot', {'DBSnapshotIdentifier' => 'mynewdbsnapshot3', 'DBInstanceIdentifier' => 'mynewdbinstance'}).
+      returns stub(:body => body, :is_a? => true)
+    response = @rds.create_db_snapshot(
+        :db_snapshot_identifier => "mynewdbsnapshot3",
+        :db_instance_identifier => "mynewdbinstance"
+      )
+    response.should.be.an.instance_of Hash
+
+    assert_equal response.CreateDBSnapshotResult.DBSnapshot.DBSnapshotIdentifier, "mynewdbsnapshot3"
+  end
   
   
 end

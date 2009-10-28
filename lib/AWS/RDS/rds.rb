@@ -85,7 +85,6 @@ module AWS
                 
         return response_generator(:action => "CreateDBParameterGroup", :params => params)
       end
-
       
       # This API method creates a db security group
       #
@@ -101,6 +100,22 @@ module AWS
         params['DBSecurityGroupDescription'] = options[:db_security_group_description]
                 
         return response_generator(:action => "CreateDBSecurityGroup", :params => params)
+      end
+      
+      # This API method creates a restoreable db snapshot
+      #
+      # @option options [String] :db_snapshot_identifier is the identifier of the db snapshot
+      # @option options [String] :db_instance_identifier is the identifier of the db instance
+      #
+      def create_db_snapshot( options = {} )
+        raise ArgumentError, "No :db_snapshot_identifier provided" if options.does_not_have?(:db_snapshot_identifier)
+        raise ArgumentError, "No :db_instance_identifier provided" if options.does_not_have?(:db_instance_identifier)
+        
+        params = {}
+        params['DBSnapshotIdentifier'] = options[:db_snapshot_identifier]
+        params['DBInstanceIdentifier'] = options[:db_instance_identifier]
+                
+        return response_generator(:action => "CreateDBSnapshot", :params => params)
       end
       
       
