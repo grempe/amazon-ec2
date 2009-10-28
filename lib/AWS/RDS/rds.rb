@@ -67,6 +67,23 @@ module AWS
         return response_generator(:action => "DeleteDBInstance", :params => params)
       end
       
+      # This API method creates a db security group
+      #
+      # @option options [String] :db_security_group_name is the name of the db security group (nil)
+      # @option options [String] :db_security_group_description is the description of the db security group
+      #
+      def create_db_security_group( options = {} )
+        raise ArgumentError, "No :db_security_group_name provided" if options.does_not_have?(:db_security_group_name)
+        raise ArgumentError, "No :db_security_group_description provided" if options.does_not_have?(:db_security_group_description)
+        
+        params = {}
+        params['DBSecurityGroupName'] = options[:db_security_group_name]
+        params['DBSecurityGroupDescription'] = options[:db_security_group_description]
+                
+        return response_generator(:action => "CreateDBSecurityGroup", :params => params)
+      end
+      
+      
     end
   end
 end
