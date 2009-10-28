@@ -225,5 +225,130 @@ context "elb load balancers " do
     response.should.be.an.instance_of Hash
   end
 
+  specify "should be able to describe_db_instances" do
+    body =<<-EOE
+    <DescribeDBInstancesResponse xmlns="http://rds.amazonaws.com/admin/2009-10-16/">
+      <DescribeDBInstancesResult>
+        <DBInstances>
+          <DBInstance>
+            <LatestRestorableTime>2009-10-22T18:59:59Z</LatestRestorableTime>
+            <Engine>mysql5.1</Engine>
+            <BackupRetentionPeriod>3</BackupRetentionPeriod>
+            <DBInstanceStatus>available</DBInstanceStatus>
+            <DBParameterGroups>
+              <DBParameterGroup>
+                <ParameterApplyStatus>pending-reboot</ParameterApplyStatus>
+                <DBParameterGroupName>default.mysql5.1</DBParameterGroupName>
+              </DBParameterGroup>
+            </DBParameterGroups>
+            <Endpoint>
+              <Port>8443</Port>
+              <Address>dbinstancename.clouwupjnvmq.us-east-1-devo.rds.amazonaws.com</Address>
+            </Endpoint>
+            <DBInstanceIdentifier>dbinstancename</DBInstanceIdentifier>
+            <PreferredBackupWindow>03:00-05:00</PreferredBackupWindow>
+            <DBSecurityGroups>
+              <DBSecurityGroup>
+                <Status>active</Status>
+                <DBSecurityGroupName>default</DBSecurityGroupName>
+              </DBSecurityGroup>
+            </DBSecurityGroups>
+            <DBName>testdb</DBName>
+            <PreferredMaintenanceWindow>sun:05:00-sun:09:00</PreferredMaintenanceWindow>
+            <AvailabilityZone>us-east-1a</AvailabilityZone>
+            <InstanceCreateTime>2009-09-11T00:50:45.523Z</InstanceCreateTime>
+            <AllocatedStorage>20</AllocatedStorage>
+            <DBInstanceClass>db.m1.xlarge</DBInstanceClass>
+            <MasterUsername>sa</MasterUsername>
+          </DBInstance>
+        </DBInstances>
+      </DescribeDBInstancesResult>
+      <ResponseMetadata>
+        <RequestId>4f1fae46-bf3d-11de-a88b-7b5b3d23b3a7</RequestId>
+      </ResponseMetadata>
+    </DescribeDBInstancesResponse>
+    EOE
+    @rds.stubs(:make_request).with('DescribeDBInstances', {'MaxRecords' => '100'}).
+      returns stub(:body => body, :is_a? => true)
+    response = @rds.describe_db_instances(
+        :max_records => "100"
+      )
+    response.should.be.an.instance_of Hash
+  end
+
+  specify "should be able to describe_db_instances" do
+    body =<<-EOE
+    <DescribeEngineDefaultParametersResponse xmlns="http://rds.amazonaws.com/admin/2009-10-16/">
+      <DescribeEngineDefaultParametersResult>
+        <EngineDefaults>
+          <Engine>mysql5.1</Engine>
+          <Marker>bWF4X3VzZXJfY29ubmVjdGlvbnM=</Marker>
+          <Parameters>
+            <Parameter>
+              <DataType>boolean</DataType>
+              <Source>engine-default</Source>
+              <IsModifiable>true</IsModifiable>
+              <Description>Controls whether user-defined functions that have only an xxx symbol for the main function can be loaded</Description>
+              <ApplyType>static</ApplyType>
+              <AllowedValues>ON,OFF</AllowedValues>
+              <ParameterName>allow-suspicious-udfs</ParameterName>
+            </Parameter>
+            <Parameter>
+              <DataType>integer</DataType>
+              <Source>engine-default</Source>
+              <IsModifiable>true</IsModifiable>
+              <Description>Intended for use with master-to-master replication, and can be used to control the operation of AUTO_INCREMENT columns</Description>
+              <ApplyType>dynamic</ApplyType>
+              <AllowedValues>1-65535</AllowedValues>
+              <ParameterName>auto_increment_increment</ParameterName>
+            </Parameter>
+          </Parameters>
+        </EngineDefaults>
+      </DescribeEngineDefaultParametersResult>
+      <ResponseMetadata>
+        <RequestId>811f4032-bf3e-11de-b88d-993294bf1c81</RequestId>
+      </ResponseMetadata>
+    </DescribeEngineDefaultParametersResponse>
+    EOE
+    @rds.stubs(:make_request).with('DescribeEngineDefaultParameters', {'Engine' => 'MySQL5.1'}).
+      returns stub(:body => body, :is_a? => true)
+    response = @rds.describe_engine_default_parameters(
+        :engine => "MySQL5.1"
+      )
+    response.should.be.an.instance_of Hash
+  end
+
+  specify "should be able to describe_db_instances" do
+    body =<<-EOE
+    <ModifyDBParameterGroupResponse xmlns="http://rds.amazonaws.com/admin/2009-10-16/">
+      <ModifyDBParameterGroupResult>
+        <DBParameterGroupName>mydbparametergroup</DBParameterGroupName>
+      </ModifyDBParameterGroupResult>
+      <ResponseMetadata>
+        <RequestId>5ba91f97-bf51-11de-bf60-ef2e377db6f3</RequestId>
+      </ResponseMetadata>
+    </ModifyDBParameterGroupResponse>
+    EOE
+    
+    @rds.stubs(:make_request).with('ModifyDBParameterGroup', {
+        'DBParameterGroupName' => 'mytestdb', 
+        'Parameters.member.1.ParameterName' => 'max_user_connections', 
+        'Parameters.member.1.ParameterValue' => '24', 
+        'Parameters.member.1.ApplyMethod' => 'pending-reboot',
+        'Parameters.member.2.ParameterName' => 'max_allowed_packet',
+        'Parameters.member.2.ParameterValue' => '1024', 
+        'Parameters.member.2.ApplyMethod' => 'immediate', 
+        }).
+      returns stub(:body => body, :is_a? => true)
+    response = @rds.modify_db_parameter_group(
+        :db_parameter_group_name => "mytestdb",
+        :parameters => [
+          {:name => "max_user_connections", :value => "24", :apply_method => "pending-reboot"},
+          {:name => "max_allowed_packet", :value => "1024", :apply_method => "immediate"}
+        ]
+      )
+    response.should.be.an.instance_of Hash
+  end
+
   
 end
