@@ -2,15 +2,15 @@ module AWS
   module RDS
 
     # Which host FQDN will we connect to for all API calls to AWS?
-    # If ELB_URL is defined in the users ENV we can override the default with that.
-    # 
+    # If RDS_URL is defined in the users ENV we can override the default with that.
+    #
     # @example
     #   export RDS_URL='https://rds.amazonaws.com'
     if ENV['RDS_URL']
-      ELB_URL = ENV['RDS_URL']
+      RDS_URL = ENV['RDS_URL']
       VALID_HOSTS = ['rds.amazonaws.com']
-      raise ArgumentError, "Invalid ELB_URL environment variable : #{ELB_URL}" unless VALID_HOSTS.include?(ELB_URL)
-      DEFAULT_HOST = URI.parse(ELB_URL).host
+      raise ArgumentError, "Invalid RDS_URL environment variable : #{RDS_URL}" unless VALID_HOSTS.include?(RDS_URL)
+      DEFAULT_HOST = URI.parse(RDS_URL).host
     else
       # Default US API endpoint
       DEFAULT_HOST = 'rds.amazonaws.com'
@@ -26,7 +26,7 @@ module AWS
       def default_host
         DEFAULT_HOST
       end
-      
+
       # Raises the appropriate error if the specified Net::HTTPResponse object
       # contains an Amazon EC2 error; returns +false+ otherwise.
       def aws_error?(response)
@@ -64,9 +64,10 @@ module AWS
         end
 
       end
-      
-      
+
     end
 
   end
+
 end
+

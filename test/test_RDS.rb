@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 
-context "elb load balancers " do
+context "rds databases " do
   before do
     @rds = AWS::RDS::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
@@ -47,17 +47,17 @@ context "elb load balancers " do
     </CreateDBSecurityGroupResponse>
     RESPONSE
   end
-  
+
   specify "should be able to be create a db_instance" do
-    @rds.stubs(:make_request).with('CreateDBInstance', {'Engine' => 'MySQL5.1', 
-        'MasterUsername' => 'master', 
-        'DBInstanceClass' => 'db.m1.large', 
-        'DBInstanceIdentifier' => 'testdb', 
-        'AllocatedStorage' => '10', 
+    @rds.stubs(:make_request).with('CreateDBInstance', {'Engine' => 'MySQL5.1',
+        'MasterUsername' => 'master',
+        'DBInstanceClass' => 'db.m1.large',
+        'DBInstanceIdentifier' => 'testdb',
+        'AllocatedStorage' => '10',
         'MasterUserPassword' => 'SecretPassword01'}).
       returns stub(:body => @create_db_instance_body, :is_a? => true)
     response = @rds.create_db_instance(
-      :db_instance_class => "db.m1.large", 
+      :db_instance_class => "db.m1.large",
       :db_instance_identifier=>"testdb",
       :allocated_storage => 10,
       :engine => "MySQL5.1",
@@ -71,7 +71,7 @@ context "elb load balancers " do
 
   specify "should be able to create_db_security_group" do
     @rds.stubs(:make_request).with('CreateDBSecurityGroup', {
-                      'DBSecurityGroupName' => 'mydbsecuritygroup', 
+                      'DBSecurityGroupName' => 'mydbsecuritygroup',
                       'DBSecurityGroupDescription' => 'My new DBSecurityGroup'}).
       returns stub(:body => @create_db_security_group, :is_a? => true)
     response = @rds.create_db_security_group(
@@ -82,7 +82,7 @@ context "elb load balancers " do
 
     assert_equal response.CreateDBSecurityGroupResult.DBSecurityGroup.DBSecurityGroupName, "mydbsecuritygroup4"
   end
-  
+
   specify "should be able to create_db_parameter_group" do
     body =<<-EOE
     <CreateDBParameterGroupResponse xmlns="http://rds.amazonaws.com/admin/2009-10-16/">
@@ -98,8 +98,8 @@ context "elb load balancers " do
       </ResponseMetadata>
     </CreateDBParameterGroupResponse>
     EOE
-    @rds.stubs(:make_request).with('CreateDBParameterGroup', {'Engine' => 'MySQL5.1', 
-                                                  'DBParameterGroupName' => 'mydbsecuritygroup', 
+    @rds.stubs(:make_request).with('CreateDBParameterGroup', {'Engine' => 'MySQL5.1',
+                                                  'DBParameterGroupName' => 'mydbsecuritygroup',
                                                   'Description' => 'My test DBSecurity group'}).
       returns stub(:body => body, :is_a? => true)
     response = @rds.create_db_parameter_group(
@@ -143,7 +143,7 @@ context "elb load balancers " do
 
     assert_equal response.CreateDBSnapshotResult.DBSnapshot.DBSnapshotIdentifier, "mynewdbsnapshot3"
   end
-  
+
   specify "should be able to authorize_db_security_group" do
     body =<<-EOE
     <AuthorizeDBSecurityGroupIngressResponse xmlns="http://rds.amazonaws.com/admin/2009-10-16/">
@@ -176,7 +176,7 @@ context "elb load balancers " do
 
     assert_equal response.AuthorizeDBSecurityGroupIngressResult.DBSecurityGroup.IPRanges.IPRange.CIDRIP, "192.168.1.1/24"
   end
-  
+
   specify "should be able to delete_db_parameter_group" do
     body =<<-EOE
     <DeleteDBParameterGroupResponse xmlns="http://rds.amazonaws.com/admin/2009-10-16/">
@@ -192,7 +192,7 @@ context "elb load balancers " do
       )
     response.should.be.an.instance_of Hash
   end
-  
+
   specify "should be able to delete_db_security_group" do
     body =<<-EOE
     <DeleteDBParameterGroupResponse xmlns="http://rds.amazonaws.com/admin/2009-10-16/">
@@ -329,15 +329,15 @@ context "elb load balancers " do
       </ResponseMetadata>
     </ModifyDBParameterGroupResponse>
     EOE
-    
+
     @rds.stubs(:make_request).with('ModifyDBParameterGroup', {
-        'DBParameterGroupName' => 'mytestdb', 
-        'Parameters.member.1.ParameterName' => 'max_user_connections', 
-        'Parameters.member.1.ParameterValue' => '24', 
+        'DBParameterGroupName' => 'mytestdb',
+        'Parameters.member.1.ParameterName' => 'max_user_connections',
+        'Parameters.member.1.ParameterValue' => '24',
         'Parameters.member.1.ApplyMethod' => 'pending-reboot',
         'Parameters.member.2.ParameterName' => 'max_allowed_packet',
-        'Parameters.member.2.ParameterValue' => '1024', 
-        'Parameters.member.2.ApplyMethod' => 'immediate', 
+        'Parameters.member.2.ParameterValue' => '1024',
+        'Parameters.member.2.ApplyMethod' => 'immediate',
         }).
       returns stub(:body => body, :is_a? => true)
     response = @rds.modify_db_parameter_group(
@@ -350,5 +350,5 @@ context "elb load balancers " do
     response.should.be.an.instance_of Hash
   end
 
-  
 end
+

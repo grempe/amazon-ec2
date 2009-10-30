@@ -1,7 +1,7 @@
 module AWS
   module RDS
     class Base < AWS::Base
-      
+
       # This API creates a new DB instance. Once the call has completed
       # successfully, a new DB instance will be created, but it will not be
       #
@@ -19,7 +19,7 @@ module AWS
       # @option options [String] :preferred_maintenance_window in format: ddd:hh24:mi-ddd:hh24:mi (nil)
       # @option options [String] :backend_retention_period is the number of days which automated backups are retained (1)
       # @option options [String] :preferred_backup_window is the daily time range for which automated backups are created
-      #    
+      #
       def create_db_instance( options = {})
         raise ArgumentError, "No :db_instance_identifier provided" if options.does_not_have?(:db_instance_identifier)
         raise ArgumentError, "No :allocated_storage provided" if options.does_not_have?(:allocated_storage)
@@ -28,7 +28,7 @@ module AWS
         raise ArgumentError, "No :master_username provided" if options.does_not_have?(:master_username)
         raise ArgumentError, "No :master_user_password provided" if options.does_not_have?(:master_user_password)
         raise ArgumentError, "No :db_instance_class provided" if options.does_not_have?(:db_instance_class)
-        
+
         params = {}
         params['DBInstanceIdentifier'] = options[:db_instance_identifier]
         params["AllocatedStorage"] = options[:allocated_storage].to_s
@@ -36,7 +36,7 @@ module AWS
         params["Engine"] = options[:engine]
         params["MasterUsername"] = options[:master_username]
         params["MasterUserPassword"] = options[:master_user_password]
-        
+
         params["Port"] = options[:port].to_s if options.has?(:port)
         params["DBName"] = options[:db_name] if options.has?(:db_name)
         params["DBParameterGroup"] = options[:db_parameter_group] if options.has?(:db_parameter_group)
@@ -45,10 +45,10 @@ module AWS
         params["PreferredMaintenanceWindow"] = options[:preferred_backup_window] if options.has?(:preferred_backup_window)
         params["BackupRetentionPeriod"] = options[:backend_retention_period] if options.has?(:backend_retention_period)
         params["PreferredBackupWindow"] = options[:preferred_backup_window] if options.has?(:preferred_backup_window)
-        
+
         return response_generator(:action => "CreateDBInstance", :params => params)
       end
-      
+
       # This API method deletes a db instance identifier
       #
       # @option options [String] :db_instance_identifier is the instance identifier for the DB instance to be deleted (nil)
@@ -57,13 +57,13 @@ module AWS
       #
       def delete_db_instance( options = {} )
         raise ArgumentError, "No :db_instance_identifier provided" if options.does_not_have?(:db_instance_identifier)
-        
+
         params = {}
         params['DBInstanceIdentifier'] = options[:db_instance_identifier]
-        
+
         params["SkipFinalSnapshot"] = options[:skip_final_snapshot].to_s if options.has?(:skip_final_snapshot)
         params["FinalDBSnapshot­Identifier"] = options[:final_db_snapshot_identifier].to_s if options.has?(:final_db_snapshot_identifier)
-        
+
         return response_generator(:action => "DeleteDBInstance", :params => params)
       end
 
@@ -77,15 +77,15 @@ module AWS
         raise ArgumentError, "No :db_parameter_group_name provided" if options.does_not_have?(:db_parameter_group_name)
         raise ArgumentError, "No :engine provided" if options.does_not_have?(:engine)
         raise ArgumentError, "No :description provided" if options.does_not_have?(:description)
-        
+
         params = {}
         params['DBParameterGroupName'] = options[:db_parameter_group_name]
         params['Engine'] = options[:engine]
         params['Description'] = options[:description]
-                
+
         return response_generator(:action => "CreateDBParameterGroup", :params => params)
       end
-      
+
       # This API method creates a db security group
       #
       # @option options [String] :db_security_group_name is the name of the db security group (nil)
@@ -94,14 +94,14 @@ module AWS
       def create_db_security_group( options = {} )
         raise ArgumentError, "No :db_security_group_name provided" if options.does_not_have?(:db_security_group_name)
         raise ArgumentError, "No :db_security_group_description provided" if options.does_not_have?(:db_security_group_description)
-        
+
         params = {}
         params['DBSecurityGroupName'] = options[:db_security_group_name]
         params['DBSecurityGroupDescription'] = options[:db_security_group_description]
-                
+
         return response_generator(:action => "CreateDBSecurityGroup", :params => params)
       end
-      
+
       # This API method creates a restoreable db snapshot
       #
       # @option options [String] :db_snapshot_identifier is the identifier of the db snapshot
@@ -110,14 +110,14 @@ module AWS
       def create_db_snapshot( options = {} )
         raise ArgumentError, "No :db_snapshot_identifier provided" if options.does_not_have?(:db_snapshot_identifier)
         raise ArgumentError, "No :db_instance_identifier provided" if options.does_not_have?(:db_instance_identifier)
-        
+
         params = {}
         params['DBSnapshotIdentifier'] = options[:db_snapshot_identifier]
         params['DBInstanceIdentifier'] = options[:db_instance_identifier]
-                
+
         return response_generator(:action => "CreateDBSnapshot", :params => params)
       end
-      
+
       # This API method authorizes network ingress for an amazon ec2 group
       #
       # @option options [String] :db_security_group_name is the name of the db security group
@@ -127,10 +127,10 @@ module AWS
       #
       def authorize_db_security_group( options = {} )
         raise ArgumentError, "No :db_security_group_name provided" if options.does_not_have?(:db_security_group_name)
-        
+
         params = {}
         params['DBSecurityGroupName'] = options[:db_security_group_name]
-        
+
         if options.has?(:cidrip)
           params['CIDRIP'] = options[:cidrip]
         elsif options.has?(:ec2_security_group_name) && options.has?(:ec2_security_group_owner_id)
@@ -139,20 +139,20 @@ module AWS
         else
           raise ArgumentError, "No :cidrip or :ec2_security_group_name and :ec2_security_group_owner_id provided"
         end
-                
+
         return response_generator(:action => "AuthorizeDBSecurityGroupIngress", :params => params)
       end
-      
+
       # This API method deletes a db paramter group
       #
       # @option options [String] :db_parameter_group_name is the name of the db paramter group to be deleted (nil)
       #
       def delete_db_parameter_group( options = {} )
         raise ArgumentError, "No :db_parameter_group_name provided" if options.does_not_have?(:db_parameter_group_name)
-        
+
         params = {}
         params['DBParameterGroupName'] = options[:db_parameter_group_name]
-                
+
         return response_generator(:action => "DeleteDBParameterGroup", :params => params)
       end
 
@@ -162,10 +162,10 @@ module AWS
       #
       def delete_db_security_group( options = {} )
         raise ArgumentError, "No :db_security_group_name provided" if options.does_not_have?(:db_security_group_name)
-        
+
         params = {}
         params['DBSecurityGroupName'] = options[:db_security_group_name]
-                
+
         return response_generator(:action => "DeleteDBSecurityGroup", :params => params)
       end
 
@@ -175,25 +175,25 @@ module AWS
       #
       def delete_db_snapshot( options = {} )
         raise ArgumentError, "No :db_snapshot_identifier provided" if options.does_not_have?(:db_snapshot_identifier)
-        
+
         params = {}
         params['DBSnapshotIdentifier'] = options[:db_snapshot_identifier]
-                
+
         return response_generator(:action => "DeleteDBSnapshot", :params => params)
       end
-      
+
       # This API method describes the db instances
       #
       # @option options [String] :db_instance_identifier if passed, only the description for the db instance matching this identifier is returned
       # @option options [String] :max_records is the maximum number of records to include in the response
       # @option options [String] :marker provided in the previous request
       #
-      def describe_db_instances( options = {} )        
+      def describe_db_instances( options = {} )
         params = {}
         params['DBInstanceIdentifier'] = options[:db_instance_identifier] if options.has?(:db_instance_identifier)
         params['MaxRecords'] = options[:max_records].to_s if options.has?(:max_records)
         params['Marker'] = options[:marker] if options.has?(:marker)
-                
+
         return response_generator(:action => "DescribeDBInstances", :params => params)
       end
 
@@ -203,38 +203,38 @@ module AWS
       # @option options [String] :max_records is the maximum number of records to include in the response
       # @option options [String] :marker provided in the previous request
       #
-      def describe_engine_default_parameters( options = {} )        
+      def describe_engine_default_parameters( options = {} )
         raise ArgumentError, "No :engine provided" if options.does_not_have?(:engine)
-        
+
         params = {}
         params['Engine'] = options[:engine]
         params['MaxRecords'] = options[:max_records].to_s if options.has?(:max_records)
         params['Marker'] = options[:marker] if options.has?(:marker)
-                
+
         return response_generator(:action => "DescribeEngineDefaultParameters", :params => params)
       end
 
-      # This API method returns information about all DB Parameter Groups for an account if no 
-      # DB Parameter Group name is supplied, or displays information about a specific named DB Parameter Group. 
+      # This API method returns information about all DB Parameter Groups for an account if no
+      # DB Parameter Group name is supplied, or displays information about a specific named DB Parameter Group.
       # You can call this operation recursively using the Marker parameter.
-      # 
+      #
       # @option options [String] :db_parameter_group_name is the name of the parameter group
       # @option options [String] :max_records is the maximum number of records to include in the response
       # @option options [String] :marker provided in the previous request
       #
-      def describe_db_parameter_groups( options = {} )        
+      def describe_db_parameter_groups( options = {} )
         params = {}
         params['DBParameterGroupName'] = options[:db_parameter_group_name] if options.has?(:db_parameter_group_name)
         params['MaxRecords'] = options[:max_records].to_s if options.has?(:max_records)
         params['Marker'] = options[:marker] if options.has?(:marker)
-                
+
         return response_generator(:action => "DescribeDBParameterGroups", :params => params)
       end
 
-      # This API method returns information about parameters that are part of a parameter group. 
-      # You can optionally request only parameters from a specific source. 
+      # This API method returns information about parameters that are part of a parameter group.
+      # You can optionally request only parameters from a specific source.
       # You can call this operation recursively using the Marker parameter.
-      # 
+      #
       # @option options [String] :db_parameter_group_name is the name parameter group
       # @option options [String] :source is the type of parameter to return
       # @option options [String] :max_records is the maximum number of records to include in the response
@@ -242,66 +242,66 @@ module AWS
       #
       def describe_db_parameters( options = {} )
         raise ArgumentError, "No :db_parameter_group_name provided" if options.does_not_have?(:db_parameter_group_name)
-        
+
         params = {}
         params['DBParameterGroupName'] = options[:db_parameter_group_name]
         params['Source'] = options[:source] if options.has?(:source)
         params['MaxRecords'] = options[:max_records].to_s if options.has?(:max_records)
         params['Marker'] = options[:marker] if options.has?(:marker)
-                
+
         return response_generator(:action => "DescribeDBParameters", :params => params)
       end
 
-      # This API method returns all the DB Security Group details for a particular AWS account, 
-      # or for a particular DB Security Group if a name is specified. 
+      # This API method returns all the DB Security Group details for a particular AWS account,
+      # or for a particular DB Security Group if a name is specified.
       # You can call this operation recursively using the Marker parameter.
-      # 
+      #
       # @option options [String] :db_security_group_name is the name of the security group
       # @option options [String] :max_records is the maximum number of records to include in the response
       # @option options [String] :marker provided in the previous request
       #
-      def describe_db_security_groups( options = {} )        
+      def describe_db_security_groups( options = {} )
         params = {}
         params['DBSecurityGroupName'] = options[:db_security_group_name] if options.has?(:db_security_group_name)
         params['MaxRecords'] = options[:max_records].to_s if options.has?(:max_records)
         params['Marker'] = options[:marker] if options.has?(:marker)
-                
+
         return response_generator(:action => "DescribeDBSecurityGroups", :params => params)
       end
 
-      # This API method returns information about the DB Snapshots for this account. 
-      # If you pass in a DBInstanceIdentifier, it returns information only about DB Snapshots taken for that DB Instance. 
-      # If you pass in a DBSnapshotIdentifier,it will return information only about the specified snapshot. 
-      # If you omit both DBInstanceIdentifier and DBSnapshotIdentifier, it returns all snapshot information for all 
-      # database instances, up to the maximum number of records specified. Passing both DBInstanceIdentifier and 
+      # This API method returns information about the DB Snapshots for this account.
+      # If you pass in a DBInstanceIdentifier, it returns information only about DB Snapshots taken for that DB Instance.
+      # If you pass in a DBSnapshotIdentifier,it will return information only about the specified snapshot.
+      # If you omit both DBInstanceIdentifier and DBSnapshotIdentifier, it returns all snapshot information for all
+      # database instances, up to the maximum number of records specified. Passing both DBInstanceIdentifier and
       # DBSnapshotIdentifier results in an error.
-      # 
+      #
       # @option options [String] :db_instance_identifier is the unique identifier that identifies a DB instance
       # @option options [String] :db_snapshot_identifier is a unique identifier for an amazon RDS snapshot
       # @option options [String] :max_records is the maximum number of records to include in the response
       # @option options [String] :marker provided in the previous request
       #
-      def describe_db_snapshots( options = {} )        
+      def describe_db_snapshots( options = {} )
         raise ArgumentError, "No :db_instance_identifier provided" if options.does_not_have?(:db_instance_identifier)
-        
+
         params = {}
         params['DBInstanceIdentifier'] = options[:db_instance_identifier]
-        
+
         params['DBSnapshotIdentifier'] = options[:db_snapshot_identifier] if options.has?(:db_snapshot_identifier)
         params['MaxRecords'] = options[:max_records].to_s if options.has?(:max_records)
         params['Marker'] = options[:marker] if options.has?(:marker)
-                
+
         return response_generator(:action => "DescribeDBSnapshots", :params => params)
       end
 
-      # This API method Returns information about events related to your DB Instances, DB Security Groups, 
-      # and DB Parameter Groups for up to the past 14 days. 
-      # You can get events specific to a particular DB Instance or DB Security Group by providing the name as a parameter. 
+      # This API method Returns information about events related to your DB Instances, DB Security Groups,
+      # and DB Parameter Groups for up to the past 14 days.
+      # You can get events specific to a particular DB Instance or DB Security Group by providing the name as a parameter.
       # By default, the past hour of events are returned.
-      # 
-      # If neither DBInstanceIdentifier or DBSecurityGroupName are provided, 
+      #
+      # If neither DBInstanceIdentifier or DBSecurityGroupName are provided,
       # all events are be retrieved for DB Instances and DB Security Groups.
-      # 
+      #
       # @option options [String] :source_identifier is the identifier for the source for which events will be included
       # @option options [String] :source_type is the type of event sources to return
       # @option options [String] :start_time is the beginning of the time interval to return records for (ISO 8601 format)
@@ -310,7 +310,7 @@ module AWS
       # @option options [String] :max_records is the maximum number of records to include in the response
       # @option options [String] :marker provided in the previous request
       #
-      def describe_events( options = {} )        
+      def describe_events( options = {} )
         params = {}
         params['SourceIdentifier'] = options[:source_identifier] if options.has?(:source_identifier)
         params['SourceType'] = options[:source_type] if options.has?(:source_type)
@@ -319,17 +319,17 @@ module AWS
         params['Duration'] = options[:duration] if options.has?(:duration)
         params['MaxRecords'] = options[:max_records].to_s if options.has?(:max_records)
         params['Marker'] = options[:marker] if options.has?(:marker)
-                
+
         return response_generator(:action => "DescribeEvents", :params => params)
       end
 
       # This API changes the settings of an existing DB Instance.
-      # 
-      # Changes are applied in the following manner: A ModifyDBInstance API call to modify security groups or to 
-      # change the maintenance windows results in immediate action. Modification of the DB Parameter Group applies 
-      # immediate parameters as soon as possible and pending-reboot parameters only when the RDS instance is rebooted. 
+      #
+      # Changes are applied in the following manner: A ModifyDBInstance API call to modify security groups or to
+      # change the maintenance windows results in immediate action. Modification of the DB Parameter Group applies
+      # immediate parameters as soon as possible and pending-reboot parameters only when the RDS instance is rebooted.
       # A request to scale the DB Instance class results puts the database instance into the modifying state.
-      # 
+      #
       # The DB Instance must be in available or modifying state for this API to accept changes.
       #
       # @option options [String] :db_instance_identifier (nil) the name of the db_instance
@@ -346,13 +346,13 @@ module AWS
       # @option options [String] :preferred_maintenance_window in format: ddd:hh24:mi-ddd:hh24:mi (nil)
       # @option options [String] :backend_retention_period is the number of days which automated backups are retained (1)
       # @option options [String] :preferred_backup_window is the daily time range for which automated backups are created
-      #    
+      #
       def modify_db_instance( options = {})
         raise ArgumentError, "No :db_instance_identifier provided" if options.does_not_have?(:db_instance_identifier)
-        
+
         params = {}
         params['DBInstanceIdentifier'] = options[:db_instance_identifier]
-        
+
         params["AllocatedStorage"] = options[:allocated_storage].to_s if options.has?(:allocated_storage)
         params["DBInstanceClass"] = options[:db_instance_class] if options.has?(:db_instance_class)
         params["Engine"] = options[:engine] if options.has?(:engine)
@@ -366,13 +366,13 @@ module AWS
         params["PreferredMaintenanceWindow"] = options[:preferred_backup_window] if options.has?(:preferred_backup_window)
         params["BackupRetentionPeriod"] = options[:backend_retention_period] if options.has?(:backend_retention_period)
         params["PreferredBackupWindow"] = options[:preferred_backup_window] if options.has?(:preferred_backup_window)
-        
+
         return response_generator(:action => "ModifyDBInstance", :params => params)
       end
 
-      # This API method modifies the parameters of a DB Parameter Group. 
-      # To modify more than one parameter, submit a list of the following: ParameterName, ParameterValue, and ApplyMethod. 
-      # You can modify a maximum of 20 parameters in a single request.      
+      # This API method modifies the parameters of a DB Parameter Group.
+      # To modify more than one parameter, submit a list of the following: ParameterName, ParameterValue, and ApplyMethod.
+      # You can modify a maximum of 20 parameters in a single request.
       #
       # @option options [String] :db_parameter_group_name is the name of the parameter group to modify
       # @option options [String] :parameters is the array of parameters to update in a hash format
@@ -381,7 +381,7 @@ module AWS
       def modify_db_parameter_group( options = {} )
         raise ArgumentError, "No :db_parameter_group_name provided" if options.does_not_have?(:db_parameter_group_name)
         raise ArgumentError, "No :parameters provided" if options.does_not_have?(:parameters)
-        
+
         params = {}
         params['DBParameterGroupName'] = options[:db_parameter_group_name]
         params.merge!(pathhashlist('Parameters.member', [options[:parameters]].flatten, {
@@ -389,13 +389,13 @@ module AWS
           :value => 'ParameterValue',
           :apply_method => "ApplyMethod"
         }))
-        
+
         return response_generator(:action => "ModifyDBParameterGroup", :params => params)
       end
 
-      # This API method reboots a DB Instance. 
+      # This API method reboots a DB Instance.
       # Once started, the process cannot be stopped, and the database instance will be unavailable until the reboot completes.
-      # 
+      #
       # @option options [String] :db_instance_identifier is the identifier for the db instance to restart
       #
       def reboot_db_instance( options = {} )
@@ -403,13 +403,13 @@ module AWS
         )
         params = {}
         params['DBInstanceIdentifier'] = options[:db_instance_identifier] if options.has?(:db_instance_identifier)
-                
+
         return response_generator(:action => "RebootDBInstance", :params => params)
       end
 
-      # This API method modifies the parameters of a DB Parameter Group. 
-      # To modify more than one parameter, submit a list of the following: ParameterName, ParameterValue, and ApplyMethod. 
-      # You can modify a maximum of 20 parameters in a single request.      
+      # This API method modifies the parameters of a DB Parameter Group.
+      # To modify more than one parameter, submit a list of the following: ParameterName, ParameterValue, and ApplyMethod.
+      # You can modify a maximum of 20 parameters in a single request.
       #
       # @option options [String] :db_parameter_group_name is the name of the parameter group to modify
       # @option options [String] :reset_all_parameters specified whether to reset all the db parameters
@@ -419,7 +419,7 @@ module AWS
       def reset_db_parameter_group( options = {} )
         raise ArgumentError, "No :db_parameter_group_name provided" if options.does_not_have?(:db_parameter_group_name)
         raise ArgumentError, "No :parameters provided" if options.does_not_have?(:parameters)
-        
+
         params = {}
         params['DBParameterGroupName'] = options[:db_parameter_group_name]
         params.merge!(pathhashlist('Parameters.member', [options[:parameters]].flatten, {
@@ -427,7 +427,7 @@ module AWS
           :apply_method => "ApplyMethod"
         }))
         params['ResetAllParameters'] = options[:reset_all_parameters] if options.has?(:reset_all_parameters)
-        
+
         return response_generator(:action => "ResetDBParameterGroup", :params => params)
       end
 
@@ -439,26 +439,26 @@ module AWS
       # @option options [String] :port is the port which the db can accept connections on
       # @option options [String] :availability_zone is the EC2 zone which the db instance will be created
       #
-      def restore_db_instance_from_snapshot( options = {} )        
+      def restore_db_instance_from_snapshot( options = {} )
         raise ArgumentError, "No :db_snapshot_identifier provided" if options.does_not_have?(:db_snapshot_identifier)
         raise ArgumentError, "No :db_instance_identifier provided" if options.does_not_have?(:db_instance_identifier)
         raise ArgumentError, "No :db_instance_class provided" if options.does_not_have?(:db_instance_class)
-        
+
         params = {}
         params['DBSnapshotIdentifier'] = options[:db_snapshot_identifier]
         params['DBInstanceIdentifier'] = options[:db_instance_identifier]
         params['DBInstanceClass'] = options[:db_instance_class]
-        
+
         params['Port'] = options[:port].to_s if options.has?(:port)
         params['AvailabilityZone'] = options[:availability_zone] if options.has?(:availability_zone)
-                
+
         return response_generator(:action => "RestoreDBInstanceFromDBSnapshot", :params => params)
       end
 
       # This API method restores a DB Instance to a specified time, creating a new DB Instance.
-      # 
-      # Some characteristics of the new DB Instance can be modified using optional parameters. 
-      # If these options are omitted, the new DB Instance defaults to the characteristics of the DB Instance from which the 
+      #
+      # Some characteristics of the new DB Instance can be modified using optional parameters.
+      # If these options are omitted, the new DB Instance defaults to the characteristics of the DB Instance from which the
       # DB Snapshot was created.
       #
       # @option options [String] :source_db_instance_identifier the identifier of the source DB Instance from which to restore.
@@ -469,25 +469,25 @@ module AWS
       # @option options [String] :port is the port which the db can accept connections on
       # @option options [String] :availability_zone is the EC2 zone which the db instance will be created
       #
-      def restore_db_instance_to_point_in_time( options = {} )        
+      def restore_db_instance_to_point_in_time( options = {} )
         raise ArgumentError, "No :db_snapshot_identifier provided" if options.does_not_have?(:db_snapshot_identifier)
         raise ArgumentError, "No :db_instance_identifier provided" if options.does_not_have?(:db_instance_identifier)
         raise ArgumentError, "No :db_instance_class provided" if options.does_not_have?(:db_instance_class)
-        
+
         params = {}
         params['SourceDBInstanceIdentifier'] = options[:source_db_instance_identifier]
         params['TargetDBInstanceIdentifier'] = options[:target_db_instance_identifier]
-        
+
         if options[:use_latest_restorable_time]
           params['UseLatestRestorableTime'] = options[:use_latest_restorable_time]
         elsif options[:restore_time]
           params['RestoreTime'] = options[:restore_time]
         end
-        
+
         params['DBInstanceClass'] = options[:db_instance_class] if options.has?(:db_instance_class)
         params['Port'] = options[:port].to_s if options.has?(:port)
         params['AvailabilityZone'] = options[:availability_zone] if options.has?(:availability_zone)
-        
+
         return response_generator(:action => "RestoreDBInstanceToPointInTime", :params => params)
       end
 
@@ -500,10 +500,10 @@ module AWS
       #
       def revoke_db_security_group( options = {} )
         raise ArgumentError, "No :db_security_group_name provided" if options.does_not_have?(:db_security_group_name)
-        
+
         params = {}
         params['DBSecurityGroupName'] = options[:db_security_group_name]
-        
+
         if options.has?(:cidrip)
           params['CIDRIP'] = options[:cidrip]
         elsif options.has?(:ec2_security_group_name) && options.has?(:ec2_security_group_owner_id)
@@ -512,11 +512,11 @@ module AWS
         else
           raise ArgumentError, "No :cidrip or :ec2_security_group_name and :ec2_security_group_owner_id provided"
         end
-                
+
         return response_generator(:action => "RevokeDBSecurityGroupIngress", :params => params)
       end
-      
-      
+
     end
   end
 end
+

@@ -28,10 +28,11 @@ class Hash
       self[meth.to_s] || self[meth.to_sym]
     end
   end
-  
+
   def has?(key)
     self[key] && !self[key].to_s.empty?
   end
+
   def does_not_have?(key)
     self[key].nil? || self[key].to_s.empty?
   end
@@ -221,7 +222,7 @@ module AWS
           req['User-Agent'] = "github-amazon-ec2-ruby-gem"
 
           response = @http.request(req, query)
-          
+
           # Make a call to see if we need to throw an error based on the response given by EC2
           # All error classes are defined in EC2/exceptions.rb
           aws_error?(response)
