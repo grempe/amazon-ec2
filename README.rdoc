@@ -10,7 +10,8 @@ More recently, support has been added for the following EC2 related AWS API's as
 
 * Autoscaling
 * Cloudwatch
-* Elastic Load Balancing
+* Elastic Load Balancing (ELB)
+* Relational Database Service (RDS)
 
 For the most complete and up-to date README information please visit the project homepage at:
 
