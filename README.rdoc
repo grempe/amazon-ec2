@@ -87,9 +87,8 @@ The 'ec2sh' and 'ec2-gem-example.rb' scripts which will be introduced to you sho
 
 Edit the file ~/.bash_login and add the following to the existing contents:
 
+  # OPTIONAL : Why 'export RUBYOPT'? Because we leave loading libs up to you... See : http://gist.github.com/54177
   export RUBYOPT="rubygems"
-
-  Why 'export RUBYOPT'? Because we leave loading libs up to you... See : http://gist.github.com/54177
 
   # For amazon-ec2 and amazon s3 ruby gems
   export AMAZON_ACCESS_KEY_ID="YOUR_ACCESS_KEY_ID"
@@ -201,7 +200,7 @@ Try out the following bit of code. This should walk through each image returned 
   Rails::Initializer.run do |config|
    ...
    # INSERT THIS LINE IN YOUR CONFIG
-   config.gem "amazon-ec2", :lib => "EC2"
+   config.gem "amazon-ec2", :lib => "AWS"
    ...
   end
 
