@@ -200,8 +200,7 @@ Try out the following bit of code. This should walk through each image returned 
 
   Rails::Initializer.run do |config|
    ...
-   # INSERT THIS LINE IN YOUR CONFIG
-   config.gem "amazon-ec2", :lib => "AWS"
+   config.gem "amazon-ec2", :lib => "AWS", :source => "http://gemcutter.org/"
    ...
   end
 
