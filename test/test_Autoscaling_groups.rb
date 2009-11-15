@@ -78,7 +78,7 @@ context "autoscaling " do
     @as.stubs(:make_request).with("CreateAutoScalingGroup", {
       'AutoScalingGroupName' => 'CloudteamTestAutoscalingGroup1',
       'AvailabilityZones.member.1' => 'us-east-1a',
-      'LoadBalancerNames' => 'TestLoadBalancerName',
+      'LoadBalancerNames.member.1' => 'TestLoadBalancerName',
       'LaunchConfigurationName' => 'CloudteamTestAutoscaling',
       'MinSize' => "1", 'MaxSize' => "3"
     }).returns stub(:body => @create_autoscaling_group_response, :is_a? => true)

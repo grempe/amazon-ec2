@@ -42,8 +42,8 @@ module AWS
       # @option options [String] :launch_configuration_name (nil) the name of the launch_configuration group
       # @option options [String] :min_size (nil) minimum size of the group
       # @option options [String] :max_size (nil) the maximum size of the group
-      # @option options [String] :load_balancer_names (nil) the names of the load balancers
-      # @option options [String] :cooldown (nil) the amount of time after a scaling activity complese before any further trigger-related scaling activities can start
+      # @option options [optional,Array] :load_balancer_names (nil) the names of the load balancers
+      # @option options [optional,String] :cooldown (nil) the amount of time after a scaling activity complese before any further trigger-related scaling activities can start
       def create_autoscaling_group( options = {} )
         raise ArgumentError, "No :autoscaling_group_name provided" if options[:autoscaling_group_name].nil? || options[:autoscaling_group_name].empty?
         raise ArgumentError, "No :availability_zones provided" if options[:availability_zones].nil? || options[:availability_zones].empty?
@@ -58,7 +58,7 @@ module AWS
         params['AutoScalingGroupName'] = options[:autoscaling_group_name]
         params['MinSize'] = options[:min_size].to_s
         params['MaxSize'] = options[:max_size].to_s
-        params['LoadBalancerNames'] = options[:load_balancer_names] if options[:load_balancer_names]
+        params.merge!(pathlist("LoadBalancerNames.member", [options[:load_balancer_names]].flatten)) if options.has_key?(:load_balancer_names)
         params['CoolDown'] = options[:cooldown] if options[:cooldown]
 
         return response_generator(:action => "CreateAutoScalingGroup", :params => params)
