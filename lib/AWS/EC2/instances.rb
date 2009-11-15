@@ -70,9 +70,9 @@ module AWS
         raise ArgumentError, ":image_id must be provided" if options[:image_id].nil? || options[:image_id].empty?
         raise ArgumentError, ":min_count is not valid" unless options[:min_count].to_i > 0
         raise ArgumentError, ":max_count is not valid" unless options[:max_count].to_i > 0
-        raise ArgumentError, ":addressing_type must be 'direct' or 'public'" unless options[:addressing_type] == "public" || options[:addressing_type] == "direct"
-        raise ArgumentError, ":instance_type must be 'm1.small', 'm1.large', 'm1.xlarge', 'c1.medium', or 'c1.xlarge'" unless options[:instance_type] == "m1.small" || options[:instance_type] == "m1.large" || options[:instance_type] == "m1.xlarge" || options[:instance_type] == "c1.medium" || options[:instance_type] == "c1.xlarge"
-        raise ArgumentError, ":base64_encoded must be 'true' or 'false'" unless options[:base64_encoded] == true || options[:base64_encoded] == false
+        raise ArgumentError, ":addressing_type must be 'direct' or 'public'" unless ["public", "direct"].include?(options[:addressing_type])
+        raise ArgumentError, ":instance_type must specify a valid instance size" unless ["m1.small", "m1.large", "m1.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge"].include?(options[:instance_type])
+        raise ArgumentError, ":base64_encoded must be 'true' or 'false'" unless [true, false].include?(options[:base64_encoded])
 
         user_data = extract_user_data(options)
 
@@ -210,3 +210,4 @@ module AWS
 
   end
 end
+
