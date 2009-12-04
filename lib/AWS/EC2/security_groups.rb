@@ -2,6 +2,7 @@ module AWS
   module EC2
     class Base < AWS::Base
 
+
       # The CreateSecurityGroup operation creates a new security group. Every instance is launched
       # in a security group. If none is specified as part of the launch request then instances
       # are launched in the default security group. Instances within the same security group have
@@ -13,21 +14,16 @@ module AWS
       # @option options [String] :group_description ("")
       #
       def create_security_group( options = {} )
-
         options = {:group_name => "",
                    :group_description => ""
                    }.merge(options)
-
         raise ArgumentError, "No :group_name provided" if options[:group_name].nil? || options[:group_name].empty?
         raise ArgumentError, "No :group_description provided" if options[:group_description].nil? || options[:group_description].empty?
-
         params = {
           "GroupName" => options[:group_name],
           "GroupDescription" => options[:group_description]
         }
-
         return response_generator(:action => "CreateSecurityGroup", :params => params)
-
       end
 
 
@@ -41,13 +37,9 @@ module AWS
       # @option options [optional, Array] :group_name ([])
       #
       def describe_security_groups( options = {} )
-
         options = { :group_name => [] }.merge(options)
-
         params = pathlist("GroupName", options[:group_name] )
-
         return response_generator(:action => "DescribeSecurityGroups", :params => params)
-
       end
 
 
@@ -59,15 +51,10 @@ module AWS
       # @option options [String] :group_name ("")
       #
       def delete_security_group( options = {} )
-
         options = { :group_name => "" }.merge(options)
-
         raise ArgumentError, "No :group_name provided" if options[:group_name].nil? || options[:group_name].empty?
-
         params = { "GroupName" => options[:group_name] }
-
         return response_generator(:action => "DeleteSecurityGroup", :params => params)
-
       end
 
 
@@ -96,8 +83,6 @@ module AWS
       # @option options [optional, String] :source_security_group_owner_id (nil) Required when authorizing user group pair permissions
       #
       def authorize_security_group_ingress( options = {} )
-
-        # defaults
         options = { :group_name => nil,
                     :ip_protocol => nil,
                     :from_port => nil,
@@ -118,9 +103,7 @@ module AWS
                    "SourceSecurityGroupName" => options[:source_security_group_name],
                    "SourceSecurityGroupOwnerId" => options[:source_security_group_owner_id]
                    }
-
         return response_generator(:action => "AuthorizeSecurityGroupIngress", :params => params)
-
       end
 
 
@@ -151,8 +134,6 @@ module AWS
       # @option options [optional, String] :source_security_group_owner_id (nil) Required when revoking user group pair permissions
       #
       def revoke_security_group_ingress( options = {} )
-
-        # defaults
         options = { :group_name => nil,
                     :ip_protocol => nil,
                     :from_port => nil,
@@ -173,11 +154,11 @@ module AWS
                    "SourceSecurityGroupName" => options[:source_security_group_name],
                    "SourceSecurityGroupOwnerId" => options[:source_security_group_owner_id]
                    }
-
         return response_generator(:action => "RevokeSecurityGroupIngress", :params => params)
-
       end
+
 
     end
   end
 end
+

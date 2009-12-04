@@ -1,6 +1,5 @@
 module AWS
   module EC2
-
     class Base < AWS::Base
 
 
@@ -10,15 +9,10 @@ module AWS
       # @option options [String] :key_name ("")
       #
       def create_keypair( options = {} )
-
         options = { :key_name => "" }.merge(options)
-
         raise ArgumentError, "No :key_name provided" if options[:key_name].nil? || options[:key_name].empty?
-
         params = { "KeyName" => options[:key_name] }
-
         return response_generator(:action => "CreateKeyPair", :params => params)
-
       end
 
 
@@ -29,13 +23,9 @@ module AWS
       # @option options [Array] :key_name ([])
       #
       def describe_keypairs( options = {} )
-
         options = { :key_name => [] }.merge(options)
-
         params = pathlist("KeyName", options[:key_name] )
-
         return response_generator(:action => "DescribeKeyPairs", :params => params)
-
       end
 
 
@@ -44,18 +34,14 @@ module AWS
       # @option options [String] :key_name ("")
       #
       def delete_keypair( options = {} )
-
         options = { :key_name => "" }.merge(options)
-
         raise ArgumentError, "No :key_name provided" if options[:key_name].nil? || options[:key_name].empty?
-
         params = { "KeyName" => options[:key_name] }
-
         return response_generator(:action => "DeleteKeyPair", :params => params)
-
       end
 
-    end
 
+    end
   end
 end
+

@@ -3,6 +3,28 @@ module AWS
 
     class Base < AWS::Base
 
+      # Not yet implemented
+      #
+      # @todo Implement this method
+      #
+      def create_image( options = {} )
+        raise "Not yet implemented"
+      end
+
+
+      # The DeregisterImage operation deregisters an AMI. Once deregistered, instances of the AMI may no
+      # longer be launched.
+      #
+      # @option options [String] :image_id ("")
+      #
+      def deregister_image( options = {} )
+        options = { :image_id => "" }.merge(options)
+        raise ArgumentError, "No :image_id provided" if options[:image_id].nil? || options[:image_id].empty?
+        params = { "ImageId" => options[:image_id] }
+        return response_generator(:action => "DeregisterImage", :params => params)
+      end
+
+
       # The RegisterImage operation registers an AMI with Amazon EC2. Images must be registered before
       # they can be launched.  Each AMI is associated with an unique ID which is provided by the EC2
       # service via the Registerimage operation. As part of the registration process, Amazon EC2 will
@@ -15,16 +37,12 @@ module AWS
       # @option options [String] :image_location ("")
       #
       def register_image( options = {} )
-
         options = {:image_location => ""}.merge(options)
-
         raise ArgumentError, "No :image_location provided" if options[:image_location].nil? || options[:image_location].empty?
-
         params = { "ImageLocation" => options[:image_location] }
-
         return response_generator(:action => "RegisterImage", :params => params)
-
       end
+
 
       # The DescribeImages operation returns information about AMIs available for use by the user. This
       # includes both public AMIs (those available for any user to launch) and private AMIs (those owned by
@@ -67,35 +85,15 @@ module AWS
       # @option options [Array] :executable_by ([])
       #
       def describe_images( options = {} )
-
         options = { :image_id => [], :owner_id => [], :executable_by => [] }.merge(options)
-
         params = pathlist( "ImageId", options[:image_id] )
         params.merge!(pathlist( "Owner", options[:owner_id] ))
         params.merge!(pathlist( "ExecutableBy", options[:executable_by] ))
-
         return response_generator(:action => "DescribeImages", :params => params)
-
       end
 
-      # The DeregisterImage operation deregisters an AMI. Once deregistered, instances of the AMI may no
-      # longer be launched.
-      #
-      # @option options [String] :image_id ("")
-      #
-      def deregister_image( options = {} )
-
-        options = { :image_id => "" }.merge(options)
-
-        raise ArgumentError, "No :image_id provided" if options[:image_id].nil? || options[:image_id].empty?
-
-        params = { "ImageId" => options[:image_id] }
-
-        return response_generator(:action => "DeregisterImage", :params => params)
-
-      end
 
     end
-
   end
 end
+

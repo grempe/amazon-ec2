@@ -124,6 +124,51 @@ module AWS
       end
 
 
+      # Not yet implemented
+      #
+      # @todo Implement this method
+      #
+      def describe_instance_attribute( options = {} )
+        raise "Not yet implemented"
+      end
+
+
+      # Not yet implemented
+      #
+      # @todo Implement this method
+      #
+      def modify_instance_attribute( options = {} )
+        raise "Not yet implemented"
+      end
+
+
+      # Not yet implemented
+      #
+      # @todo Implement this method
+      #
+      def reset_instance_attribute( options = {} )
+        raise "Not yet implemented"
+      end
+
+
+      # Not yet implemented
+      #
+      # @todo Implement this method
+      #
+      def start_instances( options = {} )
+        raise "Not yet implemented"
+      end
+
+
+      # Not yet implemented
+      #
+      # @todo Implement this method
+      #
+      def stop_instances( options = {} )
+        raise "Not yet implemented"
+      end
+
+
       # The RebootInstances operation requests a reboot of one or more instances. This operation is
       # asynchronous; it only queues a request to reboot the specified instance(s). The operation will succeed
       # provided the instances are valid and belong to the user. Terminated instances will be ignored.
@@ -175,6 +220,34 @@ module AWS
         params = pathlist("InstanceId", options[:instance_id])
         return response_generator(:action => "UnmonitorInstances", :params => params)
       end
+
+
+      # Not yet implemented
+      #
+      # @todo Implement this method
+      #
+      def describe_reserved_instances( options = {} )
+        raise "Not yet implemented"
+      end
+
+
+      # Not yet implemented
+      #
+      # @todo Implement this method
+      #
+      def describe_reserved_instances_offerings( options = {} )
+        raise "Not yet implemented"
+      end
+
+
+      # Not yet implemented
+      #
+      # @todo Implement this method
+      #
+      def purchase_reserved_instances_offering( options = {} )
+        raise "Not yet implemented"
+      end
+
 
     end
   end

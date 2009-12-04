@@ -15,6 +15,14 @@ module AWS
         return response_generator(:action => "DescribeAvailabilityZones", :params => params)
       end
 
+      # Not yet implemented
+      #
+      # @todo Implement this method
+      #
+      def describe_regions( options = {} )
+        raise "Not yet implemented"
+      end
+
     end
   end
 end

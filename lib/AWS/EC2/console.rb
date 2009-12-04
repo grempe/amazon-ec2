@@ -2,6 +2,7 @@ module AWS
   module EC2
     class Base < AWS::Base
 
+
       # The GetConsoleOutput operation retrieves console output that has been posted for the specified instance.
       #
       # Instance console output is buffered and posted shortly after instance boot, reboot and once the instance
@@ -16,6 +17,7 @@ module AWS
         params = { "InstanceId" => options[:instance_id] }
         return response_generator(:action => "GetConsoleOutput", :params => params)
       end
+
 
     end
   end
