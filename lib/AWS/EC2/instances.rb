@@ -1,6 +1,5 @@
 module AWS
   module EC2
-
     class Base < AWS::Base
 
       # The RunInstances operation launches a specified number of instances.
@@ -53,7 +52,6 @@ module AWS
       # @option options [optional, Boolean] :base64_encoded (false)
       #
       def run_instances( options = {} )
-
         options = { :image_id => "",
                     :min_count => 1,
                     :max_count => 1,
@@ -66,7 +64,6 @@ module AWS
                     :availability_zone => nil,
                     :base64_encoded => false }.merge(options)
 
-        # Do some validation on the arguments provided
         raise ArgumentError, ":image_id must be provided" if options[:image_id].nil? || options[:image_id].empty?
         raise ArgumentError, ":min_count is not valid" unless options[:min_count].to_i > 0
         raise ArgumentError, ":max_count is not valid" unless options[:max_count].to_i > 0
@@ -90,7 +87,6 @@ module AWS
         params["Placement.AvailabilityZone"] = options[:availability_zone] unless options[:availability_zone].nil?
 
         return response_generator(:action => "RunInstances", :params => params)
-
       end
 
       # If :user_data is passed in then URL escape and Base64 encode it
@@ -122,13 +118,9 @@ module AWS
       # @option options [Array] :instance_id ([])
       #
       def describe_instances( options = {} )
-
         options = { :instance_id => [] }.merge(options)
-
         params = pathlist("InstanceId", options[:instance_id])
-
         return response_generator(:action => "DescribeInstances", :params => params)
-
       end
 
 
@@ -139,16 +131,10 @@ module AWS
       # @option options [Array] :instance_id ([])
       #
       def reboot_instances( options = {} )
-
-        # defaults
         options = { :instance_id => [] }.merge(options)
-
         raise ArgumentError, "No instance IDs provided" if options[:instance_id].nil? || options[:instance_id].empty?
-
         params = pathlist("InstanceId", options[:instance_id])
-
         return response_generator(:action => "RebootInstances", :params => params)
-
       end
 
 
@@ -160,15 +146,10 @@ module AWS
       # @option options [Array] :instance_id ([])
       #
       def terminate_instances( options = {} )
-
         options = { :instance_id => [] }.merge(options)
-
         raise ArgumentError, "No :instance_id provided" if options[:instance_id].nil? || options[:instance_id].empty?
-
         params = pathlist("InstanceId", options[:instance_id])
-
         return response_generator(:action => "TerminateInstances", :params => params)
-
       end
 
 
@@ -177,17 +158,11 @@ module AWS
       # @option options [Array] :instance_id ([])
       #
       def monitor_instances( options = {} )
-
         options = { :instance_id => [] }.merge(options)
-
         raise ArgumentError, "No :instance_id provided" if options[:instance_id].nil? || options[:instance_id].empty?
-
         params = pathlist("InstanceId", options[:instance_id])
-
         return response_generator(:action => "MonitorInstances", :params => params)
-
       end
-
 
 
       # The UnmonitorInstances operation tells Cloudwatch to stop logging metrics from one or more EC2 instances
@@ -195,19 +170,13 @@ module AWS
       # @option options [Array] :instance_id ([])
       #
       def unmonitor_instances( options = {} )
-
         options = { :instance_id => [] }.merge(options)
-
         raise ArgumentError, "No :instance_id provided" if options[:instance_id].nil? || options[:instance_id].empty?
-
         params = pathlist("InstanceId", options[:instance_id])
-
         return response_generator(:action => "UnmonitorInstances", :params => params)
-
       end
 
     end
-
   end
 end
 
