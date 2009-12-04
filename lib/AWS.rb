@@ -256,7 +256,7 @@ module AWS
       end
 
       # Raises the appropriate error if the specified Net::HTTPResponse object
-      # contains an Amazon EC2 error; returns +false+ otherwise.
+      # contains an AWS error; returns +false+ otherwise.
       def aws_error?(response)
 
         # return false if we got a HTTP 200 code,
@@ -277,7 +277,7 @@ module AWS
 
         # An valid error response looks like this:
         # <?xml version="1.0"?><Response><Errors><Error><Code>InvalidParameterCombination</Code><Message>Unknown parameter: foo</Message></Error></Errors><RequestID>291cef62-3e86-414b-900e-17246eccfae8</RequestID></Response>
-        # AWS EC2 throws some exception codes that look like Error.SubError.  Since we can't name classes this way
+        # AWS throws some exception codes that look like Error.SubError.  Since we can't name classes this way
         # we need to strip out the '.' in the error 'Code' and we name the error exceptions with this
         # non '.' name as well.
         error_code    = doc.root.elements['Errors'].elements['Error'].elements['Code'].text.gsub('.', '')
