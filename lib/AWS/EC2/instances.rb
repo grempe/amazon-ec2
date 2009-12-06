@@ -2,89 +2,69 @@ module AWS
   module EC2
     class Base < AWS::Base
 
-      # The RunInstances operation launches a specified number of instances.
+      # Launches a specified number of instances of an AMI for which you have permissions.
       #
-      # Note : The Query version of RunInstances only allows instances of a single AMI to be launched in
-      # one call. This is different from the SOAP API call of the same name but similar to the
-      # ec2-run-instances command line tool.
+      # Amazon API Docs : HTML[http://docs.amazonwebservices.com/AWSEC2/2009-10-31/APIReference/index.html?ApiReference-query-RunInstances.html]
       #
-      # If Amazon EC2 cannot launch the minimum number AMIs you request, no instances launch. If there
-      # is insufficient capacity to launch the maximum number of AMIs you request, Amazon EC2 launches
-      # as many as possible to satisfy the requested maximum values.
-      #
-      # Every instance is launched in a security group. If you do not specify a security group at
-      # launch, the instances start in the default security group.
-      #
-      # An optional instance type can be specified.  Currently supported types are 'm1.small', 'm1.large',
-      # 'm1.xlarge' and the high CPU types 'c1.medium' and 'c1.xlarge'.  'm1.small' is the default
-      # if no instance_type is specified.
-      #
-      # You can provide an optional key pair ID for each image in the launch request. All instances
-      # that are created from images that use this key pair will have access to the associated public
-      # key at boot. You can use this key to provide secure access to an instance of an image on a
-      # per-instance basis. Amazon EC2  public images use this feature to provide secure access
-      # without passwords.
-      #
-      # Important!  Launching public images without a key pair ID will leave them inaccessible.
-      #
-      # The public key material is made available to the instance at boot time by placing it in a file named
-      # openssh_id.pub on a logical device that is exposed to the instance as /dev/sda2 (the ephemeral
-      # store). The format of this file is suitable for use as an entry within ~/.ssh/authorized_keys (the
-      # OpenSSH format). This can be done at boot time (as part of rclocal, for example) allowing for secure
-      # password-less access.
-      #
-      # Optional user data can be provided in the launch request. All instances comprising the launch
-      # request have access to this data (see Instance Metadata for details).
-      #
-      # If any of the AMIs have product codes attached for which the user has not subscribed,
-      # the RunInstances call will fail.
-      #
-      # @option options [String] :image_id ("")
-      # @option options [Integer] :min_count (1)
-      # @option options [Integer] :max_count (1)
-      # @option options [optional, String] :key_name (nil)
-      # @option options [optional, Array] :group_id ([])
-      # @option options [optional, String] :user_data (nil)
-      # @option options [optional, String] :addressing_type ("public")
-      # @option options [optional, String] :instance_type ("m1.small")
-      # @option options [optional, String] :kernel_id (nil)
-      # @option options [optional, String] :availability_zone (nil)
+      # @option options [String] :image_id ("") Unique ID of a machine image.
+      # @option options [Integer] :min_count (1) Minimum number of instances to launch. If the value is more than Amazon EC2 can launch, no instances are launched at all.
+      # @option options [Integer] :max_count (1) Maximum number of instances to launch. If the value is more than Amazon EC2 can launch, the largest possible number above minCount will be launched instead.
+      # @option options [optional, String] :key_name (nil) The name of the key pair.
+      # @option options [optional, String] :security_group (nil) Name of the security group.
+      # @option options [optional, String] :additional_info (nil) Specifies additional information to make available to the instance(s).
+      # @option options [optional, String] :user_data (nil) MIME, Base64-encoded user data.
+      # @option options [optional, String] :instance_type (nil) Specifies the instance type.
+      # @option options [optional, String] :availability_zone (nil) Specifies the placement constraints (Availability Zones) for launching the instances.
+      # @option options [optional, String] :kernel_id (nil) The ID of the kernel with which to launch the instance.
+      # @option options [optional, String] :ramdisk_id (nil) The ID of the RAM disk with which to launch the instance. Some kernels require additional drivers at launch. Check the kernel requirements for information on whether you need to specify a RAM disk. To find kernel requirements, go to the Resource Center and search for the kernel ID.
+      # @option options [optional, Array] :block_device_mapping ([]) An array of Hashes representing the elements of the block device mapping.  e.g. [{:device_name => '/dev/sdh', :virtual_name => '', :ebs_snapshot_id => '', :ebs_volume_size => '', :ebs_delete_on_termination => ''},{},...]
+      # @option options [optional, Boolean] :monitoring_enabled (false) Enables monitoring for the instance.
+      # @option options [optional, String] :subnet_id (nil) Specifies the Amazon VPC subnet ID within which to launch the instance(s) for Amazon Virtual Private Cloud.
+      # @option options [optional, Boolean] :disable_api_termination (true) Specifies whether the instance can be terminated using the APIs. You must modify this attribute before you can terminate any "locked" instances from the APIs.
+      # @option options [optional, String] :instance_initiated_shutdown_behavior ('stop') Specifies whether the instance's Amazon EBS volumes are stopped or terminated when the instance is shut down. Valid values : 'stop', 'terminate'
       # @option options [optional, Boolean] :base64_encoded (false)
       #
       def run_instances( options = {} )
         options = { :image_id => "",
                     :min_count => 1,
                     :max_count => 1,
-                    :key_name => nil,
-                    :group_id => [],
-                    :user_data => nil,
-                    :addressing_type => "public",
-                    :instance_type => "m1.small",
-                    :kernel_id => nil,
-                    :availability_zone => nil,
                     :base64_encoded => false }.merge(options)
+
+        raise ArgumentError, ":addressing_type has been deprecated." if options[:addressing_type]
+        raise ArgumentError, ":group_id has been deprecated." if options[:group_id]
 
         raise ArgumentError, ":image_id must be provided" if options[:image_id].nil? || options[:image_id].empty?
         raise ArgumentError, ":min_count is not valid" unless options[:min_count].to_i > 0
-        raise ArgumentError, ":max_count is not valid" unless options[:max_count].to_i > 0
-        raise ArgumentError, ":addressing_type must be 'direct' or 'public'" unless ["public", "direct"].include?(options[:addressing_type])
-        raise ArgumentError, ":instance_type must specify a valid instance size" unless ["m1.small", "m1.large", "m1.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge"].include?(options[:instance_type])
+        raise ArgumentError, ":max_count is not valid or must be >= :min_count" unless options[:max_count].to_i > 0 && options[:max_count].to_i >= options[:min_count].to_i
+        raise ArgumentError, ":instance_type must specify a valid instance size" unless options[:instance_type].nil? || ["m1.small", "m1.large", "m1.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge"].include?(options[:instance_type])
+        raise ArgumentError, ":monitoring_enabled must be 'true' or 'false'" unless options[:monitoring_enabled].nil? || [true, false].include?(options[:monitoring_enabled])
+        raise ArgumentError, ":disable_api_termination must be 'true' or 'false'" unless options[:disable_api_termination].nil? || [true, false].include?(options[:disable_api_termination])
+        raise ArgumentError, ":instance_initiated_shutdown_behavior must be 'stop' or 'terminate'" unless options[:instance_initiated_shutdown_behavior].nil? || ["stop", "terminate"].include?(options[:instance_initiated_shutdown_behavior])
         raise ArgumentError, ":base64_encoded must be 'true' or 'false'" unless [true, false].include?(options[:base64_encoded])
 
         user_data = extract_user_data(options)
 
-        params = {
-          "ImageId"  => options[:image_id],
-          "MinCount" => options[:min_count].to_s,
-          "MaxCount" => options[:max_count].to_s,
-        }.merge(pathlist("SecurityGroup", options[:group_id]))
+        params = {}
 
-        params["KeyName"] = options[:key_name] unless options[:key_name].nil?
-        params["UserData"] = user_data unless user_data.nil?
-        params["AddressingType"] = options[:addressing_type]
-        params["InstanceType"] = options[:instance_type]
-        params["KernelId"] = options[:kernel_id] unless options[:kernel_id].nil?
-        params["Placement.AvailabilityZone"] = options[:availability_zone] unless options[:availability_zone].nil?
+        if options[:block_device_mapping]
+          params.merge!(pathhashlist('BlockDeviceMapping', options[:block_device_mapping].flatten, {:device_name => 'DeviceName', :virtual_name => 'VirtualName', :ebs_snapshot_id => 'Ebs.SnapshotId', :ebs_volume_size => 'Ebs.VolumeSize', :ebs_delete_on_termination => 'Ebs.DeleteOnTermination' }))
+        end
+
+        params["ImageId"]                           = options[:image_id]
+        params["MinCount"]                          = options[:min_count].to_s
+        params["MaxCount"]                          = options[:max_count].to_s
+        params["KeyName"]                           = options[:key_name] unless options[:key_name].nil?
+        params["SecurityGroup"]                     = options[:security_group] unless options[:security_group].nil?
+        params["AdditionalInfo"]                    = options[:additional_info] unless options[:additional_info].nil?
+        params["UserData"]                          = user_data unless user_data.nil?
+        params["InstanceType"]                      = options[:instance_type] unless options[:instance_type].nil?
+        params["Placement.AvailabilityZone"]        = options[:availability_zone] unless options[:availability_zone].nil?
+        params["KernelId"]                          = options[:kernel_id] unless options[:kernel_id].nil?
+        params["RamdiskId"]                         = options[:ramdisk_id] unless options[:ramdisk_id].nil?
+        params["Monitoring.Enabled"]                = options[:monitoring_enabled].to_s unless options[:monitoring_enabled].nil?
+        params["SubnetId"]                          = options[:subnet_id] unless options[:subnet_id].nil?
+        params["DisableApiTermination"]             = options[:disable_api_termination].to_s unless options[:disable_api_termination].nil?
+        params["InstanceInitiatedShutdownBehavior"] = options[:instance_initiated_shutdown_behavior] unless options[:instance_initiated_shutdown_behavior].nil?
 
         return response_generator(:action => "RunInstances", :params => params)
       end
@@ -151,21 +131,32 @@ module AWS
       end
 
 
-      # Not yet implemented
+      # Starts an instance that uses an Amazon EBS volume as its root device.
       #
-      # @todo Implement this method
+      # @option options [Array] :instance_id ([]) Array of unique instance ID's of stopped instances.
       #
       def start_instances( options = {} )
-        raise "Not yet implemented"
+        options = { :instance_id => [] }.merge(options)
+        raise ArgumentError, "No :instance_id provided" if options[:instance_id].nil? || options[:instance_id].empty?
+        params = {}
+        params.merge!(pathlist("InstanceId", options[:instance_id]))
+        return response_generator(:action => "StartInstances", :params => params)
       end
 
 
-      # Not yet implemented
+      # Stops an instance that uses an Amazon EBS volume as its root device.
       #
-      # @todo Implement this method
+      # @option options [Array] :instance_id ([]) Unique instance ID of a running instance.
+      # @option options [optional, Boolean] :force (false) Forces the instance to stop. The instance will not have an opportunity to flush file system caches nor file system meta data. If you use this option, you must perform file system check and repair procedures. This option is not recommended for Windows instances.
       #
       def stop_instances( options = {} )
-        raise "Not yet implemented"
+        options = { :instance_id => [] }.merge(options)
+        raise ArgumentError, "No :instance_id provided" if options[:instance_id].nil? || options[:instance_id].empty?
+        raise ArgumentError, ":force must be 'true' or 'false'" unless options[:force].nil? || [true, false].include?(options[:force])
+        params = {}
+        params.merge!(pathlist("InstanceId", options[:instance_id]))
+        params["Force"] = options[:force].to_s unless options[:force].nil?
+        return response_generator(:action => "StopInstances", :params => params)
       end
 
 

@@ -185,10 +185,14 @@ module AWS
       # ("People", [{:name=>'jon', :age=>'22'}, {:name=>'chris'}], {:name => 'Name', :age => 'Age'}) you should get
       # {"People.1.Name"=>"jon", "People.1.Age"=>'22', 'People.2.Name'=>'chris'}
       def pathhashlist(key, arr_of_hashes, mappings)
-        params ={}
+        raise ArgumentError, "expected a key that is a String" unless key.is_a? String
+        raise ArgumentError, "expected a arr_of_hashes that is an Array" unless arr_of_hashes.is_a? Array
+        arr_of_hashes.each{|h| raise ArgumentError, "expected each element of arr_of_hashes to be a Hash" unless h.is_a?(Hash)}
+        raise ArgumentError, "expected a mappings that is an Hash" unless mappings.is_a? Hash
+        params = {}
         arr_of_hashes.each_with_index do |hash, i|
           hash.each do |attribute, value|
-            params["#{key}.#{i+1}.#{mappings[attribute]}"] = value
+            params["#{key}.#{i+1}.#{mappings[attribute]}"] = value.to_s
           end
         end
         params

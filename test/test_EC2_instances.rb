@@ -111,6 +111,43 @@ context "EC2 instances " do
     </RebootInstancesResponse>
     RESPONSE
 
+    @start_instances_response_body = <<-RESPONSE
+    <StartInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2009-10-31/">
+      <instancesSet>
+        <item>
+          <instanceId>i-10a64379</instanceId>
+          <currentState>
+              <code>0</code>
+              <name>pending</name>
+          </currentState>
+          <previousState>
+              <code>80</code>
+              <name>stopped</name>
+          </previousState>
+        </item>
+      </instancesSet>
+    </StartInstancesResponse>
+    RESPONSE
+
+
+    @stop_instances_response_body = <<-RESPONSE
+    <StopInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2009-10-31/">
+      <instancesSet>
+        <item>
+          <instanceId>i-28a64341</instanceId>
+          <currentState>
+              <code>64</code>
+              <name>stopping</name>
+          </currentState>
+          <previousState>
+              <code>16</code>
+              <name>running</name>
+          </previousState>
+        </item>
+      </instancesSet>
+    </StopInstancesResponse>
+    RESPONSE
+
     @terminate_instances_response_body = <<-RESPONSE
     <TerminateInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
       <instancesSet>
@@ -184,7 +221,7 @@ context "EC2 instances " do
 
 
   specify "should be able to be run" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "AddressingType" => 'public', 'InstanceType' => 'm1.small').
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
 
     @ec2.run_instances( :image_id => "ami-60a54009" ).should.be.an.instance_of Hash
@@ -193,8 +230,6 @@ context "EC2 instances " do
 
     response.reservationId.should.equal "r-47a5402e"
     response.ownerId.should.equal "495219933132"
-
-    response.groupSet.item[0].groupId.should.equal "default"
 
     response.instancesSet.item.length.should.equal 3
 
@@ -231,28 +266,93 @@ context "EC2 instances " do
 
 
   specify "method 'run_instances' should reject invalid arguments" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "AddressingType" => 'public', 'InstanceType' => 'm1.small').
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
 
     lambda { @ec2.run_instances() }.should.raise(AWS::ArgumentError)
+
+    # :addressing_type is deprecated
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => nil ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "foo" ) }.should.raise(AWS::ArgumentError)
+
+    # :group_id is deprecated
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :group_id => nil ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :group_id => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :group_id => "foo" ) }.should.raise(AWS::ArgumentError)
+
+    # :image_id
+    lambda { @ec2.run_instances( :image_id => nil ) }.should.raise(AWS::ArgumentError)
     lambda { @ec2.run_instances( :image_id => "" ) }.should.raise(AWS::ArgumentError)
 
+    # :min_count
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1 ) }.should.not.raise(AWS::ArgumentError)
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 0 ) }.should.raise(AWS::ArgumentError)
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => nil ) }.should.raise(AWS::ArgumentError)
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => "foo" ) }.should.raise(AWS::ArgumentError)
 
+    # :max_count
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => 1 ) }.should.not.raise(AWS::ArgumentError)
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => 0 ) }.should.raise(AWS::ArgumentError)
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => nil ) }.should.raise(AWS::ArgumentError)
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => "foo" ) }.should.raise(AWS::ArgumentError)
 
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "public" ) }.should.not.raise(AWS::ArgumentError)
-    #lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "direct" ) }.should.not.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => nil ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "" ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "foo" ) }.should.raise(AWS::ArgumentError)
+    # :min_count & :max_count
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1 ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 2, :max_count => 1 ) }.should.raise(AWS::ArgumentError)
 
+    # :instance_type
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "InstanceType" => 'm1.small').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_type => "m1.small" ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_type => "m1.notarealsize" ) }.should.raise(AWS::ArgumentError)
+
+    # :monitoring_enabled
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "Monitoring.Enabled" => 'true').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :monitoring_enabled => true ) }.should.not.raise(AWS::ArgumentError)
+
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "Monitoring.Enabled" => 'false').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :monitoring_enabled => false ) }.should.not.raise(AWS::ArgumentError)
+
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "Monitoring.Enabled" => 'false').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :monitoring_enabled => "foo" ) }.should.raise(AWS::ArgumentError)
+
+    # :disable_api_termination
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "DisableApiTermination" => 'true').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :disable_api_termination => true ) }.should.not.raise(AWS::ArgumentError)
+
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "DisableApiTermination" => 'false').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :disable_api_termination => false ) }.should.not.raise(AWS::ArgumentError)
+
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "DisableApiTermination" => 'false').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :disable_api_termination => "foo" ) }.should.raise(AWS::ArgumentError)
+
+    # :instance_initiated_shutdown_behavior
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "InstanceInitiatedShutdownBehavior" => 'stop').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_initiated_shutdown_behavior => 'stop' ) }.should.not.raise(AWS::ArgumentError)
+
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "InstanceInitiatedShutdownBehavior" => 'terminate').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_initiated_shutdown_behavior => 'terminate' ) }.should.not.raise(AWS::ArgumentError)
+
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "InstanceInitiatedShutdownBehavior" => 'stop').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_initiated_shutdown_behavior => "foo" ) }.should.raise(AWS::ArgumentError)
+
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "InstanceInitiatedShutdownBehavior" => 'stop').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_initiated_shutdown_behavior => true ) }.should.raise(AWS::ArgumentError)
+
+    # :base64_encoded
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => true ) }.should.not.raise(AWS::ArgumentError)
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => false ) }.should.not.raise(AWS::ArgumentError)
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => nil ) }.should.raise(AWS::ArgumentError)
@@ -260,29 +360,88 @@ context "EC2 instances " do
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => "foo" ) }.should.raise(AWS::ArgumentError)
   end
 
-
-  specify "should be able specify an availability_zone" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "Placement.AvailabilityZone" => "zone123", "UserData" => "Zm9v", "AddressingType" => 'public', 'InstanceType' => 'm1.small').
+  specify "should be able specify a key_name" do
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "KeyName" => 'foo').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :availability_zone => "zone123", :group_id => [], :user_data => "foo", :base64_encoded => true ).should.be.an.instance_of Hash
+    @ec2.run_instances( :image_id => "ami-60a54009", :key_name => "foo" ).should.be.an.instance_of Hash
+  end
+
+  specify "should be able specify a security_group" do
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "SecurityGroup" => 'foo').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    @ec2.run_instances( :image_id => "ami-60a54009", :security_group => "foo" ).should.be.an.instance_of Hash
+  end
+
+  specify "should be able specify additional_info" do
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "AdditionalInfo" => 'foo').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    @ec2.run_instances( :image_id => "ami-60a54009", :additional_info => "foo" ).should.be.an.instance_of Hash
   end
 
   specify "should be able to call run_instances with :user_data and :base64_encoded => true (default is false)" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "Zm9v", "AddressingType" => 'public', 'InstanceType' => 'm1.small').
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "Zm9v").
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :group_id => [], :user_data => "foo", :base64_encoded => true ).should.be.an.instance_of Hash
-  end
-
-  specify "should be able specify an kernel_id" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "Placement.AvailabilityZone" => "zone123", "UserData" => "Zm9v", "AddressingType" => 'public', 'InstanceType' => 'm1.small', 'KernelId' => 'kernfoo').
-      returns stub(:body => @run_instances_response_body, :is_a? => true)
-    @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :availability_zone => "zone123", :group_id => [], :user_data => "foo", :base64_encoded => true, :kernel_id => 'kernfoo' ).should.be.an.instance_of Hash
+    @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :user_data => "foo", :base64_encoded => true ).should.be.an.instance_of Hash
   end
 
   specify "should be able to call run_instances with :user_data and :base64_encoded => false" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "foo", "AddressingType" => 'public', 'InstanceType' => 'm1.small').
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "UserData" => "foo").
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :group_id => [], :user_data => "foo", :base64_encoded => false ).should.be.an.instance_of Hash
+    @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1, :user_data => "foo", :base64_encoded => false ).should.be.an.instance_of Hash
+  end
+
+  specify "should be able specify instance_type" do
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "InstanceType" => 'm1.small').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    @ec2.run_instances( :image_id => "ami-60a54009", :instance_type => "m1.small" ).should.be.an.instance_of Hash
+  end
+
+  specify "should be able specify an availability_zone (Placement.AvailabilityZone)" do
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "Placement.AvailabilityZone" => "zone123").
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    @ec2.run_instances( :image_id => "ami-60a54009", :availability_zone => "zone123" ).should.be.an.instance_of Hash
+  end
+
+  specify "should be able specify an kernel_id" do
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', 'KernelId' => 'kernfoo').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    @ec2.run_instances( :image_id => "ami-60a54009", :kernel_id => 'kernfoo' ).should.be.an.instance_of Hash
+  end
+
+  specify "should be able specify an ramdisk_id" do
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', 'RamdiskId' => 'foo').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    @ec2.run_instances( :image_id => "ami-60a54009", :ramdisk_id => 'foo' ).should.be.an.instance_of Hash
+  end
+
+  specify "should be able specify monitoring_enabled" do
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', 'Monitoring.Enabled' => 'true').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    @ec2.run_instances( :image_id => "ami-60a54009", :monitoring_enabled => true ).should.be.an.instance_of Hash
+  end
+
+  specify "should be able specify an subnet_id" do
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', 'SubnetId' => 'foo').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    @ec2.run_instances( :image_id => "ami-60a54009", :subnet_id => 'foo' ).should.be.an.instance_of Hash
+  end
+
+  specify "should be able specify disable_api_termination" do
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', 'DisableApiTermination' => 'true').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    @ec2.run_instances( :image_id => "ami-60a54009", :disable_api_termination => true ).should.be.an.instance_of Hash
+  end
+
+  specify "should be able specify instance_initiated_shutdown_behavior" do
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', 'InstanceInitiatedShutdownBehavior' => 'stop').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    @ec2.run_instances( :image_id => "ami-60a54009", :instance_initiated_shutdown_behavior => 'stop' ).should.be.an.instance_of Hash
+  end
+
+  specify "should be able specify block_device_mapping" do
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', 'BlockDeviceMapping.1.DeviceName' => '/dev/sdh', 'BlockDeviceMapping.1.VirtualName' => 'foo', 'BlockDeviceMapping.1.Ebs.SnapshotId' => 'foosnap', 'BlockDeviceMapping.1.Ebs.VolumeSize' => 'foovolsize', 'BlockDeviceMapping.1.Ebs.DeleteOnTermination' => 'true', 'BlockDeviceMapping.2.DeviceName' => '/dev/sdi', 'BlockDeviceMapping.2.VirtualName' => 'foo2', 'BlockDeviceMapping.2.Ebs.SnapshotId' => 'foosnap2', 'BlockDeviceMapping.2.Ebs.VolumeSize' => 'foovolsize2', 'BlockDeviceMapping.2.Ebs.DeleteOnTermination' => 'false').
+      returns stub(:body => @run_instances_response_body, :is_a? => true)
+    @ec2.run_instances( :image_id => "ami-60a54009", :block_device_mapping => [{:device_name => '/dev/sdh', :virtual_name => 'foo', :ebs_snapshot_id => 'foosnap', :ebs_volume_size => 'foovolsize', :ebs_delete_on_termination => true},{:device_name => '/dev/sdi', :virtual_name => 'foo2', :ebs_snapshot_id => 'foosnap2', :ebs_volume_size => 'foovolsize2', :ebs_delete_on_termination => false}] ).should.be.an.instance_of Hash
   end
 
   specify "should get no user data for when options has no user_data key" do
@@ -314,7 +473,6 @@ context "EC2 instances " do
     response = @ec2.describe_instances
     response.reservationSet.item[0].reservationId.should.equal "r-44a5402d"
     response.reservationSet.item[0].ownerId.should.equal "UYY3TLBUXIEON5NQVUUX6OMPWBZIQNFM"
-    response.reservationSet.item[0].groupSet.item[0].groupId.should.equal "default"
     response.reservationSet.item[0].instancesSet.item[0].instanceId.should.equal "i-28a64341"
     response.reservationSet.item[0].instancesSet.item[0].imageId.should.equal "ami-6ea54007"
     response.reservationSet.item[0].instancesSet.item[0].instanceState.code.should.equal "0"
@@ -333,7 +491,6 @@ context "EC2 instances " do
     response = @ec2.describe_instances( :instance_id => "i-28a64341" )
     response.reservationSet.item[0].reservationId.should.equal "r-44a5402d"
     response.reservationSet.item[0].ownerId.should.equal "UYY3TLBUXIEON5NQVUUX6OMPWBZIQNFM"
-    response.reservationSet.item[0].groupSet.item[0].groupId.should.equal "default"
     response.reservationSet.item[0].instancesSet.item[0].instanceId.should.equal "i-28a64341"
     response.reservationSet.item[0].instancesSet.item[0].imageId.should.equal "ami-6ea54007"
     response.reservationSet.item[0].instancesSet.item[0].instanceState.code.should.equal "0"
@@ -359,12 +516,37 @@ context "EC2 instances " do
   end
 
 
+  specify "method start_instances should raise an exception when called without nil/empty string arguments" do
+    lambda { @ec2.start_instances() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.start_instances( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.start_instances( :instance_id => "" ) }.should.raise(AWS::ArgumentError)
+  end
+
+
+  specify "should be able to be started when provided with an :instance_id" do
+    @ec2.stubs(:make_request).with('StartInstances', {"InstanceId.1"=>"i-28a64341", "InstanceId.2"=>"i-21a64348"}).
+      returns stub(:body => @start_instances_response_body, :is_a? => true)
+    @ec2.start_instances( :instance_id => ["i-28a64341", "i-21a64348"] ).class.should.equal Hash
+  end
+
+
+  specify "method stop_instances should raise an exception when called without nil/empty string arguments" do
+    lambda { @ec2.stop_instances() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.stop_instances( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.stop_instances( :instance_id => "" ) }.should.raise(AWS::ArgumentError)
+  end
+
+  specify "should be able to be stopped when provided with an :instance_id" do
+    @ec2.stubs(:make_request).with('StopInstances', {"InstanceId.1"=>"i-28a64341", "InstanceId.2"=>"i-21a64348"}).
+      returns stub(:body => @stop_instances_response_body, :is_a? => true)
+    @ec2.stop_instances( :instance_id => ["i-28a64341", "i-21a64348"] ).class.should.equal Hash
+  end
+
   specify "method terminate_instances should raise an exception when called without nil/empty string arguments" do
     lambda { @ec2.terminate_instances() }.should.raise(AWS::ArgumentError)
     lambda { @ec2.terminate_instances( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
     lambda { @ec2.terminate_instances( :instance_id => "" ) }.should.raise(AWS::ArgumentError)
   end
-
 
   specify "should be able to be terminated when provided with an :instance_id" do
     @ec2.stubs(:make_request).with('TerminateInstances', {"InstanceId.1"=>"i-28a64341", "InstanceId.2"=>"i-21a64348"}).
