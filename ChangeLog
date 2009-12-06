@@ -1,3 +1,14 @@
+=== 0.7.4 2009-12-05
+ * Initial support for new EBS AMI's
+ * Updated EC2 API version
+ * Added US West 1 Data Center to list of valid endpoints. (us-west-1.ec2.amazonaws.com)
+ * Updated exceptions.rb to be in sync with latest documented exceptions.
+ * Updated #run_instances to support EBS AMI's and sync with latest options.
+ * Added new #stop_instances and #start_instances methods.
+ * Added new #create_image to allow bundling of a running instance to an EBS backed AMI.
+ * Added stub methods for all known missing EC2 methods. (Please help with patches + tests!)
+ * Added and updated tests for new/modified methods.
+
 === 0.6.1 2009-10-13
  * Additional commits for AutoScaling.  Thanks to Ari (auser)!
  * Updated README.rdoc installation instructions.  Reflects removal of deprecated GitHub gem building.
