@@ -15,6 +15,12 @@ context "An EC2 image " do
   before do
     @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
+    @create_image_response_body = <<-RESPONSE
+    <CreateImageResponse xmlns="http://ec2.amazonaws.com/doc/2009-10-31/">
+        <imageId>ami-4fa54026</imageId>
+    </CreateImageResponse>
+    RESPONSE
+
     @register_image_response_body = <<-RESPONSE
     <RegisterImageResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
       <imageId>ami-61a54008</imageId>
@@ -53,6 +59,32 @@ context "An EC2 image " do
     </DeregisterImageResponse>
     RESPONSE
 
+  end
+
+
+  specify "should be able to be created" do
+    @ec2.stubs(:make_request).with('CreateImage', {"InstanceId"=>"fooid", "Name" => "fooname", "Description" => "foodesc", "NoReboot" => "true"}).
+      returns stub(:body => @create_image_response_body, :is_a? => true)
+    @ec2.create_image(:instance_id => "fooid", :name => "fooname", :description => "foodesc", :no_reboot => true).should.be.an.instance_of Hash
+    @ec2.create_image(:instance_id => "fooid", :name => "fooname", :description => "foodesc", :no_reboot => true).imageId.should.equal "ami-4fa54026"
+  end
+
+
+  specify "method create_image should raise an exception when called with nil/empty string arguments" do
+    lambda { @ec2.create_image() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => "", :name => "fooname") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => "fooid", :name => "") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => nil, :name => "fooname") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => "fooid", :name => nil) }.should.raise(AWS::ArgumentError)
+  end
+
+
+  specify "method create_image should raise an exception when called with bad arguments" do
+    lambda { @ec2.create_image(:instance_id => "fooid", :name => "f"*2) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => "fooid", :name => "f"*129) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => "fooid", :name => "f"*128, :description => "f"*256) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => "fooid", :name => "f"*128, :no_reboot => "true") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => "fooid", :name => "f"*128, :no_reboot => "false") }.should.raise(AWS::ArgumentError)
   end
 
 
