@@ -62,7 +62,7 @@ module AWS
         params['DBInstanceIdentifier'] = options[:db_instance_identifier]
 
         params["SkipFinalSnapshot"] = options[:skip_final_snapshot].to_s if options.has?(:skip_final_snapshot)
-        params["FinalDBSnapshot­Identifier"] = options[:final_db_snapshot_identifier].to_s if options.has?(:final_db_snapshot_identifier)
+        params["FinalDBSnapshotIdentifier"] = options[:final_db_snapshot_identifier].to_s if options.has?(:final_db_snapshot_identifier)
 
         return response_generator(:action => "DeleteDBInstance", :params => params)
       end
