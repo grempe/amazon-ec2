@@ -9,8 +9,10 @@ module AWS
       # @option options [Array] :snapshot_id ([])
       #
       def describe_snapshots( options = {} )
-        options = { :snapshot_id => [] }.merge(options)
-        params = pathlist("SnapshotId", options[:snapshot_id] )
+        options = { :snapshot_id => [], :restorable_by => '', :owner => '' }.merge(options)
+        params =  pathlist("SnapshotId", options[:snapshot_id] )
+        params["RestorableBy"] = options[:restorable_by]
+        params["Owner"] = options[:owner]
         return response_generator(:action => "DescribeSnapshots", :params => params)
       end
 
