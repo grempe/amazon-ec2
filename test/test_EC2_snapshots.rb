@@ -45,7 +45,7 @@ context "EC2 snaphots " do
 
 
   specify "should be able to be described with describe_snapshots" do
-    @ec2.stubs(:make_request).with('DescribeSnapshots', {'Owner' => '', 'SnapshotId.1' => 'snap-78a54011', 'RestorableBy' => ''}).
+    @ec2.stubs(:make_request).with('DescribeSnapshots', {'SnapshotId.1' => 'snap-78a54011'}).
       returns stub(:body => @describe_snapshots_response_body, :is_a? => true)
 
     @ec2.describe_snapshots( :snapshot_id => "snap-78a54011" ).should.be.an.instance_of Hash
