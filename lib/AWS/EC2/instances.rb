@@ -10,7 +10,7 @@ module AWS
       # @option options [Integer] :min_count (1) Minimum number of instances to launch. If the value is more than Amazon EC2 can launch, no instances are launched at all.
       # @option options [Integer] :max_count (1) Maximum number of instances to launch. If the value is more than Amazon EC2 can launch, the largest possible number above minCount will be launched instead.
       # @option options [optional, String] :key_name (nil) The name of the key pair.
-      # @option options [optional, String] :security_group (nil) Name of the security group.
+      # @option options [optional, Array of Strings or String] :security_group (nil) Name of the security group(s).
       # @option options [optional, String] :additional_info (nil) Specifies additional information to make available to the instance(s).
       # @option options [optional, String] :user_data (nil) MIME, Base64-encoded user data.
       # @option options [optional, String] :instance_type (nil) Specifies the instance type.
@@ -46,6 +46,10 @@ module AWS
 
         params = {}
 
+        if options[:security_group]
+          params.merge!(pathlist("SecurityGroup", options[:security_group]))
+        end
+
         if options[:block_device_mapping]
           params.merge!(pathhashlist('BlockDeviceMapping', options[:block_device_mapping].flatten, {:device_name => 'DeviceName', :virtual_name => 'VirtualName', :ebs_snapshot_id => 'Ebs.SnapshotId', :ebs_volume_size => 'Ebs.VolumeSize', :ebs_delete_on_termination => 'Ebs.DeleteOnTermination' }))
         end
@@ -54,7 +58,6 @@ module AWS
         params["MinCount"]                          = options[:min_count].to_s
         params["MaxCount"]                          = options[:max_count].to_s
         params["KeyName"]                           = options[:key_name] unless options[:key_name].nil?
-        params["SecurityGroup"]                     = options[:security_group] unless options[:security_group].nil?
         params["AdditionalInfo"]                    = options[:additional_info] unless options[:additional_info].nil?
         params["UserData"]                          = user_data unless user_data.nil?
         params["InstanceType"]                      = options[:instance_type] unless options[:instance_type].nil?
