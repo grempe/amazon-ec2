@@ -367,9 +367,9 @@ context "EC2 instances " do
   end
 
   specify "should be able specify a security_group" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "SecurityGroup" => 'foo').
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "SecurityGroup.1" => 'foo', "SecurityGroup.2" => 'bar').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    @ec2.run_instances( :image_id => "ami-60a54009", :security_group => "foo" ).should.be.an.instance_of Hash
+    @ec2.run_instances( :image_id => "ami-60a54009", :security_group => ["foo","bar"] ).should.be.an.instance_of Hash
   end
 
   specify "should be able specify additional_info" do
