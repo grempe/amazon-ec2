@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{amazon-ec2}
-  s.version = "0.7.7"
+  s.version = "0.7.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Glenn Rempe"]
-  s.date = %q{2009-12-14}
+  s.date = %q{2009-12-21}
   s.description = %q{A Ruby library for accessing the Amazon Web Services EC2, ELB, RDS, Cloudwatch, and Autoscaling API's.}
   s.email = %q{glenn@rempe.us}
   s.executables = ["ec2-gem-example.rb", "ec2-gem-profile.rb", "ec2sh", "setup.rb"]
@@ -84,7 +84,8 @@ Gem::Specification.new do |s|
      "wsdl/2008-02-01.ec2.wsdl",
      "wsdl/2008-05-05.ec2.wsdl",
      "wsdl/2008-12-01.ec2.wsdl",
-     "wsdl/2009-10-31.ec2.wsdl"
+     "wsdl/2009-10-31.ec2.wsdl",
+     "wsdl/2009-11-30.ec2.wsdl"
   ]
   s.homepage = %q{http://github.com/grempe/amazon-ec2}
   s.rdoc_options = ["--title", "amazon-ec2 documentation", "--line-numbers", "--main", "README.rdoc"]
