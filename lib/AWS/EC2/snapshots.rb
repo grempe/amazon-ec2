@@ -46,34 +46,55 @@ module AWS
         return response_generator(:action => "DeleteSnapshot", :params => params)
       end
 
-
-      # Not yet implemented
+ 
+      # The DescribeSnapshotAttribute operation returns information about an attribute of a snapshot. Only one attribute can be specified per call.
       #
-      # @todo Implement this method
+      # @option options [String] :attribute ('createVolumePermission') Attribute to modify.
+      # @option options [optional,Array] :snapshot_id ([]) The ID of the Amazon EBS snapshot.
       #
       def describe_snapshot_attribute( options = {} )
-        raise "Not yet implemented"
+        params = { "Attribute" =>  options[:attribute] || 'createVolumePermission' }
+        params.merge!(pathlist("SnapshotId", options[:snapshot_id] )) unless options[:snapshot_id].nil? || options[:snapshot_id] == []
+        return response_generator(:action => "DescribeSnapshotAttribute", :params => params)
       end
-
-
-      # Not yet implemented
+ 
+ 
+      # The ModifySnapshotAttribute operation adds or remove permission settings for the specified snapshot.
       #
-      # @todo Implement this method
+      # @option options [String] :snapshot_id ('') The ID of the Amazon EBS snapshot.
+      # @option options [String] :attribute ('createVolumePermission') Attribute to modify.
+      # @option options [String] :operation_type ('') Operation to perform on the attribute.
+      # @option options [optional,String] :user_id ('') Account ID of a user that can create volumes from the snapshot.
+      # @option options [optional,String] :user_group ('') Group that is allowed to create volumes from the snapshot.
       #
       def modify_snapshot_attribute( options = {} )
-        raise "Not yet implemented"
+        options = { :snapshot_id => '' }.merge(options)
+        raise ArgumentError, "No :snapshot_id provided" if options[:snapshot_id].nil? || options[:snapshot_id].empty?
+        options = { :operation_type => '' }.merge(options)
+        raise ArgumentError, "No :operation_type provided" if options[:snapshot_id].nil? || options[:snapshot_id].empty?
+	params = {
+          "Attribute" =>  options[:attribute] || 'createVolumePermission',
+          "SnapshotId" => options[:snapshot_id],
+          "OperationType" => options[:operation_type]
+        }
+        params["UserId"] = options[:user_id] unless options[:user_id].nil?
+        params["UserGroup"] = options[:user_group] unless options[:user_group].nil?
+        return response_generator(:action => "ModifySnapshotAttribute", :params => params)
       end
-
-
-      # Not yet implemented
+ 
+ 
+      # The ResetSnapshotAttribute operation resets permission settings for the specified snapshot.
       #
-      # @todo Implement this method
+      # @option options [optional,Array] :snapshot_id ([]) The ID of the Amazon EBS snapshot.
+      # @option options [String] :attribute ('createVolumePermission') Attribute to reset.
       #
       def reset_snapshot_attribute( options = {} )
-        raise "Not yet implemented"
-      end
-
-
+        options = { :snapshot_id => '' }.merge(options)
+        raise ArgumentError, "No :snapshot_id provided" if options[:snapshot_id].nil? || options[:snapshot_id].empty?
+        params = { "Attribute" =>  options[:attribute] || 'createVolumePermission' }
+        params["SnapshotId"] = options[:snapshot_id] unless options[:snapshot_id].nil? || options[:snapshot_id].empty?
+        return response_generator(:action => "ResetSnapshotAttribute", :params => params)
+      end 
     end
   end
 end
