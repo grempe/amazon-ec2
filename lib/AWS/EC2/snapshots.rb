@@ -46,7 +46,7 @@ module AWS
         return response_generator(:action => "DeleteSnapshot", :params => params)
       end
 
- 
+
       # The DescribeSnapshotAttribute operation returns information about an attribute of a snapshot. Only one attribute can be specified per call.
       #
       # @option options [String] :attribute ('createVolumePermission') Attribute to modify.
@@ -57,8 +57,8 @@ module AWS
         params.merge!(pathlist("SnapshotId", options[:snapshot_id] )) unless options[:snapshot_id].nil? || options[:snapshot_id] == []
         return response_generator(:action => "DescribeSnapshotAttribute", :params => params)
       end
- 
- 
+
+
       # The ModifySnapshotAttribute operation adds or remove permission settings for the specified snapshot.
       #
       # @option options [String] :snapshot_id ('') The ID of the Amazon EBS snapshot.
@@ -72,7 +72,7 @@ module AWS
         raise ArgumentError, "No :snapshot_id provided" if options[:snapshot_id].nil? || options[:snapshot_id].empty?
         options = { :operation_type => '' }.merge(options)
         raise ArgumentError, "No :operation_type provided" if options[:snapshot_id].nil? || options[:snapshot_id].empty?
-	params = {
+	      params = {
           "Attribute" =>  options[:attribute] || 'createVolumePermission',
           "SnapshotId" => options[:snapshot_id],
           "OperationType" => options[:operation_type]
@@ -81,8 +81,8 @@ module AWS
         params["UserGroup"] = options[:user_group] unless options[:user_group].nil?
         return response_generator(:action => "ModifySnapshotAttribute", :params => params)
       end
- 
- 
+
+
       # The ResetSnapshotAttribute operation resets permission settings for the specified snapshot.
       #
       # @option options [optional,Array] :snapshot_id ([]) The ID of the Amazon EBS snapshot.
@@ -94,7 +94,8 @@ module AWS
         params = { "Attribute" =>  options[:attribute] || 'createVolumePermission' }
         params["SnapshotId"] = options[:snapshot_id] unless options[:snapshot_id].nil? || options[:snapshot_id].empty?
         return response_generator(:action => "ResetSnapshotAttribute", :params => params)
-      end 
+      end
+
     end
   end
 end
