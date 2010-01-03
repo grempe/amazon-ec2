@@ -159,6 +159,20 @@ module AWS
 
     end
 
+    # If :user_data is passed in then URL escape and Base64 encode it
+    # as needed.  Need for URL Escape + Base64 encoding is determined
+    # by :base64_encoded param.
+    def extract_user_data( options = {} )
+      return unless options[:user_data]
+      if options[:user_data]
+        if options[:base64_encoded]
+          Base64.encode64(options[:user_data]).gsub(/\n/, "").strip()
+        else
+          options[:user_data]
+        end
+      end
+    end
+
 
     protected
 
@@ -200,20 +214,6 @@ module AWS
           end
         end
         params
-      end
-
-      # If :user_data is passed in then URL escape and Base64 encode it
-      # as needed.  Need for URL Escape + Base64 encoding is determined
-      # by :base64_encoded param.
-      def extract_user_data( options = {} )
-        return unless options[:user_data]
-        if options[:user_data]
-          if options[:base64_encoded]
-            Base64.encode64(options[:user_data]).gsub(/\n/,"").strip()
-          else
-            options[:user_data]
-          end
-        end
       end
 
       # Make the connection to AWS EC2 passing in our request.  This is generally called from

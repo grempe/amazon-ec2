@@ -112,7 +112,7 @@ context "An EC2 spot instances request " do
     @ec2.stubs(:make_request).with('RequestSpotInstances', {"SpotPrice"=>"0.50", "InstanceCount"=>"1"}).
       returns stub(:body => @create_spot_instances_request_response_body, :is_a? => true)
     @ec2.create_spot_instances_request(:spot_price => "0.50").should.be.an.instance_of Hash
-    @ec2.create_spot_instances_request(:spot_price => "0.50").spotInstanceRequestSet.item.first.spotInstanceRequestId.should.equal "sir-f102a405"
+    @ec2.create_spot_instances_request(:spot_price => "0.50").spotInstanceRequestSet.item[0].spotInstanceRequestId.should.equal "sir-f102a405"
   end
 
 
@@ -168,19 +168,11 @@ context "An EC2 spot instances request " do
     response.spotInstanceRequestSet.item[1].instanceId.should.equal "i-2fd4ca90"
   end
 
-  specify "should be able to be de-registered" do
-    @ec2.stubs(:make_request).with('DeregisterImage', {"ImageId"=>"ami-61a54008"}).
+  specify "should be able to be destroyed" do
+    @ec2.stubs(:make_request).with('CancelSpotInstanceRequests', {"SpotInstanceRequestId.1"=>"sir-e95fae02"}).
       returns stub(:body => @cancel_spot_instance_requests_response_body, :is_a? => true)
-    @ec2.deregister_image(:image_id => "ami-61a54008" ).should.be.an.instance_of Hash
-    @ec2.deregister_image(:image_id => "ami-61a54008" ).return.should.equal "true"
+    @ec2.destroy_spot_instance_requests(:spot_instance_request_id => "sir-e95fae02" ).should.be.an.instance_of Hash
+    @ec2.destroy_spot_instance_requests(:spot_instance_request_id => "sir-e95fae02" ).spotInstanceRequestSet.item[0].state.should.equal "cancelled"
   end
-
-
-  specify "method deregister_image should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.deregister_image() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.deregister_image( :image_id => nil ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.deregister_image( :image_id => "" ) }.should.raise(AWS::ArgumentError)
-  end
-
 
 end
