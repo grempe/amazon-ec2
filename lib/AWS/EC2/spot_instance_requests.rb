@@ -67,33 +67,21 @@ module AWS
         return response_generator(:action => "RequestSpotInstances", :params => params)
       end
 
-=begin
-      # Creates an AMI that uses an Amazon EBS root device from a "running" or "stopped" instance.
+      # Describes Spot Instance requests. Spot Instances are instances that Amazon EC2 starts on your behalf when the
+      # maximum price that you specify exceeds the current Spot Price. Amazon EC2 periodically sets the Spot Price
+      # based on available Spot Instance capacity and current spot instance requests. For conceptual information about
+      # Spot Instances, refer to the Amazon Elastic Compute Cloud Developer Guide or Amazon Elastic Compute Cloud User Guide.
       #
-      # AMIs that use an Amazon EBS root device boot faster than AMIs that use instance stores.
-      # They can be up to 1 TiB in size, use storage that persists on instance failure, and can be
-      # stopped and started.
+      # @option options [Array] :spot_instance_request_id ([])
       #
-      # @option options [String] :instance_id ("") The ID of the instance.
-      # @option options [String] :name ("") The name of the AMI that was provided during image creation. Constraints 3-128 alphanumeric characters, parenthesis (()), commas (,), slashes (/), dashes (-), or underscores(_)
-      # @option options [optional,String] :description ("") The description of the AMI that was provided during image creation.
-      # @option options [optional,Boolean] :no_reboot (false) By default this property is set to false, which means Amazon EC2 attempts to cleanly shut down the instance before image creation and reboots the instance afterwards. When set to true, Amazon EC2 does not shut down the instance before creating the image. When this option is used, file system integrity on the created image cannot be guaranteed.
-      #
-      def create_image( options = {} )
-        options = { :instance_id => "", :name => "" }.merge(options)
-        raise ArgumentError, "No :instance_id provided" if options.does_not_have? :instance_id
-        raise ArgumentError, "No :name provided" if options.does_not_have? :name
-        raise ArgumentError, "Invalid string length for :name provided" if options[:name] && options[:name].size < 3 || options[:name].size > 128
-        raise ArgumentError, "Invalid string length for :description provided (too long)" if options[:description] && options[:description].size > 255
-        raise ArgumentError, ":no_reboot option must be a Boolean" unless options[:no_reboot].nil? || [true, false].include?(options[:no_reboot])
-        params = {}
-        params["InstanceId"] = options[:instance_id].to_s
-        params["Name"] = options[:name].to_s
-        params["Description"] = options[:description].to_s
-        params["NoReboot"] = options[:no_reboot].to_s
-        return response_generator(:action => "CreateImage", :params => params)
+      def describe_spot_instance_requests( options = {} )
+        options = { :spot_instance_request_id => []}.merge(options)
+        params = pathlist( "SpotInstanceRequestId", options[:spot_instance_request_id] )
+
+        return response_generator(:action => "DescribeSpotInstanceRequests", :params => params)
       end
 
+=begin
 
       # The DeregisterImage operation deregisters an AMI. Once deregistered, instances of the AMI may no
       # longer be launched.

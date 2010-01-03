@@ -29,6 +29,10 @@ class Hash
     end
   end
 
+  def type
+    self['type']
+  end
+
   def has?(key)
     self[key] && !self[key].to_s.empty?
   end
@@ -270,7 +274,6 @@ module AWS
         http_response = make_request(options[:action], options[:params])
         http_xml = http_response.body
         return Response.parse(:xml => http_xml)
-
       end
 
       # Raises the appropriate error if the specified Net::HTTPResponse object
