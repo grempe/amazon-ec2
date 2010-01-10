@@ -149,28 +149,69 @@ module AWS
         return response_generator(:action => "ConfigureHealthCheck", :params => params)
       end
 
-      # Not yet implemented
+      # This API returns the current state of the instances of the specified LoadBalancer. If no instances are specified,
+      # the state of all the instances for the LoadBalancer is returned.
       #
-      # @todo Implement this method
+      # You must have been the one who created in the LoadBalancer. In other words, in order to successfully call this API,
+      # you must provide the same account credentials as those that were used to create the LoadBalancer.
+      #
+      # @option options [Array<String>] :instances List of instances IDs whose state is being queried.
+      # @option options [String] :load_balancer_name The name of the load balancer
       #
       def describe_instance_health( options = {} )
-        raise "Not yet implemented"
+        raise ArgumentError, "No :load_balancer_name provided" if options[:load_balancer_name].nil? || options[:load_balancer_name].empty?
+
+        params = {}
+
+        params['LoadBalancerName'] = options[:load_balancer_name]
+        params.merge!(pathlist('Instances.member', [options[:instances]].flatten)) if options.has_key?(:instances)
+
+        return response_generator(:action => "DescribeInstanceHealth", :params => params)
       end
 
-      # Not yet implemented
+      # This API removes the specified EC2 Availability Zones from the set of configured Availability Zones for the
+      # LoadBalancer. Once an Availability Zone is removed, all the instances registered with the LoadBalancer that
+      # are in the removed Availability Zone go into the OutOfService state. Upon Availability Zone removal, the
+      # LoadBalancer attempts to equally balance the traffic among its remaining usable Availability Zones. Trying to
+      # remove an Availability Zone that was not associated with the LoadBalancer does nothing.
       #
-      # @todo Implement this method
+      # There must be at least one Availability Zone registered with a LoadBalancer at all times. You cannot remove
+      # all the Availability Zones from a LoadBalancer.
+      #
+      # In order for this call to be successful, you must have created the LoadBalancer. In other words, in order to
+      # successfully call this API, you must provide the same account credentials as those that were used to create
+      # the LoadBalancer.
+      #
+      # @option options [Array<String>] :availability_zones List of Availability Zones to be removed from the LoadBalancer.
+      # @option options [String] :load_balancer_name The name of the load balancer
       #
       def disable_availability_zones_for_load_balancer( options = {} )
-        raise "Not yet implemented"
+        raise ArgumentError, "No :load_balancer_name provided" if options[:load_balancer_name].nil? || options[:load_balancer_name].empty?
+        raise ArgumentError, "No :availability_zones provided" if options[:availability_zones].nil? || options[:availability_zones].empty?
+
+        params = {}
+
+        params['LoadBalancerName'] = options[:load_balancer_name]
+        params.merge!(pathlist('AvailabilityZones.member', [options[:availability_zones]].flatten))
+
+        return response_generator(:action => "DisableAvailabilityZonesForLoadBalancer", :params => params)
       end
 
-      # Not yet implemented
+      # This API is used to add one or more EC2 Availability Zones to the LoadBalancer.
       #
-      # @todo Implement this method
+      # @option options [Array<String>] :availability_zones List of Availability Zones to be added to the LoadBalancer.
+      # @option options [String] :load_balancer_name The name of the load balancer
       #
       def enable_availability_zones_for_load_balancer( options = {} )
-        raise "Not yet implemented"
+        raise ArgumentError, "No :load_balancer_name provided" if options[:load_balancer_name].nil? || options[:load_balancer_name].empty?
+        raise ArgumentError, "No :availability_zones provided" if options[:availability_zones].nil? || options[:availability_zones].empty?
+
+        params = {}
+
+        params['LoadBalancerName'] = options[:load_balancer_name]
+        params.merge!(pathlist('AvailabilityZones.member', [options[:availability_zones]].flatten))
+
+        return response_generator(:action => "EnableAvailabilityZonesForLoadBalancer", :params => params)
       end
 
     end
