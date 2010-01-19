@@ -72,21 +72,6 @@ module AWS
         return response_generator(:action => "RunInstances", :params => params)
       end
 
-      # If :user_data is passed in then URL escape and Base64 encode it
-      # as needed.  Need for URL Escape + Base64 encoding is determined
-      # by :base64_encoded param.
-      def extract_user_data( options = {} )
-        return unless options[:user_data]
-        if options[:user_data]
-          if options[:base64_encoded]
-            Base64.encode64(options[:user_data]).gsub(/\n/,"").strip()
-          else
-            options[:user_data]
-          end
-        end
-      end
-
-
       # The DescribeInstances operation returns information about instances owned by the user
       # making the request.
       #

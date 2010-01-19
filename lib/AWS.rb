@@ -29,6 +29,10 @@ class Hash
     end
   end
 
+  def type
+    self['type']
+  end
+
   def has?(key)
     self[key] && !self[key].to_s.empty?
   end
@@ -155,6 +159,20 @@ module AWS
 
     end
 
+    # If :user_data is passed in then URL escape and Base64 encode it
+    # as needed.  Need for URL Escape + Base64 encoding is determined
+    # by :base64_encoded param.
+    def extract_user_data( options = {} )
+      return unless options[:user_data]
+      if options[:user_data]
+        if options[:base64_encoded]
+          Base64.encode64(options[:user_data]).gsub(/\n/, "").strip()
+        else
+          options[:user_data]
+        end
+      end
+    end
+
 
     protected
 
@@ -256,7 +274,6 @@ module AWS
         http_response = make_request(options[:action], options[:params])
         http_xml = http_response.body
         return Response.parse(:xml => http_xml)
-
       end
 
       # Raises the appropriate error if the specified Net::HTTPResponse object
