@@ -1,4 +1,4 @@
-=== 0.8.0 2010-01-19
+=== 0.9.0 2010-01-19
  * Added EC2 Spot Instance Request Support (nirvdrum)
  * Added EC2 describe_spot_price_history (tlossen)
  * Added ELB describe_instance_health method (rubysolo)
