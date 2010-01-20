@@ -109,7 +109,7 @@ context "An EC2 spot instances request " do
 
 
   specify "should be able to be created" do
-    @ec2.stubs(:make_request).with('RequestSpotInstances', {"SpotPrice"=>"0.50", "InstanceCount"=>"1"}).
+    @ec2.stubs(:make_request).with('RequestSpotInstances', {"SpotPrice"=>"0.50", 'LaunchSpecification.InstanceType' => 'm1.small', "InstanceCount"=>"1"}).
       returns stub(:body => @create_spot_instances_request_response_body, :is_a? => true)
     @ec2.create_spot_instances_request(:spot_price => "0.50").should.be.an.instance_of Hash
     @ec2.create_spot_instances_request(:spot_price => "0.50").spotInstanceRequestSet.item[0].spotInstanceRequestId.should.equal "sir-f102a405"
