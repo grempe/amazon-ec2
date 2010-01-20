@@ -111,15 +111,15 @@ context "An EC2 spot instances request " do
   specify "should be able to be created" do
     @ec2.stubs(:make_request).with('RequestSpotInstances', {"SpotPrice"=>"0.50", 'LaunchSpecification.InstanceType' => 'm1.small', "InstanceCount"=>"1"}).
       returns stub(:body => @create_spot_instances_request_response_body, :is_a? => true)
-    @ec2.create_spot_instances_request(:spot_price => "0.50").should.be.an.instance_of Hash
-    @ec2.create_spot_instances_request(:spot_price => "0.50").spotInstanceRequestSet.item[0].spotInstanceRequestId.should.equal "sir-f102a405"
+    @ec2.request_spot_instances(:spot_price => "0.50").should.be.an.instance_of Hash
+    @ec2.request_spot_instances(:spot_price => "0.50").spotInstanceRequestSet.item[0].spotInstanceRequestId.should.equal "sir-f102a405"
   end
 
 
   specify "method create_spot_instances_request should raise an exception when called with nil/empty string arguments" do
-    lambda { @ec2.create_spot_instances_request() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.create_spot_instances_request(:spot_price => "") }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.create_spot_instances_request(:spot_price => nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.request_spot_instances() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.request_spot_instances(:spot_price => "") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.request_spot_instances(:spot_price => nil) }.should.raise(AWS::ArgumentError)
   end
 
 
@@ -171,8 +171,8 @@ context "An EC2 spot instances request " do
   specify "should be able to be destroyed" do
     @ec2.stubs(:make_request).with('CancelSpotInstanceRequests', {"SpotInstanceRequestId.1"=>"sir-e95fae02"}).
       returns stub(:body => @cancel_spot_instance_requests_response_body, :is_a? => true)
-    @ec2.destroy_spot_instance_requests(:spot_instance_request_id => "sir-e95fae02" ).should.be.an.instance_of Hash
-    @ec2.destroy_spot_instance_requests(:spot_instance_request_id => "sir-e95fae02" ).spotInstanceRequestSet.item[0].state.should.equal "cancelled"
+    @ec2.cancel_spot_instance_requests(:spot_instance_request_id => "sir-e95fae02" ).should.be.an.instance_of Hash
+    @ec2.cancel_spot_instance_requests(:spot_instance_request_id => "sir-e95fae02" ).spotInstanceRequestSet.item[0].state.should.equal "cancelled"
   end
 
 end

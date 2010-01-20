@@ -28,7 +28,7 @@ module AWS
       # @option options [optional, Array] :block_device_mapping ([]) An array of Hashes representing the elements of the block device mapping.  e.g. [{:device_name => '/dev/sdh', :virtual_name => '', :ebs_snapshot_id => '', :ebs_volume_size => '', :ebs_delete_on_termination => ''},{},...]
       # @option options [optional, Boolean] :monitoring_enabled (false) Enables monitoring for the instance.
       #
-      def create_spot_instances_request( options = {} )
+      def request_spot_instances( options = {} )
         options = { :instance_count => 1,
                     :instance_type => 'm1.small',
                     :base64_encoded => false }.merge(options)
@@ -88,11 +88,11 @@ module AWS
       # about Spot Instances, refer to the Amazon Elastic Compute Cloud Developer Guide or Amazon Elastic Compute Cloud
       # User Guide.
       #
-      # NB: Canceling a Spot Instance request does not terminiate running Spot Instances associated with the request.
+      # NB: Canceling a Spot Instance request does not terminate running Spot Instances associated with the request.
       #
       # @option options [Array] :spot_instance_request_id ([])
       #
-      def destroy_spot_instance_requests( options = {} )
+      def cancel_spot_instance_requests( options = {} )
         options = { :spot_instance_request_id => []}.merge(options)
         params = pathlist( "SpotInstanceRequestId", options[:spot_instance_request_id] )
 
