@@ -1,3 +1,8 @@
+=== 0.8.0 2010-01-19
+ * Added EC2 Spot Instance Request Support (nirvdrum)
+ * Added EC2 describe_spot_price_history (tlossen)
+ * Added ELB describe_instance_health method (rubysolo)
+
 === 0.7.4 2009-12-05
  * Initial support for new EBS AMI's
  * Updated EC2 API version
