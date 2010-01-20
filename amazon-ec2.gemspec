@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{amazon-ec2}
-  s.version = "0.7.9"
+  s.version = "0.9.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Glenn Rempe"]
-  s.date = %q{2009-12-22}
+  s.date = %q{2010-01-19}
   s.description = %q{A Ruby library for accessing the Amazon Web Services EC2, ELB, RDS, Cloudwatch, and Autoscaling API's.}
   s.email = %q{glenn@rempe.us}
   s.executables = ["ec2-gem-example.rb", "ec2-gem-profile.rb", "ec2sh", "setup.rb"]
@@ -51,6 +51,8 @@ Gem::Specification.new do |s|
      "lib/AWS/EC2/products.rb",
      "lib/AWS/EC2/security_groups.rb",
      "lib/AWS/EC2/snapshots.rb",
+     "lib/AWS/EC2/spot_instance_requests.rb",
+     "lib/AWS/EC2/spot_prices.rb",
      "lib/AWS/EC2/volumes.rb",
      "lib/AWS/ELB.rb",
      "lib/AWS/ELB/load_balancers.rb",
@@ -76,6 +78,8 @@ Gem::Specification.new do |s|
      "test/test_EC2_s3_xmlsimple.rb",
      "test/test_EC2_security_groups.rb",
      "test/test_EC2_snapshots.rb",
+     "test/test_EC2_spot_instance_requests.rb",
+     "test/test_EC2_spot_prices.rb",
      "test/test_EC2_volumes.rb",
      "test/test_ELB_load_balancers.rb",
      "test/test_RDS.rb",
@@ -108,6 +112,8 @@ Gem::Specification.new do |s|
      "test/test_EC2_s3_xmlsimple.rb",
      "test/test_EC2_security_groups.rb",
      "test/test_EC2_snapshots.rb",
+     "test/test_EC2_spot_instance_requests.rb",
+     "test/test_EC2_spot_prices.rb",
      "test/test_EC2_volumes.rb",
      "test/test_ELB_load_balancers.rb",
      "test/test_helper.rb",
