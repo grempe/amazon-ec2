@@ -113,7 +113,7 @@ module AWS
           params["Dimensions.member.1.Name"] = options[:dimensions][:name]
           params["Dimensions.member.1.Value"] = options[:dimensions][:value]
         else
-          raise ArgumentError, "Dimensionss must be either an array or a hash"
+          raise ArgumentError, "Dimensions must be either an array or a hash"
         end
         params['MeasureName'] = options[:measure_name]
         params['Namespace'] = options[:namespace] if options[:namespace]
