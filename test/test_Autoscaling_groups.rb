@@ -110,10 +110,11 @@ context "autoscaling " do
       'LowerBreachScaleIncrement' => "-1",
       'UpperThreshold' => "1.5",
       'UpperBreachScaleIncrement' => "1",
-      'BreachDuration' => "120"
+      'BreachDuration' => "120",
+      'Namespace' => "AWS/EC2",              
     }).returns stub(:body => @create_or_update_trigger_response, :is_a? => true)
 
-    valid_create_or_update_scaling_trigger_params = {:autoscaling_group_name => "AutoScalingGroupName", :dimensions => {:name => "AutoScalingGroupName", :value => "Bob"}, :unit => "Seconds", :measure_name => "CPUUtilization", :statistic => "Average", :period => 120, :trigger_name => "AFunNameForATrigger", :lower_threshold => 0.2, :lower_breach_scale_increment => "-1", :upper_threshold => 1.5, :upper_breach_scale_increment => 1, :breach_duration => 120}
+    valid_create_or_update_scaling_trigger_params = {:autoscaling_group_name => "AutoScalingGroupName", :dimensions => {:name => "AutoScalingGroupName", :value => "Bob"}, :unit => "Seconds", :measure_name => "CPUUtilization", :namespace => "AWS/EC2", :statistic => "Average", :period => 120, :trigger_name => "AFunNameForATrigger", :lower_threshold => 0.2, :lower_breach_scale_increment => "-1", :upper_threshold => 1.5, :upper_breach_scale_increment => 1, :breach_duration => 120}
 
     %w(dimensions autoscaling_group_name measure_name statistic period trigger_name lower_threshold lower_breach_scale_increment upper_threshold upper_breach_scale_increment breach_duration).each do |meth_str|
       lambda { @as.create_or_updated_scaling_trigger(valid_create_or_update_scaling_trigger_params.merge(meth_str.to_sym=>nil)) }.should.raise(AWS::ArgumentError)

@@ -73,6 +73,7 @@ module AWS
       #   When called as a hash, the values must look like: {:name => "name", :value => "value"}
       #   In the array format, the first value is assumed to be the name and the second is assumed to be the value
       # @option options [String] :measure_name (nil) the measure name associated with the metric used by the trigger
+      # @option options [optional,String] :namespace (nil) namespace of the metric on which to trigger. Used to describe the monitoring metric.
       # @option options [String|Integer] :period (nil) the period associated with the metric in seconds
       # @option options [String] :statistic (nil) The particular statistic used by the trigger when fetching metric statistics to examine. Must be one of the following: Minimum, Maximum, Sum, Average
       # @option options [String] :trigger_name (nil) the name for this trigger
@@ -115,6 +116,7 @@ module AWS
           raise ArgumentError, "Dimensionss must be either an array or a hash"
         end
         params['MeasureName'] = options[:measure_name]
+        params['Namespace'] = options[:namespace] if options[:namespace]
         params['Statistic'] = options[:statistic]
         params['Period'] = options[:period].to_s
         params['TriggerName'] = options[:trigger_name]
