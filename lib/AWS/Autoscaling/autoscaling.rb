@@ -103,7 +103,7 @@ module AWS
         end
 
         params = {}
-        params['Unit'] = options[:unit] || "Seconds"
+        params['Unit'] = options[:unit] if options[:unit]
         params['AutoScalingGroupName'] = options[:autoscaling_group_name]
         case options[:dimensions]
         when Array
