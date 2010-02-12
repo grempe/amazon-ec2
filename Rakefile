@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'rake'
-require 'yard'
 
 begin
   require 'jeweler'
@@ -61,8 +60,13 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-YARD::Rake::YardocTask.new do |t|
-  #t.files   = ['lib/**/*.rb']
+begin
+  require 'yard'
+  YARD::Rake::YardocTask.new do |t|
+    #t.files   = ['lib/**/*.rb']
+  end
+rescue LoadError
+  puts "YARD (or a dependency) not available. Install it with: [sudo] gem install yard"
 end
 
 desc "Generate a perftools.rb profile"
