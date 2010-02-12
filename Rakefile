@@ -2,21 +2,25 @@ require 'rubygems'
 require 'rake'
 require 'yard'
 
-require 'jeweler'
-Jeweler::Tasks.new do |gem|
-  gem.name = "amazon-ec2"
-  gem.summary = %Q{Amazon EC2 Ruby Gem}
-  gem.description = %Q{A Ruby library for accessing the Amazon Web Services EC2, ELB, RDS, Cloudwatch, and Autoscaling APIs.}
-  gem.email = "glenn@rempe.us"
-  gem.homepage = "http://github.com/grempe/amazon-ec2"
-  gem.authors = ["Glenn Rempe"]
-  gem.rdoc_options = ["--title", "amazon-ec2 documentation", "--line-numbers", "--main", "README.rdoc"]
-  gem.rubyforge_project = 'amazon-ec2'
-  gem.add_dependency('xml-simple', '>= 1.0.12')
-  gem.add_development_dependency('mocha', '>= 0.9.8')
-  gem.add_development_dependency('test-spec', '>= 0.10.0')
-  gem.add_development_dependency('rcov', '>= 0.9.6')
-  gem.add_development_dependency('perftools.rb', '>= 0.3.9')
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gem|
+    gem.name = "amazon-ec2"
+    gem.summary = %Q{Amazon EC2 Ruby Gem}
+    gem.description = %Q{A Ruby library for accessing the Amazon Web Services EC2, ELB, RDS, Cloudwatch, and Autoscaling APIs.}
+    gem.email = "glenn@rempe.us"
+    gem.homepage = "http://github.com/grempe/amazon-ec2"
+    gem.authors = ["Glenn Rempe"]
+    gem.rdoc_options = ["--title", "amazon-ec2 documentation", "--line-numbers", "--main", "README.rdoc"]
+    gem.rubyforge_project = 'amazon-ec2'
+    gem.add_dependency('xml-simple', '>= 1.0.12')
+    gem.add_development_dependency('mocha', '>= 0.9.8')
+    gem.add_development_dependency('test-spec', '>= 0.10.0')
+    gem.add_development_dependency('rcov', '>= 0.9.6')
+    gem.add_development_dependency('perftools.rb', '>= 0.3.9')
+  end
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: [sudo] gem install jeweler"
 end
 
 require 'rake/testtask'
