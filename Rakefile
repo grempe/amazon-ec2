@@ -6,7 +6,7 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   gem.name = "amazon-ec2"
   gem.summary = %Q{Amazon EC2 Ruby Gem}
-  gem.description = %Q{A Ruby library for accessing the Amazon Web Services EC2, ELB, RDS, Cloudwatch, and Autoscaling API's.}
+  gem.description = %Q{A Ruby library for accessing the Amazon Web Services EC2, ELB, RDS, Cloudwatch, and Autoscaling APIs.}
   gem.email = "glenn@rempe.us"
   gem.homepage = "http://github.com/grempe/amazon-ec2"
   gem.authors = ["Glenn Rempe"]
