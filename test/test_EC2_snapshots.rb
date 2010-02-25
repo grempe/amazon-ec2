@@ -32,6 +32,7 @@ context "EC2 snaphots " do
       <status>pending</status>
       <startTime>2008-05-07T12:51:50.000Z</startTime>
       <progress></progress>
+      <description>Daily Backup</description>
     </CreateSnapshotResponse>
     RESPONSE
 
@@ -68,6 +69,20 @@ context "EC2 snaphots " do
     response.volumeId.should.equal "vol-4d826724"
     response.status.should.equal "pending"
     response.progress.should.equal nil
+  end
+
+  specify "should be able to be created with a volume_id and description" do
+    @ec2.stubs(:make_request).with('CreateSnapshot', {"VolumeId" => "vol-4d826724", "Description" => "Daily Backup"}).
+      returns stub(:body => @create_snapshot_response_body, :is_a? => true)
+
+    @ec2.create_snapshot( :volume_id => "vol-4d826724", :description => "Daily Backup" ).should.be.an.instance_of Hash
+
+    response = @ec2.create_snapshot( :volume_id => "vol-4d826724", :description => "Daily Backup")
+    response.snapshotId.should.equal "snap-78a54011"
+    response.volumeId.should.equal "vol-4d826724"
+    response.status.should.equal "pending"
+    response.progress.should.equal nil
+    response.description.should.equal "Daily Backup"
   end
 
   specify "should be able to be deleted with a snapsot_id" do

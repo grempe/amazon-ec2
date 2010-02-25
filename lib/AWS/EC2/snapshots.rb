@@ -22,6 +22,7 @@ module AWS
       # The CreateSnapshot operation creates a snapshot of an Amazon EBS volume and stores it in Amazon S3. You can use snapshots for backups, to launch instances from identical snapshots, and to save data before shutting down an instance.
       #
       # @option options [String] :volume_id ('')
+      # @option options [optional,String] :description ('') Description of the Amazon EBS snapshot.
       #
       def create_snapshot( options = {} )
         options = { :volume_id => '' }.merge(options)
@@ -29,6 +30,7 @@ module AWS
         params = {
           "VolumeId" => options[:volume_id]
         }
+        params["Description"] = options[:description] unless options[:description].nil?
         return response_generator(:action => "CreateSnapshot", :params => params)
       end
 
