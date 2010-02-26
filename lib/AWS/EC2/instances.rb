@@ -228,6 +228,12 @@ module AWS
       end
 
 
+      #
+      # My voice is my passport, identify me.  returns the local instance id if any.
+      #
+      def my_identity
+        Net::HTTP.get URI.parse('http://169.254.169.254/latest/meta-data/instance-id')
+      end  
     end
   end
 end
