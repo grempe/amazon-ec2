@@ -3,11 +3,11 @@ module AWS
     class Base < AWS::Base
 
 
-      # The DescribeSubnets operation returns information about keypairs available for use by the user
-      # making the request. Selected keypairs may be specified or the list may be left empty if information for
-      # all registered keypairs is required.
+      # The DescribeSubnets operation returns information about subnets available for use by the user
+      # making the request. Selected subnets may be specified or the list may be left empty if information for
+      # all registered subnets is required.
       #
-      # @option options [Array] :key_name ([])
+      # @option options [Array] :subnet_id ([])
       #
       def describe_subnets( options = {} )
         options = { :subnet_id => [] }.merge(options)

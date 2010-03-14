@@ -59,7 +59,6 @@ context "The EC2 subnets " do
     response.subnetSet.item[0].cidrBlock.should.equal "10.225.251.0/24"
     response.subnetSet.item[0].vpcId.should.equal "vpc-b00000db"
     response.subnetSet.item[0].availabilityZone.should.equal "us-east-1a"
-    
   end
 
   
