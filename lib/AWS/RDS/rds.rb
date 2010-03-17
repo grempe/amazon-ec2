@@ -462,25 +462,35 @@ module AWS
       # DB Snapshot was created.
       #
       # @option options [String] :source_db_instance_identifier the identifier of the source DB Instance from which to restore.
+      # @option options [optional, Boolean] :use_latest_restorable_time specifies that the db be restored to the latest restored time. Conditional, cannot be specified if :restore_time parameter is provided.
+      # @option options [optional, Date] :restore_time specifies the date and time to restore from. Conditional, cannot be specified if :use_latest_restorable_time parameter is true.
       # @option options [String] :target_db_instance_identifier is the name of the new database instance to be created.
-      # @option options [String] :use_latest_restorable_time specifies that the db be restored to the latest restored time
-      # @option options [String] :restore_time specifies the date and time to restore from
-      # @option options [String] :db_instance_class specifies the class of the compute and memory of the EC2 instance
-      # @option options [String] :port is the port which the db can accept connections on
-      # @option options [String] :availability_zone is the EC2 zone which the db instance will be created
+      # @option options [optional, String] :db_instance_class specifies the class of the compute and memory of the EC2 instance, Options : db.m1.small | db.m1.large | db.m1.xlarge | db.m2.2xlarge | db.m2.4xlarge
+      # @option options [optional, Integer] :port is the port which the db can accept connections on. Constraints: Value must be 1115-65535
+      # @option options [optional, String] :availability_zone is the EC2 zone which the db instance will be created
       #
       def restore_db_instance_to_point_in_time( options = {} )
-        raise ArgumentError, "No :db_snapshot_identifier provided" if options.does_not_have?(:db_snapshot_identifier)
-        raise ArgumentError, "No :db_instance_identifier provided" if options.does_not_have?(:db_instance_identifier)
-        raise ArgumentError, "No :db_instance_class provided" if options.does_not_have?(:db_instance_class)
+        raise ArgumentError, "No :source_db_instance_identifier provided" if options.does_not_have?(:source_db_instance_identifier)
+        raise ArgumentError, "No :target_db_instance_identifier provided" if options.does_not_have?(:target_db_instance_identifier)
 
         params = {}
         params['SourceDBInstanceIdentifier'] = options[:source_db_instance_identifier]
         params['TargetDBInstanceIdentifier'] = options[:target_db_instance_identifier]
 
-        if options[:use_latest_restorable_time]
-          params['UseLatestRestorableTime'] = options[:use_latest_restorable_time]
-        elsif options[:restore_time]
+        if options.has?(:use_latest_restorable_time) && options.has?(:restore_time)
+          raise ArgumentError, "You cannot provide both :use_latest_restorable_time and :restore_time"
+        elsif options.has?(:use_latest_restorable_time)
+          params['UseLatestRestorableTime'] = case options[:use_latest_restorable_time]
+                                              when 'true', 'false'
+                                                options[:use_latest_restorable_time]
+                                              when true
+                                                'true'
+                                              when false
+                                                'false'
+                                              else
+                                                raise ArgumentError, "Invalid value provided for :use_latest_restorable_time.  Expected boolean."
+                                              end
+        elsif options.has?(:restore_time)
           params['RestoreTime'] = options[:restore_time]
         end
 

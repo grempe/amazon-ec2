@@ -6,5 +6,6 @@ Publishing the gem using Jeweler:
 
 Push the gem to gemcutter:
 
+  rake build
   gem push pkg/amazon-ec2-X.Y.Z.gem
 
