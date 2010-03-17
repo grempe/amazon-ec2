@@ -481,12 +481,12 @@ module AWS
           raise ArgumentError, "You cannot provide both :use_latest_restorable_time and :restore_time"
         elsif options.has?(:use_latest_restorable_time)
           params['UseLatestRestorableTime'] = case options[:use_latest_restorable_time]
-                                              when 'True', 'False'
+                                              when 'true', 'false'
                                                 options[:use_latest_restorable_time]
                                               when true
-                                                'True'
+                                                'true'
                                               when false
-                                                'False'
+                                                'false'
                                               else
                                                 raise ArgumentError, "Invalid value provided for :use_latest_restorable_time.  Expected boolean."
                                               end
