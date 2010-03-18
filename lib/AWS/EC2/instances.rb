@@ -228,41 +228,43 @@ module AWS
       end
 
 
-     
+
     end
-    
+
     #
     # A set of methods for querying amazon's ec2 meta-data service.
+    # Note : This can ONLY be run on an actual running EC2 instance.
+    #
+    # Example Class Method Usage :
+    # instance_id = AWS::EC2::Instance.local_instance_id
     #
     module Instance
-      
+
       EC2_META_URL_BASE = 'http://169.254.169.254/latest/meta-data/'
-      
-      class NotEC2InstanceException < Exception; end
-      
+
       #
       # Returns the current instance-id when called from a host within EC2.
       #
       def self.local_instance_id
         Net::HTTP.get URI.parse(EC2_META_URL_BASE + 'instance-id')
       end
-      
+
       #
-      # Returns a hash of all available meta data.
+      # Returns a hash of all available instance meta data.
       #
       def self.local_instance_meta_data
         meta_data = {}
-        
-        Net::HTTP.get(URI.parse('http://169.254.169.254/latest/meta-data/')).split("\n").each do |meta_type|
+
+        Net::HTTP.get(URI.parse(EC2_META_URL_BASE)).split("\n").each do |meta_type|
           meta_data.merge!({meta_type => Net::HTTP.get(URI.parse(EC2_META_URL_BASE + meta_type)) })
         end
-        
+
         return meta_data
       end
-    
+
     end
-    
-    
+
+
   end
 end
 
