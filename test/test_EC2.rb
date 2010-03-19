@@ -50,13 +50,13 @@ context "The EC2 method " do
   end
 
   specify "AWS.canonical_string(path) should conform to Amazon's requirements " do
-    path = {"name1" => "value1", "name2" => "value2 has spaces", "name3" => "value3"}
+    path = {"name1" => "value1", "name2" => "value2 has spaces", "name3" => "value3~"}
     if ENV['EC2_URL'].nil? || ENV['EC2_URL'] == 'https://ec2.amazonaws.com'
-      AWS.canonical_string(path, 'ec2.amazonaws.com').should.equal "POST\nec2.amazonaws.com\n/\nname1=value1&name2=value2%20has%20spaces&name3=value3"
+      AWS.canonical_string(path, 'ec2.amazonaws.com').should.equal "POST\nec2.amazonaws.com\n/\nname1=value1&name2=value2%20has%20spaces&name3=value3~"
     elsif ENV['EC2_URL'] == 'https://us-east-1.ec2.amazonaws.com'
-      AWS.canonical_string(path, 'ec2.amazonaws.com').should.equal "POST\nus-east-1.ec2.amazonaws.com\n/\nname1=value1&name2=value2%20has%20spaces&name3=value3"
+      AWS.canonical_string(path, 'ec2.amazonaws.com').should.equal "POST\nus-east-1.ec2.amazonaws.com\n/\nname1=value1&name2=value2%20has%20spaces&name3=value3~"
     elsif ENV['EC2_URL'] == 'https://eu-west-1.ec2.amazonaws.com'
-      AWS.canonical_string(path, 'ec2.amazonaws.com').should.equal "POST\neu-west-1.ec2.amazonaws.com\n/\nname1=value1&name2=value2%20has%20spaces&name3=value3"
+      AWS.canonical_string(path, 'ec2.amazonaws.com').should.equal "POST\neu-west-1.ec2.amazonaws.com\n/\nname1=value1&name2=value2%20has%20spaces&name3=value3~"
     end
   end
 
