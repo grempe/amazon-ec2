@@ -61,7 +61,7 @@ module AWS
       encoded = (CGI::escape(p[0].to_s) +
                  "=" + CGI::escape(p[1].to_s))
       # Ensure spaces are encoded as '%20', not '+'
-      encoded.gsub('+', '%20')
+      encoded = encoded.gsub('+', '%20')
     end
     sigquery = encoded_params.join("&")
 
