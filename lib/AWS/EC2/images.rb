@@ -55,9 +55,21 @@ module AWS
       # @option options [String] :image_location ("")
       #
       def register_image( options = {} )
-        options = {:image_location => ""}.merge(options)
-        raise ArgumentError, "No :image_location provided" if options[:image_location].nil? || options[:image_location].empty?
-        params = { "ImageLocation" => options[:image_location] }
+        params = {}
+        params["ImageLocation"] = options[:image_location].to_s
+        params["Name"] = options[:name].to_s
+        params["Description"] = options[:description].to_s
+        params["Architecture"] = options[:architecture].to_s
+        params["KernelId"] = options[:kernel_id].to_s
+        params["RamdiskId"] = options[:ramdisk_id].to_s
+        params["RootDeviceName"] = options[:root_device_name].to_s
+        params.merge!(pathhashlist("BlockDeviceMapping", options[:block_device_mapping].flatten, {
+          :device_name => "DeviceName",
+          :virtual_name => "VirtualName",
+          :ebs_snapshot_id => "Ebs.SnapshotId",
+          :ebs_volume_size => "Ebs.VolumeSize",
+          :ebs_delete_on_termination => "Ebs.DeleteOnTermination"
+        }))
         return response_generator(:action => "RegisterImage", :params => params)
       end
 
