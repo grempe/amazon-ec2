@@ -148,12 +148,7 @@ If you're not in front of a terminal shell now (perhaps you're browsing this sit
     The EC2 connection is wired to the class instance '@ec2'.  Make method calls
     on this to execute commands on EC2.  Adding a #to_s
     at the end of any command should give you a full String representation of the
-    response.  The #xml data is available for each response
-    which allows you to view the full and complete XML response returned by
-    EC2 without any parsing applied.  This is useful for viewing the
-    hierarchy of an entire response in a friendly way (if XML is friendly
-    to you!).  Understanding the hierarchy of the XML response is critical
-    to making effective use of this library.
+    response.
 
       Examples to try:
 
