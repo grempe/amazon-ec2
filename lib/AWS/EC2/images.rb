@@ -52,7 +52,17 @@ module AWS
       # If you do have to make changes and upload a new image deregister the previous image and register
       # the new image.
       #
-      # @option options [String] :image_location ("")
+      # If an :image_location is specified then an old-style S3-backed AMI is created. If the other
+      # parameters are used then a new style EBS-backed AMI is created from a pre-existing snapshot.
+      #
+      # @option options [optional, String] :image_location ("") S3 URL for the XML manifest
+      # @option options [optional, String] :name ("") Name of EBS image
+      # @option options [optional, String] :description ("") Description of EBS image
+      # @option options [optional, String] :architecture ("") Architecture of EBS image, currently 'i386' or 'x86_64'
+      # @option options [optional, String] :kernel_id ("") Kernel ID of EBS image
+      # @option options [optional, String] :ramdisk_id ("") Ramdisk ID of EBS image
+      # @option options [optional, String] :root_device_name ("") Root device name of EBS image, eg '/dev/sda1'
+      # @option options [optional, Array] :block_device_mapping ([]) An array of Hashes representing the elements of the block device mapping.  e.g. [{:device_name => '/dev/sdh', :virtual_name => '', :ebs_snapshot_id => '', :ebs_volume_size => '', :ebs_delete_on_termination => ''},{},...]
       #
       def register_image( options = {} )
         params = {}
