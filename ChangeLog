@@ -1,3 +1,6 @@
+=== 0.9.10 2010-03-26
+ * Enhancements to EC2 register_image to handle registration based on EBS snapshots (jamespharaoh)
+
 === 0.9.9 2010-03-19
  * Bugfix in signing algorithm (wlach)
 
