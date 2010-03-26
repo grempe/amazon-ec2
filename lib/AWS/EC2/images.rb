@@ -66,6 +66,9 @@ module AWS
       #
       def register_image( options = {} )
         params = {}
+        if options.does_not_have?(:image_location) && options.does_not_have?(:root_device_name)
+          raise ArgumentError, "No :image_location or :root_device_name"
+        end
         params["ImageLocation"] = options[:image_location].to_s unless options[:image_location].nil?
         params["Name"] = options[:name].to_s unless options[:name].nil?
         params["Description"] = options[:description].to_s unless options[:description].nil?

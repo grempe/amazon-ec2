@@ -124,6 +124,12 @@ context "An EC2 image " do
   end
 
 
+  specify "method register_image should raise an exception when called without :name or :root_device_name" do
+    lambda { @ec2.register_image() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.register_image(:image_location => "", :root_device_name => "") }.should.raise(AWS::ArgumentError)
+  end
+
+
   specify "should be able to be described and return the correct Ruby response class for parent and members" do
     @ec2.stubs(:make_request).with('DescribeImages', {}).
       returns stub(:body => @describe_image_response_body, :is_a? => true)
