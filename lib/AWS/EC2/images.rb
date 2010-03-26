@@ -43,14 +43,20 @@ module AWS
       end
 
 
-      # The RegisterImage operation registers an AMI with Amazon EC2. Images must be registered before
-      # they can be launched.  Each AMI is associated with an unique ID which is provided by the EC2
-      # service via the Registerimage operation. As part of the registration process, Amazon EC2 will
-      # retrieve the specified image manifest from Amazon S3 and verify that the image is owned by the
-      # user requesting image registration.  The image manifest is retrieved once and stored within the
-      # Amazon EC2 network. Any modifications to an image in Amazon S3 invalidate this registration.
-      # If you do have to make changes and upload a new image deregister the previous image and register
-      # the new image.
+      # Registers an AMI with Amazon EC2. Images must be registered before they can be launched.
+      # To launch instances, use the RunInstances operation.  Each AMI is associated with an unique ID
+      # which is provided by the Amazon EC2 service through this operation. If needed, you can deregister
+      # an AMI at any time.
+      #
+      # AMIs backed by Amazon EBS are automatically registered when you create the image.
+      # However, you can use this to register a snapshot of an instance backed by Amazon EBS.
+      #
+      # Amazon EBS snapshots are not guaranteed to be bootable. For information on creating AMIs
+      # backed by Amazon EBS, go to the Amazon Elastic Compute Cloud Developer Guide or Amazon
+      # Elastic Compute Cloud User Guide.
+      #
+      # Any modifications to an AMI backed by Amazon S3 invalidates this registration.
+      # If you make changes to an image, deregister the previous image and register the new image.
       #
       # If an :image_location is specified then an old-style S3-backed AMI is created. If the other
       # parameters are used then a new style EBS-backed AMI is created from a pre-existing snapshot.
