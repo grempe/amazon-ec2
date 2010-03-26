@@ -88,7 +88,7 @@ context "An EC2 image " do
   end
 
 
-  specify "should be able to be registered" do
+  specify "should be able to be registered with manifest" do
     @ec2.stubs(:make_request).with('RegisterImage', {"ImageLocation"=>"mybucket-myimage.manifest.xml"}).
       returns stub(:body => @register_image_response_body, :is_a? => true)
     @ec2.register_image(:image_location => "mybucket-myimage.manifest.xml").imageId.should.equal "ami-61a54008"
@@ -96,9 +96,31 @@ context "An EC2 image " do
   end
 
 
-  specify "method register_image should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.register_image() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.register_image(:image_location => "") }.should.raise(AWS::ArgumentError)
+  specify "should be able to be registered with snapshot" do
+    @ec2.stubs(:make_request).with('RegisterImage', {
+        "Name" => "image_name",
+        "Architecture" => "i386",
+        "KernelId" => "aki-01234567",
+        "RamdiskId" => "ari-01234567",
+        "RootDeviceName" => "/dev/sda1",
+        "BlockDeviceMapping.1.DeviceName" => "/dev/sda1",
+        "BlockDeviceMapping.1.Ebs.SnapshotId" => "snap-01234567",
+        "BlockDeviceMapping.1.Ebs.DeleteOnTermination" => "true",
+      }).returns stub(:body => @register_image_response_body, :is_a? => true)
+    ret = @ec2.register_image({
+      :name => "image_name",
+      :architecture => "i386",
+      :kernel_id => "aki-01234567",
+      :ramdisk_id => "ari-01234567",
+      :root_device_name => "/dev/sda1",
+      :block_device_mapping => [{
+        :device_name => "/dev/sda1",
+        :ebs_snapshot_id => "snap-01234567",
+        :ebs_delete_on_termination => true,
+      }]
+    })
+    ret.imageId.should.equal "ami-61a54008"
+    ret.should.be.an.instance_of Hash
   end
 
 

@@ -56,20 +56,22 @@ module AWS
       #
       def register_image( options = {} )
         params = {}
-        params["ImageLocation"] = options[:image_location].to_s
-        params["Name"] = options[:name].to_s
-        params["Description"] = options[:description].to_s
-        params["Architecture"] = options[:architecture].to_s
-        params["KernelId"] = options[:kernel_id].to_s
-        params["RamdiskId"] = options[:ramdisk_id].to_s
-        params["RootDeviceName"] = options[:root_device_name].to_s
-        params.merge!(pathhashlist("BlockDeviceMapping", options[:block_device_mapping].flatten, {
-          :device_name => "DeviceName",
-          :virtual_name => "VirtualName",
-          :ebs_snapshot_id => "Ebs.SnapshotId",
-          :ebs_volume_size => "Ebs.VolumeSize",
-          :ebs_delete_on_termination => "Ebs.DeleteOnTermination"
-        }))
+        params["ImageLocation"] = options[:image_location].to_s unless options[:image_location].nil?
+        params["Name"] = options[:name].to_s unless options[:name].nil?
+        params["Description"] = options[:description].to_s unless options[:description].nil?
+        params["Architecture"] = options[:architecture].to_s unless options[:architecture].nil?
+        params["KernelId"] = options[:kernel_id].to_s unless options[:kernel_id].nil?
+        params["RamdiskId"] = options[:ramdisk_id].to_s unless options[:ramdisk_id].nil?
+        params["RootDeviceName"] = options[:root_device_name].to_s unless options[:root_device_name].nil?
+        if options[:block_device_mapping]
+          params.merge!(pathhashlist("BlockDeviceMapping", options[:block_device_mapping].flatten, {
+            :device_name => "DeviceName",
+            :virtual_name => "VirtualName",
+            :ebs_snapshot_id => "Ebs.SnapshotId",
+            :ebs_volume_size => "Ebs.VolumeSize",
+            :ebs_delete_on_termination => "Ebs.DeleteOnTermination"
+          }))
+        end
         return response_generator(:action => "RegisterImage", :params => params)
       end
 
