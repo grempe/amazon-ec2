@@ -27,6 +27,7 @@ module AWS
       # @option options [optional,String] :availability_zone (nil) Specifies the placement constraints (Availability Zones) for launching the instances.
       # @option options [optional, Array] :block_device_mapping ([]) An array of Hashes representing the elements of the block device mapping.  e.g. [{:device_name => '/dev/sdh', :virtual_name => '', :ebs_snapshot_id => '', :ebs_volume_size => '', :ebs_delete_on_termination => ''},{},...]
       # @option options [optional, Boolean] :monitoring_enabled (false) Enables monitoring for the instance.
+      # @option options [optional, Boolean] :base64_encoded (false)
       #
       def request_spot_instances( options = {} )
         options = { :instance_count => 1,
@@ -35,6 +36,7 @@ module AWS
 
         raise ArgumentError, ":addressing_type has been deprecated." if options[:addressing_type]
         raise ArgumentError, ":spot_price must be provided" if options[:spot_price].nil? || options[:spot_price].empty?
+        raise ArgumentError, ":base64_encoded must be 'true' or 'false'" unless [true, false].include?(options[:base64_encoded])
 
         user_data = extract_user_data(options)
 
@@ -64,7 +66,7 @@ module AWS
         params["LaunchSpecification.SubnetId"]                          = options[:subnet_id] unless options[:subnet_id].nil?
         params["LaunchSpecification.Placement.AvailabilityZone"]        = options[:availability_zone] unless options[:availability_zone].nil?
         params["LaunchSpecification.Monitoring.Enabled"]                = options[:monitoring_enabled].to_s unless options[:monitoring_enabled].nil?
-        
+
         return response_generator(:action => "RequestSpotInstances", :params => params)
       end
 
