@@ -348,6 +348,20 @@ The original code for this library was provided by Amazon Web Services, LLC as s
 
 Comments, patches, Git pull requests and bug reports are welcome. Send an email to mailto:glenn@rempe.us or join the Google Groups forum.
 
+== Patches & Pull Requests
+
+Please follow these steps if you want to send a patch or a GitHub pull request:
+
+* Fork grempe/amazon-ec2
+* Create a topic branch: `git checkout -b my_fix`
+* Make sure you add tests for your changes and that they all pass with 'rake test'
+* Don't change files that you don't own like the gemspec or VERSION
+* Commit your changes, one change/fix per commit
+* Push your fixes branch: `git push origin my_fix`
+* Open an Issue referencing your branch.
+* Please do not push to `master` on your fork. This will make everyone’s life easier.
+
+
 Enjoy!
 
 Glenn Rempe
