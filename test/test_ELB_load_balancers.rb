@@ -184,10 +184,10 @@ context "elb load balancers " do
     lambda { @elb.register_instances_with_load_balancer(@valid_register_instances_with_load_balancer_params.merge(:instances=>[])) }.should.raise(AWS::ArgumentError)
   end
 
-  specify "should be able to degresiter instances from load balancers with degregister_instances_from_load_balancer" do
+  specify "should be able to deregister instances from load balancers with deregister_instances_from_load_balancer" do
     @elb.stubs(:make_request).with('DeregisterInstancesFromLoadBalancer', {
       'LoadBalancerName' => 'Test Name',
-      'Instances.member.1' => 'i-6055fa09'
+      'Instances.member.1.InstanceId' => 'i-6055fa09'
      }).returns stub(:body => @deregister_instances_from_load_balancer_response_body, :is_a? => true)
 
      response = @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params)
@@ -197,7 +197,7 @@ context "elb load balancers " do
   specify "method deregister_instances_from_load_balancer should reject bad arguments" do
     @elb.stubs(:make_request).with('DeregisterInstancesFromLoadBalancer', {
       'LoadBalancerName' => 'Test Name',
-      'Instances.member.1' => 'i-6055fa09'
+      'Instances.member.1.InstanceId' => 'i-6055fa09'
     }).returns stub(:body => @deregister_instances_from_load_balancer_response_body, :is_a? => true)
 
     lambda { @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params) }.should.not.raise(AWS::ArgumentError)

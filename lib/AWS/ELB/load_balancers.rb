@@ -115,7 +115,7 @@ module AWS
         raise ArgumentError, "No :instances provided" if options[:instances].nil? || options[:instances].empty?
         raise ArgumentError, "No :load_balancer_name provided" if options[:load_balancer_name].nil? || options[:load_balancer_name].empty?
         params = {}
-        params.merge!(pathlist('Instances.member', [options[:instances]].flatten))
+        params.merge!(pathhashlist('Instances.member', options[:instances].flatten.collect{|e| {:instance_id => e}}, {:instance_id => 'InstanceId'}))
         params['LoadBalancerName'] = options[:load_balancer_name]
         return response_generator(:action => "DeregisterInstancesFromLoadBalancer", :params => params)
       end
