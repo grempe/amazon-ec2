@@ -206,7 +206,7 @@ context "elb load balancers " do
     lambda { @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params.merge(:instances=>[])) }.should.raise(AWS::ArgumentError)
   end
 
-  specify "should be able to degresiter instances from load balancers with degregister_instances_from_load_balancer" do
+  specify "should be able to configure_health_check for instances from load balancers" do
     @elb.stubs(:make_request).with('ConfigureHealthCheck', {
       'LoadBalancerName' => 'Test Name',
       'HealthCheck.Interval' => '5',
@@ -218,7 +218,44 @@ context "elb load balancers " do
 
     response = @elb.configure_health_check(@valid_configure_health_check_params)
     response.should.be.an.instance_of Hash
+
+    lambda { @elb.configure_health_check(@valid_configure_health_check_params) }.should.not.raise(AWS::ArgumentError)
+    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:load_balancer_name => nil)) }.should.raise(AWS::ArgumentError)
+    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:load_balancer_name => "")) }.should.raise(AWS::ArgumentError)
+
+    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:health_check => nil)) }.should.raise(AWS::ArgumentError)
+    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:health_check => "")) }.should.raise(AWS::ArgumentError)
+
   end
+
+  specify "should be able to configure_health_check for instances from load balancers with string health check args" do
+    @elb.stubs(:make_request).with('ConfigureHealthCheck', {
+      'LoadBalancerName' => 'Test Name',
+      'HealthCheck.Interval' => '5',
+      'HealthCheck.Target' => 'HTTP:80/servlets-examples/servlet/',
+      'HealthCheck.HealthyThreshold' => '2',
+      'HealthCheck.Timeout' => '2',
+      'HealthCheck.UnhealthyThreshold' => '2'
+    }).returns stub(:body => @configure_health_check_response_body, :is_a? => true)
+
+    response = @elb.configure_health_check(@valid_configure_health_check_params.merge(:health_check => {:target => 'HTTP:80/servlets-examples/servlet/', :timeout => '2', :interval  => '5', :unhealthy_threshold  => '2', :healthy_threshold  => '2' }))
+    response.should.be.an.instance_of Hash
+  end
+
+  specify "should be able to configure_health_check for instances from load balancers with FixNum health check args" do
+    @elb.stubs(:make_request).with('ConfigureHealthCheck', {
+      'LoadBalancerName' => 'Test Name',
+      'HealthCheck.Interval' => '5',
+      'HealthCheck.Target' => 'HTTP:80/servlets-examples/servlet/',
+      'HealthCheck.HealthyThreshold' => '2',
+      'HealthCheck.Timeout' => '2',
+      'HealthCheck.UnhealthyThreshold' => '2'
+    }).returns stub(:body => @configure_health_check_response_body, :is_a? => true)
+
+    response = @elb.configure_health_check(@valid_configure_health_check_params.merge(:health_check => {:target => 'HTTP:80/servlets-examples/servlet/', :timeout => 2, :interval  => 5, :unhealthy_threshold  => 2, :healthy_threshold  => 2 }))
+    response.should.be.an.instance_of Hash
+  end
+
 
   specify "method degregister_instances_from_load_balancer should reject bad arguments" do
    @elb.stubs(:make_request).with('ConfigureHealthCheck', {
