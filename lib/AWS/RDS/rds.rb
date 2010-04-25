@@ -42,7 +42,7 @@ module AWS
         params["DBParameterGroup"] = options[:db_parameter_group] if options.has?(:db_parameter_group)
         params["DBSecurityGroups"] = options[:db_security_groups] if options.has?(:db_security_groups)
         params["AvailabilityZone"] = options[:availability_zone] if options.has?(:availability_zone)
-        params["PreferredMaintenanceWindow"] = options[:preferred_backup_window] if options.has?(:preferred_backup_window)
+        params["PreferredMaintenanceWindow"] = options[:preferred_maintenance_window] if options.has?(:preferred_maintenance_window)
         params["BackupRetentionPeriod"] = options[:backend_retention_period] if options.has?(:backend_retention_period)
         params["PreferredBackupWindow"] = options[:preferred_backup_window] if options.has?(:preferred_backup_window)
 
@@ -363,7 +363,7 @@ module AWS
         params["DBParameterGroupName"] = options[:db_parameter_group_name] if options.has?(:db_parameter_group_name)
         params["DBSecurityGroups"] = options[:db_security_groups] if options.has?(:db_security_groups)
         params["AvailabilityZone"] = options[:availability_zone] if options.has?(:availability_zone)
-        params["PreferredMaintenanceWindow"] = options[:preferred_backup_window] if options.has?(:preferred_backup_window)
+        params["PreferredMaintenanceWindow"] = options[:preferred_maintenance_window] if options.has?(:preferred_maintenance_window)
         params["BackupRetentionPeriod"] = options[:backend_retention_period] if options.has?(:backend_retention_period)
         params["PreferredBackupWindow"] = options[:preferred_backup_window] if options.has?(:preferred_backup_window)
 
