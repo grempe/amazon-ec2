@@ -1,3 +1,8 @@
+=== 0.9.11 2010-04-23
+ * RDS#create_db_instance : renamed misspelled :backend_retention_period option to :backup_retention_period.
+ * Better handling of FixNum options in a few methods.
+ * A few bug fixes.
+
 === 0.9.10 2010-03-26
  * Enhancements to EC2 register_image to handle registration based on EBS snapshots (jamespharaoh)
 
