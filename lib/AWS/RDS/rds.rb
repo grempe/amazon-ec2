@@ -161,7 +161,7 @@ module AWS
 
       # This API method deletes a db security group
       #
-      # @option options [String] :db_parameter_group_name is the name of the db security group to be deleted (nil)
+      # @option options [String] :db_security_group_name is the name of the db security group to be deleted (nil)
       #
       def delete_db_security_group( options = {} )
         raise ArgumentError, "No :db_security_group_name provided" if options.does_not_have?(:db_security_group_name)
