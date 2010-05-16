@@ -61,8 +61,8 @@ context "The EC2 method " do
   end
 
   specify "AWS.encode should return the expected string" do
-    AWS.encode("secretaccesskey", "foobar123", urlencode=true).should.equal "e3jeuDc3DIX2mW8cVqWiByj4j5g%3D"
-    AWS.encode("secretaccesskey", "foobar123", urlencode=false).should.equal "e3jeuDc3DIX2mW8cVqWiByj4j5g="
+    AWS.encode("secretaccesskey", "foobar123", urlencode=true).should.equal "CPzGGhtvlG3P3yp88fPZp0HKouUV8mQK1ZcdFGQeAug%3D"
+    AWS.encode("secretaccesskey", "foobar123", urlencode=false).should.equal "CPzGGhtvlG3P3yp88fPZp0HKouUV8mQK1ZcdFGQeAug="
   end
 
 end
