@@ -88,7 +88,7 @@ module AWS
           "VolumeId" => options[:volume_id],
           "InstanceId" => options[:instance_id],
           "Device" => options[:device],
-          "Force" => options[:force]
+          "Force" => options[:force].to_s
         }
         return response_generator(:action => "DetachVolume", :params => params)
       end
