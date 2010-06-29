@@ -8,8 +8,6 @@ module AWS
     #   export AWS_CLOUDWATCH_URL='https://montoring.amazonaws.com'
     if ENV['AWS_CLOUDWATCH_URL']
       AWS_CLOUDWATCH_URL = ENV['AWS_CLOUDWATCH_URL']
-      VALID_HOSTS = ['monitoring.amazonaws.com']
-      raise ArgumentError, "Invalid AWS_CLOUDWATCH_URL environment variable : #{AWS_CLOUDWATCH_URL}" unless VALID_HOSTS.include?(AWS_CLOUDWATCH_URL)
       DEFAULT_HOST = URI.parse(AWS_CLOUDWATCH_URL).host
     else
       # Default US API endpoint

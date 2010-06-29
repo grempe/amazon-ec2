@@ -7,8 +7,6 @@ module AWS
     #   export AS_URL='http://autoscaling.amazonaws.com'
     if ENV['AS_URL']
       AS_URL = ENV['AS_URL']
-      VALID_HOSTS = ['http://autoscaling.amazonaws.com']
-      raise ArgumentError, "Invalid AS_URL environment variable : #{AS_URL}" unless VALID_HOSTS.include?(AS_URL)
       DEFAULT_HOST = URI.parse(AS_URL).host
     else
       # Default US API endpoint

@@ -8,8 +8,6 @@ module AWS
     #   export RDS_URL='https://rds.amazonaws.com'
     if ENV['RDS_URL']
       RDS_URL = ENV['RDS_URL']
-      VALID_HOSTS = ['rds.amazonaws.com']
-      raise ArgumentError, "Invalid RDS_URL environment variable : #{RDS_URL}" unless VALID_HOSTS.include?(RDS_URL)
       DEFAULT_HOST = URI.parse(RDS_URL).host
     else
       # Default US API endpoint

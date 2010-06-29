@@ -8,8 +8,6 @@ module AWS
     #   export ELB_URL='https://elasticloadbalancing.amazonaws.com'
     if ENV['ELB_URL']
       ELB_URL = ENV['ELB_URL']
-      VALID_HOSTS = ['elasticloadbalancing.amazonaws.com']
-      raise ArgumentError, "Invalid ELB_URL environment variable : #{ELB_URL}" unless VALID_HOSTS.include?(ELB_URL)
       DEFAULT_HOST = URI.parse(ELB_URL).host
     else
       # Default US API endpoint
