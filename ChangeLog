@@ -1,3 +1,12 @@
+* (In progress) Close issue #22, allow detach_volume to take a boolean as a string or TrueClass FalseClass
+
+=== 0.9.16 2010-07-07
+ * Less strict checking on which server endpoints you can pass in as an environment var.
+ * Moved ec2sh script to awshell to better reflect the more comprehensive nature of the gem.
+ * Better instructions on using awshell upon running
+ * awshell now sets up handles for all of the various services we use, not just @ec2 (+ @as, @rds, @elb, @cw)
+ * awshell prints out the various server endpoints that it will actually use in the shell (you can override with env vars).
+
 === 0.9.11 2010-04-23
  * RDS#create_db_instance : renamed misspelled :backend_retention_period option to :backup_retention_period.
  * Better handling of FixNum options in a few methods.

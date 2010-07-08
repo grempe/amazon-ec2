@@ -4,59 +4,17 @@
 #
 # Ruby Gem Name::  amazon-ec2
 # Author::    Glenn Rempe  (mailto:glenn@rempe.us)
-# Copyright:: Copyright (c) 2007-2008 Glenn Rempe
+# Copyright:: Copyright (c) 2007-2010 Glenn Rempe
 # License::   Distributes under the same terms as Ruby
 # Home::      http://github.com/grempe/amazon-ec2/tree/master
 #++
 
-# CREDITS : Credit for this bit of shameful ripoff coolness
-# goes to Marcel Molina and his AWS::S3 gem.  Thanks!
+message = <<-MESSAGE
 
-# Usage : running this starts up an irb session and
-# sets up the connection to EC2 as a class variable called
-# '@ec2'.  So just do something like the following on the
-# shell command line:
+  DEPRECATION WARNING:
 
-#   macbook-pro:~ glenn$ ec2sh
-#   >> @ec2.describe_images
-#   => [#<AWS::EC2::Item image_location...
+  This script has been renamed to 'awshell'.  Please run that command instead.
 
-aws_lib   = File.dirname(__FILE__) + '/../lib/AWS'
-setup = File.dirname(__FILE__) + '/setup'
-irb_name = RUBY_PLATFORM =~ /mswin32/ ? 'irb.bat' : 'irb'
+MESSAGE
 
-if ( ENV['AMAZON_ACCESS_KEY_ID'] && ENV['AMAZON_SECRET_ACCESS_KEY'] )
-
-  welcome_message = <<-MESSAGE
-
-  'ec2sh' usage :
-  This is an interactive 'irb' command shell that allows you to use all
-  commands available to the amazon-ec2 gem.  You'll find this to be a
-  great tool to help you debug issues and practice running commands
-  against the live EC2 servers prior to putting them in your code.
-
-  The EC2 connection is wired to the class instance '@ec2'.  Make method calls
-  on this to execute commands on EC2.  Adding a #to_s
-  at the end of any command should give you a full String representation of the
-  response.
-
-    Examples to try:
-
-      returns : all ec2 public methods
-      >> @ec2.methods.sort
-
-      returns : a string representation of ALL images
-      >> @ec2.describe_images.to_s
-
-      returns : an Array of AWS::Response objects, each an EC2 image and its data
-      >> @ec2.describe_images.imagesSet.item
-      >> @ec2.describe_images.imagesSet.item[0] (a hash representing a single item in that array)
-      >> @ec2.describe_images.imagesSet.item[0].to_s (a String representation of that item)
-
-  MESSAGE
-
-  puts welcome_message
-  exec "#{irb_name} -rubygems -r #{aws_lib} -r #{setup} --simple-prompt"
-else
-  puts "You must define AMAZON_ACCESS_KEY_ID and AMAZON_SECRET_ACCESS_KEY as shell environment variables before running #{$0}!"
-end
+puts message

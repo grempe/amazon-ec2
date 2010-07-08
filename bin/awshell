@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+
+# Amazon Web Services EC2 Query API Ruby library
+#
+# Ruby Gem Name::  amazon-ec2
+# Author::    Glenn Rempe  (mailto:glenn@rempe.us)
+# Copyright:: Copyright (c) 2007-2010 Glenn Rempe
+# License::   Distributes under the same terms as Ruby
+# Home::      http://github.com/grempe/amazon-ec2/tree/master
+#++
+
+# CREDITS : Credit for this bit of shameful ripoff coolness
+# goes to Marcel Molina and his AWS::S3 gem.  Thanks!
+
+aws_lib   = File.dirname(__FILE__) + '/../lib/AWS'
+setup = File.dirname(__FILE__) + '/setup'
+irb_name = RUBY_PLATFORM =~ /mswin32/ ? 'irb.bat' : 'irb'
+
+welcome_message = <<-MESSAGE
+
+Usage :
+
+This is an interactive Ruby 'irb' shell that allows you to use the
+AWS commands available in the 'amazon-ec2' gem.  This can be a
+great tool to help you debug issues and run commands
+against the live AWS servers.  You can do anything in this
+shell that you can in a normal irb shell.
+
+Config :
+
+You must set the following environment variables that contain your
+AWS credentials in your system shell for this to work.
+
+  AMAZON_ACCESS_KEY_ID
+  AMAZON_SECRET_ACCESS_KEY
+
+Each AWS service has its own default server endpoints. You can override
+the endpoints with the following environment variables set in your
+system shell:
+
+  EC2 :                     EC2_URL
+  Elastic Load Balancing :  ELB_URL
+  AutoScaling :             AS_URL
+  RDS :                     RDS_URL
+  CloudWatch :              AWS_CLOUDWATCH_URL
+
+For your convenience, the various AWS services are wired up in this shell
+to the following class variables.  You can execute methods on each of these:
+
+  @ec2   (Elastic Compute Cloud)
+  @elb   (Elastic Load Balancing)
+  @as    (AutoScaling)
+  @rds   (Relational Database Service)
+  @cw    (CloudWatch)
+
+You can make method calls on these instances to execute commands against
+the various services. Pre-pending a 'pp' should give you a pretty printed
+version of the response which may be easier to read.
+
+Examples:
+
+  returns : Pretty Print all ec2 public methods
+  >> pp @ec2.methods.sort
+
+  returns : Pretty Print a Hash describing your EC2 images
+  >> @ec2.describe_images(:owner_id => ['self'])
+
+  returns : an Array of AWS::Response objects, each an EC2 image and its data
+  >> @ec2.describe_images(:owner_id => ['self']).imagesSet.item
+  >> @ec2.describe_images(:owner_id => ['self']).imagesSet.item[0]
+
+MESSAGE
+
+if ( ENV['AMAZON_ACCESS_KEY_ID'] && ENV['AMAZON_SECRET_ACCESS_KEY'] )
+  puts welcome_message
+  exec "#{irb_name} -rubygems -r #{aws_lib} -r #{setup} --simple-prompt"
+else
+  puts "You must define AMAZON_ACCESS_KEY_ID and AMAZON_SECRET_ACCESS_KEY as shell environment variables before running #{$0}!"
+  puts welcome_message
+end
+
