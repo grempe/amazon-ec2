@@ -32,6 +32,7 @@ context "The EC2 password " do
     response = @ec2.get_password_data( :instance_id => "i-2574e22a" )
     response.instanceId.should.equal "i-2574e22a"
     response.timestamp.should.equal "2009-10-24 15:00:00"
+    response.passwordData.should.equal "TGludXggdmVyc2lvbiAyLjYuMTYteGVuVSAoYnVpbGRlckBwYXRjaGJhdC5hbWF6b25zYSkgKGdj"
   end
 
 
