@@ -56,17 +56,32 @@ module AWS
         raise ArgumentError, ":measure_name must be provided" if options[:measure_name].nil? || options[:measure_name].empty?
         raise ArgumentError, ":statistics must be provided" if options[:statistics].nil? || options[:statistics].empty?
 
+        stats = {}
+        if options[:statistics].is_a? Array
+          options[:statistics].each_with_index{ |s, i|
+            stats['Statistics.member.' + (i + 1).to_s] = s
+          }
+        else
+          stats['Statistics.member.1'] = options[:statistics]
+        end
+
+        dims = {}
+        if options[:dimensions]
+          options[:dimensions].each_with_index{ |values, i|
+            dims["Dimensions.member.#{i + 1}.Name"] = values[0]
+            dims["Dimensions.member.#{i + 1}.Value"] = values[1]
+          }
+        end
+
         params = {
                     "CustomUnit" => options[:custom_unit],
-                    "Dimensions" => options[:dimensions],
                     "EndTime" => options[:end_time].iso8601,
                     "MeasureName" => options[:measure_name],
                     "Namespace" => options[:namespace],
                     "Period" => options[:period].to_s,
-                    "Statistics.member.1" => options[:statistics],
                     "StartTime" => options[:start_time].iso8601,
                     "Unit" => options[:unit]
-        }
+        }.merge(stats).merge(dims)
 
         return response_generator(:action => 'GetMetricStatistics', :params => params)
 
