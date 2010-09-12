@@ -238,7 +238,7 @@ module AWS
     # Example Class Method Usage :
     # instance_id = AWS::EC2::Instance.local_instance_id
     #
-    module Instance
+    class Instance
 
       EC2_META_URL_BASE = 'http://169.254.169.254/latest/meta-data/'
 
