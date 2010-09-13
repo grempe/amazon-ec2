@@ -40,19 +40,10 @@ The following gems should be installed automatically as part of your install of 
 
 === Install the amazon-ec2 gem (Canonical Release)
 
-This is the standard install for stable releases from Gemcutter.
-
-  # Install the stable release gem from Gemcutter (one time only) ( learn more here : http://gemcutter.org/pages/faq )
-  sudo gem install gemcutter
-
-  # Set Gemcutter to be your canonical gems source (one time only)
-  sudo gem tumble
+This is the standard install for stable releases from RubyGems.
 
   # Install the gem
   sudo gem install amazon-ec2
-
-  # OR if you want to skip the Gemcutter setup
-  sudo gem install amazon-ec2 -s http://gemcutter.org
 
 
 === Install from local Git clone (for amazon-ec2 developers)
