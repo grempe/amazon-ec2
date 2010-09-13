@@ -36,7 +36,7 @@ module AWS
         raise ArgumentError, ":image_id must be provided" if options[:image_id].nil? || options[:image_id].empty?
         raise ArgumentError, ":min_count is not valid" unless options[:min_count].to_i > 0
         raise ArgumentError, ":max_count is not valid or must be >= :min_count" unless options[:max_count].to_i > 0 && options[:max_count].to_i >= options[:min_count].to_i
-        raise ArgumentError, ":instance_type must specify a valid instance type" unless options[:instance_type].nil? || ["m1.small", "m1.large", "m1.xlarge", "m2.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge", "cc1.4xlarge"].include?(options[:instance_type])
+        raise ArgumentError, ":instance_type must specify a valid instance type" unless options[:instance_type].nil? || ["t1.micro", "m1.small", "m1.large", "m1.xlarge", "m2.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge", "cc1.4xlarge"].include?(options[:instance_type])
         raise ArgumentError, ":monitoring_enabled must be 'true' or 'false'" unless options[:monitoring_enabled].nil? || [true, false].include?(options[:monitoring_enabled])
         raise ArgumentError, ":disable_api_termination must be 'true' or 'false'" unless options[:disable_api_termination].nil? || [true, false].include?(options[:disable_api_termination])
         raise ArgumentError, ":instance_initiated_shutdown_behavior must be 'stop' or 'terminate'" unless options[:instance_initiated_shutdown_behavior].nil? || ["stop", "terminate"].include?(options[:instance_initiated_shutdown_behavior])
