@@ -304,9 +304,13 @@ context "EC2 instances " do
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 2, :max_count => 1 ) }.should.raise(AWS::ArgumentError)
 
     # :instance_type
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "InstanceType" => 'm1.small').
-      returns stub(:body => @run_instances_response_body, :is_a? => true)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_type => "m1.small" ) }.should.not.raise(AWS::ArgumentError)
+
+    ["t1.micro", "m1.small", "m1.large", "m1.xlarge", "m2.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge", "cc1.4xlarge"].each do |type|
+      @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "InstanceType" => type).
+        returns stub(:body => @run_instances_response_body, :is_a? => true)
+      lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_type => type ) }.should.not.raise(AWS::ArgumentError)
+    end
+
     lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_type => "m1.notarealsize" ) }.should.raise(AWS::ArgumentError)
 
     # :monitoring_enabled
