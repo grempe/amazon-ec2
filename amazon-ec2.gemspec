@@ -9,10 +9,10 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Glenn Rempe"]
-  s.date = %q{2010-06-10}
+  s.date = %q{2010-09-14}
   s.description = %q{A Ruby library for accessing the Amazon Web Services EC2, ELB, RDS, Cloudwatch, and Autoscaling APIs.}
   s.email = %q{glenn@rempe.us}
-  s.executables = ["ec2-gem-example.rb", "ec2-gem-profile.rb", "ec2sh", "setup.rb"]
+  s.executables = ["awshell", "ec2-gem-example.rb", "ec2-gem-profile.rb", "ec2sh", "setup.rb"]
   s.extra_rdoc_files = [
     "ChangeLog",
      "LICENSE",
@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "amazon-ec2.gemspec",
+     "bin/awshell",
      "bin/ec2-gem-example.rb",
      "bin/ec2-gem-profile.rb",
      "bin/ec2sh",
