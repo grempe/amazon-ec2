@@ -91,7 +91,7 @@ Gem::Specification.new do |s|
      "wsdl/2008-05-05.ec2.wsdl",
      "wsdl/2008-12-01.ec2.wsdl",
      "wsdl/2009-10-31.ec2.wsdl",
-     "wsdl/2009-11-30.ec2.wsdl"
+     "wsdl/2009-11-30.ec2.wsdl",
      "wsdl/2010-08-31.ec2.wsdl"
   ]
   s.homepage = %q{http://github.com/grempe/amazon-ec2}
