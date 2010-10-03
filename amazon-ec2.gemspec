@@ -54,6 +54,7 @@ Gem::Specification.new do |s|
      "lib/AWS/EC2/spot_instance_requests.rb",
      "lib/AWS/EC2/spot_prices.rb",
      "lib/AWS/EC2/subnets.rb",
+     "lib/AWS/EC2/tags.rb",
      "lib/AWS/EC2/volumes.rb",
      "lib/AWS/ELB.rb",
      "lib/AWS/ELB/load_balancers.rb",
