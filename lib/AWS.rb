@@ -255,8 +255,6 @@ module AWS
             CGI::escape(param[0]) + "=" + CGI::escape(param[1])
           end.join("&") + "&Signature=" + sig
 
-puts(query);
-
           req = Net::HTTP::Post.new("/")
           req.content_type = 'application/x-www-form-urlencoded'
           req['User-Agent'] = "github-amazon-ec2-ruby-gem"
@@ -291,6 +289,7 @@ puts(query);
 
         http_response = make_request(options[:action], options[:params])
         http_xml = http_response.body
+
         return Response.parse(:xml => http_xml)
       end
 
