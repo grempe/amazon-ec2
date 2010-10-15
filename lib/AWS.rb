@@ -219,7 +219,14 @@ module AWS
         params = {}
         arr_of_hashes.each_with_index do |hash, i|
           hash.each do |attribute, value|
-            params["#{key}.#{i+1}.#{mappings[attribute]}"] = value.to_s
+            if value.is_a? Array
+              params["#{key}.#{i+1}.Name"] = mappings[attribute]
+              value.each_with_index do |item, j|
+                params["#{key}.#{i+1}.Value.#{j+1}"] = item.to_s
+              end
+            else
+              params["#{key}.#{i+1}.#{mappings[attribute]}"] = value.to_s
+            end
           end
         end
         params
@@ -247,6 +254,8 @@ module AWS
           query = params.sort.collect do |param|
             CGI::escape(param[0]) + "=" + CGI::escape(param[1])
           end.join("&") + "&Signature=" + sig
+
+puts(query);
 
           req = Net::HTTP::Post.new("/")
           req.content_type = 'application/x-www-form-urlencoded'
