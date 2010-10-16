@@ -27,6 +27,20 @@ module AWS
         end
         return response_generator(:action => "DescribeTags", :params => params)
       end
+
+      # The DeleteTags operation deletes tags for the specified resource(s).
+      #
+      # @option options [Array] :resource_id ([]) The ids of the resource(s) to tag
+      # @option options [Array] :tag ([]) An array of Hashes representing the tags { tag_name => tag_value }. If a value is given (instead of nil/empty string), then the tag is only deleted if it has this value
+      #
+      def delete_tags( options = {} )
+        raise ArgumentError, "No :resource_id provided" if options[:resource_id].nil? || options[:resource_id].empty?
+        raise ArgumentError, "No :tag provided" if options[:tag].nil? || options[:tag].empty?
+
+        params = pathlist("ResourceId", options[:resource_id] )
+        params.merge!(pathkvlist('Tag', options[:tag], 'Key', 'Value', {}))
+        return response_generator(:action => "DeleteTags", :params => params)
+      end
     end
   end
 end
