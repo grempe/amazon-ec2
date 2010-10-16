@@ -291,7 +291,6 @@ module AWS
           req.content_type = 'application/x-www-form-urlencoded'
           req['User-Agent'] = "github-amazon-ec2-ruby-gem"
 
-puts(query)
           response = @http.request(req, query)
 
           # Make a call to see if we need to throw an error based on the response given by EC2
