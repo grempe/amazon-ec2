@@ -232,6 +232,38 @@ module AWS
         params
       end
 
+      # Same as _pathhashlist_ except it generates explicit <prefix>.Key= and <prefix>.Value or <prefix>.Value.1, <prefix>.Value.2
+      # depending on whether the value is a scalar or an array.
+      #
+      # So if you pass in args
+      # ("People", [{:name=>'jon'}, {:names=>['chris', 'bob']} with key_name = 'Key' and value_name = 'Value',
+      # you should get
+      # {"People.1.Key"=>"name", "People.1.Value"=>'jon', "People.2.Key"=>'names', 'People.2.Value.1'=>'chris', 'People.2.Value.2'=>'bob'}
+      def pathkvlist(key, arr_of_hashes, key_name, value_name, mappings)
+        raise ArgumentError, "expected a key that is a String" unless key.is_a? String
+        raise ArgumentError, "expected a arr_of_hashes that is an Array" unless arr_of_hashes.is_a? Array
+        arr_of_hashes.each{|h| raise ArgumentError, "expected each element of arr_of_hashes to be a Hash" unless h.is_a?(Hash)}
+        raise ArgumentError, "expected a key_nam that is a String" unless key_name.is_a? String
+        raise ArgumentError, "expected a value_name that is a String" unless value_name.is_a? String
+        raise ArgumentError, "expected a mappings that is an Hash" unless mappings.is_a? Hash
+        params = {}
+        arr_of_hashes.each_with_index do |hash, i|
+          hash.each do |attribute, value|
+            params["#{key}.#{i+1}.#{key_name}"] = mappings.fetch(attribute, attribute)
+            if !value.nil?
+              if value.is_a? Array
+                value.each_with_index do |item, j|
+                  params["#{key}.#{i+1}.#{value_name}.#{j+1}"] = item.to_s
+                end
+              else
+                params["#{key}.#{i+1}.#{value_name}"] = value.to_s
+              end
+            end
+          end
+        end
+        params
+      end
+
       # Make the connection to AWS EC2 passing in our request.  This is generally called from
       # within a 'Response' class object or one of its sub-classes so the response is interpreted
       # in its proper context.  See lib/EC2/responses.rb
@@ -259,6 +291,7 @@ module AWS
           req.content_type = 'application/x-www-form-urlencoded'
           req['User-Agent'] = "github-amazon-ec2-ruby-gem"
 
+puts(query)
           response = @http.request(req, query)
 
           # Make a call to see if we need to throw an error based on the response given by EC2
