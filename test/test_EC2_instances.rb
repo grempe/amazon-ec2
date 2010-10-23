@@ -217,6 +217,27 @@ context "EC2 instances " do
     </UnmonitorInstancesResponse>
 
     RESPONSE
+
+    @describe_instance_attribute_response_body = <<-RESPONSE
+    <DescribeInstanceAttributeResponse xmlns="http://ec2.amazonaws.com/doc/2010-08-31/">
+      <instanceId>i-10a64379</instanceId>
+      <kernel>
+        <value>aki-f70657b2</value>
+      </kernel>
+    </DescribeInstanceAttributeResponse>
+    RESPONSE
+
+    @modify_instance_attribute_response_body = <<-RESPONSE
+    <ModifyInstanceAttributeResponse xmlns="http://ec2.amazonaws.com/doc/2010-08-31/">
+      <return>true</return>
+    </ModifyInstanceAttributeResponse>
+    RESPONSE
+
+    @reset_instance_attribute_response_body = <<-RESPONSE
+    <ResetInstanceAttributeResponse xmlns="http://ec2.amazonaws.com/doc/2010-08-31/">
+      <return>true</return>
+    </ResetInstanceAttributeResponse>
+    RESPONSE
   end
 
 
@@ -608,4 +629,72 @@ context "EC2 instances " do
     @response.instancesSet.item[1].monitoring.state.should.equal "disabling"
   end
 
+  specify "should get an ArgumentError when trying to describe/modify/reset an instance attribute without an istance id" do
+    lambda { @ec2.describe_instance_attribute(:attribute => "ramdisk") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_instance_attribute(:attribute => "ramdisk") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.reset_instance_attribute(:attribute => "ramdisk") }.should.raise(AWS::ArgumentError)
+
+    lambda { @ec2.describe_instance_attribute(:attribute => "ramdisk", :instance_id => nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_instance_attribute(:attribute => "ramdisk", :instance_id => nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.reset_instance_attribute(:attribute => "ramdisk", :instance_id => nil) }.should.raise(AWS::ArgumentError)
+
+    lambda { @ec2.describe_instance_attribute(:attribute => "ramdisk", :instance_id => "") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_instance_attribute(:attribute => "ramdisk", :instance_id => "") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.reset_instance_attribute(:attribute => "ramdisk", :instance_id => "") }.should.raise(AWS::ArgumentError)
+  end
+
+  specify "should get an ArgumentError when trying to describe/modify/reset an instance attribute without an attribute" do
+    lambda { @ec2.describe_instance_attribute(:instance_id => "i-33457a5a") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_instance_attribute(:instance_id => "i-33457a5a") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.reset_instance_attribute(:instance_id => "i-33457a5a") }.should.raise(AWS::ArgumentError)
+
+    lambda { @ec2.describe_instance_attribute(:instance_id => "i-33457a5a", :attribute => nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_instance_attribute(:instance_id => "i-33457a5a", :attribute => nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.reset_instance_attribute(:instance_id => "i-33457a5a", :attribute => nil) }.should.raise(AWS::ArgumentError)
+
+    lambda { @ec2.describe_instance_attribute(:instance_id => "i-33457a5a", :attribute => "") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_instance_attribute(:instance_id => "i-33457a5a", :attribute => "") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.reset_instance_attribute(:instance_id => "i-33457a5a", :attribute => "") }.should.raise(AWS::ArgumentError)
+  end
+
+  specify "should get an ArgumentError when trying to describe/modify/reset an instance attribute without a valid attribute" do
+    lambda { @ec2.describe_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'party') }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.modify_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'party') }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.reset_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'party') }.should.raise(AWS::ArgumentError)
+  end
+
+  specify "should not get an ArgumentError when trying to describe/modify/reset an instance attribute with a valid attribute" do
+    @ec2.stubs(:make_request).returns stub(:body => @describe_instance_attribute_response_body, :is_a? => true)
+    %w(instanceType kernel ramdisk userData disableApiTermination instanceInitiatedShutdownBehavior rootDevice blockDeviceMapping).each do |a|
+      lambda { @ec2.describe_instance_attribute(:instance_id => "i-33457a5a", :attribute => a) }.should.not.raise(AWS::ArgumentError)
+      lambda { @ec2.modify_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'party') }.should.raise(AWS::ArgumentError)
+    end
+    %w(kernel ramdisk).each do |a|
+      lambda { @ec2.reset_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'party') }.should.raise(AWS::ArgumentError)
+    end
+  end
+
+  specify "should successfully describe instance attribute" do
+    @ec2.stubs(:make_request).with('DescribeInstanceAttribute', {"InstanceId"=>"i-33457a5a", "Attribute" => "kernel"}).
+      returns stub(:body => @describe_instance_attribute_response_body, :is_a? => true)
+    @response = @ec2.describe_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'kernel')
+    @response.class.should.equal Hash
+    @response.kernel.value.should.equal "aki-f70657b2"
+  end
+
+  specify "should successfully modify instance attribute" do
+    @ec2.stubs(:make_request).with('ModifyInstanceAttribute', {"InstanceId"=>"i-33457a5a", "Attribute" => "disableApiTermination", "Value" => "true"}).
+      returns stub(:body => @modify_instance_attribute_response_body, :is_a? => true)
+    @response = @ec2.modify_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'disableApiTermination', :value => true)
+    @response.class.should.equal Hash
+    @response.return.should.equal "true"
+  end
+
+  specify "should successfully reset instance attribute" do
+    @ec2.stubs(:make_request).with('ResetInstanceAttribute', {"InstanceId"=>"i-33457a5a", "Attribute" => "kernel"}).
+      returns stub(:body => @reset_instance_attribute_response_body, :is_a? => true)
+    @response = @ec2.reset_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'kernel')
+    @response.class.should.equal Hash
+    @response.return.should.equal "true"
+  end
 end

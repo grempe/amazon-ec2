@@ -36,7 +36,7 @@ module AWS
         raise ArgumentError, ":image_id must be provided" if options[:image_id].nil? || options[:image_id].empty?
         raise ArgumentError, ":min_count is not valid" unless options[:min_count].to_i > 0
         raise ArgumentError, ":max_count is not valid or must be >= :min_count" unless options[:max_count].to_i > 0 && options[:max_count].to_i >= options[:min_count].to_i
-        raise ArgumentError, ":instance_type must specify a valid instance type" unless options[:instance_type].nil? || ["m1.small", "m1.large", "m1.xlarge", "m2.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge", "cc1.4xlarge"].include?(options[:instance_type])
+        raise ArgumentError, ":instance_type must specify a valid instance type" unless options[:instance_type].nil? || ["t1.micro", "m1.small", "m1.large", "m1.xlarge", "m2.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge", "cc1.4xlarge"].include?(options[:instance_type])
         raise ArgumentError, ":monitoring_enabled must be 'true' or 'false'" unless options[:monitoring_enabled].nil? || [true, false].include?(options[:monitoring_enabled])
         raise ArgumentError, ":disable_api_termination must be 'true' or 'false'" unless options[:disable_api_termination].nil? || [true, false].include?(options[:disable_api_termination])
         raise ArgumentError, ":instance_initiated_shutdown_behavior must be 'stop' or 'terminate'" unless options[:instance_initiated_shutdown_behavior].nil? || ["stop", "terminate"].include?(options[:instance_initiated_shutdown_behavior])
@@ -92,30 +92,57 @@ module AWS
       end
 
 
-      # Not yet implemented
+      # Returns information about an attribute of an instance.
       #
-      # @todo Implement this method
+      # @option options [String] :instance_id (nil) ID of the instance on which the attribute will be queried.
+      # @option options [String] :attribute (nil) Specifies the attribute to query..
       #
       def describe_instance_attribute( options = {} )
-        raise "Not yet implemented"
+        raise ArgumentError, "No :instance_id provided" if options[:instance_id].nil? || options[:instance_id].empty?
+        raise ArgumentError, "No :attribute provided" if options[:attribute].nil? || options[:attribute].empty?
+        valid_attributes = %w(instanceType kernel ramdisk userData disableApiTermination instanceInitiatedShutdownBehavior rootDevice blockDeviceMapping)
+        raise ArgumentError, "Invalid :attribute provided" unless valid_attributes.include?(options[:attribute].to_s)
+        params = {}
+        params["InstanceId"] =  options[:instance_id]
+        params["Attribute"] =  options[:attribute]
+        return response_generator(:action => "DescribeInstanceAttribute", :params => params)
       end
 
 
-      # Not yet implemented
+      # Modifies an attribute of an instance.
       #
-      # @todo Implement this method
+      # @option options [String] :instance_id (nil) ID of the instance on which the attribute will be modified.
+      # @option options [String] :attribute (nil) Specifies the attribute to modify.
+      # @option options [String] :value (nil) The value of the attribute being modified.
       #
       def modify_instance_attribute( options = {} )
-        raise "Not yet implemented"
+        raise ArgumentError, "No :instance_id provided" if options[:instance_id].nil? || options[:instance_id].empty?
+        raise ArgumentError, "No :attribute provided" if options[:attribute].nil? || options[:attribute].empty?
+        raise ArgumentError, "No :value provided" if options[:value].nil?
+        valid_attributes = %w(instanceType kernel ramdisk userData disableApiTermination instanceInitiatedShutdownBehavior rootDevice blockDeviceMapping)
+        raise ArgumentError, "Invalid :attribute provided" unless valid_attributes.include?(options[:attribute].to_s)
+        params = {}
+        params["InstanceId"] =  options[:instance_id]
+        params["Attribute"] =  options[:attribute]
+        params["Value"] =  options[:value].to_s
+        return response_generator(:action => "ModifyInstanceAttribute", :params => params)
       end
 
 
-      # Not yet implemented
+      # Resets an attribute of an instance to its default value.
       #
-      # @todo Implement this method
+      # @option options [String] :instance_id (nil) ID of the instance on which the attribute will be reset.
+      # @option options [String] :attribute (nil) The instance attribute to reset to the default value.
       #
       def reset_instance_attribute( options = {} )
-        raise "Not yet implemented"
+        raise ArgumentError, "No :instance_id provided" if options[:instance_id].nil? || options[:instance_id].empty?
+        raise ArgumentError, "No :attribute provided" if options[:attribute].nil? || options[:attribute].empty?
+        valid_attributes = %w(kernel ramdisk)
+        raise ArgumentError, "Invalid :attribute provided" unless valid_attributes.include?(options[:attribute].to_s)
+        params = {}
+        params["InstanceId"] =  options[:instance_id]
+        params["Attribute"] =  options[:attribute]
+        return response_generator(:action => "ResetInstanceAttribute", :params => params)
       end
 
 
