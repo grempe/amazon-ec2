@@ -9,10 +9,10 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Glenn Rempe"]
-  s.date = %q{2010-11-12}
+  s.date = %q{2010-06-10}
   s.description = %q{A Ruby library for accessing the Amazon Web Services EC2, ELB, RDS, Cloudwatch, and Autoscaling APIs.}
   s.email = %q{glenn@rempe.us}
-  s.executables = ["setup.rb", "awshell", "ec2sh", "ec2-gem-example.rb", "ec2-gem-profile.rb"]
+  s.executables = ["ec2-gem-example.rb", "ec2-gem-profile.rb", "ec2sh", "setup.rb"]
   s.extra_rdoc_files = [
     "ChangeLog",
      "LICENSE",
@@ -29,7 +29,6 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "amazon-ec2.gemspec",
-     "bin/awshell",
      "bin/ec2-gem-example.rb",
      "bin/ec2-gem-profile.rb",
      "bin/ec2sh",
@@ -101,27 +100,27 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Amazon EC2 Ruby Gem}
   s.test_files = [
-    "test/test_EC2_spot_prices.rb",
-     "test/test_EC2_subnets.rb",
+    "test/test_Autoscaling_groups.rb",
+     "test/test_EC2.rb",
      "test/test_EC2_availability_zones.rb",
-     "test/test_EC2_security_groups.rb",
-     "test/test_EC2_instances.rb",
+     "test/test_EC2_console.rb",
+     "test/test_EC2_elastic_ips.rb",
      "test/test_EC2_image_attributes.rb",
      "test/test_EC2_images.rb",
-     "test/test_EC2.rb",
-     "test/test_EC2_responses.rb",
-     "test/test_EC2_volumes.rb",
-     "test/test_EC2_console.rb",
-     "test/test_EC2_snapshots.rb",
-     "test/test_ELB_load_balancers.rb",
-     "test/test_EC2_elastic_ips.rb",
-     "test/test_EC2_products.rb",
-     "test/test_RDS.rb",
-     "test/test_EC2_s3_xmlsimple.rb",
-     "test/test_helper.rb",
+     "test/test_EC2_instances.rb",
      "test/test_EC2_keypairs.rb",
+     "test/test_EC2_products.rb",
+     "test/test_EC2_responses.rb",
+     "test/test_EC2_s3_xmlsimple.rb",
+     "test/test_EC2_security_groups.rb",
+     "test/test_EC2_snapshots.rb",
      "test/test_EC2_spot_instance_requests.rb",
-     "test/test_Autoscaling_groups.rb"
+     "test/test_EC2_spot_prices.rb",
+     "test/test_EC2_subnets.rb",
+     "test/test_EC2_volumes.rb",
+     "test/test_ELB_load_balancers.rb",
+     "test/test_helper.rb",
+     "test/test_RDS.rb"
   ]
 
   if s.respond_to? :specification_version then
