@@ -126,12 +126,14 @@ module AWS
                   :secret_access_key => "",
                   :use_ssl => true,
                   :server => default_host,
+		  :path => "/",
                   :proxy_server => nil
                   }.merge(options)
 
       @server = options[:server]
       @proxy_server = options[:proxy_server]
       @use_ssl = options[:use_ssl]
+      @path = options[:path]
 
       raise ArgumentError, "No :access_key_id provided" if options[:access_key_id].nil? || options[:access_key_id].empty?
       raise ArgumentError, "No :secret_access_key provided" if options[:secret_access_key].nil? || options[:secret_access_key].empty?
@@ -287,7 +289,7 @@ module AWS
             CGI::escape(param[0]) + "=" + CGI::escape(param[1])
           end.join("&") + "&Signature=" + sig
 
-          req = Net::HTTP::Post.new("/")
+          req = Net::HTTP::Post.new(@path)
           req.content_type = 'application/x-www-form-urlencoded'
           req['User-Agent'] = "github-amazon-ec2-ruby-gem"
 
@@ -304,7 +306,7 @@ module AWS
 
       # Set the Authorization header using AWS signed header authentication
       def get_aws_auth_param(params, secret_access_key, server)
-        canonical_string =  AWS.canonical_string(params, server)
+        canonical_string =  AWS.canonical_string(params, server,"POST", @path)
         encoded_canonical = AWS.encode(secret_access_key, canonical_string)
       end
 
