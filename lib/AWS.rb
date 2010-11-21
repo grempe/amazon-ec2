@@ -93,7 +93,7 @@ module AWS
   # @param [Boolean] urlencode whether or not to url encode the result., true or false
   # @return [String] the signed and encoded string.
   def AWS.encode(secret_access_key, str, urlencode=true)
-    digest = OpenSSL::Digest::Digest.new('sha1')
+    digest = OpenSSL::Digest::Digest.new('sha256')
     b64_hmac =
       Base64.encode64(
         OpenSSL::HMAC.digest(digest, secret_access_key, str)).gsub("\n","")
@@ -278,7 +278,7 @@ module AWS
 
           params.merge!( {"Action" => action,
                           "SignatureVersion" => "2",
-                          "SignatureMethod" => 'HmacSHA1',
+                          "SignatureMethod" => 'HmacSHA256',
                           "AWSAccessKeyId" => @access_key_id,
                           "Version" => api_version,
                           "Timestamp"=>Time.now.getutc.iso8601} )
