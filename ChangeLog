@@ -12,6 +12,7 @@
  * Use HmacSHA256 signatures instead of SHA1 (preferred by AWS and improves support for Eucalyptus)
  * added AWS::EC2::Base#get_password_data for GetPasswordData API (Windows instances)
  * Fix #26.  Raise an exception immediately if the response is a 5xx Server Error.
+ * Applied experimental CloudWatch Monitoring Patch by fred-secludit, removes limitations on which server to connect to, and better handles statistics and dimensions.
 
 === 0.9.16 2010-07-07
  * Less strict checking on which server endpoints you can pass in as an environment var.

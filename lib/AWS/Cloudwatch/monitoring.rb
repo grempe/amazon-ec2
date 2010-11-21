@@ -7,9 +7,7 @@ module AWS
       # call get_metric_statistics.
       #
       # there are no options available to this method.
-
       def list_metrics
-        raise ArgumentError, "Server must be monitoring.amazonaws.com" if server != 'monitoring.amazonaws.com'
         return response_generator(:action => 'ListMetrics', :params => {})
       end
 
@@ -34,8 +32,6 @@ module AWS
       # @option options [String] :statistics (nil) The statistics to be returned for your metric. See the developer guide for valid options. Required.
       # @option options [Time] :start_time (Time.now() - 86400) Inner bound of the date range you want to view. Defaults to 24 hours ago
       # @option options [String] :unit (nil) Standard unit for a given Measure. See the developer guide for valid options.
-
-
       def get_metric_statistics ( options ={} )
         options = { :custom_unit => nil,
                     :dimensions => nil,
@@ -51,22 +47,41 @@ module AWS
         raise ArgumentError, ":end_time must be a Time object" if options[:end_time].class != Time
         raise ArgumentError, ":start_time must be provided" if options[:start_time].nil?
         raise ArgumentError, ":start_time must be a Time object" if options[:start_time].class != Time
-        raise ArgumentError, "Server must be monitoring.amazonaws.com" if server != 'monitoring.amazonaws.com'
         raise ArgumentError, ":start_time must be before :end_time" if options[:start_time] > options[:end_time]
         raise ArgumentError, ":measure_name must be provided" if options[:measure_name].nil? || options[:measure_name].empty?
         raise ArgumentError, ":statistics must be provided" if options[:statistics].nil? || options[:statistics].empty?
 
         params = {
                     "CustomUnit" => options[:custom_unit],
-                    "Dimensions" => options[:dimensions],
                     "EndTime" => options[:end_time].iso8601,
                     "MeasureName" => options[:measure_name],
                     "Namespace" => options[:namespace],
                     "Period" => options[:period].to_s,
-                    "Statistics.member.1" => options[:statistics],
                     "StartTime" => options[:start_time].iso8601,
                     "Unit" => options[:unit]
         }
+
+        # FDT: Fix statistics and dimensions values
+        if !(options[:statistics].nil? || options[:statistics].empty?)
+          stats_params = {}
+          i = 1
+          options[:statistics].split(',').each{ |stat|
+            stats_params.merge!( "Statistics.member.#{i}" => "#{stat}" )
+            i += 1
+          }
+          params.merge!( stats_params )
+        end
+
+        if !(options[:dimensions].nil? || options[:dimensions].empty?)
+          dims_params = {}
+          i = 1
+          options[:dimensions].split(',').each{ |dimension|
+            dimension_var = dimension.split('=')
+            dims_params = dims_params.merge!( "Dimensions.member.#{i}.Name" => "#{dimension_var[0]}", "Dimensions.member.#{i}.Value" => "#{dimension_var[1]}" )
+            i += 1
+          }
+          params.merge!( dims_params )
+        end
 
         return response_generator(:action => 'GetMetricStatistics', :params => params)
 
