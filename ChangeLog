@@ -10,6 +10,7 @@
  * Instead of having hard coded "/" as URL path, the path can be given to as an option. Setup.rb is changed such that server, port, path, and use_ssl can be correctly set up.
  * RDS :db_security_groups should be an Array, not a String.
  * Use HmacSHA256 signatures instead of SHA1 (preferred by AWS and improves support for Eucalyptus)
+ * added AWS::EC2::Base#get_password_data for GetPasswordData API (Windows instances)
 
 === 0.9.16 2010-07-07
  * Less strict checking on which server endpoints you can pass in as an environment var.
