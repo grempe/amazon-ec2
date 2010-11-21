@@ -2,6 +2,12 @@
 
 === 0.9.17 2010-11-21
  * Converted from Jeweler to Bundler, 'bundle install' to install dependencies
+ * Adding ability to launch t1.micro instances for ec2 regular and spot price
+ instances
+ * Adding support for describe/modify/reset instance attributes with tests.
+ * Updated to API version : 2010-08-31
+ * Added experimental support for EC2 create_tags, describe_tags, delete_tags
+
 
 === 0.9.16 2010-07-07
  * Less strict checking on which server endpoints you can pass in as an environment var.

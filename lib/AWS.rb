@@ -219,7 +219,46 @@ module AWS
         params = {}
         arr_of_hashes.each_with_index do |hash, i|
           hash.each do |attribute, value|
-            params["#{key}.#{i+1}.#{mappings[attribute]}"] = value.to_s
+            if value.is_a? Array
+              params["#{key}.#{i+1}.Name"] = mappings[attribute]
+              value.each_with_index do |item, j|
+                params["#{key}.#{i+1}.Value.#{j+1}"] = item.to_s
+              end
+            else
+              params["#{key}.#{i+1}.#{mappings[attribute]}"] = value.to_s
+            end
+          end
+        end
+        params
+      end
+
+      # Same as _pathhashlist_ except it generates explicit <prefix>.Key= and <prefix>.Value or <prefix>.Value.1, <prefix>.Value.2
+      # depending on whether the value is a scalar or an array.
+      #
+      # So if you pass in args
+      # ("People", [{:name=>'jon'}, {:names=>['chris', 'bob']} with key_name = 'Key' and value_name = 'Value',
+      # you should get
+      # {"People.1.Key"=>"name", "People.1.Value"=>'jon', "People.2.Key"=>'names', 'People.2.Value.1'=>'chris', 'People.2.Value.2'=>'bob'}
+      def pathkvlist(key, arr_of_hashes, key_name, value_name, mappings)
+        raise ArgumentError, "expected a key that is a String" unless key.is_a? String
+        raise ArgumentError, "expected a arr_of_hashes that is an Array" unless arr_of_hashes.is_a? Array
+        arr_of_hashes.each{|h| raise ArgumentError, "expected each element of arr_of_hashes to be a Hash" unless h.is_a?(Hash)}
+        raise ArgumentError, "expected a key_nam that is a String" unless key_name.is_a? String
+        raise ArgumentError, "expected a value_name that is a String" unless value_name.is_a? String
+        raise ArgumentError, "expected a mappings that is an Hash" unless mappings.is_a? Hash
+        params = {}
+        arr_of_hashes.each_with_index do |hash, i|
+          hash.each do |attribute, value|
+            params["#{key}.#{i+1}.#{key_name}"] = mappings.fetch(attribute, attribute)
+            if !value.nil?
+              if value.is_a? Array
+                value.each_with_index do |item, j|
+                  params["#{key}.#{i+1}.#{value_name}.#{j+1}"] = item.to_s
+                end
+              else
+                params["#{key}.#{i+1}.#{value_name}"] = value.to_s
+              end
+            end
           end
         end
         params
@@ -282,6 +321,7 @@ module AWS
 
         http_response = make_request(options[:action], options[:params])
         http_xml = http_response.body
+
         return Response.parse(:xml => http_xml)
       end
 
