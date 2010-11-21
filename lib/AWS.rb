@@ -338,6 +338,8 @@ module AWS
         # exceptions.rb
         return false if response.is_a?(Net::HTTPSuccess)
 
+        raise AWS::Error, "Unexpected server error. response.body is: #{response.body}" if response.is_a?(Net::HTTPServerError)
+
         # parse the XML document so we can walk through it
         doc = REXML::Document.new(response.body)
 
