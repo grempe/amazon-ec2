@@ -20,13 +20,13 @@ if ENV['AMAZON_ACCESS_KEY_ID'] && ENV['AMAZON_SECRET_ACCESS_KEY']
     ec2uri = URI.parse(ENV['EC2_URL'])
     opts[:server] = ec2uri.host
     if ec2uri.path.downcase.include?("eucalyptus")
-	opts[:path] = ec2uri.path
-	opts[:port] = ec2uri.port
-	if ec2uri.class == URI::HTTPS 
-		opts[:use_ssl] = true
-	else
-		opts[:use_ssl] = false
-	end
+      opts[:path] = ec2uri.path
+      opts[:port] = ec2uri.port
+      if ec2uri.class == URI::HTTPS
+        opts[:use_ssl] = true
+      else
+        opts[:use_ssl] = false
+      end
     end
     @ec2 = AWS::EC2::Base.new(opts)
   else

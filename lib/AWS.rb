@@ -126,7 +126,7 @@ module AWS
                   :secret_access_key => "",
                   :use_ssl => true,
                   :server => default_host,
-		  :path => "/",
+                  :path => "/",
                   :proxy_server => nil
                   }.merge(options)
 
