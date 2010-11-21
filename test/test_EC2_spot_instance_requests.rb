@@ -107,6 +107,17 @@ context "An EC2 spot instances request " do
 
   end
 
+  specify "should be able to be requested with various instance sizes" do
+    ["t1.micro", "m1.small", "m1.large", "m1.xlarge", "m2.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge", "cc1.4xlarge"].each do |type|
+      @ec2.stubs(:make_request).with('RequestSpotInstances', {"SpotPrice"=>"0.50", 'LaunchSpecification.InstanceType' => type, 'LaunchSpecification.ImageId' => 'ami-60a54009', "InstanceCount"=>"1"}).
+        returns stub(:body => @create_spot_instances_request_response_body, :is_a? => true)
+      lambda { @ec2.request_spot_instances( :image_id => "ami-60a54009", :instance_type => type, :spot_price => '0.50' ) }.should.not.raise(AWS::ArgumentError)
+    end
+  end
+
+  specify "should raise an exception with a bad instance type" do
+    lambda { @ec2.request_spot_instances({"SpotPrice"=>"0.50", 'LaunchSpecification.InstanceType' => 'm1.notarealsize', "InstanceCount"=>"1"}) }.should.raise(AWS::ArgumentError)
+  end
 
   specify "should be able to be created" do
     @ec2.stubs(:make_request).with('RequestSpotInstances', {"SpotPrice"=>"0.50", 'LaunchSpecification.InstanceType' => 'm1.small', "InstanceCount"=>"1"}).

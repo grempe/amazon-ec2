@@ -39,13 +39,21 @@ context "Spot price history " do
   specify "should reject an end_time which is not a Time object" do
     lambda { @ec2.describe_spot_price_history(:end_time => 42) }.should.raise(AWS::ArgumentError)
   end
-  
+
+  specify "should be able to be requested with various instance types" do
+    ["t1.micro", "m1.small", "m1.large", "m1.xlarge", "m2.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge", "cc1.4xlarge"].each do |type|
+      @ec2.stubs(:make_request).with('DescribeSpotPriceHistory', {'InstanceType' => type}).
+        returns stub(:body => @describe_spot_price_history_response_body, :is_a? => true)
+      lambda { @ec2.describe_spot_price_history( :instance_type => type ) }.should.not.raise(AWS::ArgumentError)
+    end
+  end
+
   specify "should reject an invalid instance type" do
     lambda { @ec2.describe_spot_price_history(:instance_type => 'm1.tiny') }.should.raise(AWS::ArgumentError)
   end
-  
+
   specify "should reject an invalid product description" do
     lambda { @ec2.describe_spot_price_history(:product_description => 'Solaris') }.should.raise(AWS::ArgumentError)
   end
-  
+
 end
