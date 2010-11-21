@@ -1,5 +1,8 @@
 * (In progress) Close issue #22, allow detach_volume to take a boolean as a string or TrueClass FalseClass
 
+=== 0.9.17 2010-11-21
+ * Converted from Jeweler to Bundler, 'bundle install' to install dependencies
+
 === 0.9.16 2010-07-07
  * Less strict checking on which server endpoints you can pass in as an environment var.
  * Moved ec2sh script to awshell to better reflect the more comprehensive nature of the gem.

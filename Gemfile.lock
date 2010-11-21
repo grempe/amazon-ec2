@@ -1,0 +1,29 @@
+PATH
+  remote: .
+  specs:
+    amazon-ec2 (0.9.17)
+      xml-simple (>= 1.0.12)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    mocha (0.9.9)
+      rake
+    perftools.rb (0.5.4)
+    rake (0.8.7)
+    rcov (0.9.9)
+    test-spec (0.10.0)
+    xml-simple (1.0.12)
+    yard (0.6.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  amazon-ec2!
+  mocha (>= 0.9.9)
+  perftools.rb (>= 0.5.4)
+  rcov (>= 0.9.9)
+  test-spec (>= 0.10.0)
+  xml-simple (>= 1.0.12)
+  yard (>= 0.6.2)

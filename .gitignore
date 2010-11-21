@@ -6,3 +6,6 @@ doc
 .yardoc
 pkg
 .idea
+.bundle
+.rvmrc
+perftools
