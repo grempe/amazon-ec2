@@ -1,4 +1,3 @@
-* (In progress) Close issue #22, allow detach_volume to take a boolean as a string or TrueClass FalseClass
 
 === 0.9.17 2010-11-21
  * Converted from Jeweler to Bundler, 'bundle install' to install dependencies
