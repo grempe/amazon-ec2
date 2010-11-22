@@ -22,48 +22,30 @@ or the official EC2 website at http://aws.amazon.com/ec2
 
 == Installation
 
-This gem follows the standard conventions for installation on any system with Ruby and RubyGems installed.  If you have worked with gems before this will look very familiar.
+This gem follows the standard conventions for installation on any system with Ruby and RubyGems installed and uses Bundler for gem installation and build management.  If you have worked with gems before this will look very familiar.
 
 === Get an AWS account
 
 Before you can make use of this gem you will need an Amazon Web Services developer account which you can sign up for at https://aws-portal.amazon.com/gp/aws/developer/registration/index.html.  This account must also be specifically enabled for Amazon EC2 usage.  AWS will provide you with an 'AWS Access Key ID' and a 'Secret Access Key' which will allow you to authenticate any API calls you make and ensure correct billing to you for usage of the service.  Take note of these (and keep them secret!).
-
-=== Install required gem pre-requisites
-
-The following gems should be installed automatically as part of your install of amazon-ec2. Most of them are needed for testing build dependencies but they should be painless to install even if you don't plan on running the tests or building this gem manually on your own.
-
-  XmlSimple (required)
-  Mocha (optional for testing)
-  Rcov (optional for testing)
-  Test-Spec (optional for testing)
-
 
 === Install the amazon-ec2 gem (Canonical Release)
 
 This is the standard install for stable releases from RubyGems.
 
   # Install the gem
-  sudo gem install amazon-ec2
+  [sudo] gem install amazon-ec2
 
 
 === Install from local Git clone (for amazon-ec2 developers)
 
-GitHub has unfortunately given up on the feature they had where they would build gems
-when pushed to git.  Too bad.  So to install from git, you'll need to clone and build.
+To install from git for adding features or fixing bugs, you'll need to clone and build.
 
   git clone git://github.com/grempe/amazon-ec2.git
   cd amazon-ec2
-  rake gemspec
+  bundle install
+  rake test
   rake build
   rake install
-
-
-=== EXPERIMENTAL : Install the amazon-ec2 gem using Rip (for more bleeding edge versions)
-
-For those who intend to do development on the gem, or want the bleeding edge.  Install Rip as described at hellorip.com.
-
-  # (Experimental) Install using Rip (hellorip.com) instead of RubyGems
-  rip install git://github.com/grempe/amazon-ec2.git
 
 
 == Using amazon-ec2
@@ -75,7 +57,7 @@ The public methods on AWS::EC2::Base closely mirror the EC2 Query API, and as su
 
 === Setting up
 
-The 'ec2sh' and 'ec2-gem-example.rb' scripts which will be introduced to you shortly expect your AWS EC2 credentials to be stored as shell environment variables which are accessible to those scripts. This makes them convenient to use whenever you need to do a quick query to see what images you have available to you, what's running now, or to start or stop an instance on EC2. You'll find 'ec2sh' to be a very handy tool. I'll describe only the OS X route for setting up (of course the setup steps will vary depending on your particular system and preferred shell). If you don't want to do it this way, feel free to copy these scripts from the gem dir to any location where you can run them from and modify them directly to include your credentials.
+The 'awshell' and 'ec2-gem-example.rb' scripts which will be introduced to you shortly expect your AWS EC2 credentials to be stored as shell environment variables which are accessible to those scripts. This makes them convenient to use whenever you need to do a quick query to see what images you have available to you, what's running now, or to start or stop an instance on EC2. You'll find 'awshell' to be a very handy tool. I'll describe only the OS X route for setting up (of course the setup steps will vary depending on your particular system and preferred shell). If you don't want to do it this way, feel free to copy these scripts from the gem dir to any location where you can run them from and modify them directly to include your credentials.
 
 Edit the file ~/.bash_login and add the following to the existing contents:
 
@@ -121,16 +103,16 @@ An example Ruby script which exercises the library a bit more is installed for y
 
 Since we also package this sample file in the gem's bin/ dir you should also be able to run it from anywhere on your shell path (once you have set your environment variables as described above).
 
-==== Using the 'ec2sh' command shell
+==== Using the 'awshell' command shell
 
-The 'ec2sh' command shell is actually a standard 'irb' Ruby shell, with the main difference being we read your AWS credentials from your environment and pre-configure a connection string for you. This lets you run any EC2 command very simply. This has proven to be a valuable tool during the development of this gem and you should try it out. Since we install this tool in your system path as part of the installation of this gem, you should be able to simply run 'ec2sh' from any terminal command prompt on your local system. You'll see some basic instructions for use, and a few examples when you start 'ec2sh'. Go ahead and try it out now. We'll wait...
+The 'awshell' command shell is actually a standard 'irb' Ruby shell, with the main difference being we read your AWS credentials from your environment and pre-configure a connection string for you. This lets you run any EC2 command very simply. This has proven to be a valuable tool during the development of this gem and you should try it out. Since we install this tool in your system path as part of the installation of this gem, you should be able to simply run 'awshell' from any terminal command prompt on your local system. You'll see some basic instructions for use, and a few examples when you start 'awshell'. Go ahead and try it out now. We'll wait...
 
 If you're not in front of a terminal shell now (perhaps you're browsing this site on your iPhone) this is what you would see:
 
 
-  hostname:/tmp/rails/amazon_test glenn$ ec2sh
+  hostname:/tmp/rails/amazon_test glenn$ awshell
 
-    'ec2sh' usage :
+    'awshell' usage :
     This is an interactive 'irb' command shell that allows you to use all
     commands available to the amazon-ec2 gem.  You'll find this to be a
     great tool to help you debug issues and practice running commands
@@ -182,13 +164,20 @@ Try out the following bit of code. This should walk through each image returned 
 
 === Ruby on Rails usage example:
 
-<b>config/environment.rb</b>
+
+<b>Rails 2.3.x - config/environment.rb</b>
 
   Rails::Initializer.run do |config|
    ...
    config.gem "amazon-ec2", :lib => "AWS", :source => "http://gemcutter.org/"
    ...
   end
+
+
+<b>Rails 3.x.x - Gemfile</b>
+
+  ...
+  gem "amazon-ec2", :require => "AWS"
 
 
 <b>app/controllers/my_controller.rb</b>
@@ -250,7 +239,7 @@ Try out the following bit of code. This should walk through each image returned 
 
 === Important notes regarding the structure of AWS::Response Objects
 
-One of the key benefits of this new version of the library is that all responses from EC2 are bundled up in a real data structure and no longer require parsing of text. The hash returned is populated directly from the XML given to us by EC2 in response to any command we issue. This means that future changes to the API and what is returned by EC2 will be handled transparently by the gem. This is a huge benefit. What this means though, is that you may have to do a little homework on what actually gets returned by EC2 as XML. For example, when you make a #describe_images call in 'ec2sh' what AWS returns behind the scenes looks like:
+One of the key benefits of this new version of the library is that all responses from EC2 are bundled up in a real data structure and no longer require parsing of text. The hash returned is populated directly from the XML given to us by EC2 in response to any command we issue. This means that future changes to the API and what is returned by EC2 will be handled transparently by the gem. This is a huge benefit. What this means though, is that you may have to do a little homework on what actually gets returned by EC2 as XML. For example, when you make a #describe_images call in 'awshell' what AWS returns behind the scenes looks like:
 
   <?xml version="1.0"?>
   <DescribeImagesResponse xmlns="http://ec2.amazonaws.com/doc/2007-01-19/">
@@ -307,7 +296,7 @@ So, for example, if you wanted to get the image ID of the third image listed in 
   >> puts @ec2.describe_images(:owner_id => 'amazon').imagesSet.item[2].imageId
   ami-23b6534a
 
-EC2 will typically return sets of things (imagesSet, reservationSet, etc.) which we map to ruby Arrays (.imagesSet.item in the example above). If you want to iterate over a response set you will need to iterate over this array. The Arrays will typically contain additional AWS::Response objects that represent each individual item. You'll find that you can use the 'ec2sh' to help you understand the structure more completely if you try issuing commands there as a way to practice seeing what will be returned and making sure you get exactly what you want.
+EC2 will typically return sets of things (imagesSet, reservationSet, etc.) which we map to ruby Arrays (.imagesSet.item in the example above). If you want to iterate over a response set you will need to iterate over this array. The Arrays will typically contain additional AWS::Response objects that represent each individual item. You'll find that you can use the 'awshell' to help you understand the structure more completely if you try issuing commands there as a way to practice seeing what will be returned and making sure you get exactly what you want.
 
 === Handling Exceptions
 If for some reason an error occurs when executing a method (e.g. its arguments were
@@ -346,11 +335,11 @@ Please follow these steps if you want to send a patch or a GitHub pull request:
 * Fork grempe/amazon-ec2
 * Create a topic branch: `git checkout -b my_fix`
 * Make sure you add tests for your changes and that they all pass with 'rake test'
-* Don't change files that you don't own like the gemspec or VERSION
+* Don't change files that you don't own like the gemspec or version.rb
 * Commit your changes, one change/fix per commit
 * Push your fixes branch: `git push origin my_fix`
-* Open an Issue referencing your branch.
-* Please do not push to `master` on your fork. This will make everyone’s life easier.
+* Open an Issue on GitHub referencing your branch and send a pull request.
+* Please do not push to `master` on your fork. Using a feature/bugfix branch will make everyone’s life easier.
 
 
 Enjoy!
