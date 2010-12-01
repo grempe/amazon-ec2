@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency('xml-simple', '>= 1.0.12')
   s.add_development_dependency('mocha', '>= 0.9.9')
+  s.add_development_dependency('test-unit', '>= 2.1.2')
   s.add_development_dependency('test-spec', '>= 0.10.0')
   s.add_development_dependency('rcov', '>= 0.9.9')
   s.add_development_dependency('perftools.rb', '>= 0.5.4')
