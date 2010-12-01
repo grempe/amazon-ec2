@@ -38,6 +38,7 @@ context "EC2 instances " do
            <amiLaunchIndex>0</amiLaunchIndex>
           <instanceType>m1.small</instanceType>
           <launchTime>2007-08-07T11:51:50.000Z</launchTime>
+          <clientToken>The client token</clientToken>
         </item>
         <item>
           <instanceId>i-2bc64242</instanceId>
@@ -52,6 +53,7 @@ context "EC2 instances " do
           <amiLaunchIndex>1</amiLaunchIndex>
           <instanceType>m1.small</instanceType>
           <launchTime>2007-08-07T11:51:50.000Z</launchTime>
+          <clientToken>The client token</clientToken>
         </item>
         <item>
           <instanceId>i-2be64332</instanceId>
@@ -66,6 +68,7 @@ context "EC2 instances " do
           <amiLaunchIndex>2</amiLaunchIndex>
           <instanceType>m1.small</instanceType>
           <launchTime>2007-08-07T11:51:50.000Z</launchTime>
+          <clientToken>The client token</clientToken>
         </item>
       </instancesSet>
     </RunInstancesResponse>
@@ -242,12 +245,12 @@ context "EC2 instances " do
 
 
   specify "should be able to be run" do
-    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1').
+    @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "ClientToken" => 'The client token').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
 
-    @ec2.run_instances( :image_id => "ami-60a54009" ).should.be.an.instance_of Hash
+    @ec2.run_instances( :image_id => "ami-60a54009", :client_token => 'The client token' ).should.be.an.instance_of Hash
 
-    response = @ec2.run_instances( :image_id => "ami-60a54009" )
+    response = @ec2.run_instances( :image_id => "ami-60a54009", :client_token => 'The client token' )
 
     response.reservationId.should.equal "r-47a5402e"
     response.ownerId.should.equal "495219933132"
@@ -263,6 +266,7 @@ context "EC2 instances " do
     response.instancesSet.item[0].keyName.should.equal "example-key-name"
     response.instancesSet.item[0].instanceType.should.equal "m1.small"
     response.instancesSet.item[0].launchTime.should.equal "2007-08-07T11:51:50.000Z"
+    response.instancesSet.item[0].clientToken.should.equal "The client token"
 
     response.instancesSet.item[1].instanceId.should.equal "i-2bc64242"
     response.instancesSet.item[1].imageId.should.equal "ami-60a54009"
@@ -273,6 +277,7 @@ context "EC2 instances " do
     response.instancesSet.item[1].keyName.should.equal "example-key-name"
     response.instancesSet.item[1].instanceType.should.equal "m1.small"
     response.instancesSet.item[1].launchTime.should.equal "2007-08-07T11:51:50.000Z"
+    response.instancesSet.item[1].clientToken.should.equal "The client token"
 
     response.instancesSet.item[2].instanceId.should.equal "i-2be64332"
     response.instancesSet.item[2].imageId.should.equal "ami-60a54009"
@@ -283,6 +288,7 @@ context "EC2 instances " do
     response.instancesSet.item[2].keyName.should.equal "example-key-name"
     response.instancesSet.item[2].instanceType.should.equal "m1.small"
     response.instancesSet.item[2].launchTime.should.equal "2007-08-07T11:51:50.000Z"
+    response.instancesSet.item[2].clientToken.should.equal "The client token"
   end
 
 

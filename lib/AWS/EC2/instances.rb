@@ -23,6 +23,7 @@ module AWS
       # @option options [optional, Boolean] :disable_api_termination (true) Specifies whether the instance can be terminated using the APIs. You must modify this attribute before you can terminate any "locked" instances from the APIs.
       # @option options [optional, String] :instance_initiated_shutdown_behavior ('stop') Specifies whether the instance's Amazon EBS volumes are stopped or terminated when the instance is shut down. Valid values : 'stop', 'terminate'
       # @option options [optional, Boolean] :base64_encoded (false)
+      # @option options [optional, String] :client_token (nil) Unique, case-sensitive identifier you provide to ensure idempotency of the request
       #
       def run_instances( options = {} )
         options = { :image_id => "",
@@ -68,6 +69,7 @@ module AWS
         params["SubnetId"]                          = options[:subnet_id] unless options[:subnet_id].nil?
         params["DisableApiTermination"]             = options[:disable_api_termination].to_s unless options[:disable_api_termination].nil?
         params["InstanceInitiatedShutdownBehavior"] = options[:instance_initiated_shutdown_behavior] unless options[:instance_initiated_shutdown_behavior].nil?
+        params["ClientToken"]                       = options[:client_token].to_s unless options[:client_token].nil?
 
         return response_generator(:action => "RunInstances", :params => params)
       end
