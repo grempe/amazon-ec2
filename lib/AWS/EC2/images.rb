@@ -130,16 +130,26 @@ module AWS
       #
       # Deregistered images will be included in the returned results for an unspecified interval subsequent to
       # deregistration.
+      # 
+      # The results can be filtered using the filter argument. The EC2 API reference for a full description of
+      # filter types and arguments.
+      # 
+      # @example 
+      #   @ec2.describe_images(:owner_id => ['self'], :filter => [{"tag:Role" => "App"}])
       #
       # @option options [Array] :image_id ([])
       # @option options [Array] :owner_id ([])
       # @option options [Array] :executable_by ([])
+      # @option options [Array] :filter ([])
       #
       def describe_images( options = {} )
         options = { :image_id => [], :owner_id => [], :executable_by => [] }.merge(options)
         params = pathlist( "ImageId", options[:image_id] )
         params.merge!(pathlist( "Owner", options[:owner_id] ))
         params.merge!(pathlist( "ExecutableBy", options[:executable_by] ))
+        if options[:filter]
+          params.merge!(pathkvlist('Filter', options[:filter], 'Name', 'Value', {}))
+        end
         return response_generator(:action => "DescribeImages", :params => params)
       end
 
