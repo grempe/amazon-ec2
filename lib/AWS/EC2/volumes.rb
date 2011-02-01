@@ -10,6 +10,9 @@ module AWS
       def describe_volumes( options = {} )
         options = { :volume_id => [] }.merge(options)
         params = pathlist("VolumeId", options[:volume_id] )
+        if options[:filter]
+          params.merge!(pathkvlist('Filter', options[:filter], 'Name', 'Value', {}))
+        end
         return response_generator(:action => "DescribeVolumes", :params => params)
       end
 
