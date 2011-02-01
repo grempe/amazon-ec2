@@ -12,8 +12,8 @@
 # CREDITS : Credit for this bit of shameful ripoff coolness
 # goes to Marcel Molina and his AWS::S3 gem.  Thanks!
 
-aws_lib   = File.dirname(__FILE__) + '/../lib/AWS'
-setup = File.dirname(__FILE__) + '/setup'
+aws_lib   = File.expand_path(File.dirname(__FILE__) + '/../lib/AWS')
+setup = File.expand_path(File.dirname(__FILE__) + '/setup')
 irb_name = RUBY_PLATFORM =~ /mswin32/ ? 'irb.bat' : 'irb'
 
 welcome_message = <<-MESSAGE
