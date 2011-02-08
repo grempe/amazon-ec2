@@ -80,7 +80,7 @@ module AWS
       # @option options [optional, Integer] :to_port (nil) Required when authorizing CIDR IP permission
       # @option options [optional, String] :cidr_ip (nil) Required when authorizing CIDR IP permission
       # @option options [optional, String] :source_security_group_name (nil) Required when authorizing user group pair permissions
-      # @option options [optional, String] :source_security_group_owner_id (nil) Required when authorizing user group pair permissions
+      # @option options [optional, String] :source_security_group_user_id (nil) Required when authorizing user group pair permissions
       #
       def authorize_security_group_ingress( options = {} )
         options = { :group_name => nil,
@@ -89,20 +89,21 @@ module AWS
                     :to_port => nil,
                     :cidr_ip => nil,
                     :source_security_group_name => nil,
-                    :source_security_group_owner_id => nil }.merge(options)
+                    :source_security_group_user_id => nil }.merge(options)
 
         # lets not validate the rest of the possible permutations of required params and instead let
         # EC2 sort it out on the server side.  We'll only require :group_name as that is always needed.
         raise ArgumentError, "No :group_name provided" if options[:group_name].nil? || options[:group_name].empty?
 
         params = { "GroupName" => options[:group_name],
-                   "IpProtocol" => options[:ip_protocol],
-                   "FromPort" => options[:from_port].to_s,
-                   "ToPort" => options[:to_port].to_s,
-                   "CidrIp" => options[:cidr_ip],
-                   "SourceSecurityGroupName" => options[:source_security_group_name],
-                   "SourceSecurityGroupOwnerId" => options[:source_security_group_owner_id]
-                   }
+                   "IpPermissions.1.IpProtocol" => options[:ip_protocol],
+                   "IpPermissions.1.FromPort" => options[:from_port].to_s,
+                   "IpPermissions.1.ToPort" => options[:to_port].to_s,
+                   "IpPermissions.1.IpRanges.1" => options[:cidr_ip],
+                   "IpPermissions.1.Groups.1.GroupName" => options[:source_security_group_name],
+                   "IpPermissions.1.Groups.1.UserId" => options[:source_security_group_user_id]
+                 }
+
         return response_generator(:action => "AuthorizeSecurityGroupIngress", :params => params)
       end
 
@@ -131,7 +132,7 @@ module AWS
       # @option options [optional, Integer] :to_port (nil) Required when revoking CIDR IP permission
       # @option options [optional, String] :cidr_ip (nil) Required when revoking CIDR IP permission
       # @option options [optional, String] :source_security_group_name (nil) Required when revoking user group pair permissions
-      # @option options [optional, String] :source_security_group_owner_id (nil) Required when revoking user group pair permissions
+      # @option options [optional, String] :source_security_group_user_id (nil) Required when revoking user group pair permissions
       #
       def revoke_security_group_ingress( options = {} )
         options = { :group_name => nil,
@@ -140,20 +141,21 @@ module AWS
                     :to_port => nil,
                     :cidr_ip => nil,
                     :source_security_group_name => nil,
-                    :source_security_group_owner_id => nil }.merge(options)
+                    :source_security_group_user_id => nil }.merge(options)
 
         # lets not validate the rest of the possible permutations of required params and instead let
         # EC2 sort it out on the server side.  We'll only require :group_name as that is always needed.
         raise ArgumentError, "No :group_name provided" if options[:group_name].nil? || options[:group_name].empty?
 
         params = { "GroupName" => options[:group_name],
-                   "IpProtocol" => options[:ip_protocol],
-                   "FromPort" => options[:from_port].to_s,
-                   "ToPort" => options[:to_port].to_s,
-                   "CidrIp" => options[:cidr_ip],
-                   "SourceSecurityGroupName" => options[:source_security_group_name],
-                   "SourceSecurityGroupOwnerId" => options[:source_security_group_owner_id]
-                   }
+                   "IpPermissions.1.IpProtocol" => options[:ip_protocol],
+                   "IpPermissions.1.FromPort" => options[:from_port].to_s,
+                   "IpPermissions.1.ToPort" => options[:to_port].to_s,
+                   "IpPermissions.1.IpRanges.1" => options[:cidr_ip],
+                   "IpPermissions.1.Groups.1.GroupName" => options[:source_security_group_name],
+                   "IpPermissions.1.Groups.1.UserId" => options[:source_security_group_user_id]
+                 }
+
         return response_generator(:action => "RevokeSecurityGroupIngress", :params => params)
       end
 
