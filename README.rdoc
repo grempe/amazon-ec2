@@ -65,8 +65,8 @@ Edit the file ~/.bash_login and add the following to the existing contents:
   export RUBYOPT="rubygems"
 
   # For amazon-ec2 and amazon s3 ruby gems
-  export AMAZON_ACCESS_KEY_ID="YOUR_ACCESS_KEY_ID"
-  export AMAZON_SECRET_ACCESS_KEY="YOUR_SECRET_ACCESS_KEY_ID"
+  export AWS_ACCESS_KEY_ID="YOUR_ACCESS_KEY_ID"
+  export AWS_SECRET_ACCESS_KEY="YOUR_SECRET_ACCESS_KEY_ID"
 
 If you are using EC2 in the EU region, make sure you also set:
 

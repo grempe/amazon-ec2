@@ -9,11 +9,13 @@
 # Home::      http://github.com/grempe/amazon-ec2/tree/master
 #++
 
-if ENV['AMAZON_ACCESS_KEY_ID'] && ENV['AMAZON_SECRET_ACCESS_KEY']
+
+
+if(AWS::ACCESS_KEY_ID and AWS::SECRET_ACCESS_KEY)
 
   opts = {
-    :access_key_id => ENV['AMAZON_ACCESS_KEY_ID'],
-    :secret_access_key => ENV['AMAZON_SECRET_ACCESS_KEY']
+    :access_key_id      => AWS::ACCESS_KEY_ID,
+    :secret_access_key  => AWS::SECRET_ACCESS_KEY
   }
 
   if ENV['EC2_URL']

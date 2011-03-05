@@ -18,14 +18,14 @@ require 'pp'
 # e.g. in ~/.bash_login
 #
 #  # For amazon-ec2 and amazon s3 ruby gems
-#  export AMAZON_ACCESS_KEY_ID="FOO"
-#  export AMAZON_SECRET_ACCESS_KEY="BAR"
+#  export AWS_SECRET_ACCESS_KEY="FOO"
+#  export AWS_SECRET_ACCESS_KEY="BAR"
 
-ACCESS_KEY_ID = ENV['AMAZON_ACCESS_KEY_ID']
-SECRET_ACCESS_KEY = ENV['AMAZON_SECRET_ACCESS_KEY']
+ACCESS_KEY_ID     = ENV['AWS_ACCESS_KEY_ID']      || ENV['AMAZON_ACCESS_KEY_ID']
+SECRET_ACCESS_KEY = ENV['AWS_SECRET_ACCESS_KEY']  || ENV['AMAZON_SECRET_ACCESS_KEY']
 
 if ACCESS_KEY_ID.nil? || ACCESS_KEY_ID.empty?
-  puts "Error : You must add the shell environment variables AMAZON_ACCESS_KEY_ID and AMAZON_SECRET_ACCESS_KEY before calling #{$0}!"
+  puts "Error : You must add the shell environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY before calling #{$0}!"
   exit
 end
 
