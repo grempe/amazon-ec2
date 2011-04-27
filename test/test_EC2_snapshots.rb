@@ -59,7 +59,8 @@ context "EC2 snaphots " do
   end
 
   specify "should be able to be described with describe_snapshots and filters" do
-    @ec2.stubs(:make_request).with('DescribeSnapshots', {"Filter.1.Name"=>"vol-4d826724"}).
+    @ec2.stubs(:make_request).with('DescribeSnapshots',
+                                   {'Filter.1.Name' => 'volume-id', 'Filter.1.Value' => 'vol-4d826724'}).
       returns stub(:body => @describe_snapshots_response_body, :is_a? => true)
 
     @ec2.describe_snapshots(:filter_names => ['volume-id'], :filter_values => ['vol-4d826724']).should.be.an.instance_of Hash

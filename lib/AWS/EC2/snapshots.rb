@@ -20,9 +20,10 @@ module AWS
 
         names = options[:filter_names] unless options[:filter_names].nil?
         names && names.each_with_index do |name, i|
-          params["Filter.#{i+1}.Name"] = options[:filter_values][i] if !options[:filter_values][i].nil?
+          params["Filter.#{i+1}.Name"] = name
+          params["Filter.#{i+1}.Value"] = options[:filter_values][i] if !options[:filter_values][i].nil?
         end
-        
+        puts "Params: #{params.inspect}"
         return response_generator(:action => "DescribeSnapshots", :params => params)
       end
 
