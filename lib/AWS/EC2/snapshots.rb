@@ -17,13 +17,11 @@ module AWS
         params.merge!(pathlist("SnapshotId", options[:snapshot_id] )) unless options[:snapshot_id].nil? || options[:snapshot_id] == []
         params["RestorableBy"] = options[:restorable_by] unless options[:restorable_by].nil?
         params["Owner"] = options[:owner] unless options[:owner].nil?
-
         names = options[:filter_names] unless options[:filter_names].nil?
         names && names.each_with_index do |name, i|
           params["Filter.#{i+1}.Name"] = name
           params["Filter.#{i+1}.Value"] = options[:filter_values][i] if !options[:filter_values][i].nil?
         end
-        puts "Params: #{params.inspect}"
         return response_generator(:action => "DescribeSnapshots", :params => params)
       end
 
