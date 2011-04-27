@@ -9,12 +9,20 @@ module AWS
       # @option options [optional,Array] :snapshot_id ([]) The ID of the Amazon EBS snapshot.
       # @option options [optional,String] :owner ('') Returns snapshots owned by the specified owner. Multiple owners can be specified. Valid values self | amazon | AWS Account ID
       # @option options [optional,String] :restorable_by ('') Account ID of a user that can create volumes from the snapshot.
+      # @option options [optional,String] :filter_names ([]) Names of filters you would like to apply
+      # @option options [optional,Array] :filter_values ([]) Values of filters you would like to apply
       #
       def describe_snapshots( options = {} )
         params = {}
         params.merge!(pathlist("SnapshotId", options[:snapshot_id] )) unless options[:snapshot_id].nil? || options[:snapshot_id] == []
         params["RestorableBy"] = options[:restorable_by] unless options[:restorable_by].nil?
         params["Owner"] = options[:owner] unless options[:owner].nil?
+
+        names = options[:filter_names] unless options[:filter_names].nil?
+        names && names.each_with_index do |name, i|
+          params["Filter.#{i+1}.Name"] = options[:filter_values][i] if !options[:filter_values][i].nil?
+        end
+        
         return response_generator(:action => "DescribeSnapshots", :params => params)
       end
 
