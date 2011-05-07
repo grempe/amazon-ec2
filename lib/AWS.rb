@@ -346,17 +346,25 @@ module AWS
 
         # Check that the Error element is in the place we would expect.
         # and if not raise a generic error exception
-        unless doc.root.elements['Errors'].elements['Error'].name == 'Error'
+        if doc.root.elements['Error'] and doc.root.elements['Error'].name == 'Error'
+          error_elem = doc.root.elements['Error']
+        elsif doc.root.elements['Errors'].elements['Error'].name == 'Error'
+          error_elem = doc.root.elements['Errors'].elements['Error']
+        else
           raise Error, "Unexpected error format. response.body is: #{response.body}"
         end
 
         # An valid error response looks like this:
         # <?xml version="1.0"?><Response><Errors><Error><Code>InvalidParameterCombination</Code><Message>Unknown parameter: foo</Message></Error></Errors><RequestID>291cef62-3e86-414b-900e-17246eccfae8</RequestID></Response>
+        #
+        # or this:
+        # <ErrorResponse xmlns="http://monitoring.amazonaws.com/doc/2009-05-15/"><Error><Type>Sender</Type><Code>InvalidClientTokenId</Code><Message>The security token included in the request is invalid</Message></Error><RequestId>1e77e1bb-2920-11e0-80c8-b71648ee0b72</RequestId></ErrorResponse>
+        #
         # AWS throws some exception codes that look like Error.SubError.  Since we can't name classes this way
         # we need to strip out the '.' in the error 'Code' and we name the error exceptions with this
         # non '.' name as well.
-        error_code    = doc.root.elements['Errors'].elements['Error'].elements['Code'].text.gsub('.', '')
-        error_message = doc.root.elements['Errors'].elements['Error'].elements['Message'].text
+        error_code = error_elem.elements['Code'].text.gsub('.', '')
+        error_message = error_elem.elements['Message'].text
 
         # Raise one of our specific error classes if it exists.
         # otherwise, throw a generic EC2 Error with a few details.
