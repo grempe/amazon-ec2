@@ -23,4 +23,9 @@ context "cloudwatch " do
     response.should.be.an.instance_of Hash
     response["Error"]["Message"].should.equal "The security token included in the request is invalid"
   end
+
+  specify "AWS::Cloudwatch::Base should take a next_token parameter" do
+    @cw.expects(:make_request).with('ListMetrics', {'NextToken' => 'aaaaaaaaaa'}).returns stub(:body => @error_response_for_invalid_security_token)
+    @cw.list_metrics(:next_token => 'aaaaaaaaaa')
+  end
 end

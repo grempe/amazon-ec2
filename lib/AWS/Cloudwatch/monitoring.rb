@@ -6,9 +6,14 @@ module AWS
       # account. To get further information from the metrics, you'll then need to
       # call get_metric_statistics.
       #
-      # there are no options available to this method.
-      def list_metrics
-        return response_generator(:action => 'ListMetrics', :params => {})
+      # @option options [String] :next_token Next token
+      def list_metrics( options ={} )
+        options = { :next_token => nil }.merge(options)
+
+        params = {}
+        params['NextToken'] = options[:next_token] if options[:next_token]
+
+        return response_generator(:action => 'ListMetrics', :params => params)
       end
 
       # get_metric_statistics pulls a hashed array from Cloudwatch with the stats
