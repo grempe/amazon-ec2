@@ -1,6 +1,7 @@
 === x.x.x
  * add NextToken support to Cloudwatch ListMetrics API. (juno)
  * added error handling for Cloudwatch. (juno)
+ * added Filters for instances and volumes.
 
 === 0.9.17 2010-11-21
  * Converted from Jeweler to Bundler, 'bundle install' to install dependencies

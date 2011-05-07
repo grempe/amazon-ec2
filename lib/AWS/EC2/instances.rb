@@ -85,11 +85,14 @@ module AWS
       # Recently terminated instances will be included in the returned results for a small interval subsequent to
       # their termination. This interval is typically of the order of one hour
       #
-      # @option options [Array] :instance_id ([])
+      # @option options [Array<Hash>] :filter ([])
       #
       def describe_instances( options = {} )
         options = { :instance_id => [] }.merge(options)
         params = pathlist("InstanceId", options[:instance_id])
+        if options[:filter]
+          params.merge!(pathkvlist('Filter', options[:filter], 'Name', 'Value', {}))
+        end
         return response_generator(:action => "DescribeInstances", :params => params)
       end
 
