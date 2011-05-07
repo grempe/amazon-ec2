@@ -35,10 +35,18 @@ module AWS
       # returned. If a group is specified that does not exist an exception is returned.
       #
       # @option options [optional, Array] :group_name ([])
+      # @option options [optional, Array] :group_id ([])
       #
       def describe_security_groups( options = {} )
-        options = { :group_name => [] }.merge(options)
-        params = pathlist("GroupName", options[:group_name] )
+        options = { :group_name => [],
+                    :group_id => [] }.merge(options)
+        params = {}
+        if options[:group_name]
+          params.merge!(pathlist("GroupName", options[:group_name]))
+        end
+        if options[:group_id]
+          params.merge!(pathlist("GroupId", options[:group_id]))
+        end
         return response_generator(:action => "DescribeSecurityGroups", :params => params)
       end
 
@@ -74,35 +82,46 @@ module AWS
       # GroupName, IpProtocol, FromPort, ToPort and CidrIp must be specified. Mixing these two types
       # of parameters is not allowed.
       #
-      # @option options [String] :group_name ("")
-      # @option options [optional, String] :ip_protocol (nil) Required when authorizing CIDR IP permission
+      # @option options [require, String] :ip_protocol (nil) Required when authorizing CIDR IP permission
+      # @option options [optional, String] :group_id ("")
+      # @option options [optional, String] :group_name ("")
       # @option options [optional, Integer] :from_port (nil) Required when authorizing CIDR IP permission
       # @option options [optional, Integer] :to_port (nil) Required when authorizing CIDR IP permission
-      # @option options [optional, String] :cidr_ip (nil) Required when authorizing CIDR IP permission
-      # @option options [optional, String] :source_security_group_name (nil) Required when authorizing user group pair permissions
       # @option options [optional, String] :source_security_group_user_id (nil) Required when authorizing user group pair permissions
+      # @option options [optional, String] :source_security_group_name (nil) Required when authorizing user group pair permissions
+      # @option options [optional, String] :source_security_group_id (nil) ID of the source security group. Cannot be used when specifying a CIDR IP address. For VPC security groups only. Required if modifying access for one or more source security groups.
+      # @option options [optional, String] :cidr_ip (nil) Required when authorizing CIDR IP permission
       #
       def authorize_security_group_ingress( options = {} )
-        options = { :group_name => nil,
+        options = { :group_id => nil,
+                    :group_name => nil,
                     :ip_protocol => nil,
                     :from_port => nil,
                     :to_port => nil,
-                    :cidr_ip => nil,
+                    :source_security_group_user_id => nil,
                     :source_security_group_name => nil,
-                    :source_security_group_user_id => nil }.merge(options)
+                    :source_security_group_id => nil,
+                    :cidr_ip => nil }.merge(options)
+
+        if options[:ip_protocol].nil? || options[:ip_protocol].empty?
+          raise ArgumentError, "No :ip_protocol provided"
+        end
 
         # lets not validate the rest of the possible permutations of required params and instead let
-        # EC2 sort it out on the server side.  We'll only require :group_name as that is always needed.
-        raise ArgumentError, "No :group_name provided" if options[:group_name].nil? || options[:group_name].empty?
+        # EC2 sort it out on the server side.  We'll only require :group_id or :group_name as that is always needed.
+        if (options[:group_id].nil? || options[:group_id].empty?) && (options[:group_name].nil? || options[:group_name].empty?)
+          raise ArgumentError, "No :group_id or :group_name provided"
+        end
 
-        params = { "GroupName" => options[:group_name],
-                   "IpPermissions.1.IpProtocol" => options[:ip_protocol],
-                   "IpPermissions.1.FromPort" => options[:from_port].to_s,
-                   "IpPermissions.1.ToPort" => options[:to_port].to_s,
-                   "IpPermissions.1.IpRanges.1" => options[:cidr_ip],
-                   "IpPermissions.1.Groups.1.GroupName" => options[:source_security_group_name],
-                   "IpPermissions.1.Groups.1.UserId" => options[:source_security_group_user_id]
-                 }
+        params = { "IpPermissions.1.IpProtocol" => options[:ip_protocol] }
+        params['GroupId'] = options[:group_id] if options[:group_id]
+        params['GroupName'] = options[:group_name] if options[:group_name]
+        params["IpPermissions.1.FromPort"] = options[:from_port].to_s if options[:from_port]
+        params["IpPermissions.1.ToPort"] = options[:to_port].to_s if options[:to_port]
+        params["IpPermissions.1.Groups.1.UserId"] = options[:source_security_group_user_id] if options[:source_security_group_user_id]
+        params["IpPermissions.1.Groups.1.GroupName"] = options[:source_security_group_name] if options[:source_security_group_name]
+        params["IpPermissions.1.Groups.1.GroupId"] = options[:source_security_group_id] if options[:source_security_group_id]
+        params["IpPermissions.1.IpRanges.1.CidrIp"] = options[:cidr_ip] if options[:cidr_ip]
 
         return response_generator(:action => "AuthorizeSecurityGroupIngress", :params => params)
       end
@@ -126,35 +145,46 @@ module AWS
       # GroupName, IpProtocol, FromPort, ToPort and CidrIp must be specified. Mixing these two types
       # of parameters is not allowed.
       #
-      # @option options [String] :group_name ("")
-      # @option options [optional, String] :ip_protocol (nil) Required when revoking CIDR IP permission
-      # @option options [optional, Integer] :from_port (nil) Required when revoking CIDR IP permission
-      # @option options [optional, Integer] :to_port (nil) Required when revoking CIDR IP permission
-      # @option options [optional, String] :cidr_ip (nil) Required when revoking CIDR IP permission
-      # @option options [optional, String] :source_security_group_name (nil) Required when revoking user group pair permissions
-      # @option options [optional, String] :source_security_group_user_id (nil) Required when revoking user group pair permissions
+      # @option options [require, String] :ip_protocol (nil) Required when authorizing CIDR IP permission
+      # @option options [optional, String] :group_id ("")
+      # @option options [optional, String] :group_name ("")
+      # @option options [optional, Integer] :from_port (nil) Required when authorizing CIDR IP permission
+      # @option options [optional, Integer] :to_port (nil) Required when authorizing CIDR IP permission
+      # @option options [optional, String] :source_security_group_user_id (nil) Required when authorizing user group pair permissions
+      # @option options [optional, String] :source_security_group_name (nil) Required when authorizing user group pair permissions
+      # @option options [optional, String] :source_security_group_id (nil) ID of the source security group. Cannot be used when specifying a CIDR IP address. For VPC security groups only. Required if modifying access for one or more source security groups.
+      # @option options [optional, String] :cidr_ip (nil) Required when authorizing CIDR IP permission
       #
       def revoke_security_group_ingress( options = {} )
-        options = { :group_name => nil,
+        options = { :group_id => nil,
+                    :group_name => nil,
                     :ip_protocol => nil,
                     :from_port => nil,
                     :to_port => nil,
                     :cidr_ip => nil,
                     :source_security_group_name => nil,
-                    :source_security_group_user_id => nil }.merge(options)
+                    :source_security_group_user_id => nil,
+                    :source_security_group_id => nil }.merge(options)
+
+        if options[:ip_protocol].nil? || options[:ip_protocol].empty?
+          raise ArgumentError, "No :ip_protocol provided"
+        end
 
         # lets not validate the rest of the possible permutations of required params and instead let
-        # EC2 sort it out on the server side.  We'll only require :group_name as that is always needed.
-        raise ArgumentError, "No :group_name provided" if options[:group_name].nil? || options[:group_name].empty?
+        # EC2 sort it out on the server side.  We'll only require :group_id or :group_name as that is always needed.
+        if (options[:group_id].nil? || options[:group_id].empty?) && (options[:group_name].nil? || options[:group_name].empty?)
+          raise ArgumentError, "No :group_id or :group_name provided"
+        end
 
-        params = { "GroupName" => options[:group_name],
-                   "IpPermissions.1.IpProtocol" => options[:ip_protocol],
-                   "IpPermissions.1.FromPort" => options[:from_port].to_s,
-                   "IpPermissions.1.ToPort" => options[:to_port].to_s,
-                   "IpPermissions.1.IpRanges.1" => options[:cidr_ip],
-                   "IpPermissions.1.Groups.1.GroupName" => options[:source_security_group_name],
-                   "IpPermissions.1.Groups.1.UserId" => options[:source_security_group_user_id]
-                 }
+        params = { "IpPermissions.1.IpProtocol" => options[:ip_protocol] }
+        params['GroupId'] = options[:group_id] if options[:group_id]
+        params['GroupName'] = options[:group_name] if options[:group_name]
+        params["IpPermissions.1.FromPort"] = options[:from_port].to_s if options[:from_port]
+        params["IpPermissions.1.ToPort"] = options[:to_port].to_s if options[:to_port]
+        params["IpPermissions.1.Groups.1.UserId"] = options[:source_security_group_user_id] if options[:source_security_group_user_id]
+        params["IpPermissions.1.Groups.1.GroupName"] = options[:source_security_group_name] if options[:source_security_group_name]
+        params["IpPermissions.1.Groups.1.GroupId"] = options[:source_security_group_id] if options[:source_security_group_id]
+        params["IpPermissions.1.IpRanges.1.CidrIp"] = options[:cidr_ip] if options[:cidr_ip]
 
         return response_generator(:action => "RevokeSecurityGroupIngress", :params => params)
       end

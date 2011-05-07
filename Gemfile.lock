@@ -7,6 +7,7 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
+    awesome_print (0.3.2)
     mocha (0.9.12)
     perftools.rb (0.5.6)
     rcov (0.9.9)
@@ -20,6 +21,7 @@ PLATFORMS
 
 DEPENDENCIES
   amazon-ec2!
+  awesome_print
   mocha (>= 0.9.9)
   perftools.rb (>= 0.5.4)
   rcov (>= 0.9.9)

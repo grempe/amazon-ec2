@@ -3,6 +3,10 @@
  * added error handling for Cloudwatch. (juno)
  * added Filters for instances and volumes. (skade)
  * add EC2 ImportKeyPair API. (juno)
+ * EC2#describe_security_groups : add :group_id option (juno)
+ * Update EC2 API Version to 2011-02-28 (juno)
+ * EC2#authorize_security_group_ingress : support API Version 2011-02-28 (juno)
+ * EC2#revoke_security_group_ingress : support API Version 2011-02-28 (juno)
 
 === 0.9.17 2010-11-21
  * Converted from Jeweler to Bundler, 'bundle install' to install dependencies
