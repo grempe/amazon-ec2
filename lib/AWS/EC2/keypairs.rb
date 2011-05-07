@@ -41,6 +41,23 @@ module AWS
       end
 
 
+      # The ImportKeyPair operation upload a new RSA public key to the Amazon AWS.
+      #
+      # @option options [String] :key_name
+      # @option options [String] :public_key_material
+      #
+      def import_keypair( options = {} )
+        options = { :key_name => "", :public_key_material => "" }.merge(options)
+        raise ArgumentError, "No :key_name provided" if options[:key_name].nil? || options[:key_name].empty?
+        raise ArgumentError, "No :public_key_material provided" if options[:public_key_material].nil? || options[:public_key_material].empty?
+        params = {
+          "KeyName" => options[:key_name],
+          "PublicKeyMaterial" => Base64.encode64(options[:public_key_material]).gsub(/\n/, "").strip
+        }
+        return response_generator(:action => "ImportKeyPair", :params => params)
+      end
+
+
     end
   end
 end

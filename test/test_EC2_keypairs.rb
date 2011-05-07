@@ -62,6 +62,16 @@ context "EC2 keypairs " do
     </DeleteKeyPair>
     RESPONSE
 
+    @import_keypair_body = <<-RESPONSE
+    <ImportKeyPairResponse xmlns="http://ec2.amazonaws.com/doc/2011-02-28/">
+       <requestId>7a62c49f-347e-4fc4-9331-6e8eEXAMPLE</requestId>
+       <keyName>example-key-name</keyName>
+       <keyFingerprint>
+         1f:51:ae:28:bf:89:e9:d8:1f:25:5d:37:2d:7d:b8:ca:9f:f5:f1:6f
+       </keyFingerprint>
+    </ImportKeyPairResponse>
+    RESPONSE
+
   end
 
 
@@ -117,6 +127,18 @@ context "EC2 keypairs " do
     lambda { @ec2.delete_keypair() }.should.raise(AWS::ArgumentError)
     lambda { @ec2.delete_keypair( :key_name => nil ) }.should.raise(AWS::ArgumentError)
     lambda { @ec2.delete_keypair( :key_name => "" ) }.should.raise(AWS::ArgumentError)
+  end
+
+
+  specify "should be able to be import public key with import_keypair" do
+    public_key_material = 'ssh-rsa AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA='
+    encoded_public_key_material = 'c3NoLXJzYSBBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBPQ=='
+    @ec2.stubs(:make_request).with('ImportKeyPair', {"KeyName"=>"example-key-name", "PublicKeyMaterial" => encoded_public_key_material}).
+      returns stub(:body => @import_keypair_body, :is_a? => true)
+    @ec2.import_keypair( :key_name => "example-key-name", :public_key_material => public_key_material ).should.be.an.instance_of Hash
+    response = @ec2.import_keypair( :key_name => "example-key-name", :public_key_material => public_key_material )
+    response.keyName.should.equal "example-key-name"
+    response.keyFingerprint.strip.should.equal "1f:51:ae:28:bf:89:e9:d8:1f:25:5d:37:2d:7d:b8:ca:9f:f5:f1:6f"
   end
 
 
