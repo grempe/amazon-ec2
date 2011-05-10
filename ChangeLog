@@ -1,4 +1,4 @@
-=== x.x.x
+=== x.x.x 2011-05-08
  * add NextToken support to Cloudwatch ListMetrics API. (juno)
  * added error handling for Cloudwatch. (juno)
  * added Filters for instances and volumes. (skade)
