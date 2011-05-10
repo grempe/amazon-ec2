@@ -1,9 +1,10 @@
-= Amazon Web Services Elastic Compute Cloud (EC2) Ruby Gem
+amazon-ec2カスタマイズ版
+====
 
 コードに変更を加えた場合は`ChangeLog`の最上部に以下のようなエントリを追加します（バージョン番号は`x.x.x`のままでよい）。
 
-> === x.x.x 2011-05-08
-> * add NextToken support to Cloudwatch ListMetrics API. (juno)
+    === x.x.x 2011-05-08
+    * add NextToken support to Cloudwatch ListMetrics API. (juno)
 
 変更した`amazon-ec2`をRailsアプリケーションに含める場合は、以下のような手順で行います。
 
