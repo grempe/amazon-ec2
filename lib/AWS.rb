@@ -291,7 +291,7 @@ module AWS
           end.join("&") + "&Signature=" + sig
 
           req = Net::HTTP::Post.new(@path)
-          req.content_type = 'application/x-www-form-urlencoded'
+          req.content_type = 'application/x-www-form-urlencoded; charset=utf-8'
           req['User-Agent'] = "github-amazon-ec2-ruby-gem"
 
           response = @http.request(req, query)
