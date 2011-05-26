@@ -2,6 +2,28 @@ module AWS
   module EC2
     class Base < AWS::Base
 
+      # describe_volumes filters list
+      DESCRIBE_VOLUMES_FILTERS = [
+        'attachment.attach-time',
+        'attachment.delete-on-termination',
+        'attachment.device',
+        'attachment.instance-id',
+        'attachment.status',
+        :availability_zone,
+        :create_time,
+        :size,
+        :snapshot_id,
+        :status,
+        :tag_key,
+        :tag_value,
+        'tag:key',
+        :volume_id
+      ]
+
+      # describe_volumes alternative filter name mappings
+      DESCRIBE_VOLUMES_FILTER_ALTERNATIVES = {
+        :volume_id_filter => :volume_id
+      }
 
       # The DescribeVolumes operation lists one or more Amazon EBS volumes that you own, If you do not specify any volumes, Amazon EBS returns all volumes that you own.
       #
@@ -9,10 +31,17 @@ module AWS
       #
       def describe_volumes( options = {} )
         options = { :volume_id => [] }.merge(options)
-        params = pathlist("VolumeId", options[:volume_id] )
-        if options[:filter]
-          params.merge!(pathkvlist('Filter', options[:filter], 'Name', 'Value', {}))
+        params = pathlist("VolumeId", options.delete(:volume_id))
+
+        DESCRIBE_VOLUMES_FILTER_ALTERNATIVES.each do |alternative_key, original_key|
+          next unless options.include?(alternative_key)
+          options[original_key] = options.delete(alternative_key)
         end
+
+        invalid_filters = options.keys - DESCRIBE_VOLUMES_FILTERS
+        raise ArgumentError, "invalid filter(s): #{invalid_filters.join(', ')}" if invalid_filters.any?
+        params.merge!(filterlist(options))
+
         return response_generator(:action => "DescribeVolumes", :params => params)
       end
 
