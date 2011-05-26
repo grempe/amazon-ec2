@@ -3,6 +3,26 @@ module AWS
 
     class Base < AWS::Base
 
+      # describe_snapshots filters list
+      DESCRIBE_SNAPSHOTS_FILTERS = [
+        :description,
+        :owner_alias,
+        :owner_id,
+        :progress,
+        :snapshot_id,
+        :start_time,
+        :status,
+        :tag_key,
+        :tag_value,
+        'tag:key',
+        :volume_id,
+        :volume_size
+      ]
+
+      # describe_sanpshots alternative filter name mappings
+      DESCRIBE_SNAPSHOTS_FILTER_ALTERNATIVES = {
+        :snapshot_id_filter => :snapshot_id
+      }
 
       # The DescribeSnapshots operation describes the status of Amazon EBS snapshots.
       #
@@ -15,6 +35,19 @@ module AWS
         params.merge!(pathlist("SnapshotId", options[:snapshot_id] )) unless options[:snapshot_id].nil? || options[:snapshot_id] == []
         params["RestorableBy"] = options[:restorable_by] unless options[:restorable_by].nil?
         params["Owner"] = options[:owner] unless options[:owner].nil?
+        options.delete(:snapshot_id)
+        options.delete(:restorable_by)
+        options.delete(:owner)
+
+        DESCRIBE_SNAPSHOTS_FILTER_ALTERNATIVES.each do |alternative_key, original_key|
+          next unless options.include?(alternative_key)
+          options[original_key] = options.delete(alternative_key)
+        end
+
+        invalid_filters = options.keys - DESCRIBE_SNAPSHOTS_FILTERS
+        raise ArgumentError, "invalid filter(s): #{invalid_filters.join(', ')}" if invalid_filters.any?
+        params.merge!(filterlist(options))
+
         return response_generator(:action => "DescribeSnapshots", :params => params)
       end
 
