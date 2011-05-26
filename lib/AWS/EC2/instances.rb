@@ -2,6 +2,63 @@ module AWS
   module EC2
     class Base < AWS::Base
 
+      # describe_instances filters list
+      DESCRIBE_INSTANCES_FILTERS = [
+        :architecture,
+        :availability_zone,
+        'block-device-mapping.attach-time',
+        'block-device-mapping.delete-on-termination',
+        'block-device-mapping.device-name',
+        'block-device-mapping.status',
+        'block-device-mapping.volume-id',
+        :client_token,
+        :dns_name,
+        :group_id,
+        :group_name,
+        :image_id,
+        :instance_id,
+        :instance_lifecycle,
+        :instance_state_code,
+        :instance_state_name,
+        :instance_type,
+        'instance.group-id',
+        'instance.group-name',
+        :ip_address,
+        :kernel_id,
+        :key_name,
+        :launch_index,
+        :launch_time,
+        :monitoring_state,
+        :owner_id,
+        :placement_group_name,
+        :platform,
+        :private_dns_name,
+        :private_ip_address,
+        :product_code,
+        :ramdisk_id,
+        :reason,
+        :requester_id,
+        :reservation_id,
+        :root_device_name,
+        :root_device_type,
+        :source_dest_check,
+        :spot_instance_request_id,
+        :state_reason_code,
+        :state_reason_message,
+        :subnet_id,
+        :tag_key,
+        :tag_value,
+        'tag:key',
+        :virtualization_type,
+        :vpc_id,
+        :hypervisor
+      ]
+
+      # describe_instances alternative filter name mappings
+      DESCRIBE_INSTANCES_FILTER_ALTERNATIVES = {
+        :instance_id_filter => :instance_id,
+      }
+
       # Launches a specified number of instances of an AMI for which you have permissions.
       #
       # Amazon API Docs : HTML[http://docs.amazonwebservices.com/AWSEC2/2009-10-31/APIReference/index.html?ApiReference-query-RunInstances.html]
@@ -89,10 +146,16 @@ module AWS
       #
       def describe_instances( options = {} )
         options = { :instance_id => [] }.merge(options)
-        params = pathlist("InstanceId", options[:instance_id])
-        if options[:filter]
-          params.merge!(pathkvlist('Filter', options[:filter], 'Name', 'Value', {}))
+        params = pathlist("InstanceId", options.delete(:instance_id))
+
+        DESCRIBE_INSTANCES_FILTER_ALTERNATIVES.each do |alternative_key, original_key|
+          next unless options.include?(alternative_key)
+          options[original_key] = options.delete(alternative_key)
         end
+
+        invalid_filters = options.keys - DESCRIBE_INSTANCES_FILTERS
+        raise ArgumentError, "invalid filter(s): #{invalid_filters.join(', ')}" if invalid_filters.any?
+        params.merge!(filterlist(options))
         return response_generator(:action => "DescribeInstances", :params => params)
       end
 
