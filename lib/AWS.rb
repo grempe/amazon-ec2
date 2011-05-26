@@ -267,6 +267,50 @@ module AWS
         params
       end
 
+      # Same as _pathhashlist_ except it generates explicit Filter.<n>.Name and Filter.<n>.Value.<m> 
+      # depending on whether the value is a scalar or an array.
+      #
+      # So if you pass in arg
+      # (:name=>'jon', :names=>['chris', 'bob']),
+      #
+      # you should get
+      # {"Filter.1.Name"=>"name", "Filter.1.Value.1"=>'jon', "Filter.2.Name"=>'names', 'Filter.2.Value.1'=>'chris', 'Filter.2.Value.2'=>'bob'}
+      # or
+      # {"Filter.1.Name"=>'names', 'Filter.1.Value.1'=>'chris', 'Filter.1.Value.2'=>'bob', "Filter.1.Name"=>"name", "Filter.2.Value.1"=>'jon'}
+      # 
+      # NOTICE: Results key order is NOT assured because of the Hash's each method does not assure the order.
+      #         If you want to get the ordered results, please pass a Orderd Hash as the first argument. (ex. ActiveSupport::OrderedHash)
+      #
+      #
+      # If you use a underscored key, like 
+      # {:instance_type => ['t1.micro', 'm1.small']}
+      #
+      # The :instance_type key is automatically fixed to 'instance-type', so you should get
+      # {"Filter.1.Name"=>'instance_type', 'Filter.1.Value.1'=>'t1.micro', 'Filter.1.Value.2'=>'m1.small'}
+      #
+      def filterlist(filters)
+        return {} if filters.nil?
+        raise ArgumentError, "filters must be a Hash" unless filters.is_a?(Hash)
+
+        filters.each do |key, val|
+          unless key.is_a?(String) || key.is_a?(Symbol)
+            raise ArgumentError, ":#{key} must be a String or Symbol (actual: #{key.class.name})"
+          end
+          unless val == true || val == false || val.is_a?(Symbol) || val.is_a?(String) || val.is_a?(Array)
+            raise ArgumentError, "#{key}[#{val}] must be a String or Symbol or Boolean or Array (actual: #{val.class.name})"
+          end
+        end
+
+        params = {}
+        filters.each_with_index do |key_val, idx|
+          params["Filter.#{idx+1}.Name"] = key_val[0].to_s.gsub(/_/, '-')
+          Array(key_val[1]).each_with_index do |value, i|
+            params["Filter.#{idx+1}.Value.#{i+1}"] = value.to_s
+          end
+        end
+        params
+      end
+
       # Make the connection to AWS EC2 passing in our request.  This is generally called from
       # within a 'Response' class object or one of its sub-classes so the response is interpreted
       # in its proper context.  See lib/EC2/responses.rb
