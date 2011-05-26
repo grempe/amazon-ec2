@@ -8,7 +8,7 @@
 # Home::      http://github.com/grempe/amazon-ec2/tree/master
 #++
 
-require File.dirname(__FILE__) + '/test_helper.rb'
+require File.expand_path(File.dirname(__FILE__)) + '/test_helper.rb'
 
 # NOTE : These tests exercise amazon-ec2 when used with the aws/s3 gem
 # which was demonstrating some breaking behavior.  The fix was to
