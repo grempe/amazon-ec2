@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    amazon-ec2 (0.9.17)
+    amazon-ec2 (0.9.18)
       xml-simple (>= 1.0.12)
 
 GEM
