@@ -3,6 +3,43 @@ module AWS
 
     class Base < AWS::Base
 
+      # describe_images filters list
+      DESCRIBE_IMAGES_FILTERS = [
+        :architecture,
+        'block_device_mapping.delete_on_termination',
+        'block_device_mapping.device_name',
+        'block_device_mapping.snapshot_id',
+        'block_device_mapping.volume_size',
+        :description,
+        :image_id,
+        :image_type,
+        :is_public,
+        :kernel_id,
+        :manifest_location,
+        :name,
+        :owner_alias,
+        :owner_id,
+        :platform,
+        :product_code,
+        :ramdisk_id,
+        :root_device_name,
+        :root_device_type,
+        :state,
+        :state_reason_code,
+        :state_reason_message,
+        :tag_key,
+        :tag_value,
+        'tag:key',
+        :virtualization_type,
+        :hypervisor
+      ]
+
+      # describe_images alternative filter name mappings
+      DESCRIBE_IMAGES_FILTER_ALTERNATIVES = {
+        :image_id_filter => :image_id,
+        :owner_id_filter => :owner_id,
+      }
+
       # Creates an AMI that uses an Amazon EBS root device from a "running" or "stopped" instance.
       #
       # AMIs that use an Amazon EBS root device boot faster than AMIs that use instance stores.
@@ -144,15 +181,20 @@ module AWS
       #
       def describe_images( options = {} )
         options = { :image_id => [], :owner_id => [], :executable_by => [] }.merge(options)
-        params = pathlist( "ImageId", options[:image_id] )
-        params.merge!(pathlist( "Owner", options[:owner_id] ))
-        params.merge!(pathlist( "ExecutableBy", options[:executable_by] ))
-        if options[:filter]
-          params.merge!(pathkvlist('Filter', options[:filter], 'Name', 'Value', {}))
+        params = pathlist( "ImageId", options.delete(:image_id) )
+        params.merge!(pathlist( "Owner", options.delete(:owner_id) ))
+        params.merge!(pathlist( "ExecutableBy", options.delete(:executable_by) ))
+
+        DESCRIBE_IMAGES_FILTER_ALTERNATIVES.each do |alternative_key, original_key|
+          next unless options.include?(alternative_key)
+          options[original_key] = options.delete(alternative_key)
         end
+
+        invalid_filters = options.keys - DESCRIBE_IMAGES_FILTERS
+        raise ArgumentError, "invalid filter(s): #{invalid_filters.join(', ')}" if invalid_filters.any?
+        params.merge!(filterlist(options))
         return response_generator(:action => "DescribeImages", :params => params)
       end
-
 
     end
   end
