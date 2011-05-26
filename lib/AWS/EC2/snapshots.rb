@@ -31,10 +31,14 @@ module AWS
       # @option options [optional,String] :restorable_by ('') Account ID of a user that can create volumes from the snapshot.
       #
       def describe_snapshots( options = {} )
+        options ||= {}
+        options = options.dup
+
         params = {}
         params.merge!(pathlist("SnapshotId", options[:snapshot_id] )) unless options[:snapshot_id].nil? || options[:snapshot_id] == []
         params["RestorableBy"] = options[:restorable_by] unless options[:restorable_by].nil?
         params["Owner"] = options[:owner] unless options[:owner].nil?
+
         options.delete(:snapshot_id)
         options.delete(:restorable_by)
         options.delete(:owner)
