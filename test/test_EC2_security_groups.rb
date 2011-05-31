@@ -112,6 +112,13 @@ context "EC2 security groups " do
   end
 
 
+  specify "should be able to be deleted if group_id provided" do
+    @ec2.stubs(:make_request).with('DeleteSecurityGroup', {"GroupId"=>"sg-00000001"}).
+      returns stub(:body => @delete_security_group_response_body, :is_a? => true)
+    @ec2.delete_security_group( :group_id => "sg-00000001" ).should.be.an.instance_of Hash
+  end
+
+
   specify "method delete_security_group should reject bad arguments" do
     @ec2.stubs(:make_request).with('DeleteSecurityGroup', {"GroupName"=>"WebServers"}).
       returns stub(:body => @delete_security_group_response_body, :is_a? => true)
@@ -122,6 +129,13 @@ context "EC2 security groups " do
     # :group_name can't be nil or empty
     lambda { @ec2.delete_security_group( :group_name => "" ) }.should.raise(AWS::ArgumentError)
     lambda { @ec2.delete_security_group( :group_name => nil ) }.should.raise(AWS::ArgumentError)
+
+    # :group_id can't be nil or empty
+    lambda { @ec2.delete_security_group( :group_id => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.delete_security_group( :group_id => nil ) }.should.raise(AWS::ArgumentError)
+
+    # can't specify :group_id and :group_name at the same time
+    lambda { @ec2.delete_security_group( :group_id => "sg-00000001", :group_name => "WebServers" ) }.should.raise(AWS::ArgumentError)
   end
 
 

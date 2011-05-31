@@ -59,9 +59,17 @@ module AWS
       # @option options [String] :group_name ("")
       #
       def delete_security_group( options = {} )
-        options = { :group_name => "" }.merge(options)
-        raise ArgumentError, "No :group_name provided" if options[:group_name].nil? || options[:group_name].empty?
-        params = { "GroupName" => options[:group_name] }
+        options ||= {}
+        options = options.dup
+        if (options[:group_id].nil? || options[:group_id].empty?) && (options[:group_name].nil? || options[:group_name].empty?)
+          raise ArgumentError, "No :group_id or :group_name provided"
+        end
+        if !options[:group_id].nil? && !options[:group_id].empty? && !options[:group_name].nil? && !options[:group_name].empty?
+          raise ArgumentError, ":group_id and :group_name both provided"
+        end
+        params = {}
+        params["GroupId"] = options[:group_id] unless options[:group_id].nil? || options[:group_id].empty?
+        params["GroupName"] = options[:group_name] unless options[:group_name].nil? || options[:group_name].empty?
         return response_generator(:action => "DeleteSecurityGroup", :params => params)
       end
 
