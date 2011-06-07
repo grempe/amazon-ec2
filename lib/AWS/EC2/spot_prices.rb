@@ -16,7 +16,7 @@ module AWS
       def describe_spot_price_history( options = {} )
         raise ArgumentError, ":start_time must be a Time object" unless options[:start_time].nil? || options[:start_time].kind_of?(Time)
         raise ArgumentError, ":end_time must be a Time object" unless options[:end_time].nil? || options[:end_time].kind_of?(Time)
-        raise ArgumentError, ":instance_type must specify a valid instance type" unless options[:instance_type].nil? || ["t1.micro", "m1.small", "m1.large", "m1.xlarge", "m2.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge", "cc1.4xlarge"].include?(options[:instance_type])
+        raise ArgumentError, ":instance_type must specify a valid instance type" unless options[:instance_type].nil? || ["t1.micro", "m1.small", "m1.large", "m1.xlarge", "m2.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge", "cc1.4xlarge", "cg1.4xlarge"].include?(options[:instance_type])
         raise ArgumentError, ":product_description must be 'Linux/UNIX' or 'Windows'" unless options[:product_description].nil? || ["Linux/UNIX", "Windows"].include?(options[:product_description])
 
         params = {}
