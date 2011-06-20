@@ -6,10 +6,12 @@ module AWS
       # The DescribeVolumes operation lists one or more Amazon EBS volumes that you own, If you do not specify any volumes, Amazon EBS returns all volumes that you own.
       #
       # @option options [optional, String] :volume_id ([])
+      # @option options [optional,Array] :filters ([]) Array of Hashes of filters.
       #
       def describe_volumes( options = {} )
         options = { :volume_id => [] }.merge(options)
         params = pathlist("VolumeId", options[:volume_id] )
+        params.merge!(pathkvlist("Filter", options[:filters], "Name", "Value", {} )) unless options[:filters].nil? || options[:filters] == []
         return response_generator(:action => "DescribeVolumes", :params => params)
       end
 

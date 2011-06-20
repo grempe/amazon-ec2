@@ -7,12 +7,14 @@ module AWS
       # The DescribeSnapshots operation describes the status of Amazon EBS snapshots.
       #
       # @option options [optional,Array] :snapshot_id ([]) The ID of the Amazon EBS snapshot.
+      # @option options [optional,Array] :filters ([]) Array of Hashes of filters.
       # @option options [optional,String] :owner ('') Returns snapshots owned by the specified owner. Multiple owners can be specified. Valid values self | amazon | AWS Account ID
       # @option options [optional,String] :restorable_by ('') Account ID of a user that can create volumes from the snapshot.
       #
       def describe_snapshots( options = {} )
         params = {}
         params.merge!(pathlist("SnapshotId", options[:snapshot_id] )) unless options[:snapshot_id].nil? || options[:snapshot_id] == []
+        params.merge!(pathkvlist("Filter", options[:filters], "Name", "Value", {} )) unless options[:filters].nil? || options[:filters] == []
         params["RestorableBy"] = options[:restorable_by] unless options[:restorable_by].nil?
         params["Owner"] = options[:owner] unless options[:owner].nil?
         return response_generator(:action => "DescribeSnapshots", :params => params)
