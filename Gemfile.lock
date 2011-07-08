@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    amazon-ec2 (0.9.18)
+    amazon-ec2 (0.9.19)
       xml-simple (>= 1.0.12)
 
 GEM
@@ -13,7 +13,7 @@ GEM
     rcov (0.9.9)
     test-spec (0.10.0)
     test-unit (2.3.0)
-    xml-simple (1.0.15)
+    xml-simple (1.1.0)
     yard (0.6.8)
 
 PLATFORMS
@@ -27,5 +27,4 @@ DEPENDENCIES
   rcov (>= 0.9.9)
   test-spec (>= 0.10.0)
   test-unit (>= 2.1.2)
-  xml-simple (>= 1.0.12)
   yard (>= 0.6.2)

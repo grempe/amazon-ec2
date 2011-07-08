@@ -6,12 +6,37 @@ module AWS
       # account. To get further information from the metrics, you'll then need to
       # call get_metric_statistics.
       #
-      # @option options [String] :next_token Next token
+      # @option options [String] :dimensions A list of dimensions to filter against. (InstanceId=i-00000001,VolumeId=vol-0000001)
+      # @option options [String] :metric_name The name of the metric to filter against.
+      # @option options [String] :namespace The namespace to filter against.
+      # @option options [String] :next_token The token returned by a previous call to indicate that there is more data available.
+      # @see http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/API_ListMetrics.html
       def list_metrics( options ={} )
-        options = { :next_token => nil }.merge(options)
+        options = {
+          :dimensions => nil,
+          :metric_name => nil,
+          :next_token => nil,
+          :namespace => nil,
+        }.merge(options)
 
         params = {}
+        params['MetricName'] = options[:metric_name] if options[:metric_name]
         params['NextToken'] = options[:next_token] if options[:next_token]
+        params['Namespace'] = options[:namespace] if options[:namespace]
+
+        # FDT: Fix statistics and dimensions values
+        if !(options[:dimensions].nil? || options[:dimensions].empty?)
+          dims_params = {}
+          i = 1
+          options[:dimensions].split(',').each{ |dimension|
+            dimension_var = dimension.split('=')
+            dims_params = dims_params.merge!( "Dimensions.member.#{i}.Name" => "#{dimension_var[0]}", "Dimensions.member.#{i}.Value" => "#{dimension_var[1]}" )
+            i += 1
+          }
+          raise ArgumentError, "Maximum of 10 items in the :dimensions" if i > 10
+
+          params.merge!( dims_params )
+        end
 
         return response_generator(:action => 'ListMetrics', :params => params)
       end
@@ -19,7 +44,7 @@ module AWS
       # get_metric_statistics pulls a hashed array from Cloudwatch with the stats
       # of your requested metric.
       # Once you get the data out, if you assign the results into an object like:
-      # res = @mon.get_metric_statistics(:measure_name => 'RequestCount', \
+      # res = @mon.get_metric_statistics(:metric_name => 'RequestCount', \
       #     :statistics => 'Average', :namespace => 'AWS/ELB')
       #
       # This call gets the average request count against your ELB at each sampling period
@@ -30,18 +55,18 @@ module AWS
       # @option options [String] :custom_unit (nil) not currently available, placeholder
       # @option options [String] :dimensions (nil) Option to filter your data on. Check the developer guide
       # @option options [Time] :end_time (Time.now()) Outer bound of the date range you want to view
-      # @option options [String] :measure_name (nil) The measure you want to check. Must correspond to
-      # =>                                           provided options
-      # @option options [String] :namespace ('AWS/EC2') The namespace of your measure_name. Currently, 'AWS/EC2' and 'AWS/ELB' are available
+      # @option options [String] :metric_name (nil) The name of the metric.
+      # @option options [String] :namespace ('AWS/EC2') The namespace of your metric_name. Currently, 'AWS/EC2' and 'AWS/ELB' are available
       # @option options [Integer] :period (60) Granularity in seconds of the returned datapoints. Multiples of 60 only
       # @option options [String] :statistics (nil) The statistics to be returned for your metric. See the developer guide for valid options. Required.
       # @option options [Time] :start_time (Time.now() - 86400) Inner bound of the date range you want to view. Defaults to 24 hours ago
       # @option options [String] :unit (nil) Standard unit for a given Measure. See the developer guide for valid options.
+      # @see http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/API_GetMetricStatistics.html
       def get_metric_statistics ( options ={} )
         options = { :custom_unit => nil,
                     :dimensions => nil,
                     :end_time => Time.now(),      #req
-                    :measure_name => "",          #req
+                    :metric_name => "",           #req
                     :namespace => "AWS/EC2",
                     :period => 60,
                     :statistics => "",            # req
@@ -53,13 +78,13 @@ module AWS
         raise ArgumentError, ":start_time must be provided" if options[:start_time].nil?
         raise ArgumentError, ":start_time must be a Time object" if options[:start_time].class != Time
         raise ArgumentError, ":start_time must be before :end_time" if options[:start_time] > options[:end_time]
-        raise ArgumentError, ":measure_name must be provided" if options[:measure_name].nil? || options[:measure_name].empty?
+        raise ArgumentError, ":metric_name must be provided" if options[:metric_name].nil? || options[:metric_name].empty?
         raise ArgumentError, ":statistics must be provided" if options[:statistics].nil? || options[:statistics].empty?
 
         params = {
                     "CustomUnit" => options[:custom_unit],
                     "EndTime" => options[:end_time].iso8601,
-                    "MeasureName" => options[:measure_name],
+                    "MetricName" => options[:metric_name],
                     "Namespace" => options[:namespace],
                     "Period" => options[:period].to_s,
                     "StartTime" => options[:start_time].iso8601,
