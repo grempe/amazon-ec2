@@ -90,6 +90,10 @@ module AWS
       def describe_instances( options = {} )
         options = { :instance_id => [] }.merge(options)
         params = pathlist("InstanceId", options[:instance_id])
+        if options[:filter]
+          arr_of_hashes = options[:filter].to_a.map { |(k, v)| {:name => k, :value => v} }
+          params.merge!(pathhashlist("Filter", arr_of_hashes, {:name => 'Name', :value => 'Value'}))
+        end
         return response_generator(:action => "DescribeInstances", :params => params)
       end
 
