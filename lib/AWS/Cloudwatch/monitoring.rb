@@ -27,7 +27,7 @@ module AWS
         raise ArgumentError, "unit must be one (#{Unit.inspect}; was #{@options[:unit].inspect})" if @options[:unit].nil? or !Unit.include?(@options[:unit])
         raise ArgumentError, "value must be a numeric value (was: #{@options[:value].inspect})" if !@options[:value].kind_of?(Numeric)
         raise ArgumentError, 'timestamp must be a Time object' if !@options[:timestamp].kind_of?(Time)
-        raise ArgumentError, 'statistic_set must be a StatisticSet object' if !@options[:statistic_set].kind_of?(StatisticSet)
+        raise ArgumentError, 'statistic_set must be a StatisticSet object' if @options[:statistic_set] and !@options[:statistic_set].kind_of?(StatisticSet)
       end
       
       def to_params(index=1)
