@@ -8,7 +8,7 @@
 # Home::      http://github.com/grempe/amazon-ec2/tree/master
 #++
 
-require File.dirname(__FILE__) + '/test_helper.rb'
+require File.expand_path('../test_helper.rb', __FILE__)
 
 context "The EC2 password " do
 

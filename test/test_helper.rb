@@ -19,5 +19,5 @@ gem 'test-unit'
   end
 }
 
-require File.dirname(__FILE__) + '/../lib/AWS'
+require File.expand_path('../../lib/AWS', __FILE__)
 
