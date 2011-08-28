@@ -42,7 +42,7 @@ module AWS
 
         params["Port"] = options[:port].to_s if options.has?(:port)
         params["DBName"] = options[:db_name] if options.has?(:db_name)
-        params["DBParameterGroup"] = options[:db_parameter_group] if options.has?(:db_parameter_group)
+        params["DBParameterGroupName"] = options[:db_parameter_group_name] if options.has?(:db_parameter_group_name)
         params.merge!(pathlist("DBSecurityGroups.member", [options[:db_security_groups]].flatten)) if options.has_key?(:db_security_groups)
         params["AvailabilityZone"] = options[:availability_zone] if options.has?(:availability_zone)
         params["PreferredMaintenanceWindow"] = options[:preferred_maintenance_window] if options.has?(:preferred_maintenance_window)
