@@ -130,11 +130,11 @@ module AWS
       #
       # Deregistered images will be included in the returned results for an unspecified interval subsequent to
       # deregistration.
-      # 
+      #
       # The results can be filtered using the filter argument. The EC2 API reference for a full description of
       # filter types and arguments.
-      # 
-      # @example 
+      #
+      # @example
       #   @ec2.describe_images(:owner_id => ['self'], :filter => [{"tag:Role" => "App"}])
       #
       # @option options [Array] :image_id ([])

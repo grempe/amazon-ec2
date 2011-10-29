@@ -70,7 +70,7 @@ module AWS
                  "=" + CGI::escape(p[1].to_s))
       # Ensure spaces are encoded as '%20', not '+'
       encoded = encoded.gsub('+', '%20')
-      # According to RFC3986 (the scheme for values expected by signing requests), '~' 
+      # According to RFC3986 (the scheme for values expected by signing requests), '~'
       # should not be encoded
       encoded = encoded.gsub('%7E', '~')
     end
