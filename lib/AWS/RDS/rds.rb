@@ -471,7 +471,7 @@ module AWS
       # @option options [optional, Boolean] :use_latest_restorable_time specifies that the db be restored to the latest restored time. Conditional, cannot be specified if :restore_time parameter is provided.
       # @option options [optional, Date] :restore_time specifies the date and time to restore from. Conditional, cannot be specified if :use_latest_restorable_time parameter is true.
       # @option options [String] :target_db_instance_identifier is the name of the new database instance to be created.
-      # @option options [optional, String] :db_instance_class specifies the class of the compute and memory of the EC2 instance, Options : db.m1.small | db.m1.large | db.m1.xlarge | db.m2.2xlarge | db.m2.4xlarge | db.cc1.4xlarge
+      # @option options [optional, String] :db_instance_class specifies the class of the compute and memory of the EC2 instance, Options : db.m1.small | db.m1.large | db.m1.xlarge | db.m2.2xlarge | db.m2.4xlarge | db.cc1.4xlarge | db.cc2.8xlarge
       # @option options [optional, Integer] :port is the port which the db can accept connections on. Constraints: Value must be 1115-65535
       # @option options [optional, String] :availability_zone is the EC2 zone which the db instance will be created
       #
