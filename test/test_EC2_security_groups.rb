@@ -162,13 +162,14 @@ context "EC2 security groups " do
 
 
   specify "permissions should be able to be added to a security group with authorize_security_group_ingress." do
-    @ec2.stubs(:make_request).with('AuthorizeSecurityGroupIngress', { "GroupName"=>"WebServers",
-                                                                      "IpProtocol"=>"tcp",
-                                                                      "FromPort"=>"8000",
-                                                                      "ToPort"=>"80",
-                                                                      "CidrIp"=>"0.0.0.0/24",
-                                                                      "SourceSecurityGroupName"=>"Source SG Name",
-                                                                      "SourceSecurityGroupOwnerId"=>"123"}).
+    @ec2.stubs(:make_request).with('AuthorizeSecurityGroupIngress', 
+      { "GroupName" => "WebServers",
+        "IpPermissions.1.IpProtocol" => "tcp",
+        "IpPermissions.1.FromPort" => "8000",
+        "IpPermissions.1.ToPort" => "80",
+        "IpPermissions.1.IpRanges.1" => "0.0.0.0/24",
+        "IpPermissions.1.Groups.1.GroupName" => "Source SG Name", 
+        "IpPermissions.1.Groups.1.UserId" => "123"}).
       returns stub(:body => @authorize_security_group_ingress_response_body, :is_a? => true)
 
     @ec2.authorize_security_group_ingress( :group_name => "WebServers",
@@ -177,29 +178,30 @@ context "EC2 security groups " do
                                            :to_port => "80",
                                            :cidr_ip => "0.0.0.0/24",
                                            :source_security_group_name => "Source SG Name",
-                                           :source_security_group_owner_id => "123"
+                                           :source_security_group_user_id => "123"
                                            ).should.be.an.instance_of Hash
   end
 
 
   specify "permissions should be able to be revoked from a security group with revoke_security_group_ingress." do
-    @ec2.stubs(:make_request).with('RevokeSecurityGroupIngress', { "GroupName"=>"WebServers",
-                                                                   "IpProtocol"=>"tcp",
-                                                                   "FromPort"=>"8000",
-                                                                   "ToPort"=>"80",
-                                                                   "CidrIp"=>"0.0.0.0/24",
-                                                                   "SourceSecurityGroupName"=>"Source SG Name",
-                                                                   "SourceSecurityGroupOwnerId"=>"123"}).
+    @ec2.stubs(:make_request).with('RevokeSecurityGroupIngress',
+      { "GroupName" => "WebServers",
+        "IpPermissions.1.IpProtocol" => "tcp",
+        "IpPermissions.1.FromPort" => "8000",
+        "IpPermissions.1.ToPort" => "80",
+        "IpPermissions.1.IpRanges.1" => "0.0.0.0/24",
+        "IpPermissions.1.Groups.1.GroupName" => "Source SG Name", 
+        "IpPermissions.1.Groups.1.UserId" => "123"}).
       returns stub(:body => @revoke_security_group_ingress_response_body, :is_a? => true)
 
     @ec2.revoke_security_group_ingress( :group_name => "WebServers",
-                                        :ip_protocol => "tcp",
-                                        :from_port => "8000",
-                                        :to_port => "80",
-                                        :cidr_ip => "0.0.0.0/24",
-                                        :source_security_group_name => "Source SG Name",
-                                        :source_security_group_owner_id => "123"
-                                        ).should.be.an.instance_of Hash
+                                           :ip_protocol => "tcp",
+                                           :from_port => "8000",
+                                           :to_port => "80",
+                                           :cidr_ip => "0.0.0.0/24",
+                                           :source_security_group_name => "Source SG Name",
+                                           :source_security_group_user_id => "123"
+                                      ).should.be.an.instance_of Hash
   end
 
 end

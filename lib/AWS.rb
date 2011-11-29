@@ -50,6 +50,8 @@ end
 
 
 module AWS
+  ACCESS_KEY_ID     = ENV['AWS_ACCESS_KEY_ID']      || ENV['AMAZON_ACCESS_KEY_ID']      || ""
+  SECRET_ACCESS_KEY = ENV['AWS_SECRET_ACCESS_KEY']  || ENV['AMAZON_SECRET_ACCESS_KEY']  || ""
 
   # Builds the canonical string for signing requests. This strips out all '&', '?', and '='
   # from the query string to be signed.  The parameters in the path passed in must already
@@ -111,7 +113,6 @@ module AWS
   # interface. You should not instantiate this directly, instead
   # you should setup an instance of 'AWS::EC2::Base' or 'AWS::ELB::Base'.
   class Base
-
     attr_reader :use_ssl, :server, :proxy_server, :port
 
     # @option options [String] :access_key_id ("") The user's AWS Access Key ID
@@ -122,8 +123,8 @@ module AWS
     # @return [Object] the object.
     def initialize( options = {} )
 
-      options = { :access_key_id => "",
-                  :secret_access_key => "",
+      options = { :access_key_id => ACCESS_KEY_ID,
+                  :secret_access_key => SECRET_ACCESS_KEY,
                   :use_ssl => true,
                   :server => default_host,
                   :path => "/",
