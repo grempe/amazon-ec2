@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency('test-unit', '>= 2.1.2')
   s.add_development_dependency('test-spec', '>= 0.10.0')
   s.add_development_dependency('rcov', '>= 0.9.9')
-  s.add_development_dependency('perftools.rb', '>= 0.5.4')
+#  s.add_development_dependency('perftools.rb', '>= 0.5.4')
   s.add_development_dependency('yard', '>= 0.6.2')
 
   s.files         = `git ls-files`.split("\n")
