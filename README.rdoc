@@ -50,9 +50,9 @@ To install from git for adding features or fixing bugs, you'll need to clone and
 
 == Using amazon-ec2
 
-The library exposes one main interface class AWS::EC2::Base.  It is through an instance of this class that you will perform all the operations for using the EC2 service including query string header signing.
+The library exposes one main interface class AWSAPI::EC2::Base.  It is through an instance of this class that you will perform all the operations for using the EC2 service including query string header signing.
 
-The public methods on AWS::EC2::Base closely mirror the EC2 Query API, and as such the Query API Reference in the EC2 Developer Guide ( http://developer.amazonwebservices.com/connect/kbcategory.jspa?categoryID=84 ) will prove helpful.
+The public methods on AWSAPI::EC2::Base closely mirror the EC2 Query API, and as such the Query API Reference in the EC2 Developer Guide ( http://developer.amazonwebservices.com/connect/kbcategory.jspa?categoryID=84 ) will prove helpful.
 
 
 === Setting up
@@ -82,11 +82,11 @@ You can verify that this setup is complete by running the 'set' in a command win
 
 The library exposes one main interface module
 
-  AWS::EC2::Base
+  AWSAPI::EC2::Base
 
 This method requires arguments which include your AWS credentials and it will return an object that you can use to make method calls directly against EC2. All the operations for using the EC2 service, including query string header signing, are handled automatically for you. The connection string will look something like this:
 
-  @ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY)
+  @ec2 = AWSAPI::EC2::Base.new(:access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY)
 
 I've tried to keep the public methods on 'amazon-ec2' as close as possible to the AWS EC2 Query API. This similarity allows you to reference the Query API Reference in the EC2 Developer Guide and be able to get started right away. In most cases the methods names only differ in how they are presented. e.g. 'DescribeImages' becomes '#describe_images()' in Ruby. Feel free to browse the full RDoc documentation for all classes and methods of 'amazon-ec2' if you want more details.
 
@@ -131,28 +131,28 @@ If you're not in front of a terminal shell now (perhaps you're browsing this sit
         returns : a string representation of ALL images
         >> @ec2.describe_images.to_s
 
-        returns : an Array of AWS::Response objects, each an EC2 image and its data
+        returns : an Array of AWSAPI::Response objects, each an EC2 image and its data
         >> @ec2.describe_images.imagesSet.item
         >> @ec2.describe_images.imagesSet.item[0] (a hash representing a single item in that array)
         >> @ec2.describe_images.imagesSet.item[0].to_s (a String representation of that item)
 
   >> @ec2.describe_images.imagesSet.item[0].to_s
-  => "#<AWS::Response:0x100A465B4 imageId=\"ami-018e6b68\" imageLocation=\"rbuilder-online/phonehome-1.5.6-x86_10132.img.manifest.xml\" imageOwnerId=\"099034111737\" imageState=\"available\" isPublic=\"true\" parent=#<AWS::Response:0x100A469A6 ...>>"
+  => "#<AWSAPI::Response:0x100A465B4 imageId=\"ami-018e6b68\" imageLocation=\"rbuilder-online/phonehome-1.5.6-x86_10132.img.manifest.xml\" imageOwnerId=\"099034111737\" imageState=\"available\" isPublic=\"true\" parent=#<AWSAPI::Response:0x100A469A6 ...>>"
 
 
 === Ruby script usage example:
 
-Try out the following bit of code. This should walk through each image returned by a call to #describe_images and print out its key data. Note in the example below that you cannot walk through the results of the #describe_images call with the '.each' iterator (You'll get errors if you try). You need to instead walk through the Array of items which are in the 'imagesSet' embedded in the response. This reflects exactly the XML hierarchy of data returned from EC2 which we parse to Ruby OpenStruct objects (AWS::Response).
+Try out the following bit of code. This should walk through each image returned by a call to #describe_images and print out its key data. Note in the example below that you cannot walk through the results of the #describe_images call with the '.each' iterator (You'll get errors if you try). You need to instead walk through the Array of items which are in the 'imagesSet' embedded in the response. This reflects exactly the XML hierarchy of data returned from EC2 which we parse to Ruby OpenStruct objects (AWSAPI::Response).
 
   #!/usr/bin/env ruby
 
   require 'rubygems'
-  require 'AWS'
+  require 'AWSAPI'
 
   ACCESS_KEY_ID = '--YOUR AWS ACCESS KEY ID--'
   SECRET_ACCESS_KEY = '--YOUR AWS SECRET ACCESS KEY--'
 
-  ec2 = AWS::EC2::Base.new(:access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY)
+  ec2 = AWSAPI::EC2::Base.new(:access_key_id => ACCESS_KEY_ID, :secret_access_key => SECRET_ACCESS_KEY)
 
   puts "----- listing images owned by 'amazon' -----"
   ec2.describe_images(:owner_id => "amazon").imagesSet.item.each do |image|
@@ -184,7 +184,7 @@ Try out the following bit of code. This should walk through each image returned 
 
   [some controller code ...]
 
-  ec2 = AWS::EC2::Base.new(:access_key_id => "YOUR_AWS_ACCESS_KEY_ID", :secret_access_key => "YOUR_AWS_SECRET_ACCESS_KEY")
+  ec2 = AWSAPI::EC2::Base.new(:access_key_id => "YOUR_AWS_ACCESS_KEY_ID", :secret_access_key => "YOUR_AWS_SECRET_ACCESS_KEY")
 
   # get ALL public images
   @ec2_images = ec2.describe_images().imagesSet.item
@@ -237,7 +237,7 @@ Try out the following bit of code. This should walk through each image returned 
   <% end %>
 
 
-=== Important notes regarding the structure of AWS::Response Objects
+=== Important notes regarding the structure of AWSAPI::Response Objects
 
 One of the key benefits of this new version of the library is that all responses from EC2 are bundled up in a real data structure and no longer require parsing of text. The hash returned is populated directly from the XML given to us by EC2 in response to any command we issue. This means that future changes to the API and what is returned by EC2 will be handled transparently by the gem. This is a huge benefit. What this means though, is that you may have to do a little homework on what actually gets returned by EC2 as XML. For example, when you make a #describe_images call in 'awshell' what AWS returns behind the scenes looks like:
 
@@ -296,7 +296,7 @@ So, for example, if you wanted to get the image ID of the third image listed in 
   >> puts @ec2.describe_images(:owner_id => 'amazon').imagesSet.item[2].imageId
   ami-23b6534a
 
-EC2 will typically return sets of things (imagesSet, reservationSet, etc.) which we map to ruby Arrays (.imagesSet.item in the example above). If you want to iterate over a response set you will need to iterate over this array. The Arrays will typically contain additional AWS::Response objects that represent each individual item. You'll find that you can use the 'awshell' to help you understand the structure more completely if you try issuing commands there as a way to practice seeing what will be returned and making sure you get exactly what you want.
+EC2 will typically return sets of things (imagesSet, reservationSet, etc.) which we map to ruby Arrays (.imagesSet.item in the example above). If you want to iterate over a response set you will need to iterate over this array. The Arrays will typically contain additional AWSAPI::Response objects that represent each individual item. You'll find that you can use the 'awshell' to help you understand the structure more completely if you try issuing commands there as a way to practice seeing what will be returned and making sure you get exactly what you want.
 
 === Handling Exceptions
 If for some reason an error occurs when executing a method (e.g. its arguments were
