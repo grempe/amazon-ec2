@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "AWS/version"
+require "AWSAPI/version"
 
 Gem::Specification.new do |s|
   s.name        = "amazon-ec2"
-  s.version     = AWS::VERSION
+  s.version     = AWSAPI::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Glenn Rempe"]
   s.email       = ["glenn@rempe.us"]

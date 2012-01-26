@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "EC2 keypairs " do
 
   before do
-    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWSAPI::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @create_keypair_response_body = <<-RESPONSE
       <CreateKeyPairResponse xmlns="http://ec2.amazonaws.com/doc/2007-03-01">
@@ -83,10 +83,10 @@ context "EC2 keypairs " do
     @ec2.stubs(:make_request).with('CreateKeyPair', {"KeyName"=>"example-key-name"}).
       returns stub(:body => @create_keypair_response_body, :is_a? => true)
 
-    lambda { @ec2.create_keypair( :key_name => "example-key-name" ) }.should.not.raise(AWS::ArgumentError)
-    lambda { @ec2.create_keypair() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.create_keypair( :key_name => nil ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.create_keypair( :key_name => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.create_keypair( :key_name => "example-key-name" ) }.should.not.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.create_keypair() }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.create_keypair( :key_name => nil ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.create_keypair( :key_name => "" ) }.should.raise(AWSAPI::ArgumentError)
   end
 
 
@@ -113,10 +113,10 @@ context "EC2 keypairs " do
     @ec2.stubs(:make_request).with('DeleteKeyPair', {"KeyName"=>"example-key-name"}).
       returns stub(:body => @delete_keypair_body, :is_a? => true)
 
-    lambda { @ec2.delete_keypair( :key_name => "example-key-name" ) }.should.not.raise(AWS::ArgumentError)
-    lambda { @ec2.delete_keypair() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.delete_keypair( :key_name => nil ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.delete_keypair( :key_name => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.delete_keypair( :key_name => "example-key-name" ) }.should.not.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.delete_keypair() }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.delete_keypair( :key_name => nil ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.delete_keypair( :key_name => "" ) }.should.raise(AWSAPI::ArgumentError)
   end
 
 

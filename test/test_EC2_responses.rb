@@ -20,7 +20,7 @@ context "The Response classes " do
     </RebootInstancesResponse>
     RESPONSE
 
-    @response = AWS::Response.parse(:xml => @http_xml)
+    @response = AWSAPI::Response.parse(:xml => @http_xml)
   end
 
 

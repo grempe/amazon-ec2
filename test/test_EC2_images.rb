@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "An EC2 image " do
 
   before do
-    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWSAPI::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @create_image_response_body = <<-RESPONSE
     <CreateImageResponse xmlns="http://ec2.amazonaws.com/doc/2009-10-31/">
@@ -71,20 +71,20 @@ context "An EC2 image " do
 
 
   specify "method create_image should raise an exception when called with nil/empty string arguments" do
-    lambda { @ec2.create_image() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.create_image(:instance_id => "", :name => "fooname") }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.create_image(:instance_id => "fooid", :name => "") }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.create_image(:instance_id => nil, :name => "fooname") }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.create_image(:instance_id => "fooid", :name => nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.create_image() }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => "", :name => "fooname") }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => "fooid", :name => "") }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => nil, :name => "fooname") }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => "fooid", :name => nil) }.should.raise(AWSAPI::ArgumentError)
   end
 
 
   specify "method create_image should raise an exception when called with bad arguments" do
-    lambda { @ec2.create_image(:instance_id => "fooid", :name => "f"*2) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.create_image(:instance_id => "fooid", :name => "f"*129) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.create_image(:instance_id => "fooid", :name => "f"*128, :description => "f"*256) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.create_image(:instance_id => "fooid", :name => "f"*128, :no_reboot => "true") }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.create_image(:instance_id => "fooid", :name => "f"*128, :no_reboot => "false") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => "fooid", :name => "f"*2) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => "fooid", :name => "f"*129) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => "fooid", :name => "f"*128, :description => "f"*256) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => "fooid", :name => "f"*128, :no_reboot => "true") }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.create_image(:instance_id => "fooid", :name => "f"*128, :no_reboot => "false") }.should.raise(AWSAPI::ArgumentError)
   end
 
 
@@ -125,8 +125,8 @@ context "An EC2 image " do
 
 
   specify "method register_image should raise an exception when called without :name or :root_device_name" do
-    lambda { @ec2.register_image() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.register_image(:image_location => "", :root_device_name => "") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.register_image() }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.register_image(:image_location => "", :root_device_name => "") }.should.raise(AWSAPI::ArgumentError)
   end
 
 
@@ -248,9 +248,9 @@ context "An EC2 image " do
 
 
   specify "method deregister_image should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.deregister_image() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.deregister_image( :image_id => nil ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.deregister_image( :image_id => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.deregister_image() }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.deregister_image( :image_id => nil ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.deregister_image( :image_id => "" ) }.should.raise(AWSAPI::ArgumentError)
   end
 
 

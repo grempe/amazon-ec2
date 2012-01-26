@@ -11,11 +11,11 @@
 
 
 
-if(AWS::ACCESS_KEY_ID and AWS::SECRET_ACCESS_KEY)
+if(AWSAPI::ACCESS_KEY_ID and AWSAPI::SECRET_ACCESS_KEY)
 
   opts = {
-    :access_key_id      => AWS::ACCESS_KEY_ID,
-    :secret_access_key  => AWS::SECRET_ACCESS_KEY
+    :access_key_id      => AWSAPI::ACCESS_KEY_ID,
+    :secret_access_key  => AWSAPI::SECRET_ACCESS_KEY
   }
 
   if ENV['EC2_URL']
@@ -30,37 +30,37 @@ if(AWS::ACCESS_KEY_ID and AWS::SECRET_ACCESS_KEY)
         opts[:use_ssl] = false
       end
     end
-    @ec2 = AWS::EC2::Base.new(opts)
+    @ec2 = AWSAPI::EC2::Base.new(opts)
   else
-    @ec2 = AWS::EC2::Base.new(opts)
+    @ec2 = AWSAPI::EC2::Base.new(opts)
   end
 
   if ENV['ELB_URL']
     opts[:server] = URI.parse(ENV['ELB_URL']).host
-    @elb = AWS::ELB::Base.new(opts)
+    @elb = AWSAPI::ELB::Base.new(opts)
   else
-    @elb = AWS::ELB::Base.new(opts)
+    @elb = AWSAPI::ELB::Base.new(opts)
   end
 
   if ENV['AS_URL']
     opts[:server] = URI.parse(ENV['AS_URL']).host
-    @as = AWS::Autoscaling::Base.new(opts)
+    @as = AWSAPI::Autoscaling::Base.new(opts)
   else
-    @as = AWS::Autoscaling::Base.new(opts)
+    @as = AWSAPI::Autoscaling::Base.new(opts)
   end
 
   if ENV['RDS_URL']
     opts[:server] = URI.parse(ENV['RDS_URL']).host
-    @rds = AWS::RDS::Base.new(opts)
+    @rds = AWSAPI::RDS::Base.new(opts)
   else
-    @rds = AWS::RDS::Base.new(opts)
+    @rds = AWSAPI::RDS::Base.new(opts)
   end
 
   if ENV['AWS_CLOUDWATCH_URL']
     opts[:server] = URI.parse(ENV['AWS_CLOUDWATCH_URL']).host
-    @cw = AWS::Cloudwatch::Base.new(opts)
+    @cw = AWSAPI::Cloudwatch::Base.new(opts)
   else
-    @cw = AWS::Cloudwatch::Base.new(opts)
+    @cw = AWSAPI::Cloudwatch::Base.new(opts)
   end
 
   puts ""

@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 
 context "autoscaling " do
   before do
-    @as = AWS::Autoscaling::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @as = AWSAPI::Autoscaling::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @valid_create_launch_configuration_params = {
       :image_id => "ami-ed46a784",
@@ -42,7 +42,7 @@ context "autoscaling " do
     </CreateOrUpdateScalingTriggerResponse>"
   end
 
-  specify "AWS::Autoscaling::Base should give back a nice response if there is an error" do
+  specify "AWSAPI::Autoscaling::Base should give back a nice response if there is an error" do
     @as.stubs(:make_request).with('CreateLaunchConfiguration', {
       'ImageId' => 'ami-ed46a784',
       'LaunchConfigurationName' => 'TestAutoscalingGroupName',
@@ -54,7 +54,7 @@ context "autoscaling " do
     response["Error"]["Message"].should.equal "Launch Configuration by this name already exists - A launch configuration already exists with the name TestAutoscalingGroupName"
   end
 
-  specify "AWS::Autoscaling::Base should destroy a launch configuration just fine" do
+  specify "AWSAPI::Autoscaling::Base should destroy a launch configuration just fine" do
     @as.stubs(:make_request).with('DeleteLaunchConfiguration', {
       'LaunchConfigurationName' => 'TestAutoscalingGroupName1'
     }).returns stub(:body => @delete_launch_configuration_response, :is_a? => true)
@@ -63,7 +63,7 @@ context "autoscaling " do
     response.should.be.an.instance_of Hash
   end
 
-  specify "AWS::Autoscaling::Base should create a launch configuration" do
+  specify "AWSAPI::Autoscaling::Base should create a launch configuration" do
     @as.stubs(:make_request).with('CreateLaunchConfiguration', {
       'ImageId' => 'ami-ed46a784',
       'LaunchConfigurationName' => 'CustomTestAutoscalingGroupName',
@@ -74,7 +74,7 @@ context "autoscaling " do
     response.should.be.an.instance_of Hash
   end
 
-  specify "AWS::Autoscaling::Base should be able to create a new autoscaling group" do
+  specify "AWSAPI::Autoscaling::Base should be able to create a new autoscaling group" do
     @as.stubs(:make_request).with("CreateAutoScalingGroup", {
       'AutoScalingGroupName' => 'CloudteamTestAutoscalingGroup1',
       'AvailabilityZones.member.1' => 'us-east-1a',
@@ -87,7 +87,7 @@ context "autoscaling " do
     response.should.be.an.instance_of Hash
   end
 
-  specify "AWS::Autoscaling::Base should destroy an autoscaling group" do
+  specify "AWSAPI::Autoscaling::Base should destroy an autoscaling group" do
     @as.stubs(:make_request).with('DeleteAutoScalingGroup', {
       'AutoScalingGroupName' => 'TestAutoscalingGroupName1'
     }).returns stub(:body => @delete_autoscaling_group, :is_a? => true)
@@ -96,7 +96,7 @@ context "autoscaling " do
     response.should.be.an.instance_of Hash
   end
 
-  specify "AWS::Autoscaling::Base should be able to create a new scaling trigger" do
+  specify "AWSAPI::Autoscaling::Base should be able to create a new scaling trigger" do
     @as.stubs(:make_request).with("CreateOrUpdateScalingTrigger", {
       'AutoScalingGroupName' => 'AutoScalingGroupName',
       'Unit' => "Seconds",
@@ -117,14 +117,14 @@ context "autoscaling " do
     valid_create_or_update_scaling_trigger_params = {:autoscaling_group_name => "AutoScalingGroupName", :dimensions => {:name => "AutoScalingGroupName", :value => "Bob"}, :unit => "Seconds", :measure_name => "CPUUtilization", :namespace => "AWS/EC2", :statistic => "Average", :period => 120, :trigger_name => "AFunNameForATrigger", :lower_threshold => 0.2, :lower_breach_scale_increment => "-1", :upper_threshold => 1.5, :upper_breach_scale_increment => 1, :breach_duration => 120}
 
     %w(dimensions autoscaling_group_name measure_name statistic period trigger_name lower_threshold lower_breach_scale_increment upper_threshold upper_breach_scale_increment breach_duration).each do |meth_str|
-      lambda { @as.create_or_updated_scaling_trigger(valid_create_or_update_scaling_trigger_params.merge(meth_str.to_sym=>nil)) }.should.raise(AWS::ArgumentError)
+      lambda { @as.create_or_updated_scaling_trigger(valid_create_or_update_scaling_trigger_params.merge(meth_str.to_sym=>nil)) }.should.raise(AWSAPI::ArgumentError)
     end
 
     response = @as.create_or_updated_scaling_trigger(valid_create_or_update_scaling_trigger_params)
     response.should.be.an.instance_of Hash
   end
 
-  specify "AWS::Autoscaling::Base should destroy a launch configuration group" do
+  specify "AWSAPI::Autoscaling::Base should destroy a launch configuration group" do
     @as.stubs(:make_request).with('DeleteLaunchConfiguration', {
       'LaunchConfigurationName' => 'LaunchConfiguration'
     }).returns stub(:body => " <DeleteLaunchConfigurationResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
@@ -135,7 +135,7 @@ context "autoscaling " do
     response.should.be.an.instance_of Hash
   end
 
-    specify "AWS::Autoscaling::Base should destroy a scaling trigger" do
+    specify "AWSAPI::Autoscaling::Base should destroy a scaling trigger" do
       @as.stubs(:make_request).with('DeleteTrigger', {
         'TriggerName' => 'DeletingTrigger', 'AutoScalingGroupName' => "Name"
       }).returns stub(:body => "  <DeleteTriggerResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
@@ -148,7 +148,7 @@ context "autoscaling " do
       response.should.be.an.instance_of Hash
     end
 
-    specify "AWS::Autoscaling::Base should describe the autoscaling groups" do
+    specify "AWSAPI::Autoscaling::Base should describe the autoscaling groups" do
       @as.stubs(:make_request).with('DescribeAutoScalingGroups', {
         'AutoScalingGroupNames.member.1' => "webtier"
       }).returns stub(:body => "<DescribeAutoScalingGroupsResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
@@ -184,7 +184,7 @@ context "autoscaling " do
       response.should.be.an.instance_of Hash
     end
 
-    specify "AWS::Autoscaling::Base should describe the launch configurations" do
+    specify "AWSAPI::Autoscaling::Base should describe the launch configurations" do
       @as.stubs(:make_request).with('DescribeLaunchConfigurations', {
         'AutoScalingGroupNames.member.1' => "webtier"
       }).returns stub(:body => "<DescribeLaunchConfigurationsResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
@@ -214,7 +214,7 @@ context "autoscaling " do
     end
 
 
-    specify "AWS::Autoscaling::Base should describe the launch configurations" do
+    specify "AWSAPI::Autoscaling::Base should describe the launch configurations" do
       @as.stubs(:make_request).with('DescribeScalingActivities', {
         'AutoScalingGroupName' => "webtier"
       }).returns stub(:body => "<DescribeScalingActivitiesResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
@@ -239,7 +239,7 @@ context "autoscaling " do
       response.should.be.an.instance_of Hash
     end
 
-    specify "AWS::Autoscaling::Base should describe triggers" do
+    specify "AWSAPI::Autoscaling::Base should describe triggers" do
       @as.stubs(:make_request).with('DescribeTriggers', {
         'AutoScalingGroupName' => "webtier"
       }).returns stub(:body => "  <DescribeTriggersResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
@@ -279,7 +279,7 @@ context "autoscaling " do
       response.should.be.an.instance_of Hash
     end
 
-    specify "AWS::Autoscaling::Base should describe triggers" do
+    specify "AWSAPI::Autoscaling::Base should describe triggers" do
       @as.stubs(:make_request).with('SetDesiredCapacity', {
         'AutoScalingGroupName' => "name", 'DesiredCapacity' => '10'
       }).returns stub(:body => "  <SetDesiredCapacityResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">
@@ -294,7 +294,7 @@ context "autoscaling " do
     end
 
 
-    specify "AWS::Autoscaling::Base should terminate an instance in an autoscaling group" do
+    specify "AWSAPI::Autoscaling::Base should terminate an instance in an autoscaling group" do
       @as.stubs(:make_request).with('TerminateInstanceInAutoScalingGroup', {
         'InstanceId' => "i-instance1"
       }).returns stub(:body => "  <DescribeTriggersResponse  xmlns=\"http://autoscaling.amazonaws.com/doc/2009-05-15/\">

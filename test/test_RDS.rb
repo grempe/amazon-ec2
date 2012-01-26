@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 
 context "rds databases " do
   before do
-    @rds = AWS::RDS::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @rds = AWSAPI::RDS::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @create_db_instance_body = <<-RESPONSE
     <CreateDBInstanceResponse xmlns="http://rds.amazonaws.com/admin/2009-10-16/">

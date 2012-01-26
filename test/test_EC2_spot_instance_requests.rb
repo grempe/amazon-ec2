@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "An EC2 spot instances request " do
 
   before do
-    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWSAPI::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @create_spot_instances_request_response_body = <<-RESPONSE
     <RequestSpotInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2009-11-30/">
@@ -111,12 +111,12 @@ context "An EC2 spot instances request " do
     ["t1.micro", "m1.small", "m1.large", "m1.xlarge", "m2.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge", "cc1.4xlarge"].each do |type|
       @ec2.stubs(:make_request).with('RequestSpotInstances', {"SpotPrice"=>"0.50", 'LaunchSpecification.InstanceType' => type, 'LaunchSpecification.ImageId' => 'ami-60a54009', "InstanceCount"=>"1"}).
         returns stub(:body => @create_spot_instances_request_response_body, :is_a? => true)
-      lambda { @ec2.request_spot_instances( :image_id => "ami-60a54009", :instance_type => type, :spot_price => '0.50' ) }.should.not.raise(AWS::ArgumentError)
+      lambda { @ec2.request_spot_instances( :image_id => "ami-60a54009", :instance_type => type, :spot_price => '0.50' ) }.should.not.raise(AWSAPI::ArgumentError)
     end
   end
 
   specify "should raise an exception with a bad instance type" do
-    lambda { @ec2.request_spot_instances({"SpotPrice"=>"0.50", 'LaunchSpecification.InstanceType' => 'm1.notarealsize', "InstanceCount"=>"1"}) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.request_spot_instances({"SpotPrice"=>"0.50", 'LaunchSpecification.InstanceType' => 'm1.notarealsize', "InstanceCount"=>"1"}) }.should.raise(AWSAPI::ArgumentError)
   end
 
   specify "should be able to be created" do
@@ -128,9 +128,9 @@ context "An EC2 spot instances request " do
 
 
   specify "method create_spot_instances_request should raise an exception when called with nil/empty string arguments" do
-    lambda { @ec2.request_spot_instances() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.request_spot_instances(:spot_price => "") }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.request_spot_instances(:spot_price => nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.request_spot_instances() }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.request_spot_instances(:spot_price => "") }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.request_spot_instances(:spot_price => nil) }.should.raise(AWSAPI::ArgumentError)
   end
 
 

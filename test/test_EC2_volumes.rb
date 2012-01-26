@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "EC2 volumes " do
 
   before do
-    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWSAPI::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @describe_volumes_response_body = <<-RESPONSE
     <DescribeVolumesResponse xmlns="http://ec2.amazonaws.com/doc/2008-05-05">
