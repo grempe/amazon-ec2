@@ -94,7 +94,7 @@ module AWS
         options = { :instance_id => [], :filter => {} }.merge(options)
         params = {}
         params.merge!(pathlist("InstanceId", options[:instance_id]))
-        params.merge!(pathhashlist("Filter", options[:filter].map{|k,v| {:name => k, :value => v}}, {:name => 'Name', :value => 'Value'}))
+        params.merge!(pathhashlist("Filter", options[:filter].map{|k,v| {:name => k.is_a?(Symbol) ? k.to_s.gsub("_", "-") : k, :value => v}}, {:name => 'Name', :value => 'Value'}))
 
         return response_generator(:action => "DescribeInstances", :params => params)
       end
