@@ -82,14 +82,20 @@ module AWS
       # instance is specified that does not exist a fault is returned. If an instance is specified that exists but is not
       # owned by the user making the request, then that instance will not be included in the returned results.
       #
+      # An optional filter can be provided to to request information for instances that corresponds this filter only
+      #
       # Recently terminated instances will be included in the returned results for a small interval subsequent to
       # their termination. This interval is typically of the order of one hour
       #
       # @option options [Array] :instance_id ([])
+      # @option options [Hash]  :filter ({})
       #
       def describe_instances( options = {} )
-        options = { :instance_id => [] }.merge(options)
-        params = pathlist("InstanceId", options[:instance_id])
+        options = { :instance_id => [], :filter => {} }.merge(options)
+        params = {}
+        params.merge!(pathlist("InstanceId", options[:instance_id]))
+        params.merge!(pathhashlist("Filter", options[:filter].map{|k,v| {:name => k, :value => v}}, {:name => 'Name', :value => 'Value'}))
+
         return response_generator(:action => "DescribeInstances", :params => params)
       end
 
@@ -296,4 +302,3 @@ module AWS
 
   end
 end
-
