@@ -85,11 +85,22 @@ module AWS
       # Recently terminated instances will be included in the returned results for a small interval subsequent to
       # their termination. This interval is typically of the order of one hour
       #
+      # The results can be filtered using the filter argument. The EC2 API reference for a full description of
+      # filter types and arguments.
+      #
+      #
+      # @example 
+      #   @ec2.describe_instances(:instance_id => 'i-a37582c3', :filter => [{"tag:Role" => "App"}])
+      #
       # @option options [Array] :instance_id ([])
+      # @option options [Array] :filter ([])
       #
       def describe_instances( options = {} )
         options = { :instance_id => [] }.merge(options)
         params = pathlist("InstanceId", options[:instance_id])
+        if options[:filter]
+          params.merge!(pathkvlist('Filter', options[:filter], 'Name', 'Value', {}))
+        end
         return response_generator(:action => "DescribeInstances", :params => params)
       end
 
