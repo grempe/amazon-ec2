@@ -12,7 +12,7 @@ amazon-ec2カスタマイズ版
 
     $ cd /path/to/rails-app
     $ rm -rf vendor/gems/amazon-ec2-0.9.15  # => 古いamazon-ec2ライブラリを削除する
-    $ gem /path/to/amazon-ec2-0.9.15.gem --target vendor/gems  # => 新しいamazon-ec2ライブラリを展開する
+    $ gem unpack /path/to/amazon-ec2-0.9.15.gem --target vendor/gems  # => 新しいamazon-ec2ライブラリを展開する
     $ ls vendor/gems
     amazon-ec2-0.9.15
 
