@@ -1,3 +1,10 @@
+= IMPORTANT!
+
+This Ruby gem is no longer supported and has not been for several years.  It is no longer recommended for public use.  Instead I would recommend looking at the officially supported Amazon Ruby SDK provided by Amazon.com.  See https://aws.amazon.com/sdkforruby/
+
+Thanks for your support!
+
+
 = Amazon Web Services Elastic Compute Cloud (EC2) Ruby Gem
 
 == About amazon-ec2
@@ -316,8 +323,6 @@ to determine how you want to handle these exceptions in your code.
 
 * Project Home : http://github.com/grempe/amazon-ec2/tree/master
 * API Documentation : http://rdoc.info/projects/grempe/amazon-ec2
-* Discussion Group : http://groups.google.com/group/amazon-ec2
-* Report Bugs / Request Features : http://github.com/grempe/amazon-ec2/issues
 * Amazon Web Services : http://aws.amazon.com
 
 == Credits
