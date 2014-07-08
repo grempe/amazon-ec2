@@ -15,7 +15,7 @@ require 'irb'
 # CREDITS : Credit for this bit of shameful ripoff coolness
 # goes to Marcel Molina and his AWS::S3 gem.  Thanks!
 
-require File.dirname(__FILE__) + '/../lib/AWS'
+require File.dirname(__FILE__) + '/../lib/AWSAPI'
 
 setup = File.dirname(__FILE__) + '/setup'
 
@@ -69,7 +69,7 @@ def welcome!
     returns : Pretty Print a Hash describing your EC2 images
     >> @ec2.describe_images(:owner_id => ['self'])
 
-    returns : an Array of AWS::Response objects, each an EC2 image and its data
+    returns : an Array of AWSAPI::Response objects, each an EC2 image and its data
     >> @ec2.describe_images(:owner_id => ['self']).imagesSet.item
     >> @ec2.describe_images(:owner_id => ['self']).imagesSet.item[0]
 MESSAGE

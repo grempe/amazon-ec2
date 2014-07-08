@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "The EC2 password " do
 
   before do
-    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWSAPI::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @get_password_data_response_body = <<-RESPONSE
     <GetPasswordDataResponse xmlns="http://ec2.amazonaws.com/doc/2010-06-15/">
@@ -37,9 +37,9 @@ context "The EC2 password " do
 
 
   specify "method get_password_data should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.get_password_data() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.get_password_data(:instance_id => nil) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.get_password_data(:instance_id => "") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.get_password_data() }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.get_password_data(:instance_id => nil) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.get_password_data(:instance_id => "") }.should.raise(AWSAPI::ArgumentError)
   end
 
 

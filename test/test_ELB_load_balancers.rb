@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 
 context "elb load balancers " do
   before do
-    @elb = AWS::ELB::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @elb = AWSAPI::ELB::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @valid_create_load_balancer_params = {
       :load_balancer_name => 'Test Name',
@@ -132,13 +132,13 @@ context "elb load balancers " do
       'Listeners.member.1.InstancePort' => '80'
     }).returns stub(:body => @create_load_balancer_response_body, :is_a? => true)
 
-    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params) }.should.not.raise(AWS::ArgumentError)
-    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:load_balancer_name=>nil)) }.should.raise(AWS::ArgumentError)
-    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:load_balancer_name=>'')) }.should.raise(AWS::ArgumentError)
-    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:availability_zones=>'')) }.should.raise(AWS::ArgumentError)
-    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:availability_zones=>[])) }.should.raise(AWS::ArgumentError)
-    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:listeners=>[])) }.should.raise(AWS::ArgumentError)
-    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:listeners=>nil)) }.should.raise(AWS::ArgumentError)
+    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params) }.should.not.raise(AWSAPI::ArgumentError)
+    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:load_balancer_name=>nil)) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:load_balancer_name=>'')) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:availability_zones=>'')) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:availability_zones=>[])) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:listeners=>[])) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @elb.create_load_balancer(@valid_create_load_balancer_params.merge(:listeners=>nil)) }.should.raise(AWSAPI::ArgumentError)
   end
 
   specify "should be able to be deleted with delete_load_balancer" do
@@ -178,10 +178,10 @@ context "elb load balancers " do
       'Instances.member.1.InstanceId' => 'i-6055fa09'
     }).returns stub(:body => @register_instances_with_load_balancer_response_body, :is_a? => true)
 
-    lambda { @elb.register_instances_with_load_balancer(@valid_register_instances_with_load_balancer_params) }.should.not.raise(AWS::ArgumentError)
-    lambda { @elb.register_instances_with_load_balancer(@valid_register_instances_with_load_balancer_params.merge(:load_balancer_name=>nil)) }.should.raise(AWS::ArgumentError)
-    lambda { @elb.register_instances_with_load_balancer(@valid_register_instances_with_load_balancer_params.merge(:instances=>nil)) }.should.raise(AWS::ArgumentError)
-    lambda { @elb.register_instances_with_load_balancer(@valid_register_instances_with_load_balancer_params.merge(:instances=>[])) }.should.raise(AWS::ArgumentError)
+    lambda { @elb.register_instances_with_load_balancer(@valid_register_instances_with_load_balancer_params) }.should.not.raise(AWSAPI::ArgumentError)
+    lambda { @elb.register_instances_with_load_balancer(@valid_register_instances_with_load_balancer_params.merge(:load_balancer_name=>nil)) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @elb.register_instances_with_load_balancer(@valid_register_instances_with_load_balancer_params.merge(:instances=>nil)) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @elb.register_instances_with_load_balancer(@valid_register_instances_with_load_balancer_params.merge(:instances=>[])) }.should.raise(AWSAPI::ArgumentError)
   end
 
   specify "should be able to deregister instances from load balancers with deregister_instances_from_load_balancer" do
@@ -200,10 +200,10 @@ context "elb load balancers " do
       'Instances.member.1.InstanceId' => 'i-6055fa09'
     }).returns stub(:body => @deregister_instances_from_load_balancer_response_body, :is_a? => true)
 
-    lambda { @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params) }.should.not.raise(AWS::ArgumentError)
-    lambda { @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params.merge(:load_balancer_name=>nil)) }.should.raise(AWS::ArgumentError)
-    lambda { @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params.merge(:instances=>nil)) }.should.raise(AWS::ArgumentError)
-    lambda { @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params.merge(:instances=>[])) }.should.raise(AWS::ArgumentError)
+    lambda { @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params) }.should.not.raise(AWSAPI::ArgumentError)
+    lambda { @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params.merge(:load_balancer_name=>nil)) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params.merge(:instances=>nil)) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @elb.deregister_instances_from_load_balancer(@valid_deregister_instances_from_load_balancer_params.merge(:instances=>[])) }.should.raise(AWSAPI::ArgumentError)
   end
 
   specify "should be able to configure_health_check for instances from load balancers" do
@@ -219,12 +219,12 @@ context "elb load balancers " do
     response = @elb.configure_health_check(@valid_configure_health_check_params)
     response.should.be.an.instance_of Hash
 
-    lambda { @elb.configure_health_check(@valid_configure_health_check_params) }.should.not.raise(AWS::ArgumentError)
-    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:load_balancer_name => nil)) }.should.raise(AWS::ArgumentError)
-    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:load_balancer_name => "")) }.should.raise(AWS::ArgumentError)
+    lambda { @elb.configure_health_check(@valid_configure_health_check_params) }.should.not.raise(AWSAPI::ArgumentError)
+    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:load_balancer_name => nil)) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:load_balancer_name => "")) }.should.raise(AWSAPI::ArgumentError)
 
-    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:health_check => nil)) }.should.raise(AWS::ArgumentError)
-    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:health_check => "")) }.should.raise(AWS::ArgumentError)
+    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:health_check => nil)) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:health_check => "")) }.should.raise(AWSAPI::ArgumentError)
 
   end
 
@@ -267,9 +267,9 @@ context "elb load balancers " do
       'HealthCheck.UnhealthyThreshold' => '2'
     }).returns stub(:body => @configure_health_check_response_body, :is_a? => true)
 
-    lambda { @elb.configure_health_check(@valid_configure_health_check_params) }.should.not.raise(AWS::ArgumentError)
-    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:load_balancer_name=>nil)) }.should.raise(AWS::ArgumentError)
-    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:health_check=>nil)) }.should.raise(AWS::ArgumentError)
+    lambda { @elb.configure_health_check(@valid_configure_health_check_params) }.should.not.raise(AWSAPI::ArgumentError)
+    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:load_balancer_name=>nil)) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @elb.configure_health_check(@valid_configure_health_check_params.merge(:health_check=>nil)) }.should.raise(AWSAPI::ArgumentError)
   end
 
 end

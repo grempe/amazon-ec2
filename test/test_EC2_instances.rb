@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "EC2 instances " do
 
   before do
-    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWSAPI::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @run_instances_response_body = <<-RESPONSE
     <RunInstancesResponse xmlns="http://ec2.amazonaws.com/doc/2007-08-29">
@@ -296,99 +296,99 @@ context "EC2 instances " do
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
 
-    lambda { @ec2.run_instances() }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances() }.should.raise(AWSAPI::ArgumentError)
 
     # :addressing_type is deprecated
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => nil ) }.should.not.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "" ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "foo" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => nil ) }.should.not.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "" ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :addressing_type => "foo" ) }.should.raise(AWSAPI::ArgumentError)
 
     # :group_id is deprecated
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :group_id => nil ) }.should.not.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :group_id => "" ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :group_id => "foo" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :group_id => nil ) }.should.not.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :group_id => "" ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :group_id => "foo" ) }.should.raise(AWSAPI::ArgumentError)
 
     # :image_id
-    lambda { @ec2.run_instances( :image_id => nil ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => nil ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "" ) }.should.raise(AWSAPI::ArgumentError)
 
     # :min_count
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1 ) }.should.not.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 0 ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => nil ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => "" ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => "foo" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1 ) }.should.not.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 0 ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => nil ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => "" ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => "foo" ) }.should.raise(AWSAPI::ArgumentError)
 
     # :max_count
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => 1 ) }.should.not.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => 0 ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => nil ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => "" ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => "foo" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => 1 ) }.should.not.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => 0 ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => nil ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => "" ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :max_count => "foo" ) }.should.raise(AWSAPI::ArgumentError)
 
     # :min_count & :max_count
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1 ) }.should.not.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 2, :max_count => 1 ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 1, :max_count => 1 ) }.should.not.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :min_count => 2, :max_count => 1 ) }.should.raise(AWSAPI::ArgumentError)
 
     # :instance_type
 
     ["t1.micro", "m1.small", "m1.large", "m1.xlarge", "m2.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge", "cc1.4xlarge"].each do |type|
       @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "InstanceType" => type).
         returns stub(:body => @run_instances_response_body, :is_a? => true)
-      lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_type => type ) }.should.not.raise(AWS::ArgumentError)
+      lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_type => type ) }.should.not.raise(AWSAPI::ArgumentError)
     end
 
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_type => "m1.notarealsize" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_type => "m1.notarealsize" ) }.should.raise(AWSAPI::ArgumentError)
 
     # :monitoring_enabled
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "Monitoring.Enabled" => 'true').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :monitoring_enabled => true ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :monitoring_enabled => true ) }.should.not.raise(AWSAPI::ArgumentError)
 
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "Monitoring.Enabled" => 'false').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :monitoring_enabled => false ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :monitoring_enabled => false ) }.should.not.raise(AWSAPI::ArgumentError)
 
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "Monitoring.Enabled" => 'false').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :monitoring_enabled => "foo" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :monitoring_enabled => "foo" ) }.should.raise(AWSAPI::ArgumentError)
 
     # :disable_api_termination
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "DisableApiTermination" => 'true').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :disable_api_termination => true ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :disable_api_termination => true ) }.should.not.raise(AWSAPI::ArgumentError)
 
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "DisableApiTermination" => 'false').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :disable_api_termination => false ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :disable_api_termination => false ) }.should.not.raise(AWSAPI::ArgumentError)
 
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "DisableApiTermination" => 'false').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :disable_api_termination => "foo" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :disable_api_termination => "foo" ) }.should.raise(AWSAPI::ArgumentError)
 
     # :instance_initiated_shutdown_behavior
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "InstanceInitiatedShutdownBehavior" => 'stop').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_initiated_shutdown_behavior => 'stop' ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_initiated_shutdown_behavior => 'stop' ) }.should.not.raise(AWSAPI::ArgumentError)
 
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "InstanceInitiatedShutdownBehavior" => 'terminate').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_initiated_shutdown_behavior => 'terminate' ) }.should.not.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_initiated_shutdown_behavior => 'terminate' ) }.should.not.raise(AWSAPI::ArgumentError)
 
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "InstanceInitiatedShutdownBehavior" => 'stop').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_initiated_shutdown_behavior => "foo" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_initiated_shutdown_behavior => "foo" ) }.should.raise(AWSAPI::ArgumentError)
 
     @ec2.stubs(:make_request).with('RunInstances', "ImageId" => "ami-60a54009", "MinCount" => '1', "MaxCount" => '1', "InstanceInitiatedShutdownBehavior" => 'stop').
       returns stub(:body => @run_instances_response_body, :is_a? => true)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_initiated_shutdown_behavior => true ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :instance_initiated_shutdown_behavior => true ) }.should.raise(AWSAPI::ArgumentError)
 
     # :base64_encoded
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => true ) }.should.not.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => false ) }.should.not.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => nil ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => "" ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => "foo" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => true ) }.should.not.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => false ) }.should.not.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => nil ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => "" ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.run_instances( :image_id => "ami-60a54009", :base64_encoded => "foo" ) }.should.raise(AWSAPI::ArgumentError)
   end
 
   specify "should be able specify a key_name" do
@@ -534,9 +534,9 @@ context "EC2 instances " do
 
 
   specify "method reboot_instances should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.reboot_instances() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.reboot_instances( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.reboot_instances( :instance_id => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.reboot_instances() }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.reboot_instances( :instance_id => nil ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.reboot_instances( :instance_id => "" ) }.should.raise(AWSAPI::ArgumentError)
   end
 
 
@@ -548,9 +548,9 @@ context "EC2 instances " do
 
 
   specify "method start_instances should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.start_instances() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.start_instances( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.start_instances( :instance_id => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.start_instances() }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.start_instances( :instance_id => nil ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.start_instances( :instance_id => "" ) }.should.raise(AWSAPI::ArgumentError)
   end
 
 
@@ -562,9 +562,9 @@ context "EC2 instances " do
 
 
   specify "method stop_instances should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.stop_instances() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.stop_instances( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.stop_instances( :instance_id => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.stop_instances() }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.stop_instances( :instance_id => nil ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.stop_instances( :instance_id => "" ) }.should.raise(AWSAPI::ArgumentError)
   end
 
   specify "should be able to be stopped when provided with an :instance_id" do
@@ -574,9 +574,9 @@ context "EC2 instances " do
   end
 
   specify "method terminate_instances should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.terminate_instances() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.terminate_instances( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.terminate_instances( :instance_id => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.terminate_instances() }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.terminate_instances( :instance_id => nil ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.terminate_instances( :instance_id => "" ) }.should.raise(AWSAPI::ArgumentError)
   end
 
   specify "should be able to be terminated when provided with an :instance_id" do
@@ -600,9 +600,9 @@ context "EC2 instances " do
   end
 
   specify "method monitor_instances should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.monitor_instances() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.monitor_instances( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.monitor_instances( :instance_id => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.monitor_instances() }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.monitor_instances( :instance_id => nil ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.monitor_instances( :instance_id => "" ) }.should.raise(AWSAPI::ArgumentError)
   end
 
   specify "should be able to be monitored when provided with an :instance_id" do
@@ -620,9 +620,9 @@ context "EC2 instances " do
   end
 
   specify "method unmonitor_instances should raise an exception when called without nil/empty string arguments" do
-    lambda { @ec2.unmonitor_instances() }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.unmonitor_instances( :instance_id => nil ) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.unmonitor_instances( :instance_id => "" ) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.unmonitor_instances() }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.unmonitor_instances( :instance_id => nil ) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.unmonitor_instances( :instance_id => "" ) }.should.raise(AWSAPI::ArgumentError)
   end
 
   specify "should be able to be unmonitored when provided with an :instance_id" do
@@ -640,47 +640,47 @@ context "EC2 instances " do
   end
 
   specify "should get an ArgumentError when trying to describe/modify/reset an instance attribute without an istance id" do
-    lambda { @ec2.describe_instance_attribute(:attribute => "ramdisk") }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.modify_instance_attribute(:attribute => "ramdisk") }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.reset_instance_attribute(:attribute => "ramdisk") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.describe_instance_attribute(:attribute => "ramdisk") }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.modify_instance_attribute(:attribute => "ramdisk") }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.reset_instance_attribute(:attribute => "ramdisk") }.should.raise(AWSAPI::ArgumentError)
 
-    lambda { @ec2.describe_instance_attribute(:attribute => "ramdisk", :instance_id => nil) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.modify_instance_attribute(:attribute => "ramdisk", :instance_id => nil) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.reset_instance_attribute(:attribute => "ramdisk", :instance_id => nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.describe_instance_attribute(:attribute => "ramdisk", :instance_id => nil) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.modify_instance_attribute(:attribute => "ramdisk", :instance_id => nil) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.reset_instance_attribute(:attribute => "ramdisk", :instance_id => nil) }.should.raise(AWSAPI::ArgumentError)
 
-    lambda { @ec2.describe_instance_attribute(:attribute => "ramdisk", :instance_id => "") }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.modify_instance_attribute(:attribute => "ramdisk", :instance_id => "") }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.reset_instance_attribute(:attribute => "ramdisk", :instance_id => "") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.describe_instance_attribute(:attribute => "ramdisk", :instance_id => "") }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.modify_instance_attribute(:attribute => "ramdisk", :instance_id => "") }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.reset_instance_attribute(:attribute => "ramdisk", :instance_id => "") }.should.raise(AWSAPI::ArgumentError)
   end
 
   specify "should get an ArgumentError when trying to describe/modify/reset an instance attribute without an attribute" do
-    lambda { @ec2.describe_instance_attribute(:instance_id => "i-33457a5a") }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.modify_instance_attribute(:instance_id => "i-33457a5a") }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.reset_instance_attribute(:instance_id => "i-33457a5a") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.describe_instance_attribute(:instance_id => "i-33457a5a") }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.modify_instance_attribute(:instance_id => "i-33457a5a") }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.reset_instance_attribute(:instance_id => "i-33457a5a") }.should.raise(AWSAPI::ArgumentError)
 
-    lambda { @ec2.describe_instance_attribute(:instance_id => "i-33457a5a", :attribute => nil) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.modify_instance_attribute(:instance_id => "i-33457a5a", :attribute => nil) }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.reset_instance_attribute(:instance_id => "i-33457a5a", :attribute => nil) }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.describe_instance_attribute(:instance_id => "i-33457a5a", :attribute => nil) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.modify_instance_attribute(:instance_id => "i-33457a5a", :attribute => nil) }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.reset_instance_attribute(:instance_id => "i-33457a5a", :attribute => nil) }.should.raise(AWSAPI::ArgumentError)
 
-    lambda { @ec2.describe_instance_attribute(:instance_id => "i-33457a5a", :attribute => "") }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.modify_instance_attribute(:instance_id => "i-33457a5a", :attribute => "") }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.reset_instance_attribute(:instance_id => "i-33457a5a", :attribute => "") }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.describe_instance_attribute(:instance_id => "i-33457a5a", :attribute => "") }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.modify_instance_attribute(:instance_id => "i-33457a5a", :attribute => "") }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.reset_instance_attribute(:instance_id => "i-33457a5a", :attribute => "") }.should.raise(AWSAPI::ArgumentError)
   end
 
   specify "should get an ArgumentError when trying to describe/modify/reset an instance attribute without a valid attribute" do
-    lambda { @ec2.describe_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'party') }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.modify_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'party') }.should.raise(AWS::ArgumentError)
-    lambda { @ec2.reset_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'party') }.should.raise(AWS::ArgumentError)
+    lambda { @ec2.describe_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'party') }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.modify_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'party') }.should.raise(AWSAPI::ArgumentError)
+    lambda { @ec2.reset_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'party') }.should.raise(AWSAPI::ArgumentError)
   end
 
   specify "should not get an ArgumentError when trying to describe/modify/reset an instance attribute with a valid attribute" do
     @ec2.stubs(:make_request).returns stub(:body => @describe_instance_attribute_response_body, :is_a? => true)
     %w(instanceType kernel ramdisk userData disableApiTermination instanceInitiatedShutdownBehavior rootDevice blockDeviceMapping).each do |a|
-      lambda { @ec2.describe_instance_attribute(:instance_id => "i-33457a5a", :attribute => a) }.should.not.raise(AWS::ArgumentError)
-      lambda { @ec2.modify_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'party') }.should.raise(AWS::ArgumentError)
+      lambda { @ec2.describe_instance_attribute(:instance_id => "i-33457a5a", :attribute => a) }.should.not.raise(AWSAPI::ArgumentError)
+      lambda { @ec2.modify_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'party') }.should.raise(AWSAPI::ArgumentError)
     end
     %w(kernel ramdisk).each do |a|
-      lambda { @ec2.reset_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'party') }.should.raise(AWS::ArgumentError)
+      lambda { @ec2.reset_instance_attribute(:instance_id => "i-33457a5a", :attribute => 'party') }.should.raise(AWSAPI::ArgumentError)
     end
   end
 

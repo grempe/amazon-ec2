@@ -13,7 +13,7 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 context "The EC2 subnets " do
 
   before do
-    @ec2 = AWS::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
+    @ec2 = AWSAPI::EC2::Base.new( :access_key_id => "not a key", :secret_access_key => "not a secret" )
 
     @describe_subnets_response_body = <<-RESPONSE
       <DescribeSubnetsResponse xmlns="http://ec2.amazonaws.com/doc/2008-02-01">

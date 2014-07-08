@@ -1,3 +1,5 @@
+=== 0.9.18 2012-01-26
+ * Changed top-level namespace from AWS to AWSAPI, as it was conflicting with the official Amazon aws-sdk gem, which also defines AWS::EC2 but as a class rather than a module.
 
 === 0.9.17 2010-11-21
  * Converted from Jeweler to Bundler, 'bundle install' to install dependencies
