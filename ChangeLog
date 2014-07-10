@@ -1,3 +1,5 @@
+=== 0.9.18 2011-08-03
+ * Added PutMetricData support to Cloudwatch
 
 === 0.9.17 2010-11-21
  * Converted from Jeweler to Bundler, 'bundle install' to install dependencies

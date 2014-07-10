@@ -1,7 +1,80 @@
 module AWS
   module Cloudwatch
+    class StatisticSet
+      attr_accessor :maximum, :minimum, :sample_count, :sum
+
+      def initialize(maximum, minimum, sample_count, sum)
+        @maximum, @minimum, @sample_count, @sum = maximum, minimum, sample_count, sum
+      end
+    end
+
+    class Metric
+      Unit = [
+        "Seconds", "Microseconds", "Milliseconds",
+        "Bytes", "Kilobytes", "Megabytes", "Gigabytes", "Terabytes",
+        "Bits", "Kilobits", "Megabits", "Gigabits", "Terabits",
+        "Percent", "Count",
+        "Bytes/Second", "Kilobytes/Second", "Megabytes/Second", "Gigabytes/Second", "Terabytes/Second",
+        "Bits/Second", "Kilobits/Second", "Megabits/Second", "Gigabits/Second", "Terabits/Second", "Count/Second", "None"
+      ]
+        
+      def initialize ( options ={} )
+        @options = options.dup
+        @options[:timestamp] ||= Time.new
+        @options[:dimensions] ||= {}
+
+        raise ArgumentError, 'name cannot be blank' if @options[:name].nil? or options[:name] =~ /^\s+$/
+        raise ArgumentError, "unit must be one (#{Unit.inspect}; was #{@options[:unit].inspect})" if @options[:unit].nil? or !Unit.include?(@options[:unit])
+        raise ArgumentError, "value must be a numeric value (was: #{@options[:value].inspect})" if !@options[:value].kind_of?(Numeric)
+        raise ArgumentError, 'timestamp must be a Time object' if !@options[:timestamp].kind_of?(Time)
+        raise ArgumentError, 'statistic_set must be a StatisticSet object' if @options[:statistic_set] and !@options[:statistic_set].kind_of?(StatisticSet)
+      end
+      
+      def to_params(index=1)
+        member = "MetricData.member.#{index}"
+        params = {
+          "#{member}.MetricName" => @options[:name],
+          "#{member}.Unit" => @options[:unit],
+          "#{member}.Value" => @options[:value].to_s,
+          "#{member}.Timestamp" => @options[:timestamp].iso8601,
+        }
+        dimension = 1
+        @options[:dimensions].each_pair do |name, value|
+          params["#{member}.Dimensions.member.#{dimension}.Name"] = name
+          params["#{member}.Dimensions.member.#{dimension}.Value"] = value
+          dimension += 1
+        end
+        if @options[:statistic_set]
+          params["#{member}.StatisticSet.Maximum"] = @options[:statistic_set].maximum.to_s
+          params["#{member}.StatisticSet.Minimum"] = @options[:statistic_set].minimum.to_s
+          params["#{member}.StatisticSet.SampleCount"] = @options[:statistic_set].sample_count.to_s
+          params["#{member}.StatisticSet.Sum"] = @options[:statistic_set].sum.to_s
+        end
+        
+        params
+      end
+    end
+    
     class Base < AWS::Base
 
+      # This method call puts a custom metric datapoint into CloudWatch. It takes a namespace and an
+      # array of Metric objects that can define multiple dimensions as well
+      def put_metric_data(namespace, metrics)
+        metrics = [metrics] if !metrics.kind_of?(Array)
+        raise ArgumentError, "namespace must be provided" if namespace.nil? or namespace =~ /^\s+$/
+        raise ArgumentError, "namespace cannot begin with AWS/" if namespace =~ /^AWS\//
+        raise ArgumentError, "metrics must be an array of Metric AWS::Cloudwatch::Metric objects" if metrics.inject(false) { |acc, obj| acc || !obj.kind_of?(Metric) }
+
+        params = {
+          "Namespace" => namespace,
+        }
+        metrics.each do |metric|
+          params.merge!(metric.to_params)
+        end
+
+        return response_generator(:action => 'PutMetricData', :params => params)
+      end
+      
       # This method call lists available Cloudwatch metrics attached to your EC2
       # account. To get further information from the metrics, you'll then need to
       # call get_metric_statistics.
