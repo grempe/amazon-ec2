@@ -162,13 +162,13 @@ context "EC2 security groups " do
 
 
   specify "permissions should be able to be added to a security group with authorize_security_group_ingress." do
-    @ec2.stubs(:make_request).with('AuthorizeSecurityGroupIngress', 
+    @ec2.stubs(:make_request).with('AuthorizeSecurityGroupIngress',
       { "GroupName" => "WebServers",
         "IpPermissions.1.IpProtocol" => "tcp",
         "IpPermissions.1.FromPort" => "8000",
         "IpPermissions.1.ToPort" => "80",
         "IpPermissions.1.IpRanges.1" => "0.0.0.0/24",
-        "IpPermissions.1.Groups.1.GroupName" => "Source SG Name", 
+        "IpPermissions.1.Groups.1.GroupName" => "Source SG Name",
         "IpPermissions.1.Groups.1.UserId" => "123"}).
       returns stub(:body => @authorize_security_group_ingress_response_body, :is_a? => true)
 
@@ -190,7 +190,7 @@ context "EC2 security groups " do
         "IpPermissions.1.FromPort" => "8000",
         "IpPermissions.1.ToPort" => "80",
         "IpPermissions.1.IpRanges.1" => "0.0.0.0/24",
-        "IpPermissions.1.Groups.1.GroupName" => "Source SG Name", 
+        "IpPermissions.1.Groups.1.GroupName" => "Source SG Name",
         "IpPermissions.1.Groups.1.UserId" => "123"}).
       returns stub(:body => @revoke_security_group_ingress_response_body, :is_a? => true)
 

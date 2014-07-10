@@ -4,8 +4,8 @@ module AWS
     class Base < AWS::Base
 
       # This method returns historical information about spot prices.
-      # 
-      # Amazon periodically sets the spot price for each instance type based on 
+      #
+      # Amazon periodically sets the spot price for each instance type based on
       # available capacity and current spot instance requests.
       #
       # @option options [Time] :start_time (nil)

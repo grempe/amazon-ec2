@@ -3,7 +3,7 @@ module AWS
 
     # Which host FQDN will we connect to for all API calls to AWS?
     # If ELB_URL is defined in the users ENV we can override the default with that.
-    # 
+    #
     # @example
     #   export ELB_URL='https://elasticloadbalancing.amazonaws.com'
     if ENV['ELB_URL']
@@ -24,7 +24,7 @@ module AWS
       def default_host
         DEFAULT_HOST
       end
-      
+
       # Raises the appropriate error if the specified Net::HTTPResponse object
       # contains an Amazon EC2 error; returns +false+ otherwise.
       def aws_error?(response)
@@ -62,7 +62,7 @@ module AWS
         end
 
       end
-      
+
     end
 
   end
