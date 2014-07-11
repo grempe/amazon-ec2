@@ -87,6 +87,87 @@ module AWS
 
       end
 
+      # This method pushes custom metrics to AWS. See http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/API_PutMetricData.html 
+      #
+      # @option options [String] :namespace (nil) The namepsace of the metric you want to put data into. Cannot begin with 'AWS/'.
+      # @option options [String] :metric_name (nil) The name of the metric. No explicit creation is required, but it may take up to 15 minutes to show up.
+      # @option options [String] :unit ('None') One of the units that Amazon supports. See http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/API_MetricDatum.html
+      # @option options [Double] :value (nil) The value of the metric. Very large (10 ** 126) and very small (10 ** -130) will be truncated.
+      # @option options [optional, Hash] :dimensions ({}) Hash like {'Dimension1' => 'value1', 'Dimension2' => 'value2', ...} that describe the dimensions.
+      # @option options [Time] :timestamp (Time.now) The timestamp that the point(s) will be recorded fora.
+      # @option options [Array] :metric_data ([{}]) An array of hashes for the data points that will be sent to CloudWatch. All previous options except :namespace can be specified and will override options specified outside the element. Can only be 20 items long.
+      # @example
+      #   # Put a single point measured now
+      #   cw.put_metric_data({
+      #     :namespace => 'Foo',
+      #     :metric_name => 'Clicks',
+      #     :unit => 'Count',
+      #     :value => 5
+      #   })
+      # @example
+      #   # Put one point for each of the last five minutes with one call
+      #   points = (0..5).map do |min|
+      #     {:timestamp => Time.now - min * 60, :value = rand()}
+      #   end
+      #
+      #   cw.put_metric_data({
+      #     :namespace => 'Foo'
+      #     :metric_name => 'Clicks',
+      #     :unit => 'Count',
+      #     :metric_data => points,
+      #     :dimensions => {'InstanceID' => 'i-af23c4b9',
+      #                     'InstanceType' => 'm2.4xlarge'}
+      #   })
+      #     
+      def put_metric_data( options={} )
+        options = {
+          :timestamp => Time.now,
+          :metric_data => [{}],
+          :dimensions => {},
+          :unit => 'None'
+        }.merge options
+        namespace = options.delete :namespace
+        metric_data = options.delete :metric_data
+        metric_data = [{}] unless metric_data.any?
+        merged_data = metric_data.map do |datum|
+          options.merge datum
+        end
+
+        params = {
+          "Namespace" => namespace
+        }
+        raise ArgumentError, ":namespace cannot be blank" if namespace.nil?
+        
+        merged_data.each_with_index do |datum, idx|
+          prefix = "MetricData.member.#{idx+1}."
+          raise ArgumentError, ":metric_name cannot be blank" if datum[:metric_name].nil?
+          raise ArgumentError, ":unit cannot be blank" if datum[:unit].nil?
+          raise ArgumentError, ":value cannot be blank" if datum[:value].nil?
+          raise ArgumentError, ":timestamp cannot be blank" if datum[:timestamp].nil?
+
+          datum_params = {
+            prefix + "MetricName" => datum[:metric_name],
+            prefix + "Unit" => datum[:unit],
+            prefix + "Value" => datum[:value].to_s,
+            prefix + "Timestamp" => datum[:timestamp].iso8601
+          }
+          ii = 1
+          datum[:dimensions].each_pair do |dimension, value|
+            dimension_prefix = prefix + "Dimensions.member.#{ii}."
+            raise ArgumentError, "value cannot be blank for a dimension" if value.nil?
+            datum_params.merge!({
+              dimension_prefix + "Name" => dimension,
+              dimension_prefix + "Value" => value
+            })
+            ii += 1
+          end unless datum[:dimensions].nil?
+
+          params.merge! datum_params
+        end
+
+        return response_generator(:action => 'PutMetricData', :params => params)
+      end
+
     end
 
   end
