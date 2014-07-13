@@ -41,7 +41,7 @@ context "Spot price history " do
   end
 
   specify "should be able to be requested with various instance types" do
-    ["t1.micro", "m1.small", "m1.large", "m1.xlarge", "m2.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge", "cc1.4xlarge", "cg1.4xlarge"].each do |type|
+    ["t1.micro", "m1.small", "m1.large", "m1.xlarge", "m2.xlarge", "c1.medium", "c1.xlarge", "m2.2xlarge", "m2.4xlarge", "cc1.4xlarge", "cc2.4xlarge", "cg1.4xlarge"].each do |type|
       @ec2.stubs(:make_request).with('DescribeSpotPriceHistory', {'InstanceType' => type}).
         returns stub(:body => @describe_spot_price_history_response_body, :is_a? => true)
       lambda { @ec2.describe_spot_price_history( :instance_type => type ) }.should.not.raise(AWS::ArgumentError)
