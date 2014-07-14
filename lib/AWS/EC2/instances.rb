@@ -93,6 +93,16 @@ module AWS
         return response_generator(:action => "DescribeInstances", :params => params)
       end
 
+      # The DescribeInstanceStatus operation returns information about two types of scheduled events that
+      # may affect your instance: scheduled reboots and scheduled retirement.
+      #
+      # @option options [Array] :instance_id ([])
+      #
+      def describe_instance_status( options = {} )
+        options = { :instance_id => [] }.merge(options)
+        params = pathlist("InstanceId", options[:instance_id])
+        return response_generator(:action => "DescribeInstanceStatus", :params => params)
+      end
 
       # Returns information about an attribute of an instance.
       #
